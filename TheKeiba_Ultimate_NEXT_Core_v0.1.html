@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The競馬 Ultimate NEXT Professional</title>
+<style>
+:root{
+ --bg:#111827;--panel:#1f2937;--text:#f3f4f6;--accent:#22c55e;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+header{background:#0f172a;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+header h1{margin:0;font-size:20px}
+.container{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 56px)}
+nav{background:var(--panel);padding:12px}
+nav button{width:100%;padding:12px;margin:6px 0;border:0;border-radius:8px;background:#374151;color:white;text-align:left;cursor:pointer}
+main{padding:18px}
+.card{background:var(--panel);padding:16px;border-radius:12px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.stat{background:#111827;border:1px solid #374151;border-radius:10px;padding:12px}
+small{color:#9ca3af}
+@media(max-width:768px){
+.container{grid-template-columns:1fr}
+nav{display:flex;overflow:auto;gap:8px}
+nav button{min-width:140px}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>🏇 The競馬 Ultimate NEXT Professional</h1>
+<div>Core v0.1</div>
+</header>
+
+<div class="container">
+<nav>
+<button>🏠 ダッシュボード</button>
+<button>📋 出馬表</button>
+<button>🔍 TARGET検索</button>
+<button>📈 シミュレーション</button>
+<button>🤖 AI分析</button>
+<button>📊 統計</button>
+<button>🗄 データベース</button>
+<button>⚙ 設定</button>
+</nav>
+
+<main>
+<div class="card">
+<h2>今日の開催</h2>
+<div class="grid">
+<div class="stat"><b>JRA</b><br><small>開催場を表示予定</small></div>
+<div class="stat"><b>NAR</b><br><small>開催場を表示予定</small></div>
+<div class="stat"><b>AIおすすめ</b><br><small>未実装</small></div>
+<div class="stat"><b>ROI</b><br><small>--%</small></div>
+</div>
+</div>
+
+<div class="card">
+<h2>開発ロードマップ</h2>
+<ol>
+<li>JRA/NAR共通データモデル（race_id中心）</li>
+<li>出馬表・結果・オッズ表示</li>
+<li>期間横断シミュレーション移植</li>
+<li>EV・ROI分析</li>
+<li>TARGET風検索</li>
+<li>AI分析・学習</li>
+</ol>
+</div>
+
+<div class="card">
+<h2>システム状態</h2>
+<pre id="log">Core initialized.
+IndexedDB: 準備中
+race_id Engine: 準備中
+Simulation: 準備中
+</pre>
+</div>
+</main>
+</div>
+</body>
+</html>
