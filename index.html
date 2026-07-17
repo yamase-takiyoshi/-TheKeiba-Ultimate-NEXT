@@ -89,11 +89,60 @@ label{display:block;font-size:13px;font-weight:800;color:var(--muted);margin-bot
 /* v1.0.18 RDB records */
 .record-schema{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 12px}.record-field{display:inline-flex;gap:7px;align-items:center;padding:6px 9px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:12px}.record-field small{color:var(--muted)}.record-count-grid{margin-bottom:16px}.record-count-grid .stat{min-height:82px}#recordTableView table{min-width:max-content}#recordTableView td{max-width:360px;overflow:hidden;text-overflow:ellipsis}.rdb-link-note{border-color:color-mix(in srgb,var(--purple) 35%,var(--line))}
 
+
+/* ============================================================
+   v1.0.19 Product Intelligence / プロダクト仕様UI
+   ============================================================ */
+.pi-shell{display:grid;grid-template-columns:310px minmax(0,1fr);gap:14px;align-items:start}
+.pi-hero{position:relative;overflow:hidden;padding:20px;border:1px solid color-mix(in srgb,var(--accent) 42%,var(--line));border-radius:20px;background:
+radial-gradient(circle at 85% 0%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 38%),
+linear-gradient(135deg,color-mix(in srgb,var(--panel) 90%,var(--accent) 10%),var(--panel));box-shadow:var(--shadow);margin-bottom:14px}
+.pi-hero:after{content:"";position:absolute;inset:auto -30% -70% 35%;height:220px;border-radius:50%;background:color-mix(in srgb,var(--purple) 13%,transparent);filter:blur(12px);pointer-events:none}
+.pi-hero-top{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pi-eyebrow{font-size:11px;font-weight:900;letter-spacing:.12em;color:var(--accent2);text-transform:uppercase}
+.pi-title{font-size:25px;font-weight:950;letter-spacing:-.03em;margin:4px 0 6px}
+.pi-sub{max-width:760px;color:var(--muted);font-size:13px;line-height:1.7}
+.pi-badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}.pi-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid var(--line);border-radius:999px;background:color-mix(in srgb,var(--bg) 72%,transparent);font-size:11px;font-weight:900}
+.pi-badge.good{border-color:color-mix(in srgb,var(--good) 45%,var(--line));color:var(--good)!important}
+.pi-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.pi-kpi{padding:13px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,var(--panel2),color-mix(in srgb,var(--panel2) 82%,var(--bg)));min-width:0}
+.pi-kpi-label{color:var(--muted);font-size:11px;font-weight:850}.pi-kpi-value{font-size:23px;font-weight:950;margin-top:5px;overflow:hidden;text-overflow:ellipsis}.pi-kpi-foot{font-size:10px;color:var(--muted);margin-top:3px}
+.pi-side{position:sticky;top:calc(var(--header-h) + 14px);border:1px solid var(--line);border-radius:17px;background:var(--panel);box-shadow:var(--shadow);overflow:hidden}
+.pi-side-head{padding:14px 15px;border-bottom:1px solid var(--line);background:var(--panel2);font-weight:950}
+.pi-side-body{padding:13px;max-height:calc(100vh - var(--header-h) - 96px);overflow:auto}
+.pi-section{padding-bottom:13px;margin-bottom:13px;border-bottom:1px solid var(--line)}.pi-section:last-child{border-bottom:0;margin-bottom:0}
+.pi-section-title{font-size:11px;color:var(--muted);font-weight:950;letter-spacing:.06em;margin-bottom:8px}
+.pi-filter-row{display:grid;grid-template-columns:1fr 105px;gap:6px;margin-bottom:6px}.pi-filter-row .pi-filter-value{grid-column:1/-1}
+.pi-sort-row{display:grid;grid-template-columns:1fr 92px;gap:6px;margin-bottom:7px}
+.pi-main{min-width:0}
+.pi-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 12px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin-bottom:10px}
+.pi-toolbar .spacer{flex:1}
+.pi-view-tabs{display:flex;gap:6px;overflow:auto;padding-bottom:2px}.pi-view-tab{white-space:nowrap}.pi-view-tab.active{background:var(--accent);border-color:var(--accent);color:#031321}
+.pi-panel{display:none}.pi-panel.active{display:block}
+.pi-card{border:1px solid var(--line);border-radius:17px;background:var(--panel);box-shadow:var(--shadow);padding:15px;margin-bottom:12px}
+.pi-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:13px;max-height:66vh}
+.pi-table{min-width:max-content}.pi-table th{cursor:pointer;user-select:none}.pi-table th:hover{background:var(--panel3)}.pi-table tr.selected{background:color-mix(in srgb,var(--accent) 13%,transparent)}
+.pi-table td{max-width:330px;overflow:hidden;text-overflow:ellipsis}.pi-null{color:var(--bad);font-style:italic}.pi-number{font-variant-numeric:tabular-nums;text-align:right}
+.pi-columns{display:flex;flex-wrap:wrap;gap:6px}.pi-column-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:11px;cursor:pointer}.pi-column-chip input{width:auto}
+.pi-profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.pi-field-card{border:1px solid var(--line);border-radius:13px;padding:12px;background:var(--panel2);min-width:0}.pi-field-head{display:flex;justify-content:space-between;gap:8px;font-weight:900}.pi-field-type{font-size:10px;color:var(--muted)}
+.pi-meter{height:8px;background:var(--bg);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:9px 0 6px}.pi-meter i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--good));border-radius:999px}
+.pi-field-meta{display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:11px;color:var(--muted)}.pi-examples{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:6px}
+.pi-analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.pi-bar-row{display:grid;grid-template-columns:minmax(90px,1fr) 3fr 90px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 65%,transparent);font-size:12px}.pi-bar-track{height:9px;background:var(--bg);border-radius:999px;overflow:hidden}.pi-bar-track i{height:100%;display:block;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:999px}
+.pi-insight{padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);margin-bottom:8px}.pi-insight b{display:block;margin-bottom:4px}.pi-insight small{color:var(--muted);line-height:1.55}
+.pi-spec-table td:nth-child(1){font-weight:900}.pi-spec-table td{white-space:normal;vertical-align:top}
+.pi-note-grid{display:grid;grid-template-columns:minmax(260px,.75fr) minmax(320px,1.25fr);gap:12px}.pi-note-item{padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);margin-bottom:8px;cursor:pointer}.pi-note-item:hover{border-color:var(--accent)}.pi-note-item b{display:block}.pi-note-item small{color:var(--muted)}
+.pi-detail{position:fixed;z-index:210;top:var(--header-h);right:0;bottom:0;width:min(520px,100%);background:var(--panel);border-left:1px solid var(--line);box-shadow:-22px 0 55px rgba(0,0,0,.32);transform:translateX(102%);transition:transform .2s ease;display:flex;flex-direction:column}.pi-detail.open{transform:translateX(0)}.pi-detail-head{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:var(--panel2);border-bottom:1px solid var(--line)}.pi-detail-body{padding:14px;overflow:auto}.pi-detail-row{display:grid;grid-template-columns:minmax(120px,.45fr) minmax(0,1fr);gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.pi-detail-key{color:var(--muted);font-size:12px;font-weight:900}.pi-detail-value{overflow-wrap:anywhere;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+.pi-status{font-size:12px;color:var(--muted);padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+@media(max-width:1180px){.pi-shell{grid-template-columns:270px minmax(0,1fr)}.pi-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.pi-shell{grid-template-columns:1fr}.pi-side{position:static}.pi-side-body{max-height:none}.pi-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.pi-note-grid,.pi-analysis-grid{grid-template-columns:1fr}.pi-table-wrap{max-height:58vh}}
+@media(max-width:560px){.pi-kpis{grid-template-columns:1fr 1fr}.pi-kpi-value{font-size:19px}.pi-title{font-size:21px}.pi-filter-row,.pi-sort-row{grid-template-columns:1fr}.pi-filter-row .pi-filter-value{grid-column:auto}.pi-detail-row{grid-template-columns:1fr}.pi-hero{padding:16px}}
+
 </style>
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.18 DBMS D1Sync・RDB Records</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.19 Product Intelligence</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -198,7 +247,7 @@ label{display:block;font-size:13px;font-weight:800;color:var(--muted);margin-bot
 
     <section class="view" id="view-database">
       <h2 class="page-title">データベース・編集</h2>
-      <div class="tabs"><button class="btn tab active" data-dbtab="manage">管理</button><button class="btn tab" data-dbtab="records">D1レコード</button><button class="btn tab" data-dbtab="raceedit">レース編集</button><button class="btn tab" data-dbtab="entryedit">出走馬編集</button><button class="btn tab" data-dbtab="resultedit">結果・払戻編集</button></div>
+      <div class="tabs"><button class="btn tab active" data-dbtab="manage">管理</button><button class="btn tab" data-dbtab="records">D1レコード</button><button class="btn tab" data-dbtab="research">製品仕様</button><button class="btn tab" data-dbtab="raceedit">レース編集</button><button class="btn tab" data-dbtab="entryedit">出走馬編集</button><button class="btn tab" data-dbtab="resultedit">結果・払戻編集</button></div>
       <div id="dbTabManage" class="db-tab-panel">
         <div class="card"><div class="toolbar"><button class="btn primary" id="realSyncBtn">当日実データ同期</button><button class="btn" id="exportBtn">JSONバックアップ</button><button class="btn" id="importBtn">JSON読込</button><button class="btn danger" id="clearBtn">全データ削除</button><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="notice">サンプルデータは使用しません。Tampermonkey住宅IP Bridgeまたは正規データJSONから取得した実データだけをIndexedDBへ保存します。</div></div>
         <div class="grid"><div class="stat span-2"><div class="stat-label">Races</div><div class="stat-value" id="dbRaceCount">0</div></div><div class="stat span-2"><div class="stat-label">Entries</div><div class="stat-value" id="dbEntryCount">0</div></div><div class="stat span-2"><div class="stat-label">Results</div><div class="stat-value" id="dbResultCount">0</div></div><div class="stat span-2"><div class="stat-label">Strategies</div><div class="stat-value" id="dbStrategyCount">0</div></div><div class="stat span-2"><div class="stat-label">Simulations</div><div class="stat-value" id="dbSimCount">0</div></div><div class="stat span-2"><div class="stat-label">Snapshots</div><div class="stat-value" id="dbSnapshotCount">0</div></div></div>
@@ -227,6 +276,116 @@ label{display:block;font-size:13px;font-weight:800;color:var(--muted);margin-bot
           <div class="code-box dbms-log" id="dbmsLog" style="margin-top:8px;max-height:190px">ログはまだありません。</div>
         </div>
         <div class="card"><h3>JSON直接貼り付け</h3><textarea id="jsonPaste" placeholder='{"races":[],"entries":[],"results":[]}'></textarea><div class="toolbar" style="margin-top:12px"><button class="btn primary" id="pasteImportBtn">貼付JSONを登録</button></div></div>
+      </div>
+
+
+      <div id="dbTabResearch" class="db-tab-panel" hidden>
+        <section class="pi-hero">
+          <div class="pi-hero-top">
+            <div>
+              <div class="pi-eyebrow">RDB Product Intelligence</div>
+              <div class="pi-title">製品仕様リサーチ・解析ワークスペース</div>
+              <div class="pi-sub">8つの正規化テーブルを、仕様書として調査・検索・比較・集計できるプロダクトUIです。欠損率、重複リスク、数値分布、カテゴリ構成、保存ビュー、調査メモを一画面で管理します。</div>
+              <div class="pi-badges"><span class="pi-badge good">● Local-first DB</span><span class="pi-badge">8 normalized tables</span><span class="pi-badge">3段フィルター</span><span class="pi-badge">2段ソート</span></div>
+            </div>
+            <div class="toolbar" style="margin:0"><button class="btn primary" id="piResearchBtn">リサーチ実行</button><button class="btn" id="piExportBtn">結果CSV</button><a class="btn" href="https://takuya-20f.pages.dev/" target="_blank" rel="noopener">↗ RDB</a></div>
+          </div>
+        </section>
+
+        <div class="pi-kpis">
+          <div class="pi-kpi"><div class="pi-kpi-label">対象レコード</div><div class="pi-kpi-value" id="piKpiTotal">0</div><div class="pi-kpi-foot" id="piKpiTable">table</div></div>
+          <div class="pi-kpi"><div class="pi-kpi-label">検索結果</div><div class="pi-kpi-value" id="piKpiFiltered">0</div><div class="pi-kpi-foot">filter result</div></div>
+          <div class="pi-kpi"><div class="pi-kpi-label">データ充足率</div><div class="pi-kpi-value" id="piKpiCompleteness">0%</div><div class="pi-kpi-foot">non-empty cells</div></div>
+          <div class="pi-kpi"><div class="pi-kpi-label">主キー重複</div><div class="pi-kpi-value" id="piKpiDuplicates">0</div><div class="pi-kpi-foot">duplicate risk</div></div>
+          <div class="pi-kpi"><div class="pi-kpi-label">品質スコア</div><div class="pi-kpi-value" id="piKpiQuality">0</div><div class="pi-kpi-foot">completeness・uniqueness</div></div>
+        </div>
+
+        <div class="pi-shell">
+          <aside class="pi-side">
+            <div class="pi-side-head">Research Controls</div>
+            <div class="pi-side-body">
+              <div class="pi-section">
+                <div class="pi-section-title">DATASET</div>
+                <label>テーブル</label><select id="piTable"></select>
+                <label style="margin-top:8px">全文検索</label><input id="piSearch" placeholder="race_id・馬名・開催場・券種など">
+              </div>
+              <div class="pi-section">
+                <div class="pi-section-title">ADVANCED FILTERS</div>
+                <div id="piFilters"></div>
+              </div>
+              <div class="pi-section">
+                <div class="pi-section-title">MULTI SORT</div>
+                <div class="pi-sort-row"><select id="piSort1"></select><select id="piDir1"><option value="asc">昇順</option><option value="desc" selected>降順</option></select></div>
+                <div class="pi-sort-row"><select id="piSort2"></select><select id="piDir2"><option value="asc">昇順</option><option value="desc">降順</option></select></div>
+              </div>
+              <div class="pi-section">
+                <div class="pi-section-title">DISPLAY</div>
+                <label>1ページ件数</label><select id="piPageSize"><option>25</option><option selected>50</option><option>100</option><option>300</option></select>
+                <label style="margin-top:8px">表示列</label><div class="pi-columns" id="piColumns"></div>
+              </div>
+              <div class="pi-section">
+                <div class="pi-section-title">SAVED VIEW</div>
+                <select id="piSavedViews"><option value="">保存ビューを選択</option></select>
+                <input id="piViewName" placeholder="ビュー名" style="margin-top:7px">
+                <div class="toolbar" style="margin:7px 0 0"><button class="btn small good" id="piSaveViewBtn">保存</button><button class="btn small danger" id="piDeleteViewBtn">削除</button></div>
+              </div>
+              <div class="pi-status" id="piStatus">テーブルを選択してください。</div>
+            </div>
+          </aside>
+
+          <main class="pi-main">
+            <div class="pi-toolbar">
+              <div class="pi-view-tabs">
+                <button class="btn small pi-view-tab active" data-piview="explorer">Explorer</button>
+                <button class="btn small pi-view-tab" data-piview="profile">Profile</button>
+                <button class="btn small pi-view-tab" data-piview="analysis">Analysis</button>
+                <button class="btn small pi-view-tab" data-piview="spec">Specification</button>
+                <button class="btn small pi-view-tab" data-piview="notes">Research Notes</button>
+              </div>
+              <span class="spacer"></span>
+              <button class="btn small" id="piResetBtn">条件リセット</button>
+            </div>
+
+            <section class="pi-panel active" id="piPanelExplorer">
+              <div class="pi-card">
+                <div class="toolbar"><h3 id="piTableTitle" style="margin:0 auto 0 0">Explorer</h3><button class="btn small" id="piPrevBtn">◀</button><span class="badge" id="piPageLabel">1 / 1</span><button class="btn small" id="piNextBtn">▶</button></div>
+                <div id="piTableView"><div class="empty">データを読み込んでください</div></div>
+              </div>
+            </section>
+
+            <section class="pi-panel" id="piPanelProfile">
+              <div class="pi-card"><div class="toolbar"><h3 style="margin:0 auto 0 0">フィールドプロファイル</h3><span class="badge" id="piProfileLabel">0 fields</span></div><div class="pi-profile-grid" id="piProfileGrid"></div></div>
+              <div class="pi-card"><h3>自動リサーチ所見</h3><div id="piInsights"></div></div>
+            </section>
+
+            <section class="pi-panel" id="piPanelAnalysis">
+              <div class="pi-card">
+                <div class="form-grid">
+                  <div class="field"><label>グループ項目</label><select id="piGroupField"></select></div>
+                  <div class="field"><label>数値項目</label><select id="piMetricField"></select></div>
+                  <div class="field"><label>集計方法</label><select id="piAggregation"><option value="count">件数</option><option value="sum">合計</option><option value="avg">平均</option><option value="min">最小</option><option value="max">最大</option></select></div>
+                  <div class="field"><label>上位件数</label><select id="piAnalysisLimit"><option>10</option><option selected>20</option><option>50</option></select></div>
+                </div>
+                <div class="toolbar" style="margin-top:12px"><button class="btn primary" id="piAnalyzeBtn">集計分析</button></div>
+              </div>
+              <div class="pi-analysis-grid">
+                <div class="pi-card"><h3>ランキング</h3><div id="piAnalysisBars" class="empty">集計条件を選択してください</div></div>
+                <div class="pi-card"><h3>集計テーブル</h3><div id="piAnalysisTable" class="empty">集計条件を選択してください</div></div>
+              </div>
+            </section>
+
+            <section class="pi-panel" id="piPanelSpec">
+              <div class="pi-card"><div class="toolbar"><h3 style="margin:0 auto 0 0">プロダクト・データ仕様書</h3><button class="btn small" id="piSpecCsvBtn">仕様CSV</button></div><div id="piSpecView"></div></div>
+            </section>
+
+            <section class="pi-panel" id="piPanelNotes">
+              <div class="pi-note-grid">
+                <div class="pi-card"><h3>調査メモ作成</h3><label>タイトル</label><input id="piNoteTitle" placeholder="調査テーマ"><label style="margin-top:9px">タグ</label><input id="piNoteTags" placeholder="品質, 欠損, ROI"><label style="margin-top:9px">本文</label><textarea id="piNoteBody" placeholder="発見事項、仮説、追加調査項目"></textarea><div class="toolbar" style="margin-top:10px"><button class="btn primary" id="piNoteSaveBtn">メモ保存</button><button class="btn" id="piNoteClearBtn">入力クリア</button></div></div>
+                <div class="pi-card"><div class="toolbar"><h3 style="margin:0 auto 0 0">保存済みリサーチ</h3><button class="btn small" id="piNotesRefreshBtn">更新</button></div><div id="piNotesList"><div class="empty">保存メモはありません</div></div></div>
+              </div>
+            </section>
+          </main>
+        </div>
       </div>
 
       <div id="dbTabRecords" class="db-tab-panel" hidden>
@@ -317,6 +476,12 @@ URL欄の値は「設定保存」を押さなくても各ボタンで即時使�
   </section>
 </div>
 
+
+<div class="pi-detail" id="piDetail" aria-hidden="true">
+  <div class="pi-detail-head"><strong id="piDetailTitle">レコード詳細</strong><button class="btn small" id="piDetailCloseBtn">✕</button></div>
+  <div class="pi-detail-body" id="piDetailBody"></div>
+</div>
+
 <nav class="mobile-nav" id="mobileNav"></nav>
 <script>
 "use strict";
@@ -364,7 +529,7 @@ async function residentialBridgeText(target){
 }
 function hasResidentialBridge(){return !!((typeof window.__narBridgeDirect==='function'&&window.__narBridgeHasDirect)||window.__NAR_BRIDGE_READY__);}
 
-const APP_VERSION="1.0.18";
+const APP_VERSION="1.0.19";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -382,12 +547,12 @@ const DB_STORES={
   resultRecords:{keyPath:"id",indexes:[["race_id","race_id"],["rank","rank"],["horseNo","horseNo"],["updatedAt","updatedAt"]]},
   payouts:{keyPath:"id",indexes:[["race_id","race_id"],["ticketType","ticketType"],["updatedAt","updatedAt"]]},
   bets:{keyPath:"id",indexes:[["race_id","race_id"],["date","date"],["ticketType","ticketType"],["strategyId","strategyId"],["updatedAt","updatedAt"]]},
-  strategies:{keyPath:"id"},simulations:{keyPath:"id",autoIncrement:true},snapshots:{keyPath:"id",autoIncrement:true,indexes:[["race_id","race_id"]]},favorites:{keyPath:"id"},settings:{keyPath:"key"}
+  strategies:{keyPath:"id"},simulations:{keyPath:"id",autoIncrement:true},snapshots:{keyPath:"id",autoIncrement:true,indexes:[["race_id","race_id"]]},favorites:{keyPath:"id"},settings:{keyPath:"key"},researchViews:{keyPath:"id",indexes:[["name","name"],["table","table"],["updatedAt","updatedAt"]]},researchNotes:{keyPath:"id",indexes:[["table","table"],["updatedAt","updatedAt"]]}
 };
 const state={db:null,currentRaceId:"",searchResult:[],simResult:[],analyticsRows:[],currentAnalyticsDimension:"day",currentStrategyId:"default-win",calendarMonth:new Date(new Date().getFullYear(),new Date().getMonth(),1),calendarSelected:"",settings:{theme:"dark",defaultPredictionMode:"custom",defaultBudgetMode:"sequential",defaultDailyRankBasis:"ev",defaultMinEv:1,defaultMinAi:80,defaultBudget:2000,defaultUnit:100,aiStrength:1,bridgeUrl:"",bridgeMode:"auto",dbmsMode:"auto",d1ApiUrl:"https://keiba-rdb-api.nitta-katsuhiko.workers.dev",d1AutoSync:true,d1BatchSize:250,d1TimeoutSec:20,rdbConsoleUrl:"https://takuya-20f.pages.dev/",liveCount:2,livePanels:[]},learningRecommendation:null,simSelectedPlaces:[]};
 const $=id=>document.getElementById(id);const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const yen=v=>Math.round(Number(v||0)).toLocaleString("ja-JP")+"円";const pct=v=>Number(v||0).toFixed(1)+"%";const compactDate=v=>String(v||"").replaceAll("-","");const displayDate=v=>{const s=String(v||"");return s.length===8?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`:s};const isoToday=()=>new Date().toISOString().slice(0,10);const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 function requestPromise(req){return new Promise((ok,ng)=>{req.onsuccess=()=>ok(req.result);req.onerror=()=>ng(req.error)})}function txDone(tx){return new Promise((ok,ng)=>{tx.oncomplete=ok;tx.onerror=()=>ng(tx.error);tx.onabort=()=>ng(tx.error||new Error("Transaction aborted"))})}
-async function openDB(){return new Promise((ok,ng)=>{const req=indexedDB.open("TheKeibaUltimateNEXTComplete",8);req.onupgradeneeded=e=>{const db=e.target.result;for(const [name,cfg] of Object.entries(DB_STORES)){let store;if(!db.objectStoreNames.contains(name))store=db.createObjectStore(name,{keyPath:cfg.keyPath,autoIncrement:cfg.autoIncrement||false});else store=e.target.transaction.objectStore(name);for(const idx of cfg.indexes||[])if(!store.indexNames.contains(idx[0]))store.createIndex(idx[0],idx[1],{unique:false})}};req.onsuccess=()=>{state.db=req.result;ok(state.db)};req.onerror=()=>ng(req.error)})}
+async function openDB(){return new Promise((ok,ng)=>{const req=indexedDB.open("TheKeibaUltimateNEXTComplete",9);req.onupgradeneeded=e=>{const db=e.target.result;for(const [name,cfg] of Object.entries(DB_STORES)){let store;if(!db.objectStoreNames.contains(name))store=db.createObjectStore(name,{keyPath:cfg.keyPath,autoIncrement:cfg.autoIncrement||false});else store=e.target.transaction.objectStore(name);for(const idx of cfg.indexes||[])if(!store.indexNames.contains(idx[0]))store.createIndex(idx[0],idx[1],{unique:false})}};req.onsuccess=()=>{state.db=req.result;state.db.onversionchange=()=>{state.db.close();console.warn("DB version changed. Reload this page.")};ok(state.db)};req.onblocked=()=>console.warn("IndexedDB upgrade blocked. Close older app tabs and reload.");req.onerror=()=>ng(req.error)})}
 async function getAll(store){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).getAll())}async function getOne(store,key){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).get(key))}async function countStore(store){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).count())}async function putOne(store,row){const tx=state.db.transaction(store,"readwrite");tx.objectStore(store).put(row);await txDone(tx);if(window.d1RecordMaterializeStore)await window.d1RecordMaterializeStore(store,[row])}async function addOne(store,row){const tx=state.db.transaction(store,"readwrite");const req=tx.objectStore(store).add(row);const id=await requestPromise(req);await txDone(tx);const saved={...row,id:row.id??id};if(window.d1RecordMaterializeStore)await window.d1RecordMaterializeStore(store,[saved]);return id}async function putMany(store,rows){const list=(Array.isArray(rows)?rows:[]).filter(Boolean),tx=state.db.transaction(store,"readwrite"),s=tx.objectStore(store);for(const row of list)s.put(row);await txDone(tx);if(window.d1RecordMaterializeStore)await window.d1RecordMaterializeStore(store,list)}async function deleteOne(store,key){const tx=state.db.transaction(store,"readwrite");tx.objectStore(store).delete(key);await txDone(tx)}async function clearStore(store){const tx=state.db.transaction(store,"readwrite");tx.objectStore(store).clear();await txDone(tx)}async function getByIndex(store,index,key){const tx=state.db.transaction(store,"readonly");return requestPromise(tx.objectStore(store).index(index).getAll(key))}
 function downloadText(name,text,type){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function canonicalPair(a,b){return [Number(a),Number(b)].sort((x,y)=>x-y).join("-")}function canonicalTrio(a,b,c){return [Number(a),Number(b),Number(c)].sort((x,y)=>x-y).join("-")}function normalizePayouts(p={}){const out={win:{},place:{},bracketQuinella:{},quinella:{},wide:{},exacta:{},trio:{},trifecta:{}};for(const k of Object.keys(out)){const src=p[k]||{};for(const [key,val] of Object.entries(src))out[k][String(key)]=Number(val||0)}return out}
@@ -454,7 +619,7 @@ function parsePayload(p){
   for(const x of Array.isArray(p?.strategies)?p.strategies:[]){try{strategies.push(normalizeStrategy(x))}catch(e){console.warn("strategy skip",e,x)}}
   return{races,entries,results,strategies}
 }
-async function importPayload(payload,{silent=false,deferRefresh=false}={}){const d=parsePayload(payload);if(!d.races.length&&!d.entries.length&&!d.results.length&&!d.strategies.length)throw new Error("登録できるデータがありません");if(d.races.length)await putMany("races",d.races);if(d.entries.length)await putMany("entries",d.entries);if(d.results.length)await putMany("results",d.results);if(d.strategies.length)await putMany("strategies",d.strategies);if(!deferRefresh)await refreshAll();if(!silent)alert(`登録完了\nレース ${d.races.length}件\n出走馬 ${d.entries.length}件\n結果 ${d.results.length}件\n戦略 ${d.strategies.length}件`);return d}
+async function importPayload(payload,{silent=false,deferRefresh=false}={}){const d=parsePayload(payload);if(!d.races.length&&!d.entries.length&&!d.results.length&&!d.strategies.length)throw new Error("登録できるデータがありません");if(d.races.length)await putMany("races",d.races);if(d.entries.length)await putMany("entries",d.entries);if(d.results.length)await putMany("results",d.results);if(d.strategies.length)await putMany("strategies",d.strategies);if(Array.isArray(payload.researchViews)&&payload.researchViews.length)await putMany("researchViews",payload.researchViews);if(Array.isArray(payload.researchNotes)&&payload.researchNotes.length)await putMany("researchNotes",payload.researchNotes);if(!deferRefresh)await refreshAll();if(!silent)alert(`登録完了\nレース ${d.races.length}件\n出走馬 ${d.entries.length}件\n結果 ${d.results.length}件\n戦略 ${d.strategies.length}件`);return d}
 function buildNavigation(){for(const id of ["desktopNav","mobileNav"])$(id).innerHTML=NAV_ITEMS.map((x,i)=>`<button class="nav-btn ${i?"":"active"}" data-view="${x[0]}"><span>${x[1]}</span><span>${x[2]}</span></button>`).join("");document.querySelectorAll(".nav-btn").forEach(b=>b.onclick=()=>showView(b.dataset.view))}
 async function showView(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===`view-${id}`));document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.view===id));if(id==="dashboard")await renderDashboard();if(id==="calendar")await renderCalendar();if(id==="race")await refreshRaceSelector();if(id==="database")await renderDbCounts();if(id==="strategies")await renderStrategies();if(id==="simulation")await renderSimPlaceOptions();if(id==="live")renderLivePanels()}
 function predictionModeDescription(mode){const texts={custom:"戦略またはSIM画面の優先順位・同意モードをそのまま使用します。",ai:"AIスコア順を既定にし、同意モードをOFFにします。",ev:"EV順を既定にし、同意モードをOFFにします。",expected:"期待払戻順を既定にし、同意モードをOFFにします。",balanced:"AIとEVの総合順を既定にし、同意モードをOFFにします。",agreement:"優先順位欄で選んだ方式をユーザー指定として扱い、同意モードをONにします。"};return texts[mode]||texts.custom}
@@ -727,8 +892,8 @@ function defaultLivePanels(){return[{title:"netkeiba",url:"https://www.netkeiba.
 function renderLivePanels(){const count=Number($("liveCount").value||state.settings.liveCount||2);state.settings.liveCount=count;if(!state.settings.livePanels?.length)state.settings.livePanels=defaultLivePanels();const panels=state.settings.livePanels.slice(0,count);$("liveGrid").className=`live-grid ${count===1?"one":count===2?"two":"four"}`;$("liveGrid").innerHTML=panels.map((p,i)=>`<div class="live-panel"><div class="live-panel-head"><input data-live-title="${i}" value="${esc(p.title)}" style="max-width:150px"><input data-live-url="${i}" value="${esc(p.url)}" placeholder="URL"><button class="btn small" data-live-load="${i}">読込</button><button class="btn small" data-live-open="${i}">外部</button></div><div id="liveBody${i}">${p.url?`<iframe src="${esc(p.url)}" loading="lazy" referrerpolicy="no-referrer"></iframe>`:`<div class="live-empty">URLを入力してください</div>`}</div></div>`).join("");document.querySelectorAll("[data-live-load]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.liveLoad),url=document.querySelector(`[data-live-url="${i}"]`).value.trim(),title=document.querySelector(`[data-live-title="${i}"]`).value.trim();state.settings.livePanels[i]={title,url};$("liveBody"+i).innerHTML=url?`<iframe src="${esc(url)}" loading="lazy" referrerpolicy="no-referrer"></iframe>`:`<div class="live-empty">URLを入力してください</div>`});document.querySelectorAll("[data-live-open]").forEach(b=>b.onclick=()=>{const i=Number(b.dataset.liveOpen),url=document.querySelector(`[data-live-url="${i}"]`).value.trim();if(url)window.open(url,"_blank","noopener")})}
 async function saveLiveLayout(){state.settings.liveCount=Number($("liveCount").value);document.querySelectorAll("[data-live-url]").forEach(el=>{const i=Number(el.dataset.liveUrl);state.settings.livePanels[i]={title:document.querySelector(`[data-live-title="${i}"]`).value,url:el.value}});await putOne("settings",{key:"app",value:state.settings});alert("保存しました")}
 async function renderDbCounts(){for(const [id,store] of [["dbRaceCount","races"],["dbEntryCount","entries"],["dbResultCount","results"],["dbStrategyCount","strategies"],["dbSimCount","simulations"],["dbSnapshotCount","snapshots"]])$(id).textContent=await countStore(store)}
-async function exportDatabase(){const payload={app:"The競馬 Ultimate NEXT Professional",version:APP_VERSION,exportedAt:new Date().toISOString(),races:await getAll("races"),entries:await getAll("entries"),results:await getAll("results"),horses:await getAll("horses"),jockeys:await getAll("jockeys"),trainers:await getAll("trainers"),resultRecords:await getAll("resultRecords"),payouts:await getAll("payouts"),bets:await getAll("bets"),strategies:await getAll("strategies"),simulations:await getAll("simulations"),snapshots:await getAll("snapshots"),favorites:await getAll("favorites"),settings:await getAll("settings"),syncQueue:await getAll("syncQueue"),syncMeta:await getAll("syncMeta")};downloadText("TheKeiba_Ultimate_NEXT_Complete_DBMS_backup.json",JSON.stringify(payload,null,2),"application/json")}
-async function clearAllData(){if(!confirm("端末内の全データを削除しますか？\n未同期キューも消去します。D1側の保存済みデータは削除されません。"))return;for(const s of ["races","entries","horses","jockeys","trainers","results","resultRecords","payouts","bets","strategies","simulations","snapshots","favorites","syncQueue","syncMeta","dbLogs"])if(state.db.objectStoreNames.contains(s))await clearStore(s);await ensureDefaultStrategies();state.currentRaceId="";state.simResult=[];await refreshAll()}
+async function exportDatabase(){const payload={app:"The競馬 Ultimate NEXT Professional",version:APP_VERSION,exportedAt:new Date().toISOString(),races:await getAll("races"),entries:await getAll("entries"),results:await getAll("results"),horses:await getAll("horses"),jockeys:await getAll("jockeys"),trainers:await getAll("trainers"),resultRecords:await getAll("resultRecords"),payouts:await getAll("payouts"),bets:await getAll("bets"),strategies:await getAll("strategies"),simulations:await getAll("simulations"),snapshots:await getAll("snapshots"),favorites:await getAll("favorites"),settings:await getAll("settings"),syncQueue:await getAll("syncQueue"),syncMeta:await getAll("syncMeta"),researchViews:await getAll("researchViews"),researchNotes:await getAll("researchNotes")};downloadText("TheKeiba_Ultimate_NEXT_Complete_DBMS_backup.json",JSON.stringify(payload,null,2),"application/json")}
+async function clearAllData(){if(!confirm("端末内の全データを削除しますか？\n未同期キューも消去します。D1側の保存済みデータは削除されません。"))return;for(const s of ["races","entries","horses","jockeys","trainers","results","resultRecords","payouts","bets","strategies","simulations","snapshots","favorites","syncQueue","syncMeta","dbLogs","researchViews","researchNotes"])if(state.db.objectStoreNames.contains(s))await clearStore(s);await ensureDefaultStrategies();state.currentRaceId="";state.simResult=[];await refreshAll()}
 async function saveRaceEditor(){const r=normalizeRace({race_id:$("edRaceId").value,type:$("edRaceType").value,date:$("edRaceDate").value,placeName:$("edRacePlace").value,placeCode:$("edRacePlaceCode").value,kai:$("edRaceKai").value,day:$("edRaceDay").value,raceNo:$("edRaceNo").value,name:$("edRaceName").value,surface:$("edRaceSurface").value,distance:$("edRaceDistance").value,className:$("edRaceClass").value,direction:$("edRaceDirection").value,headcount:$("edRaceHeadcount").value,weather:$("edRaceWeather").value,trackCondition:$("edRaceTrack").value,startTime:$("edRaceStart").value,status:$("edRaceStatus").value,updatedAt:$("edRaceUpdatedAt").value||new Date().toISOString()});await putOne("races",r);await refreshAll();alert("レース保存")}
 async function loadRaceEditor(){const r=await getOne("races",$("edRaceId").value.trim());if(!r)return alert("未登録");for(const [id,key] of [["edRaceType","type"],["edRaceDate","date"],["edRacePlace","placeName"],["edRacePlaceCode","placeCode"],["edRaceKai","kai"],["edRaceDay","day"],["edRaceNo","raceNo"],["edRaceName","name"],["edRaceSurface","surface"],["edRaceDistance","distance"],["edRaceClass","className"],["edRaceDirection","direction"],["edRaceHeadcount","headcount"],["edRaceWeather","weather"],["edRaceTrack","trackCondition"],["edRaceStart","startTime"],["edRaceStatus","status"],["edRaceUpdatedAt","updatedAt"]])$(id).value=key==="date"?displayDate(r[key]):r[key]??""}
 async function deleteRaceEditor(){const id=$("edRaceId").value.trim();if(!id||!confirm("レースと関連データを削除しますか？"))return;const entries=await getByIndex("entries","race_id",id);for(const e of entries)await deleteOne("entries",e.id);await deleteOne("results",id);await deleteOne("races",id);await refreshAll()}
@@ -1321,7 +1486,7 @@ function renderSystemInfo(){$("systemInfo").textContent=`Version: ${APP_VERSION}
 function wireTabs(){
   document.querySelectorAll("[data-race-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-race-tab]").forEach(x=>x.classList.toggle("active",x===b));for(const name of ["Entries","Ranking","Result","Replay"])$("raceTab"+name).hidden=b.dataset.raceTab!==name.toLowerCase()});
   document.querySelectorAll("[data-ana]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-ana]").forEach(x=>x.classList.toggle("active",x===b));state.currentAnalyticsDimension=b.dataset.ana;renderAnalyticsTable(state.currentAnalyticsDimension)});
-  document.querySelectorAll("[data-dbtab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-dbtab]").forEach(x=>x.classList.toggle("active",x===b));for(const [key,id] of [["manage","dbTabManage"],["records","dbTabRecords"],["raceedit","dbTabRaceedit"],["entryedit","dbTabEntryedit"],["resultedit","dbTabResultedit"]])$(id).hidden=b.dataset.dbtab!==key;if(b.dataset.dbtab==="records"){window.d1RecordWire?.();window.d1RecordRender?.()}})
+  document.querySelectorAll("[data-dbtab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-dbtab]").forEach(x=>x.classList.toggle("active",x===b));for(const [key,id] of [["manage","dbTabManage"],["records","dbTabRecords"],["research","dbTabResearch"],["raceedit","dbTabRaceedit"],["entryedit","dbTabEntryedit"],["resultedit","dbTabResultedit"]])$(id).hidden=b.dataset.dbtab!==key;if(b.dataset.dbtab==="records"){window.d1RecordWire?.();window.d1RecordRender?.()}})
 }
 function wireEvents(){$("themeBtn").onclick=toggleTheme;$("splitToggleBtn").onclick=toggleSplit;$("splitSyncBtn").onclick=()=>syncSimulationToAnalysis({force:true,reason:"手動同期"});$("splitFrame").addEventListener("load",()=>setTimeout(()=>syncSimulationToAnalysis({force:true,reason:"分析画面読込完了"}),180));$("splitMenuAutoBtn").onclick=toggleSplitMenuAutoHide;$("splitCloseBtn").onclick=()=>setSplitOpen(false);$("splitRefreshBtn").onclick=refreshSplit;$("splitExternalBtn").onclick=()=>window.open(SPLIT_ANALYSIS_URL,"_blank","noopener");$("headerRealSyncBtn").onclick=syncRealDataNow;$("dashRefreshBtn").onclick=renderDashboard;$("calPrevBtn").onclick=()=>{state.calendarMonth.setMonth(state.calendarMonth.getMonth()-1);renderCalendar()};$("calNextBtn").onclick=()=>{state.calendarMonth.setMonth(state.calendarMonth.getMonth()+1);renderCalendar()};$("calTodayBtn").onclick=()=>{state.calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);renderCalendar()};$("raceSelector").onchange=()=>openRace($("raceSelector").value);$("openRaceBtn").onclick=()=>openRace($("raceIdDirect").value.trim());$("raceRecalcBtn").onclick=async()=>{const e=await getByIndex("entries","race_id",state.currentRaceId);recalcEntryScores(e);await putMany("entries",e);await openRace(state.currentRaceId)};$("raceSnapshotBtn").onclick=saveSnapshot;$("raceFavoriteBtn").onclick=toggleFavorite;$("replayRefreshBtn").onclick=renderReplayList;$("searchRunBtn").onclick=runSearch;$("searchResetBtn").onclick=resetSearch;$("searchSaveBtn").onclick=saveSearch;$("searchLoadBtn").onclick=loadSearch;$("searchCsvBtn").onclick=exportSearchCsv;$("pivotRunBtn").onclick=runPivot;$("simPlaceAll").onchange=()=>{if($("simPlaceAll").checked)document.querySelectorAll('#simPlaceOptions input[type="checkbox"]').forEach(x=>x.checked=true);updateSimPlaceSummary()};$("simPlaceSelectAllBtn").onclick=()=>{$("simPlaceAll").checked=true;document.querySelectorAll('#simPlaceOptions input[type="checkbox"]').forEach(x=>x.checked=true);updateSimPlaceSummary()};$("simPlaceClearBtn").onclick=()=>{$("simPlaceAll").checked=false;document.querySelectorAll('#simPlaceOptions input[type="checkbox"]').forEach(x=>x.checked=false);updateSimPlaceSummary()};$("simStart").onchange=()=>renderSimPlaceOptions(state.simSelectedPlaces);$("simEnd").onchange=()=>renderSimPlaceOptions(state.simSelectedPlaces);$("simType").onchange=()=>renderSimPlaceOptions(state.simSelectedPlaces);$("simPredictionMode").onchange=()=>applyPredictionModeToSim($("simPredictionMode").value);$("simBudgetMode").onchange=updateModeUi;$("simDailyRankBasis").onchange=updateModeUi;$("defaultPredictionMode").onchange=updateModeUi;$("defaultBudgetMode").onchange=updateModeUi;$("defaultDailyRankBasis").onchange=updateModeUi;$("simSyncBtn").onclick=syncBacktestPeriod;$("simStopSyncBtn").onclick=()=>{BACKTEST_SYNC.stop=true;setSimSyncStatus("停止要求を受け付けました。現在の通信完了後に停止します")};$("simRunBtn").onclick=runSimulation;$("simCsvBtn").onclick=exportSimulationCsv;$("simSaveStrategyBtn").onclick=saveSimAsStrategy;$("simStrategy").onchange=()=>applyStrategyToSim($("simStrategy").value);$("analyticsRunBtn").onclick=runAnalytics;$("newStrategyBtn").onclick=newStrategy;$("duplicateStrategyBtn").onclick=duplicateStrategy;$("deleteStrategyBtn").onclick=deleteStrategy;$("saveStrategyBtn").onclick=saveStrategy;$("applyStrategyBtn").onclick=()=>applyStrategyToSim();$("learningRunBtn").onclick=runLearning;$("learningCreateBtn").onclick=createRecommendedStrategy;$("liveApplyBtn").onclick=renderLivePanels;$("liveSaveBtn").onclick=saveLiveLayout;$("realSyncBtn").onclick=syncRealDataNow;$("exportBtn").onclick=exportDatabase;$("importBtn").onclick=()=>$("importFile").click();$("clearBtn").onclick=clearAllData;$("importFile").onchange=async e=>{const file=e.target.files[0];if(!file)return;try{await importPayload(JSON.parse(await file.text()))}catch(err){alert("読込失敗: "+err.message)}e.target.value=""};$("pasteImportBtn").onclick=async()=>{try{await importPayload(JSON.parse($("jsonPaste").value))}catch(e){alert("JSONエラー: "+e.message)}};$("saveRaceEditBtn").onclick=saveRaceEditor;$("loadRaceEditBtn").onclick=loadRaceEditor;$("deleteRaceEditBtn").onclick=deleteRaceEditor;$("saveEntryEditBtn").onclick=saveEntryEditor;$("loadEntryEditBtn").onclick=loadEntryEditor;$("deleteEntryEditBtn").onclick=deleteEntryEditor;$("saveResultEditBtn").onclick=saveResultEditor;$("loadResultEditBtn").onclick=loadResultEditor;$("deleteResultEditBtn").onclick=async()=>{await deleteOne("results",$("edResultRaceId").value.trim());await refreshAll()};$("bridgeUrl").addEventListener("input",()=>{state.settings.bridgeUrl=$("bridgeUrl").value.trim();state.settings.bridgeMode="auto"});$("bridgeSaveBtn").onclick=async()=>{await getBridgeBase(true);state.settings.bridgeMode="auto";await putOne("settings",{key:"app",value:state.settings});bridgeLog("Bridge URL保存・自動判定待ち")};$("bridgePingBtn").onclick=bridgePing;$("bridgeListBtn").onclick=bridgeLoadList;$("bridgeRaceBtn").onclick=()=>bridgeLoadBundle();$("bridgeSyncDayBtn").onclick=bridgeSyncDay;$("settingsModeSaveBtn").onclick=saveAppSettings;$("settingsSaveBtn").onclick=saveAppSettings;$("ridGenerateBtn").onclick=()=>{const d=compactDate($("ridDate").value),t=$("ridType").value==="JRA"?"1":"2";if(!d)return alert("日付を選択");$("ridResult").value=d+t+String($("ridPlaceCode").value).padStart(2,"0")+String($("ridRaceNo").value).padStart(2,"0")}}
 async function init(){buildNavigation();wireTabs();wireEvents();$("simStart").value=isoToday().slice(0,8)+"01";$("simEnd").value=isoToday();$("bridgeDate").value=isoToday();$("ridDate").value=isoToday();await openDB();await loadAppSettings();await ensureDefaultStrategies();const removed=await purgeSampleData(),invalidRemoved=await removeInvalidRaceRecords(),nameFixed=await repairMalformedRaceNames();$("dbStatus").innerHTML='<span class="status-dot on"></span>IndexedDB接続済み'+(removed?`・サンプル${removed}R削除済み`:'・実データ専用')+(invalidRemoved?`・誤レース${invalidRemoved}R削除済み`:'')+(nameFixed?`・レース名${nameFixed}件修正済み`:'');await refreshAll();await loadStrategyEditor(state.currentStrategyId);$("liveCount").value=String(state.settings.liveCount||2);renderLivePanels();renderSystemInfo();setSplitOpen(localStorage.getItem("TheKeibaSplitOpen")==="1");applySplitMenuAutoHide();await renderSimPlaceOptions();const cov=await backtestCoverage(readSimConfig());setSimSyncStatus(`登録対象 ${cov.races}R　確定結果 ${cov.results}R。バックテスト前に期間実データ同期を実行してください。`);getProfitGraphChannel();setTimeout(()=>autoLoadRealRaceList(),400);setTimeout(()=>repairLatestRaceNamesFromBridge(),1800);if(localStorage.getItem("TheKeibaSplitOpen")==="1")setTimeout(()=>syncSimulationToAnalysis({reason:"起動時同期"}),700)}
@@ -1426,7 +1591,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
    ============================================================ */
 (function(){
   const DBMS_DB_NAME="TheKeibaUltimateNEXTComplete";
-  const DBMS_DB_VERSION=8;
+  const DBMS_DB_VERSION=9;
   const DBMS_DEFAULT_D1="https://keiba-rdb-api.nitta-katsuhiko.workers.dev";
   const DBMS_SYNCABLE=new Set(["races","entries","results","simulations"]);
   const DBMS_SCHEMA={
@@ -1439,7 +1604,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     resultRecords:{keyPath:"id",indexes:[["race_id","race_id"],["rank","rank"],["horseNo","horseNo"],["updatedAt","updatedAt"]]},
     payouts:{keyPath:"id",indexes:[["race_id","race_id"],["ticketType","ticketType"],["updatedAt","updatedAt"]]},
     bets:{keyPath:"id",indexes:[["race_id","race_id"],["date","date"],["ticketType","ticketType"],["strategyId","strategyId"],["updatedAt","updatedAt"]]},
-    strategies:{keyPath:"id",indexes:[["name","name"]]},simulations:{keyPath:"id",autoIncrement:true,indexes:[["createdAt","createdAt"]]},snapshots:{keyPath:"id",autoIncrement:true,indexes:[["race_id","race_id"],["createdAt","createdAt"]]},favorites:{keyPath:"id",indexes:[["race_id","race_id"]]},settings:{keyPath:"key"},syncQueue:{keyPath:"id",indexes:[["status","status"],["nextAttemptAt","nextAttemptAt"],["store","store"],["updatedAt","updatedAt"]]},syncMeta:{keyPath:"key"},dbLogs:{keyPath:"id",autoIncrement:true,indexes:[["createdAt","createdAt"],["level","level"]]}
+    strategies:{keyPath:"id",indexes:[["name","name"]]},simulations:{keyPath:"id",autoIncrement:true,indexes:[["createdAt","createdAt"]]},snapshots:{keyPath:"id",autoIncrement:true,indexes:[["race_id","race_id"],["createdAt","createdAt"]]},favorites:{keyPath:"id",indexes:[["race_id","race_id"]]},settings:{keyPath:"key"},syncQueue:{keyPath:"id",indexes:[["status","status"],["nextAttemptAt","nextAttemptAt"],["store","store"],["updatedAt","updatedAt"]]},syncMeta:{keyPath:"key"},dbLogs:{keyPath:"id",autoIncrement:true,indexes:[["createdAt","createdAt"],["level","level"]]},researchViews:{keyPath:"id",indexes:[["name","name"],["table","table"],["updatedAt","updatedAt"]]},researchNotes:{keyPath:"id",indexes:[["table","table"],["updatedAt","updatedAt"]]}
   };
   const runtime={ready:false,suppressQueue:false,syncing:false,timer:0,baseInit:null};
 
@@ -1837,6 +2002,194 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 
   runtime.baseInit=init;
   init=async function(){await runtime.baseInit();await initializeDbms()}
+})();
+</script>
+
+
+<script>
+/* ============================================================
+   v1.0.19 Product Intelligence Workspace
+   ============================================================ */
+(function(){
+  const PI={table:"races",raw:[],rows:[],page:1,view:"explorer",columns:[],profile:[],lastAnalysis:[]};
+  const OPS=[
+    ["","条件なし"],["contains","含む"],["eq","等しい"],["neq","等しくない"],
+    ["gt",">"],["gte","以上"],["lt","<"],["lte","以下"],["empty","空欄"],["notempty","空欄でない"]
+  ];
+  const $p=id=>document.getElementById(id);
+  const empty=v=>v===null||v===undefined||String(v).trim()==="";
+  const num=v=>{const n=Number(v);return Number.isFinite(n)?n:null};
+  const fmt=v=>typeof v==="number"?v.toLocaleString("ja-JP",{maximumFractionDigits:3}):String(v??"");
+  function cfg(){return window.D1_RECORD_TABLES?.[PI.table]}
+  function strictRow(table,row){
+    if(table==="races"&&window.d1StrictRaceRow)return window.d1StrictRaceRow(row);
+    if(table==="entries"&&window.d1StrictEntryRow)return window.d1StrictEntryRow(row);
+    if(table==="results"&&window.d1StrictResultRow)return window.d1StrictResultRow(row);
+    if(table==="payouts"&&window.d1StrictPayoutRow)return window.d1StrictPayoutRow(row);
+    if(table==="bets"&&window.d1StrictBetRow)return window.d1StrictBetRow(row);
+    const c=window.D1_RECORD_TABLES?.[table];
+    return Object.fromEntries((c?.fields||Object.keys(row||{})).map(f=>[f,row?.[f]??""]));
+  }
+  function tableOptions(){
+    const tables=window.D1_RECORD_TABLES||{};
+    $p("piTable").innerHTML=Object.entries(tables).map(([k,v])=>`<option value="${k}">${esc(v.label||k)}</option>`).join("");
+  }
+  function fieldOptions(){
+    const c=cfg(),fields=c?.fields||[];
+    const opts=`<option value="">選択なし</option>`+fields.map(f=>`<option value="${esc(f)}">${esc(f)}</option>`).join("");
+    for(const id of ["piSort1","piSort2","piGroupField","piMetricField"])$p(id).innerHTML=opts;
+    const numeric=fields.filter(f=>/INTEGER|REAL|NUM/i.test(c?.types?.[f]||""));
+    $p("piMetricField").innerHTML=`<option value="">件数のみ</option>`+numeric.map(f=>`<option value="${esc(f)}">${esc(f)}</option>`).join("");
+    $p("piGroupField").value=fields.find(f=>["venueName","ticketType","kind","surface","grade","jockeyName","trainerName"].includes(f))||fields[0]||"";
+    $p("piSort1").value=fields.find(f=>["date","updatedAt","race_id","id"].includes(f))||fields[0]||"";
+    renderFilters();
+    PI.columns=[...fields];
+    renderColumns();
+  }
+  function renderFilters(){
+    const fields=cfg()?.fields||[];
+    const fopts=`<option value="">フィールド</option>`+fields.map(f=>`<option value="${esc(f)}">${esc(f)}</option>`).join("");
+    const oopts=OPS.map(([v,l])=>`<option value="${v}">${l}</option>`).join("");
+    $p("piFilters").innerHTML=[0,1,2].map(i=>`<div class="pi-filter-row"><select id="piFilterField${i}">${fopts}</select><select id="piFilterOp${i}">${oopts}</select><input class="pi-filter-value" id="piFilterValue${i}" placeholder="値"></div>`).join("");
+    for(let i=0;i<3;i++)for(const id of [`piFilterField${i}`,`piFilterOp${i}`,`piFilterValue${i}`])$p(id).addEventListener(id.includes("Value")?"input":"change",debouncedApply);
+  }
+  function renderColumns(){
+    const fields=cfg()?.fields||[];
+    $p("piColumns").innerHTML=fields.map(f=>`<label class="pi-column-chip"><input type="checkbox" value="${esc(f)}" ${PI.columns.includes(f)?"checked":""}>${esc(f)}</label>`).join("");
+    $p("piColumns").querySelectorAll("input").forEach(x=>x.onchange=()=>{PI.columns=[...$p("piColumns").querySelectorAll("input:checked")].map(x=>x.value);if(!PI.columns.length){x.checked=true;PI.columns=[x.value]}renderExplorer()});
+  }
+  function getFilter(i){return{field:$p(`piFilterField${i}`)?.value||"",op:$p(`piFilterOp${i}`)?.value||"",value:$p(`piFilterValue${i}`)?.value??""}}
+  function compareValue(v,op,target){
+    if(!op)return true;
+    if(op==="empty")return empty(v);
+    if(op==="notempty")return !empty(v);
+    const nv=num(v),nt=num(target),numeric=nv!==null&&nt!==null;
+    const a=numeric?nv:String(v??"").toLowerCase(),b=numeric?nt:String(target??"").toLowerCase();
+    if(op==="contains")return String(a).includes(String(b));
+    if(op==="eq")return a===b;
+    if(op==="neq")return a!==b;
+    if(op==="gt")return a>b;if(op==="gte")return a>=b;if(op==="lt")return a<b;if(op==="lte")return a<=b;
+    return true;
+  }
+  function apply(){
+    const q=String($p("piSearch")?.value||"").trim().toLowerCase();
+    const filters=[0,1,2].map(getFilter).filter(x=>x.field&&x.op);
+    let rows=PI.raw.filter(r=>(!q||JSON.stringify(r).toLowerCase().includes(q))&&filters.every(f=>compareValue(r[f.field],f.op,f.value)));
+    const sorts=[[$p("piSort1")?.value,$p("piDir1")?.value],[$p("piSort2")?.value,$p("piDir2")?.value]].filter(x=>x[0]);
+    rows.sort((a,b)=>{for(const [field,dir] of sorts){const na=num(a[field]),nb=num(b[field]);let c;if(na!==null&&nb!==null)c=na-nb;else c=String(a[field]??"").localeCompare(String(b[field]??""),"ja",{numeric:true});if(c)return dir==="desc"?-c:c}return 0});
+    PI.rows=rows;PI.page=1;renderAll();
+  }
+  let debounceTimer=0;function debouncedApply(){clearTimeout(debounceTimer);debounceTimer=setTimeout(apply,180)}
+  async function load(){
+    if(!state.db||!window.D1_RECORD_TABLES)return;
+    PI.table=$p("piTable").value||"races";
+    const c=cfg(),store=c?.store;
+    $p("piStatus").textContent=`${c?.label||PI.table} を読み込み中…`;
+    const raw=state.db.objectStoreNames.contains(store)?await getAll(store):[];
+    PI.raw=raw.map(r=>strictRow(PI.table,r));
+    fieldOptions();apply();
+    await loadSavedViews();await loadNotes();
+    $p("piStatus").textContent=`${c?.label||PI.table}　${PI.raw.length.toLocaleString()}件を読込済み`;
+  }
+  function completeness(rows=PI.raw){
+    const fields=cfg()?.fields||[];if(!rows.length||!fields.length)return 0;
+    let filled=0;for(const r of rows)for(const f of fields)if(!empty(r[f]))filled++;
+    return filled/(rows.length*fields.length)*100;
+  }
+  function duplicateCount(rows=PI.raw){
+    const key=cfg()?.fields?.[0];if(!key)return 0;const seen=new Set();let d=0;
+    for(const r of rows){const v=String(r[key]??"");if(seen.has(v))d++;else seen.add(v)}
+    return d;
+  }
+  function qualityScore(){
+    const comp=completeness(),dup=duplicateCount(),unique=PI.raw.length?Math.max(0,1-dup/PI.raw.length)*100:100;
+    return Math.round(comp*.75+unique*.25);
+  }
+  function renderKpis(){
+    $p("piKpiTotal").textContent=PI.raw.length.toLocaleString();
+    $p("piKpiFiltered").textContent=PI.rows.length.toLocaleString();
+    $p("piKpiCompleteness").textContent=completeness().toFixed(1)+"%";
+    $p("piKpiDuplicates").textContent=duplicateCount().toLocaleString();
+    $p("piKpiQuality").textContent=qualityScore();
+    $p("piKpiTable").textContent=cfg()?.label||PI.table;
+  }
+  function renderExplorer(){
+    const fields=(PI.columns.length?PI.columns:cfg()?.fields)||[],size=Math.max(10,Number($p("piPageSize").value||50)),pages=Math.max(1,Math.ceil(PI.rows.length/size));PI.page=Math.min(PI.page,pages);
+    const start=(PI.page-1)*size,part=PI.rows.slice(start,start+size);
+    $p("piPageLabel").textContent=`${PI.page} / ${pages}`;$p("piPrevBtn").disabled=PI.page<=1;$p("piNextBtn").disabled=PI.page>=pages;
+    $p("piTableTitle").textContent=`${cfg()?.label||PI.table}　${PI.rows.length.toLocaleString()}件`;
+    const head=fields.map(f=>`<th data-field="${esc(f)}">${esc(f)}${$p("piSort1").value===f?" ↕":""}</th>`).join("");
+    const body=part.map((r,i)=>`<tr data-row="${start+i}">${fields.map(f=>{const v=r[f],cls=empty(v)?"pi-null":num(v)!==null?"pi-number":"";return`<td class="${cls}" title="${esc(typeof v==="object"?JSON.stringify(v):v??"")}">${empty(v)?"NULL":esc(typeof v==="object"?JSON.stringify(v):fmt(v))}</td>`}).join("")}</tr>`).join("")||`<tr><td colspan="${fields.length}" class="empty">条件に一致するレコードがありません</td></tr>`;
+    $p("piTableView").innerHTML=`<div class="pi-table-wrap"><table class="pi-table"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+    $p("piTableView").querySelectorAll("th[data-field]").forEach(th=>th.onclick=()=>{const f=th.dataset.field;if($p("piSort1").value===f)$p("piDir1").value=$p("piDir1").value==="asc"?"desc":"asc";else{$p("piSort1").value=f;$p("piDir1").value="asc"}apply()});
+    $p("piTableView").querySelectorAll("tr[data-row]").forEach(tr=>tr.onclick=()=>openDetail(PI.rows[Number(tr.dataset.row)]));
+  }
+  function buildProfile(){
+    const fields=cfg()?.fields||[],rows=PI.raw;
+    PI.profile=fields.map(field=>{const vals=rows.map(r=>r[field]).filter(v=>!empty(v)),numbers=vals.map(num).filter(v=>v!==null),unique=new Set(vals.map(v=>String(v))).size,coverage=rows.length?vals.length/rows.length*100:0;const counts=new Map();for(const v of vals)counts.set(String(v),(counts.get(String(v))||0)+1);const top=[...counts].sort((a,b)=>b[1]-a[1]).slice(0,3);return{field,type:cfg()?.types?.[field]||"TEXT",coverage,unique,missing:rows.length-vals.length,min:numbers.length?Math.min(...numbers):"",max:numbers.length?Math.max(...numbers):"",avg:numbers.length?numbers.reduce((a,b)=>a+b,0)/numbers.length:"",examples:top.map(x=>`${x[0]} (${x[1]})`).join(" / ")}})
+  }
+  function renderProfile(){
+    buildProfile();$p("piProfileLabel").textContent=`${PI.profile.length} fields`;
+    $p("piProfileGrid").innerHTML=PI.profile.map(x=>`<div class="pi-field-card"><div class="pi-field-head"><span>${esc(x.field)}</span><span class="pi-field-type">${esc(x.type)}</span></div><div class="pi-meter"><i style="width:${x.coverage.toFixed(1)}%"></i></div><div class="pi-field-meta"><span>充足 ${x.coverage.toFixed(1)}%</span><span>ユニーク ${x.unique.toLocaleString()}</span><span>欠損 ${x.missing.toLocaleString()}</span><span>${x.avg!==""?`平均 ${fmt(x.avg)}`:"カテゴリ"}</span></div><div class="pi-examples" title="${esc(x.examples)}">${esc(x.examples||"値なし")}</div></div>`).join("");
+    renderInsights();
+  }
+  function renderInsights(){
+    const p=PI.profile.length?PI.profile:(buildProfile(),PI.profile),low=[...p].sort((a,b)=>a.coverage-b.coverage).slice(0,3),highCard=[...p].sort((a,b)=>b.unique-a.unique).slice(0,3),numeric=p.filter(x=>x.avg!=="").sort((a,b)=>Number(b.max)-Number(a.max)).slice(0,3);
+    const insights=[
+      ["品質スコア",`${qualityScore()}点。全体充足率 ${completeness().toFixed(1)}%、主キー重複 ${duplicateCount()}件です。`],
+      ["欠損が多い項目",low.map(x=>`${x.field} ${x.coverage.toFixed(1)}%`).join("、")||"該当なし"],
+      ["識別力が高い項目",highCard.map(x=>`${x.field} ${x.unique}種類`).join("、")||"該当なし"],
+      ["数値レンジ",numeric.map(x=>`${x.field} ${fmt(x.min)}〜${fmt(x.max)}`).join("、")||"数値項目なし"]
+    ];
+    $p("piInsights").innerHTML=insights.map(([t,b])=>`<div class="pi-insight"><b>${esc(t)}</b><small>${esc(b)}</small></div>`).join("");
+  }
+  function aggregate(){
+    const group=$p("piGroupField").value,metric=$p("piMetricField").value,agg=$p("piAggregation").value,limit=Number($p("piAnalysisLimit").value||20);if(!group)return;
+    const map=new Map();for(const r of PI.rows){const key=String(r[group]??"NULL"),v=num(r[metric]);if(!map.has(key))map.set(key,{key,count:0,sum:0,min:Infinity,max:-Infinity,n:0});const x=map.get(key);x.count++;if(v!==null){x.sum+=v;x.min=Math.min(x.min,v);x.max=Math.max(x.max,v);x.n++}}
+    let rows=[...map.values()].map(x=>({...x,value:agg==="count"?x.count:agg==="sum"?x.sum:agg==="avg"?(x.n?x.sum/x.n:0):agg==="min"?(x.n?x.min:0):(x.n?x.max:0)})).sort((a,b)=>b.value-a.value).slice(0,limit);PI.lastAnalysis=rows;
+    const max=Math.max(1,...rows.map(x=>Math.abs(x.value)));$p("piAnalysisBars").innerHTML=rows.map(x=>`<div class="pi-bar-row"><span title="${esc(x.key)}">${esc(x.key)}</span><span class="pi-bar-track"><i style="width:${Math.abs(x.value)/max*100}%"></i></span><b class="pi-number">${fmt(x.value)}</b></div>`).join("")||`<div class="empty">集計結果なし</div>`;
+    $p("piAnalysisTable").innerHTML=`<div class="table-wrap"><table><thead><tr><th>${esc(group)}</th><th>件数</th><th>${esc(agg)}</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.key)}</td><td>${x.count.toLocaleString()}</td><td>${fmt(x.value)}</td></tr>`).join("")}</tbody></table></div>`;
+  }
+  function renderSpec(){
+    buildProfile();const c=cfg(),pk=c?.fields?.[0]||"";
+    $p("piSpecView").innerHTML=`<div class="table-wrap"><table class="pi-spec-table"><thead><tr><th>フィールド</th><th>型</th><th>役割</th><th>充足率</th><th>ユニーク</th><th>代表値</th></tr></thead><tbody>${PI.profile.map(x=>`<tr><td>${esc(x.field)}</td><td>${esc(x.type)}</td><td>${x.field===pk?"主キー":String(x.type).includes("FK")?"外部キー":String(x.type).match(/INTEGER|REAL/)?"測定値":"属性・分類"}</td><td>${x.coverage.toFixed(1)}%</td><td>${x.unique.toLocaleString()}</td><td>${esc(x.examples)}</td></tr>`).join("")}</tbody></table></div>`;
+  }
+  function openDetail(row){
+    $p("piDetailTitle").textContent=`${cfg()?.label||PI.table} レコード詳細`;
+    $p("piDetailBody").innerHTML=(cfg()?.fields||Object.keys(row)).map(f=>`<div class="pi-detail-row"><div class="pi-detail-key">${esc(f)}<br><small>${esc(cfg()?.types?.[f]||"")}</small></div><div class="pi-detail-value">${esc(typeof row[f]==="object"?JSON.stringify(row[f],null,2):row[f]??"")}</div></div>`).join("");
+    $p("piDetail").classList.add("open");$p("piDetail").setAttribute("aria-hidden","false");
+  }
+  function closeDetail(){$p("piDetail").classList.remove("open");$p("piDetail").setAttribute("aria-hidden","true")}
+  function renderAll(){renderKpis();renderExplorer();renderProfile();renderSpec();aggregate()}
+  function captureView(){return{table:PI.table,search:$p("piSearch").value,filters:[0,1,2].map(getFilter),sort1:$p("piSort1").value,dir1:$p("piDir1").value,sort2:$p("piSort2").value,dir2:$p("piDir2").value,pageSize:$p("piPageSize").value,columns:PI.columns,updatedAt:new Date().toISOString()}}
+  async function saveView(){const name=$p("piViewName").value.trim();if(!name)return alert("ビュー名を入力してください");const id=`${PI.table}-${name.toLowerCase().replace(/\s+/g,"-")}`;await putOne("researchViews",{id,name,...captureView()});await loadSavedViews();$p("piSavedViews").value=id;$p("piStatus").textContent=`保存ビュー「${name}」を登録しました`}
+  async function loadSavedViews(){if(!state.db?.objectStoreNames.contains("researchViews"))return;const views=await getAll("researchViews");$p("piSavedViews").innerHTML=`<option value="">保存ビューを選択</option>`+views.sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt))).map(v=>`<option value="${esc(v.id)}">${esc(v.name)}・${esc(v.table)}</option>`).join("")}
+  async function applySavedView(){const id=$p("piSavedViews").value;if(!id)return;const v=await getOne("researchViews",id);if(!v)return;$p("piTable").value=v.table||"races";await load();$p("piSearch").value=v.search||"";(v.filters||[]).forEach((f,i)=>{if(i>2)return;$p(`piFilterField${i}`).value=f.field||"";$p(`piFilterOp${i}`).value=f.op||"";$p(`piFilterValue${i}`).value=f.value||""});$p("piSort1").value=v.sort1||"";$p("piDir1").value=v.dir1||"desc";$p("piSort2").value=v.sort2||"";$p("piDir2").value=v.dir2||"asc";$p("piPageSize").value=v.pageSize||"50";PI.columns=(v.columns||cfg()?.fields||[]).filter(f=>cfg()?.fields?.includes(f));renderColumns();apply()}
+  async function deleteView(){const id=$p("piSavedViews").value;if(!id)return;if(!confirm("選択中の保存ビューを削除しますか？"))return;await deleteOne("researchViews",id);await loadSavedViews()}
+  async function saveNote(){const title=$p("piNoteTitle").value.trim(),body=$p("piNoteBody").value.trim();if(!title&&!body)return alert("タイトルまたは本文を入力してください");const id=`note-${Date.now()}`;await putOne("researchNotes",{id,table:PI.table,title:title||"無題",tags:$p("piNoteTags").value.trim(),body,view:captureView(),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});clearNote();await loadNotes()}
+  function clearNote(){for(const id of ["piNoteTitle","piNoteTags","piNoteBody"])$p(id).value=""}
+  async function loadNotes(){if(!state.db?.objectStoreNames.contains("researchNotes"))return;const notes=(await getAll("researchNotes")).sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt)));$p("piNotesList").innerHTML=notes.map(n=>`<div class="pi-note-item" data-id="${esc(n.id)}"><b>${esc(n.title)}</b><small>${esc(n.table)}　${esc(n.tags||"")}　${esc(String(n.updatedAt||"").slice(0,16).replace("T"," "))}</small><p>${esc(n.body||"").slice(0,220)}</p><button class="btn small danger" data-delete="${esc(n.id)}">削除</button></div>`).join("")||`<div class="empty">保存メモはありません</div>`;
+    $p("piNotesList").querySelectorAll(".pi-note-item").forEach(el=>el.onclick=async e=>{if(e.target.dataset.delete)return;const n=await getOne("researchNotes",el.dataset.id);if(n){$p("piNoteTitle").value=n.title||"";$p("piNoteTags").value=n.tags||"";$p("piNoteBody").value=n.body||""}});
+    $p("piNotesList").querySelectorAll("[data-delete]").forEach(b=>b.onclick=async e=>{e.stopPropagation();if(confirm("このメモを削除しますか？")){await deleteOne("researchNotes",b.dataset.delete);await loadNotes()}});
+  }
+  function reset(){ $p("piSearch").value="";for(let i=0;i<3;i++){$p(`piFilterField${i}`).value="";$p(`piFilterOp${i}`).value="";$p(`piFilterValue${i}`).value=""}$p("piSort2").value="";fieldOptions();apply()}
+  function csvValue(v){return`"${String(v??"").replaceAll('"','""')}"`}
+  function exportRows(){const fields=PI.columns.length?PI.columns:cfg()?.fields||[],csv=[fields.map(csvValue).join(","),...PI.rows.map(r=>fields.map(f=>csvValue(r[f])).join(","))].join("\n");downloadText(`TheKeiba_ProductResearch_${PI.table}.csv`,"\ufeff"+csv,"text/csv;charset=utf-8")}
+  function exportSpec(){buildProfile();const fields=["field","type","coverage","unique","missing","min","max","avg","examples"],csv=[fields.join(","),...PI.profile.map(x=>fields.map(f=>csvValue(x[f])).join(","))].join("\n");downloadText(`TheKeiba_ProductSpec_${PI.table}.csv`,"\ufeff"+csv,"text/csv;charset=utf-8")}
+  function showView(name){PI.view=name;document.querySelectorAll(".pi-view-tab").forEach(b=>b.classList.toggle("active",b.dataset.piview===name));document.querySelectorAll(".pi-panel").forEach(p=>p.classList.toggle("active",p.id===`piPanel${name[0].toUpperCase()+name.slice(1)}`));if(name==="profile")renderProfile();if(name==="analysis")aggregate();if(name==="spec")renderSpec();if(name==="notes")loadNotes()}
+  function wire(){
+    if(!$p("dbTabResearch"))return;tableOptions();$p("piTable").value="races";
+    $p("piTable").onchange=load;$p("piSearch").oninput=debouncedApply;$p("piSort1").onchange=apply;$p("piDir1").onchange=apply;$p("piSort2").onchange=apply;$p("piDir2").onchange=apply;$p("piPageSize").onchange=()=>{PI.page=1;renderExplorer()};
+    $p("piPrevBtn").onclick=()=>{PI.page=Math.max(1,PI.page-1);renderExplorer()};$p("piNextBtn").onclick=()=>{PI.page++;renderExplorer()};
+    $p("piResearchBtn").onclick=()=>{renderAll();showView("profile");$p("piStatus").textContent="リサーチ・プロファイルを更新しました"};
+    $p("piAnalyzeBtn").onclick=aggregate;$p("piExportBtn").onclick=exportRows;$p("piSpecCsvBtn").onclick=exportSpec;$p("piResetBtn").onclick=reset;
+    $p("piSaveViewBtn").onclick=saveView;$p("piDeleteViewBtn").onclick=deleteView;$p("piSavedViews").onchange=applySavedView;
+    $p("piNoteSaveBtn").onclick=saveNote;$p("piNoteClearBtn").onclick=clearNote;$p("piNotesRefreshBtn").onclick=loadNotes;$p("piDetailCloseBtn").onclick=closeDetail;
+    document.querySelectorAll(".pi-view-tab").forEach(b=>b.onclick=()=>showView(b.dataset.piview));
+    load().catch(e=>{$p("piStatus").textContent="読込エラー: "+e.message;console.error(e)});
+  }
+  window.productIntelligenceWire=wire;
+  window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,1100));
 })();
 </script>
 
