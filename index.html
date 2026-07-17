@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111f">
-<title>The競馬 Ultimate NEXT Professional Complete DBMS D1Sync NAR All Places</title>
+<title>The競馬 Ultimate NEXT Professional Complete DBMS D1Sync NAR All Places Bridge Recovery Setting Profiles</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -142,7 +142,7 @@ linear-gradient(135deg,color-mix(in srgb,var(--panel) 90%,var(--accent) 10%),var
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.19 Product Intelligence</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.20 Bridge Recovery</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -413,17 +413,42 @@ linear-gradient(135deg,color-mix(in srgb,var(--panel) 90%,var(--accent) 10%),var
 
     <section class="view" id="view-bridge">
       <h2 class="page-title">JRA・NAR Bridge</h2>
-      <div class="card"><div class="form-grid"><div class="field wide"><label>Bridge URL</label><input id="bridgeUrl" placeholder="https://example.workers.dev"></div><div class="field"><label>開催日</label><input id="bridgeDate" type="date"></div><div class="field"><label>race_id</label><input id="bridgeRaceId"></div></div><div class="toolbar" style="margin-top:13px"><button class="btn" id="bridgeSaveBtn">設定保存</button><button class="btn primary" id="bridgePingBtn">接続テスト</button><button class="btn" id="bridgeListBtn">開催一覧取得</button><button class="btn" id="bridgeRaceBtn">レース一式取得</button><button class="btn" id="bridgeSyncDayBtn">当日全R同期</button></div><div class="code-box" id="bridgeLog">未接続</div></div>
-      <div class="card"><h3>対応エンドポイント</h3><div class="code-box">【自動判定】
-REST型: /ping /race/list /race /entry /odds /result
-既存Worker型: ?url=対象URL
-既存Worker型: ?type=shutuba|odds|result&kind=JRA|NAR&race_id=...
+      <div class="card">
+        <div class="toolbar"><h3 style="margin:0 auto 0 0">Bridge接続・自動復旧</h3><span class="badge" id="bridgeHealthBadge"><span class="status-dot"></span>確認中</span></div>
+        <div class="form-grid"><div class="field wide"><label>Worker Bridge URL 任意</label><input id="bridgeUrl" placeholder="Userscript利用時は空欄で可 / https://example.workers.dev"></div><div class="field"><label>開催日</label><input id="bridgeDate" type="date"></div><div class="field"><label>race_id</label><input id="bridgeRaceId"></div></div>
+        <div class="toolbar" style="margin-top:13px"><button class="btn" id="bridgeSaveBtn">設定保存</button><button class="btn primary" id="bridgePingBtn">接続テスト</button><button class="btn good" id="bridgeReconnectBtn">Bridge再検出</button><button class="btn" id="bridgeListBtn">開催一覧取得</button><button class="btn" id="bridgeRaceBtn">レース一式取得</button><button class="btn" id="bridgeSyncDayBtn">当日全R同期</button><button class="btn" id="bridgeCopyDiagBtn">診断コピー</button></div>
+        <div class="notice" id="bridgeRecoveryGuide">Userscriptのready通知を取り逃がしても、ページ側から能動的に再接続します。iPadでタブを切り替えた後や再読み込み後も、復帰時に自動再検出します。</div>
+        <div class="code-box" id="bridgeDiag" style="margin-top:12px">Bridge診断を準備中です。</div>
+        <div class="code-box" id="bridgeLog" style="margin-top:8px">未接続</div>
+      </div>
+      <div class="card"><h3>対応経路</h3><div class="code-box">【優先順位】
+1. Tampermonkey住宅IP Userscript Direct
+2. Userscript postMessage Bridge
+3. REST型 Worker: /ping /race/list /race /entry /odds /result
+4. 既存Worker互換: ?url=対象URL
+5. 既存Worker互換: ?type=shutuba|odds|result&kind=JRA|NAR&race_id=...
 
-URL欄の値は「設定保存」を押さなくても各ボタンで即時使用します。</div></div>
+Userscript利用時はWorker URLを空欄にできます。取得失敗Rは1回だけ自動再試行し、成功数と失敗数を分けて表示します。</div></div>
     </section>
 
     <section class="view" id="view-settings">
       <h2 class="page-title">設定</h2>
+      <div class="card">
+        <div class="toolbar"><h3 style="margin:0 auto 0 0">設定モード管理</h3><span class="badge" id="settingsProfileBadge">1モード</span></div>
+        <div class="form-grid"><div class="field wide"><label>設定モード</label><select id="settingsProfileSelect"></select></div><div class="field wide"><label>モード名</label><input id="settingsProfileName" placeholder="例 JRA堅実・NAR研究"></div></div>
+        <div class="toolbar" style="margin-top:13px"><button class="btn primary" id="settingsProfileApplyBtn">選択モードを適用</button><button class="btn good" id="settingsProfileNewBtn">現在値で新規</button><button class="btn" id="settingsProfileCloneBtn">複製</button><button class="btn" id="settingsProfileOverwriteBtn">現在値で上書き</button><button class="btn" id="settingsProfileRenameBtn">名前変更</button><button class="btn danger" id="settingsProfileDeleteBtn">削除</button><button class="btn" id="settingsProfileExportBtn">JSON出力</button><button class="btn" id="settingsProfileImportBtn">JSON読込</button><input id="settingsProfileImportFile" type="file" accept=".json,application/json" hidden></div>
+        <div class="notice" id="settingsProfileStatus">現在の設定一式を名前付きモードとして保存し、複製・上書き・端末間移行できます。</div>
+      </div>
+      <div class="card"><h3>EV分析設定クローン</h3>
+        <div class="form-grid">
+          <div class="field"><label>1R予算</label><input id="cloneRaceBudget" type="number" min="0" step="100" value="600"></div><div class="field"><label>候補上位頭数</label><input id="cloneTopN" type="number" min="1" max="18" value="3"></div><div class="field"><label>最大買い目数</label><input id="cloneMaxTickets" type="number" min="1" value="6"></div><div class="field"><label>1日最大購入R 0で無制限</label><input id="cloneMaxRaces" type="number" min="0" value="6"></div>
+          <div class="field"><label>最低オッズ</label><input id="cloneMinOdds" type="number" step="0.1" value="1"></div><div class="field"><label>最高オッズ</label><input id="cloneMaxOdds" type="number" step="0.1" value="999"></div><div class="field"><label>最低期待回収率</label><input id="cloneMinReturnRate" type="number" step="1" value="120"></div><div class="field"><label>トリガミ回避</label><select id="cloneAvoidToragami"><option value="on">ON</option><option value="off">OFF</option></select></div>
+          <div class="field"><label>枠連を使う</label><select id="cloneUseBracket"><option value="on">ON</option><option value="off">OFF</option></select></div><div class="field"><label>3連単・3連複</label><select id="cloneUseTrioTrifecta"><option value="on">ON</option><option value="off">OFF</option></select></div><div class="field"><label>ワイド・馬連</label><select id="cloneUseWideQuinella"><option value="on">ON</option><option value="off">OFF</option></select></div><div class="field"><label>OFF券種の扱い</label><select id="cloneOffTicketPolicy"><option value="ticketOnly">その券種だけ除外</option><option value="skipRace">レースごと見送り</option></select></div>
+          <div class="field"><label>名古屋モード</label><select id="cloneNagoyaMode"><option value="off">OFF</option><option value="on">ON</option></select></div><div class="field"><label>NAR移動EV補正</label><select id="cloneNarMoveAdjust"><option value="on">ON</option><option value="off">OFF</option></select></div><div class="field"><label>補正結果学習</label><select id="cloneNarMoveLearn"><option value="off">OFF</option><option value="on">ON</option></select></div><div class="field"><label>新馬戦を見送る</label><select id="cloneSkipDebut"><option value="on">ON</option><option value="off">OFF</option></select></div>
+          <div class="field"><label>メイン予算確保</label><select id="cloneReserveMain"><option value="off">OFF</option><option value="on">ON</option></select></div><div class="field"><label>メインR</label><input id="cloneMainRaceNo" type="number" min="1" max="12" value="11"></div><div class="field"><label>開催場ごとの確保額</label><input id="cloneMainReserve" type="number" min="0" step="100" value="600"></div><div class="field"><label>低評価候補で予算補完</label><select id="cloneForceFill"><option value="off">しない NoForceFill</option><option value="on">許可</option></select></div>
+        </div>
+        <div class="notice" style="margin-top:12px">元EV分析の設定思想をNEXT側へ移植しています。SIMへ直接反映できる項目は即時適用し、NAR移動EV補正と学習設定はモード互換値として保持します。</div>
+      </div>
       <div class="card"><h3>モード選択</h3><div class="form-grid"><div class="field wide"><label>既定の予想モード</label><select id="defaultPredictionMode"><option value="custom">戦略・個別設定を使用</option><option value="ai">AI重視</option><option value="ev">EV重視</option><option value="expected">期待払戻重視</option><option value="balanced">総合バランス</option><option value="agreement">全て同意</option></select></div><div class="field"><label>予算の使い方</label><select id="defaultBudgetMode"><option value="sequential">レース順に購入</option><option value="dailyRank">全日ランキング</option></select></div><div class="field"><label>全日ランキング基準</label><select id="defaultDailyRankBasis"><option value="ev">EVの高い順</option><option value="adjusted">AI補正EVの高い順</option><option value="expected">期待払戻の高い順</option></select></div></div><div class="notice" id="settingsModeHelp" style="margin-top:12px">モードを選択すると、期間横断SIMの優先順位・同意モード・予算配分へ反映します。</div><div class="toolbar" style="margin-top:13px"><button class="btn primary" id="settingsModeSaveBtn">モードを保存・SIMへ反映</button></div></div>
       <div class="card"><h3>基本設定</h3><div class="form-grid"><div class="field"><label>テーマ</label><select id="themeSelect"><option value="dark">ダーク</option><option value="light">ライト</option></select></div><div class="field"><label>既定最低EV</label><input id="defaultMinEv" type="number" step="0.01" value="1.00"></div><div class="field"><label>既定最低AI</label><input id="defaultMinAi" type="number" value="80"></div><div class="field"><label>既定1日予算</label><input id="defaultBudget" type="number" value="2000"></div><div class="field"><label>既定1点金額</label><input id="defaultUnit" type="number" value="100"></div><div class="field"><label>AI補正強度</label><input id="aiStrength" type="number" step="0.1" value="1"></div></div><div class="toolbar" style="margin-top:13px"><button class="btn primary" id="settingsSaveBtn">基本設定を保存</button></div></div>
       <div class="card"><h3>DBMS・D1設定</h3>
@@ -486,50 +511,53 @@ URL欄の値は「設定保存」を押さなくても各ボタンで即時使�
 <script>
 "use strict";
 
-// Userscript住宅IPブリッジ。Cloudflare Workerより最優先で使用する。
+// Userscript住宅IPブリッジ。ready通知の取り逃がしを能動ハンドシェイクで復旧する。
+const BRIDGE_DIAG=window.__THEKEIBA_BRIDGE_DIAG__={ready:false,direct:false,lastReadyAt:"",lastRequestAt:"",lastResponseAt:"",lastError:"",lastRoute:"未検出",handshakes:0};
 (function setupResidentialBridge(){
-  const pending={}; let seq=0;
-  window.addEventListener('message',function(ev){
-    const d=ev&&ev.data;if(!d||!d.__narBridge)return;
-    if(d.__narBridge==='ready'){window.__NAR_BRIDGE_READY__=true;return;}
-    if(d.__narBridge==='response'&&d.id&&pending[d.id]){pending[d.id](d);delete pending[d.id];}
+  const pending={};let seq=0;
+  function markReady(route="postMessage"){
+    window.__NAR_BRIDGE_READY__=true;BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute=route;BRIDGE_DIAG.lastReadyAt=new Date().toISOString();
+  }
+  function announce(){
+    BRIDGE_DIAG.handshakes++;try{window.postMessage({__narBridge:"ping",source:"TheKeiba",ts:Date.now()},"*");window.postMessage({__narBridge:"hello",source:"TheKeiba",ts:Date.now()},"*")}catch(e){BRIDGE_DIAG.lastError=e.message}
+  }
+  window.addEventListener("message",function(ev){
+    if(ev.source!==window)return;const d=ev&&ev.data;if(!d||!d.__narBridge)return;
+    if(d.__narBridge==="ready"||d.__narBridge==="pong"||d.__narBridge==="status"){markReady("postMessage");return}
+    if(d.__narBridge==="response"&&d.id&&pending[d.id]){BRIDGE_DIAG.lastResponseAt=new Date().toISOString();if(Number(d.status)>0)markReady("postMessage");pending[d.id](d);delete pending[d.id]}
   });
-  if(typeof window.__narBridgeFetch!=='function'){
-    window.__narBridgeFetch=function(url){
-      return new Promise(function(resolve,reject){
-        const id='unb'+(++seq)+'_'+Date.now();
-        const timer=setTimeout(function(){if(pending[id]){delete pending[id];reject(new Error('Userscript bridge timeout'));}},18000);
-        pending[id]=function(d){clearTimeout(timer);if(!d.status)reject(new Error(d.error||'Userscript bridge error'));else resolve({status:d.status,text:d.text||''});};
-        window.postMessage({__narBridge:'request',id,url},'*');
-      });
-    };
-  }
+  window.__narBridgeFetch=function(url,options={}){
+    return new Promise(function(resolve,reject){
+      const id="unb"+(++seq)+"_"+Date.now(),timeout=Math.max(1200,Number(options.timeout||18000));BRIDGE_DIAG.lastRequestAt=new Date().toISOString();
+      const timer=setTimeout(function(){if(pending[id]){delete pending[id];BRIDGE_DIAG.lastError="Userscript bridge timeout";reject(new Error("Userscript bridge timeout"))}},timeout);
+      pending[id]=function(d){clearTimeout(timer);if(!Number(d.status)){BRIDGE_DIAG.lastError=d.error||"Userscript bridge error";reject(new Error(BRIDGE_DIAG.lastError))}else resolve({status:Number(d.status),text:d.text||"",error:d.error||""})};
+      window.postMessage({__narBridge:"request",id,url,source:"TheKeiba",ts:Date.now()},"*");
+    })
+  };
   function adopt(){
-    if(typeof window.__narBridgeDirect==='function'&&window.__narBridgeHasDirect){
-      window.__narBridgeFetch=window.__narBridgeDirect;window.__NAR_BRIDGE_READY__=true;return true;
-    }
-    return false;
+    if(typeof window.__narBridgeDirect==="function"&&window.__narBridgeHasDirect){window.__narBridgeFetch=window.__narBridgeDirect;BRIDGE_DIAG.direct=true;markReady("direct");return true}return false
   }
-  if(!adopt()){let n=0;const iv=setInterval(function(){if(adopt()||++n>=30)clearInterval(iv);},200);}
+  window.__theKeibaBridgeHandshake=announce;
+  announce();[120,700,1800,4200,9000].forEach(ms=>setTimeout(()=>{if(!adopt())announce()},ms));
+  let n=0;const iv=setInterval(function(){if(adopt()||++n>=45)clearInterval(iv)},200)
 })();
-async function residentialBridgeText(target){
-  if(typeof window.__narBridgeDirect==='function'&&window.__narBridgeHasDirect){
-    const r=await window.__narBridgeDirect(target);
-    if(typeof r==='string')return r;
-    if(r&&Number(r.status)>=200&&Number(r.status)<300)return String(r.text||'');
-    throw new Error((r&&r.error)||`Userscript HTTP ${(r&&r.status)||0}`);
+async function residentialBridgeText(target,{timeout=18000}={}){
+  if(typeof window.__narBridgeDirect==="function"&&window.__narBridgeHasDirect){
+    BRIDGE_DIAG.direct=true;const r=await window.__narBridgeDirect(target);if(typeof r==="string"){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="direct";return r}if(r&&Number(r.status)>=200&&Number(r.status)<400){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="direct";return String(r.text||"")}throw new Error((r&&r.error)||`Userscript HTTP ${(r&&r.status)||0}`)
   }
-  if(window.__NAR_BRIDGE_READY__&&typeof window.__narBridgeFetch==='function'){
-    const r=await window.__narBridgeFetch(target);
-    if(typeof r==='string')return r;
-    if(r&&Number(r.status)>=200&&Number(r.status)<300)return String(r.text||'');
-    throw new Error((r&&r.error)||`Userscript HTTP ${(r&&r.status)||0}`);
+  if(typeof window.__theKeibaBridgeHandshake==="function")window.__theKeibaBridgeHandshake();
+  if(typeof window.__narBridgeFetch==="function"){
+    const r=await window.__narBridgeFetch(target,{timeout});if(typeof r==="string"){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="postMessage";return r}if(r&&Number(r.status)>=200&&Number(r.status)<400){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="postMessage";window.__NAR_BRIDGE_READY__=true;return String(r.text||"")}throw new Error((r&&r.error)||`Userscript HTTP ${(r&&r.status)||0}`)
   }
-  throw new Error('Userscript住宅IPブリッジ未検出');
+  throw new Error("Userscript住宅IPブリッジ未検出")
 }
-function hasResidentialBridge(){return !!((typeof window.__narBridgeDirect==='function'&&window.__narBridgeHasDirect)||window.__NAR_BRIDGE_READY__);}
+function hasResidentialBridge(){return !!((typeof window.__narBridgeDirect==="function"&&window.__narBridgeHasDirect)||window.__NAR_BRIDGE_READY__||BRIDGE_DIAG.ready)}
+async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000){
+  const target=`https://nar.sp.netkeiba.com/top/race_list.html?kaisai_date=${date}`;const started=Date.now();
+  try{const html=await residentialBridgeText(target,{timeout});if(!looksLikeNetkeibaResponse(html))throw new Error("応答はありましたがnetkeibaページではありません");BRIDGE_DIAG.lastError="";BRIDGE_DIAG.lastRoute=BRIDGE_DIAG.direct?"direct":"postMessage";return{ok:true,chars:html.length,elapsed:Date.now()-started,route:BRIDGE_DIAG.lastRoute}}catch(e){BRIDGE_DIAG.lastError=e.message;return{ok:false,error:e.message,elapsed:Date.now()-started}}
+}
 
-const APP_VERSION="1.0.19";
+const APP_VERSION="1.0.20";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -549,7 +577,7 @@ const DB_STORES={
   bets:{keyPath:"id",indexes:[["race_id","race_id"],["date","date"],["ticketType","ticketType"],["strategyId","strategyId"],["updatedAt","updatedAt"]]},
   strategies:{keyPath:"id"},simulations:{keyPath:"id",autoIncrement:true},snapshots:{keyPath:"id",autoIncrement:true,indexes:[["race_id","race_id"]]},favorites:{keyPath:"id"},settings:{keyPath:"key"},researchViews:{keyPath:"id",indexes:[["name","name"],["table","table"],["updatedAt","updatedAt"]]},researchNotes:{keyPath:"id",indexes:[["table","table"],["updatedAt","updatedAt"]]}
 };
-const state={db:null,currentRaceId:"",searchResult:[],simResult:[],analyticsRows:[],currentAnalyticsDimension:"day",currentStrategyId:"default-win",calendarMonth:new Date(new Date().getFullYear(),new Date().getMonth(),1),calendarSelected:"",settings:{theme:"dark",defaultPredictionMode:"custom",defaultBudgetMode:"sequential",defaultDailyRankBasis:"ev",defaultMinEv:1,defaultMinAi:80,defaultBudget:2000,defaultUnit:100,aiStrength:1,bridgeUrl:"",bridgeMode:"auto",dbmsMode:"auto",d1ApiUrl:"https://keiba-rdb-api.nitta-katsuhiko.workers.dev",d1AutoSync:true,d1BatchSize:250,d1TimeoutSec:20,rdbConsoleUrl:"https://takuya-20f.pages.dev/",liveCount:2,livePanels:[]},learningRecommendation:null,simSelectedPlaces:[]};
+const state={db:null,currentRaceId:"",searchResult:[],simResult:[],analyticsRows:[],currentAnalyticsDimension:"day",currentStrategyId:"default-win",calendarMonth:new Date(new Date().getFullYear(),new Date().getMonth(),1),calendarSelected:"",settings:{theme:"dark",defaultPredictionMode:"custom",defaultBudgetMode:"sequential",defaultDailyRankBasis:"ev",defaultMinEv:1,defaultMinAi:80,defaultBudget:2000,defaultUnit:100,aiStrength:1,cloneRaceBudget:600,cloneTopN:3,cloneMaxTickets:6,cloneMaxRaces:6,cloneMinOdds:1,cloneMaxOdds:999,cloneMinReturnRate:120,cloneAvoidToragami:true,cloneUseBracket:true,cloneUseTrioTrifecta:true,cloneUseWideQuinella:true,cloneOffTicketPolicy:"ticketOnly",cloneNagoyaMode:false,cloneNarMoveAdjust:true,cloneNarMoveLearn:false,cloneSkipDebut:true,cloneReserveMain:false,cloneMainRaceNo:11,cloneMainReserve:600,cloneForceFill:false,settingProfiles:[],activeSettingProfileId:"",bridgeUrl:"",bridgeMode:"auto",dbmsMode:"auto",d1ApiUrl:"https://keiba-rdb-api.nitta-katsuhiko.workers.dev",d1AutoSync:true,d1BatchSize:250,d1TimeoutSec:20,rdbConsoleUrl:"https://takuya-20f.pages.dev/",liveCount:2,livePanels:[]},learningRecommendation:null,simSelectedPlaces:[]};
 const $=id=>document.getElementById(id);const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const yen=v=>Math.round(Number(v||0)).toLocaleString("ja-JP")+"円";const pct=v=>Number(v||0).toFixed(1)+"%";const compactDate=v=>String(v||"").replaceAll("-","");const displayDate=v=>{const s=String(v||"");return s.length===8?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`:s};const isoToday=()=>new Date().toISOString().slice(0,10);const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 function requestPromise(req){return new Promise((ok,ng)=>{req.onsuccess=()=>ok(req.result);req.onerror=()=>ng(req.error)})}function txDone(tx){return new Promise((ok,ng)=>{tx.oncomplete=ok;tx.onerror=()=>ng(tx.error);tx.onabort=()=>ng(tx.error||new Error("Transaction aborted"))})}
 async function openDB(){return new Promise((ok,ng)=>{const req=indexedDB.open("TheKeibaUltimateNEXTComplete",9);req.onupgradeneeded=e=>{const db=e.target.result;for(const [name,cfg] of Object.entries(DB_STORES)){let store;if(!db.objectStoreNames.contains(name))store=db.createObjectStore(name,{keyPath:cfg.keyPath,autoIncrement:cfg.autoIncrement||false});else store=e.target.transaction.objectStore(name);for(const idx of cfg.indexes||[])if(!store.indexNames.contains(idx[0]))store.createIndex(idx[0],idx[1],{unique:false})}};req.onsuccess=()=>{state.db=req.result;state.db.onversionchange=()=>{state.db.close();console.warn("DB version changed. Reload this page.")};ok(state.db)};req.onblocked=()=>console.warn("IndexedDB upgrade blocked. Close older app tabs and reload.");req.onerror=()=>ng(req.error)})}
@@ -627,7 +655,7 @@ function updateModeUi(){const simBudget=$("simBudgetMode")?.value||"sequential",
 function applyPredictionModeToSim(mode){if(!$("simPredictionMode"))return;$("simPredictionMode").value=mode||"custom";const preset=PREDICTION_MODE_PRESETS[mode];if(preset?.priority)$("simPriority").value=preset.priority;if(preset?.agreementMode)$("simAgreement").value=preset.agreementMode;updateModeUi()}
 async function saveAppSettings(){state.settings.theme=$("themeSelect").value;state.settings.defaultPredictionMode=$("defaultPredictionMode").value;state.settings.defaultBudgetMode=$("defaultBudgetMode").value;state.settings.defaultDailyRankBasis=$("defaultDailyRankBasis").value;state.settings.defaultMinEv=Number($("defaultMinEv").value||1);state.settings.defaultMinAi=Number($("defaultMinAi").value||80);state.settings.defaultBudget=Number($("defaultBudget").value||2000);state.settings.defaultUnit=Number($("defaultUnit").value||100);state.settings.aiStrength=Number($("aiStrength").value||1);await putOne("settings",{key:"app",value:state.settings});applySettings(true);alert("設定を保存し、SIMへ反映しました")}
 async function loadAppSettings(){const x=await getOne("settings","app");if(x?.value)state.settings={...state.settings,...x.value};applySettings(true)}
-function applySettings(applySimDefaults=true){document.documentElement.dataset.theme=state.settings.theme;$("themeBtn").textContent=state.settings.theme==="dark"?"🌙":"☀️";$("themeSelect").value=state.settings.theme;$("defaultPredictionMode").value=state.settings.defaultPredictionMode||"custom";$("defaultBudgetMode").value=state.settings.defaultBudgetMode||"sequential";$("defaultDailyRankBasis").value=state.settings.defaultDailyRankBasis||"ev";$("defaultMinEv").value=state.settings.defaultMinEv;$("defaultMinAi").value=state.settings.defaultMinAi;$("defaultBudget").value=state.settings.defaultBudget;$("defaultUnit").value=state.settings.defaultUnit;$("aiStrength").value=state.settings.aiStrength;if(applySimDefaults){$("simMinEv").value=state.settings.defaultMinEv;$("simMinAi").value=state.settings.defaultMinAi;$("simDailyBudget").value=state.settings.defaultBudget;$("simUnit").value=state.settings.defaultUnit;$("simBudgetMode").value=state.settings.defaultBudgetMode||"sequential";$("simDailyRankBasis").value=state.settings.defaultDailyRankBasis||"ev";applyPredictionModeToSim(state.settings.defaultPredictionMode||"custom")}$("bridgeUrl").value=state.settings.bridgeUrl||"";updateModeUi()}
+function applySettings(applySimDefaults=true){document.documentElement.dataset.theme=state.settings.theme;$("themeBtn").textContent=state.settings.theme==="dark"?"🌙":"☀️";$("themeSelect").value=state.settings.theme;$("defaultPredictionMode").value=state.settings.defaultPredictionMode||"custom";$("defaultBudgetMode").value=state.settings.defaultBudgetMode||"sequential";$("defaultDailyRankBasis").value=state.settings.defaultDailyRankBasis||"ev";$("defaultMinEv").value=state.settings.defaultMinEv;$("defaultMinAi").value=state.settings.defaultMinAi;$("defaultBudget").value=state.settings.defaultBudget;$("defaultUnit").value=state.settings.defaultUnit;$("aiStrength").value=state.settings.aiStrength;if(applySimDefaults){$("simMinEv").value=state.settings.defaultMinEv;$("simMinAi").value=state.settings.defaultMinAi;$("simDailyBudget").value=state.settings.defaultBudget;$("simUnit").value=state.settings.defaultUnit;$("simTopN").value=Number(state.settings.cloneTopN||3);$("simMaxTickets").value=Number(state.settings.cloneMaxTickets||6);$("simMaxRace").value=Number(state.settings.cloneMaxRaces??6);$("simMinOdds").value=Number(state.settings.cloneMinOdds??1);$("simMaxOdds").value=Number(state.settings.cloneMaxOdds??999);$("simBudgetMode").value=state.settings.defaultBudgetMode||"sequential";$("simDailyRankBasis").value=state.settings.defaultDailyRankBasis||"ev";applyPredictionModeToSim(state.settings.defaultPredictionMode||"custom")}$("bridgeUrl").value=state.settings.bridgeUrl||"";updateModeUi()}
 async function toggleTheme(){state.settings.theme=state.settings.theme==="dark"?"light":"dark";await putOne("settings",{key:"app",value:state.settings});applySettings(false)}
 async function ensureDefaultStrategies(){const list=await getAll("strategies");if(list.length)return;const defs=[{id:"default-win",name:"堅実単勝",ticketType:"win",priority:"balanced",topN:2,maxTickets:2,minEv:1,minAi:75,minOdds:1.5,maxOdds:15,unit:100,dailyBudget:2000,maxRaces:6,agreementMode:"on"},{id:"value-wide",name:"妙味ワイド",ticketType:"wide",priority:"ev",topN:4,maxTickets:6,minEv:1.05,minAi:70,minOdds:2,maxOdds:30,unit:100,dailyBudget:2000,maxRaces:6,agreementMode:"on"},{id:"trio-pro",name:"3連複研究",ticketType:"trio",priority:"ai",topN:5,maxTickets:10,minEv:.95,minAi:68,minOdds:1,maxOdds:80,unit:100,dailyBudget:3000,maxRaces:5,agreementMode:"off"}].map(normalizeStrategy);await putMany("strategies",defs)}
 
@@ -658,12 +686,10 @@ async function purgeSampleData(){
   return ids.size;
 }
 async function waitForResidentialBridge(timeout=10000){
-  const started=Date.now();
-  while(Date.now()-started<timeout){
-    if(hasResidentialBridge())return true;
-    await new Promise(resolve=>setTimeout(resolve,250));
-  }
-  return hasResidentialBridge();
+  const started=Date.now();if(typeof window.__theKeibaBridgeHandshake==="function")window.__theKeibaBridgeHandshake();
+  while(Date.now()-started<Math.min(timeout,1800)){if(hasResidentialBridge())return true;await new Promise(resolve=>setTimeout(resolve,180))}
+  const remaining=Math.max(1500,timeout-(Date.now()-started)),probe=await probeResidentialBridge(compactDate($("bridgeDate")?.value)||compactDate(isoToday()),Math.min(remaining,7000));
+  if(!probe.ok)state.settings.bridgeMode="auto";updateBridgeDiagnostics?.();return !!probe.ok
 }
 async function removeInvalidRaceRecords(){
   const races=await getAll("races"),invalid=races.filter(r=>!/^\d{12}$/.test(String(r.race_id||""))||r.raceNo<1||r.raceNo>12||!(r.type==="JRA"?BRIDGE_JRA_PLACES:BRIDGE_NAR_PLACES)[String(r.race_id).slice(4,6)]);
@@ -677,39 +703,25 @@ async function removeInvalidRaceRecords(){
 }
 async function autoLoadRealRaceList(){
   try{
-    $("dbStatus").innerHTML='<span class="status-dot"></span>実データBridge待機中';
-    const ready=await waitForResidentialBridge();
-    if(!ready){
-      $("dbStatus").innerHTML='<span class="status-dot"></span>実データ待機・住宅IP Bridge未検出';
-      return 0;
-    }
-    state.settings.bridgeMode="browser";
-    await putOne("settings",{key:"app",value:state.settings});
+    $("dbStatus").innerHTML='<span class="status-dot"></span>実データBridge再検出中';
+    const route=await detectBridgeMode();
     $("bridgeDate").value=isoToday();
     const races=await bridgeLoadList({silent:true});
-    $("dbStatus").innerHTML=`<span class="status-dot on"></span>実データ一覧取得済み ${races.length}R`;
-    await refreshAll();
-    return races.length;
+    $("dbStatus").innerHTML=`<span class="status-dot on"></span>実データ一覧取得済み ${races.length}R・${route.mode==="browser"?"住宅IP":route.mode==="rest"?"REST":"Worker"}`;
+    updateBridgeDiagnostics?.("接続済み","ok");await refreshAll();return races.length
   }catch(e){
-    $("dbStatus").innerHTML='<span class="status-dot"></span>実データ一覧取得失敗';
-    bridgeLog("自動実データ取得失敗: "+e.message);
-    return 0;
+    $("dbStatus").innerHTML='<span class="status-dot"></span>実データ待機・Bridgeタブで再検出';
+    BRIDGE_DIAG.lastError=e.message;updateBridgeDiagnostics?.("未接続","bad");bridgeLog("自動実データ取得失敗: "+e.message);return 0
   }
 }
 async function syncRealDataNow(){
   try{
-    const ready=await waitForResidentialBridge();
-    if(!ready)throw new Error("Tampermonkey住宅IP Bridgeを検出できません");
-    state.settings.bridgeMode="browser";
+    const route=await detectBridgeMode();
     $("bridgeDate").value=$("bridgeDate").value||isoToday();
-    bridgeLog("実データ全R同期を開始します");
-    await bridgeSyncDay();
-    await refreshAll();
-    $("dbStatus").innerHTML='<span class="status-dot on"></span>実データ同期完了';
-  }catch(e){
-    bridgeLog("実データ同期失敗: "+e.message);
-    alert("実データ同期失敗\n"+e.message);
-  }
+    bridgeLog(`実データ全R同期を開始します ${route.mode}`);updateBridgeDiagnostics?.("同期中");
+    const result=await bridgeSyncDay();await refreshAll();
+    $("dbStatus").innerHTML=`<span class="status-dot ${result?.failed?"":"on"}"></span>実データ同期 ${result?.success||0}R / 失敗 ${result?.failed||0}R`;
+  }catch(e){bridgeLog("実データ同期失敗: "+e.message);updateBridgeDiagnostics?.("同期失敗","bad");alert("実データ同期失敗\n"+e.message)}
 }
 async function renderDashboard(){const [races,entries,results,sims,strategies]=await Promise.all([getAll("races"),getAll("entries"),getAll("results"),getAll("simulations"),getAll("strategies")]);races.sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.raceNo-a.raceNo);$("dashRaceCount").textContent=races.length;$("dashJraCount").textContent=races.filter(r=>r.type==="JRA").length;$("dashNarCount").textContent=races.filter(r=>r.type==="NAR").length;$("dashEntryCount").textContent=entries.length;$("dashResultCount").textContent=results.length;$("dashboardRaceRows").innerHTML=races.slice(0,30).map(r=>`<tr><td>${displayDate(r.date)}</td><td>${esc(r.type)}</td><td>${esc(r.placeName)}</td><td>${r.raceNo}R</td><td>${esc(raceNameForDisplay(r))}</td><td>${esc(r.status||"-")}</td><td><button class="btn small" data-open-race="${esc(r.race_id)}">開く</button></td></tr>`).join("")||`<tr><td colspan="7" class="empty">データがありません</td></tr>`;document.querySelectorAll("[data-open-race]").forEach(b=>b.onclick=async()=>{state.currentRaceId=b.dataset.openRace;await showView("race");$("raceSelector").value=state.currentRaceId;await openRace(state.currentRaceId)});const last=sims.at(-1);$("dashLastProfit").textContent=yen(last?.summary?.profit);$("dashLastRoi").textContent=pct(last?.summary?.roi);$("dashLastProfit").className="stat-value small "+((last?.summary?.profit||0)>=0?"good":"bad");$("dashLastRoi").className="stat-value small "+((last?.summary?.roi||0)>=100?"good":"bad");const scores=strategies.map(s=>{const related=sims.filter(x=>x.config?.strategyId===s.id);const avg=related.length?related.reduce((a,x)=>a+(x.summary?.roi||0),0)/related.length:0;return{s,avg,n:related.length}}).sort((a,b)=>b.avg-a.avg);$("dashboardStrategyScore").innerHTML=scores.length?scores.slice(0,5).map(x=>`<div class="strategy-card"><strong>${esc(x.s.name)}</strong><div class="muted">実行 ${x.n}回　平均ROI ${pct(x.avg)}</div></div>`).join(""):`<div class="empty">戦略データなし</div>`;drawLineChart($("dashboardChart"),(last?.rows||[]).map(x=>x.bank),"--accent")}
 async function renderCalendar(){
@@ -802,14 +814,14 @@ async function renderSimPlaceOptions(preferred=state.simSelectedPlaces){
   });
   updateSimPlaceSummary()
 }
-function readSimConfig(){const predictionMode=$("simPredictionMode").value||"custom",preset=PREDICTION_MODE_PRESETS[predictionMode]||{};return{strategyId:$("simStrategy").value,predictionMode,start:compactDate($("simStart").value),end:compactDate($("simEnd").value),type:$("simType").value,places:getSelectedSimPlaces(),ticketType:$("simTicket").value,dailyBudget:Number($("simDailyBudget").value||0),unit:Number($("simUnit").value||100),topN:Number($("simTopN").value||3),maxTickets:Number($("simMaxTickets").value||6),maxRaces:Number($("simMaxRace").value||6),minEv:Number($("simMinEv").value||0),minAi:Number($("simMinAi").value||0),minOdds:Number($("simMinOdds").value||0),maxOdds:Number($("simMaxOdds").value||999),priority:preset.priority||$("simPriority").value,agreementMode:preset.agreementMode||$("simAgreement").value,budgetMode:$("simBudgetMode").value||"sequential",dailyRankBasis:$("simDailyRankBasis").value||"ev"}}
+function readSimConfig(){const predictionMode=$("simPredictionMode").value||"custom",preset=PREDICTION_MODE_PRESETS[predictionMode]||{};return{strategyId:$("simStrategy").value,predictionMode,start:compactDate($("simStart").value),end:compactDate($("simEnd").value),type:$("simType").value,places:getSelectedSimPlaces(),ticketType:$("simTicket").value,dailyBudget:Number($("simDailyBudget").value||0),unit:Number($("simUnit").value||100),topN:Number($("simTopN").value||3),maxTickets:Number($("simMaxTickets").value||6),maxRaces:Number($("simMaxRace").value||6),minEv:Number($("simMinEv").value||0),minAi:Number($("simMinAi").value||0),minOdds:Number($("simMinOdds").value||0),maxOdds:Number($("simMaxOdds").value||999),priority:preset.priority||$("simPriority").value,agreementMode:preset.agreementMode||$("simAgreement").value,budgetMode:$("simBudgetMode").value||"sequential",dailyRankBasis:$("simDailyRankBasis").value||"ev",raceBudget:Number(state.settings.cloneRaceBudget||0),minReturnRate:Number(state.settings.cloneMinReturnRate||0),avoidToragami:state.settings.cloneAvoidToragami!==false,useBracket:state.settings.cloneUseBracket!==false,useTrioTrifecta:state.settings.cloneUseTrioTrifecta!==false,useWideQuinella:state.settings.cloneUseWideQuinella!==false,offTicketPolicy:state.settings.cloneOffTicketPolicy||"ticketOnly",nagoyaMode:state.settings.cloneNagoyaMode===true,narMoveAdjust:state.settings.cloneNarMoveAdjust!==false,narMoveLearn:state.settings.cloneNarMoveLearn===true,skipDebutRaces:state.settings.cloneSkipDebut!==false,reserveMain:state.settings.cloneReserveMain===true,mainRaceNo:Number(state.settings.cloneMainRaceNo||11),mainReserveAmount:Number(state.settings.cloneMainReserve||0),noForceFill:state.settings.cloneForceFill!==true}}
 function ticketPayout(result,ticket){return Number(result.payouts?.[ticket.ticketType]?.[ticket.key]||0)}
 function simulationEntrySorters(){return{ai:(a,b)=>b.ai-a.ai,ev:(a,b)=>b.ev-a.ev,expected:(a,b)=>(b.ev*b.odds)-(a.ev*a.odds),balanced:(a,b)=>(b.ai+b.ev*25)-(a.ai+a.ev*25)}}
 function simulationDailyRankScore(entries,basis){if(!entries.length)return-1;const values=entries.map(e=>basis==="adjusted"?Number(e.ev||0)*clamp(Number(e.ai||0)/100,.2,1.2):basis==="expected"?Number(e.ev||0)*Number(e.odds||0):Number(e.ev||0));return Math.max(...values)}
 async function buildSimulationCandidate(race,result,c){let entries=await getByIndex("entries","race_id",race.race_id);recalcEntryScores(entries);const qualifies=e=>e.ev>=c.minEv&&e.ai>=c.minAi&&e.odds>=c.minOdds&&e.odds<=c.maxOdds;let candidateEntries=entries.filter(qualifies);const sorters=simulationEntrySorters();candidateEntries.sort(sorters[c.priority]||sorters.ai);candidateEntries=candidateEntries.slice(0,c.topN);const candidateTickets=generateTickets(c.ticketType,candidateEntries,c.maxTickets);return{race,result,entries,candidateEntries,candidateTickets,purchaseTickets:[],rankScore:simulationDailyRankScore(candidateEntries,c.dailyRankBasis)}}
 function allocateSequentialCandidates(items,c){const days=new Map();for(const item of items){const day=days.get(item.race.date)||{remaining:c.dailyBudget,boughtRaces:0};if(day.boughtRaces<c.maxRaces&&item.candidateTickets.length){const affordable=Math.floor(day.remaining/c.unit);item.purchaseTickets=item.candidateTickets.slice(0,affordable)}const invest=item.purchaseTickets.length*c.unit;if(invest>0){day.remaining-=invest;day.boughtRaces++}item.remaining=day.remaining;days.set(item.race.date,day)}}
 function allocateDailyRankCandidates(items,c){const groups=new Map();for(const item of items){const list=groups.get(item.race.date)||[];list.push(item);groups.set(item.race.date,list)}for(const list of groups.values()){let remaining=c.dailyBudget,boughtRaces=0;const ranked=[...list].sort((a,b)=>b.rankScore-a.rankScore||a.race.placeName.localeCompare(b.race.placeName)||a.race.raceNo-b.race.raceNo);for(const item of ranked){if(boughtRaces>=c.maxRaces||!item.candidateTickets.length){item.remaining=remaining;continue}const affordable=Math.floor(remaining/c.unit);item.purchaseTickets=item.candidateTickets.slice(0,affordable);const invest=item.purchaseTickets.length*c.unit;if(invest>0){remaining-=invest;boughtRaces++}item.remaining=remaining}for(const item of list)if(item.remaining===undefined)item.remaining=remaining}}
-async function runSimulationCore(){const c=readSimConfig(),[races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),resMap=new Map(results.map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places.length||c.places.includes(r.placeName))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(b.placeName)||a.raceNo-b.raceNo),items=[];for(const race of filtered){const result=resMap.get(race.race_id);if(result)items.push(await buildSimulationCandidate(race,result,c))}if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);const rows=[];let bank=0;for(const item of items){const{race,result,entries,candidateTickets,purchaseTickets}=item,candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,remaining:item.remaining,rankScore:item.rankScore})}state.simResult=rows;const totalBet=rows.reduce((sum,x)=>sum+x.invest,0),totalPay=rows.reduce((sum,x)=>sum+x.pay,0),summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0};const id=await addOne("simulations",{createdAt:new Date().toISOString(),config:c,summary,rows:rows.map(x=>({...x,race:x.race,result:undefined}))});renderSimulation(summary);await renderDashboard();await syncSimulationToAnalysis({force:true,reason:"バックテスト完了"});return id}
+async function runSimulationCore(){const c=readSimConfig(),[races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),resMap=new Map(results.map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places.length||c.places.includes(r.placeName))&&(!c.skipDebutRaces||!/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(b.placeName)||a.raceNo-b.raceNo),items=[];for(const race of filtered){const result=resMap.get(race.race_id);if(result)items.push(await buildSimulationCandidate(race,result,c))}if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);const rows=[];let bank=0;for(const item of items){const{race,result,entries,candidateTickets,purchaseTickets}=item,candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,remaining:item.remaining,rankScore:item.rankScore})}state.simResult=rows;const totalBet=rows.reduce((sum,x)=>sum+x.invest,0),totalPay=rows.reduce((sum,x)=>sum+x.pay,0),summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0};const id=await addOne("simulations",{createdAt:new Date().toISOString(),config:c,summary,rows:rows.map(x=>({...x,race:x.race,result:undefined}))});renderSimulation(summary);await renderDashboard();await syncSimulationToAnalysis({force:true,reason:"バックテスト完了"});return id}
 
 const BACKTEST_SYNC={running:false,stop:false};
 function setSimSyncStatus(message){if($("simSyncStatus"))$("simSyncStatus").textContent=message}
@@ -1222,26 +1234,20 @@ function parseResultHtml(html,rid){
   return finish.filter(Boolean).length||hasPayout?normalizeResult({race_id:rid,finishOrder:finish.filter(Boolean),payouts}):null
 }
 async function detectBridgeMode(){
-  const date=compactDate($("bridgeDate")?.value)||compactDate(isoToday());
-  if(hasResidentialBridge()){
-    const target=`https://nar.sp.netkeiba.com/top/race_list.html?kaisai_date=${date}`;
-    const html=await residentialBridgeText(target);
-    if(looksLikeNetkeibaResponse(html)){
-      state.settings.bridgeMode="browser";if(state.db)await putOne("settings",{key:"app",value:state.settings});
-      return{mode:"browser",status:"200",route:"Userscript住宅IP",chars:html.length};
-    }
-    throw new Error("Userscriptは動作していますがnetkeiba一覧を取得できません");
-  }
-  const base=await getBridgeBase(), statuses={rest:"ERR",legacy:"ERR"};
-  try{const x=await fetchTextResponse(base+"/ping");statuses.rest=String(x.res.status);if(x.res.ok){try{const j=JSON.parse(x.text);if(j&&((j.ok===true)||/pong|ok/i.test(String(j.status||j.message||"")))){state.settings.bridgeMode="rest";await putOne("settings",{key:"app",value:state.settings});return{mode:"rest",...statuses}}}catch{}}}catch{}
-  try{const target=`https://nar.sp.netkeiba.com/top/race_list.html?kaisai_date=${date}`,x=await fetchTextResponse(base+"?url="+encodeURIComponent(target));statuses.legacy=String(x.res.status);if(x.res.ok&&looksLikeNetkeibaResponse(x.text)){state.settings.bridgeMode="legacy";await putOne("settings",{key:"app",value:state.settings});return{mode:"legacy",...statuses}}}catch{}
-  throw new Error(`取得経路なし REST:${statuses.rest} Worker:${statuses.legacy}。画面右下のUserscript HUDが表示されるブラウザで開いてください`)
+  const date=compactDate($("bridgeDate")?.value)||compactDate(isoToday()),probe=await probeResidentialBridge(date,7000);
+  if(probe.ok){state.settings.bridgeMode="browser";if(state.db)await putOne("settings",{key:"app",value:state.settings});updateBridgeDiagnostics?.("接続済み","ok");return{mode:"browser",status:"200",route:`Userscript住宅IP ${probe.route}`,chars:probe.chars,elapsed:probe.elapsed}}
+  if(!probe.ok)state.settings.bridgeMode="auto";const raw=String($("bridgeUrl")?.value||state.settings.bridgeUrl||"").trim(),statuses={rest:"未設定",legacy:"未設定"};
+  if(!raw){updateBridgeDiagnostics?.("Userscript未検出","bad");throw new Error(`住宅IP Userscript応答なし: ${probe.error||"未検出"}。Worker URLも未設定です。Bridge再検出を押すかUserscriptの有効状態を確認してください`)}
+  const base=raw.replace(/\/+$/,"");state.settings.bridgeUrl=base;
+  try{const x=await fetchTextResponse(base+"/ping");statuses.rest=String(x.res.status);if(x.res.ok){try{const j=JSON.parse(x.text);if(j&&((j.ok===true)||/pong|ok/i.test(String(j.status||j.message||"")))){state.settings.bridgeMode="rest";await putOne("settings",{key:"app",value:state.settings});BRIDGE_DIAG.lastRoute="REST Worker";updateBridgeDiagnostics?.("REST接続済み","ok");return{mode:"rest",...statuses}}}catch{}}}catch(e){statuses.rest=e.message}
+  try{const target=`https://nar.sp.netkeiba.com/top/race_list.html?kaisai_date=${date}`,x=await fetchTextResponse(base+"?url="+encodeURIComponent(target));statuses.legacy=String(x.res.status);if(x.res.ok&&looksLikeNetkeibaResponse(x.text)){state.settings.bridgeMode="legacy";await putOne("settings",{key:"app",value:state.settings});BRIDGE_DIAG.lastRoute="互換Worker";updateBridgeDiagnostics?.("互換Worker接続済み","ok");return{mode:"legacy",...statuses}}}catch(e){statuses.legacy=e.message}
+  updateBridgeDiagnostics?.("接続経路なし","bad");throw new Error(`取得経路なし Userscript:${probe.error||"未検出"} REST:${statuses.rest} Worker:${statuses.legacy}`)
 }
-async function bridgePing(){try{bridgeLog("接続テスト中…");const d=await detectBridgeMode();bridgeLog(`接続成功：${d.mode==="browser"?"Userscript住宅IP":d.mode==="legacy"?"既存Worker互換":"REST"}モード`,d)}catch(e){bridgeLog("接続失敗: "+e.message)}}
+async function bridgePing(){try{bridgeLog("接続テスト中…");updateBridgeDiagnostics("再検出中");const d=await detectBridgeMode();bridgeLog(`接続成功：${d.mode==="browser"?"Userscript住宅IP":d.mode==="legacy"?"既存Worker互換":"REST"}モード`,d);updateBridgeDiagnostics("接続済み","ok")}catch(e){bridgeLog("接続失敗: "+e.message);updateBridgeDiagnostics("接続失敗","bad")}}
 async function bridgeLoadList({silent=false,deferRefresh=false}={}){
   try{
     const date=compactDate($("bridgeDate").value);if(!date)throw new Error("日付未指定");
-    const mode=state.settings.bridgeMode&&state.settings.bridgeMode!=="auto"?state.settings.bridgeMode:(await detectBridgeMode()).mode;
+    const storedMode=state.settings.bridgeMode&&state.settings.bridgeMode!=="auto"?state.settings.bridgeMode:"auto",mode=storedMode==="browser"&&!hasResidentialBridge()?(await detectBridgeMode()).mode:storedMode!=="auto"?storedMode:(await detectBridgeMode()).mode;
     let races=[],logs=[];
     if(mode==="rest"){
       const d=await bridgeFetch(`/race/list?date=${encodeURIComponent(date)}`);races=Array.isArray(d)?d:d.races||[]
@@ -1299,7 +1305,7 @@ function shouldFetchRaceResult(race,date){
 async function bridgeLoadBundle(rid=$("bridgeRaceId").value.trim(),silent=false,deferRefresh=false){
   try{
     if(!rid)throw new Error("race_id未指定");
-    const existingRace=await getOne("races",rid),mode=state.settings.bridgeMode&&state.settings.bridgeMode!=="auto"?state.settings.bridgeMode:(await detectBridgeMode()).mode,kind=String(existingRace?.type||raceKindFromId(rid)).toUpperCase(),date=compactDate(existingRace?.date||$("bridgeDate").value);
+    const existingRace=await getOne("races",rid),storedMode=state.settings.bridgeMode&&state.settings.bridgeMode!=="auto"?state.settings.bridgeMode:"auto",mode=storedMode==="browser"&&!hasResidentialBridge()?(await detectBridgeMode()).mode:storedMode!=="auto"?storedMode:(await detectBridgeMode()).mode,kind=String(existingRace?.type||raceKindFromId(rid)).toUpperCase(),date=compactDate(existingRace?.date||$("bridgeDate").value);
     if(mode==="rest"){
       const paths=[`/race/${encodeURIComponent(rid)}`,`/entry/${encodeURIComponent(rid)}`,`/odds/${encodeURIComponent(rid)}`,`/result/${encodeURIComponent(rid)}`],settled=await Promise.allSettled(paths.map(p=>bridgeFetch(p))),value=i=>settled[i].status==="fulfilled"?settled[i].value:null;
       const raceData=value(0),entryData=value(1),oddsData=value(2),resultData=value(3),r=raceData?.race||raceData||existingRace;
@@ -1331,7 +1337,19 @@ async function bridgeLoadBundle(rid=$("bridgeRaceId").value.trim(),silent=false,
     return false
   }
 }
-async function bridgeSyncDay(){try{const races=await bridgeLoadList({silent:true});let ok=0;for(const r of races){const rid=r.race_id||r.raceId;if(rid&&await bridgeLoadBundle(rid,true))ok++;bridgeLog(`同期 ${ok}/${races.length}`,{current:rid})}bridgeLog("当日同期完了",{total:races.length,success:ok})}catch(e){bridgeLog("同期失敗: "+e.message)}}
+async function bridgeSyncDay(){
+  try{
+    updateBridgeDiagnostics("同期中");const races=await bridgeLoadList({silent:true});let ok=0,failed=0;const failures=[];
+    for(let i=0;i<races.length;i++){
+      const rid=races[i].race_id||races[i].raceId;if(!rid)continue;let success=await bridgeLoadBundle(rid,true,true);
+      if(!success){await new Promise(r=>setTimeout(r,500));success=await bridgeLoadBundle(rid,true,true)}
+      if(success)ok++;else{failed++;failures.push({race_id:rid,error:window.__LAST_BUNDLE_ERROR__||"取得失敗"})}
+      bridgeLog(`同期 ${i+1}/${races.length} 成功${ok} 失敗${failed}`,{current:rid,lastError:success?"":window.__LAST_BUNDLE_ERROR__||""});
+      if((i+1)%4===0)await new Promise(r=>setTimeout(r,180))
+    }
+    await refreshAll();bridgeLog("当日同期完了",{total:races.length,success:ok,failed,failures:failures.slice(0,20)});updateBridgeDiagnostics(failed?`一部失敗 ${ok}/${races.length}`:`同期完了 ${ok}R`,failed?"bad":"ok");return{total:races.length,success:ok,failed,failures}
+  }catch(e){bridgeLog("同期失敗: "+e.message);updateBridgeDiagnostics("同期失敗","bad");return{total:0,success:0,failed:1,failures:[{error:e.message}]}}
+}
 async function refreshAll(){await Promise.all([renderDashboard(),refreshRaceSelector(),renderDbCounts(),refreshStrategySelect()]);if(document.querySelector("#view-calendar.active"))await renderCalendar();if(document.querySelector("#view-simulation.active"))await renderSimPlaceOptions(state.simSelectedPlaces)}
 const SPLIT_ANALYSIS_URL="https://yamase-takiyoshi.github.io/-TheKeiba-Ultimate-NEXT/keiba_profit_spec_chart_switcher_candle_v22_dark_light.html?src=bridge2";
 const PROFIT_GRAPH_BRIDGE_KEY="keibaProfitGraphBridge_v1";
@@ -2190,6 +2208,83 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   }
   window.productIntelligenceWire=wire;
   window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,1100));
+})();
+</script>
+
+<script>
+/* v1.0.20 Bridge Recovery / Setting Profile Clone */
+(function(){
+  const PROFILE_FIELDS={
+    defaultPredictionMode:"string",defaultBudgetMode:"string",defaultDailyRankBasis:"string",defaultMinEv:"number",defaultMinAi:"number",defaultBudget:"number",defaultUnit:"number",aiStrength:"number",
+    cloneRaceBudget:"number",cloneTopN:"number",cloneMaxTickets:"number",cloneMaxRaces:"number",cloneMinOdds:"number",cloneMaxOdds:"number",cloneMinReturnRate:"number",cloneAvoidToragami:"bool",cloneUseBracket:"bool",cloneUseTrioTrifecta:"bool",cloneUseWideQuinella:"bool",cloneOffTicketPolicy:"string",cloneNagoyaMode:"bool",cloneNarMoveAdjust:"bool",cloneNarMoveLearn:"bool",cloneSkipDebut:"bool",cloneReserveMain:"bool",cloneMainRaceNo:"number",cloneMainReserve:"number",cloneForceFill:"bool"
+  };
+  const FIELD_IDS={
+    defaultPredictionMode:"defaultPredictionMode",defaultBudgetMode:"defaultBudgetMode",defaultDailyRankBasis:"defaultDailyRankBasis",defaultMinEv:"defaultMinEv",defaultMinAi:"defaultMinAi",defaultBudget:"defaultBudget",defaultUnit:"defaultUnit",aiStrength:"aiStrength",
+    cloneRaceBudget:"cloneRaceBudget",cloneTopN:"cloneTopN",cloneMaxTickets:"cloneMaxTickets",cloneMaxRaces:"cloneMaxRaces",cloneMinOdds:"cloneMinOdds",cloneMaxOdds:"cloneMaxOdds",cloneMinReturnRate:"cloneMinReturnRate",cloneAvoidToragami:"cloneAvoidToragami",cloneUseBracket:"cloneUseBracket",cloneUseTrioTrifecta:"cloneUseTrioTrifecta",cloneUseWideQuinella:"cloneUseWideQuinella",cloneOffTicketPolicy:"cloneOffTicketPolicy",cloneNagoyaMode:"cloneNagoyaMode",cloneNarMoveAdjust:"cloneNarMoveAdjust",cloneNarMoveLearn:"cloneNarMoveLearn",cloneSkipDebut:"cloneSkipDebut",cloneReserveMain:"cloneReserveMain",cloneMainRaceNo:"cloneMainRaceNo",cloneMainReserve:"cloneMainReserve",cloneForceFill:"cloneForceFill"
+  };
+  function boolValue(v){return v===true||v==="on"||v==="true"||v===1}
+  function cloneDefaults(){return{cloneRaceBudget:600,cloneTopN:3,cloneMaxTickets:6,cloneMaxRaces:6,cloneMinOdds:1,cloneMaxOdds:999,cloneMinReturnRate:120,cloneAvoidToragami:true,cloneUseBracket:true,cloneUseTrioTrifecta:true,cloneUseWideQuinella:true,cloneOffTicketPolicy:"ticketOnly",cloneNagoyaMode:false,cloneNarMoveAdjust:true,cloneNarMoveLearn:false,cloneSkipDebut:true,cloneReserveMain:false,cloneMainRaceNo:11,cloneMainReserve:600,cloneForceFill:false}}
+  function captureCloneUiToState(){
+    for(const [key,type] of Object.entries(PROFILE_FIELDS)){
+      const el=$(FIELD_IDS[key]);if(!el)continue;
+      state.settings[key]=type==="number"?Number(el.value||0):type==="bool"?el.value==="on":el.value
+    }
+  }
+  function applyCloneUi(){
+    const defs=cloneDefaults();for(const [k,v] of Object.entries(defs))if(state.settings[k]===undefined)state.settings[k]=v;
+    for(const [key,type] of Object.entries(PROFILE_FIELDS)){
+      const el=$(FIELD_IDS[key]);if(!el)continue;const v=state.settings[key];el.value=type==="bool"?(boolValue(v)?"on":"off"):(v??"")
+    }
+  }
+  function captureProfileValues(){captureCloneUiToState();const out={};for(const k of Object.keys(PROFILE_FIELDS))out[k]=state.settings[k];return out}
+  function applyProfileValues(values={}){for(const [k,v] of Object.entries(values))if(k in PROFILE_FIELDS)state.settings[k]=PROFILE_FIELDS[k]==="bool"?boolValue(v):PROFILE_FIELDS[k]==="number"?Number(v):String(v);applySettings(true);applyCloneUi();updateModeUi()}
+  function profileList(){return Array.isArray(state.settings.settingProfiles)?state.settings.settingProfiles:[]}
+  function ensureProfiles(){
+    let list=profileList();if(!list.length){list=[{id:"profile-default",name:"標準クローン",values:captureProfileValues(),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}];state.settings.settingProfiles=list;state.settings.activeSettingProfileId=list[0].id}
+    if(!list.some(x=>x.id===state.settings.activeSettingProfileId))state.settings.activeSettingProfileId=list[0].id
+  }
+  function setProfileStatus(text,kind=""){const el=$("settingsProfileStatus");if(!el)return;el.textContent=text;el.style.borderLeftColor=kind==="bad"?"var(--bad)":kind==="ok"?"var(--good)":"var(--accent)"}
+  function renderProfiles(){ensureProfiles();const list=profileList(),sel=$("settingsProfileSelect");if(!sel)return;sel.innerHTML=list.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("");sel.value=state.settings.activeSettingProfileId;const active=list.find(x=>x.id===sel.value);$("settingsProfileName").value=active?.name||"";$("settingsProfileBadge").textContent=`${list.length}モード`}
+  async function persistProfiles(){captureCloneUiToState();await putOne("settings",{key:"app",value:state.settings});renderProfiles()}
+  async function activateProfile(id){ensureProfiles();const p=profileList().find(x=>x.id===id);if(!p)return;state.settings.activeSettingProfileId=p.id;applyProfileValues(p.values);await putOne("settings",{key:"app",value:state.settings});renderProfiles();setProfileStatus(`「${p.name}」をSIMへ適用しました。`,"ok")}
+  async function newProfile(){const name=$("settingsProfileName").value.trim()||prompt("新しい設定モード名","新規モード");if(!name)return;const now=new Date().toISOString(),p={id:`profile-${Date.now()}`,name,values:captureProfileValues(),createdAt:now,updatedAt:now};state.settings.settingProfiles=[...profileList(),p];state.settings.activeSettingProfileId=p.id;await persistProfiles();setProfileStatus(`「${name}」を現在値から作成しました。`,"ok")}
+  async function cloneProfile(){ensureProfiles();const src=profileList().find(x=>x.id===$("settingsProfileSelect").value);if(!src)return;const name=prompt("複製後のモード名",`${src.name} コピー`);if(!name)return;const now=new Date().toISOString(),p={id:`profile-${Date.now()}`,name,values:typeof structuredClone==="function"?structuredClone(src.values):JSON.parse(JSON.stringify(src.values)),createdAt:now,updatedAt:now};state.settings.settingProfiles=[...profileList(),p];state.settings.activeSettingProfileId=p.id;await persistProfiles();setProfileStatus(`「${src.name}」を「${name}」として複製しました。`,"ok")}
+  async function overwriteProfile(){ensureProfiles();const id=$("settingsProfileSelect").value,p=profileList().find(x=>x.id===id);if(!p)return;p.values=captureProfileValues();p.updatedAt=new Date().toISOString();await persistProfiles();setProfileStatus(`「${p.name}」を現在値で上書きしました。`,"ok")}
+  async function renameProfile(){ensureProfiles();const p=profileList().find(x=>x.id===$("settingsProfileSelect").value);if(!p)return;const name=$("settingsProfileName").value.trim()||prompt("設定モード名",p.name);if(!name)return;p.name=name;p.updatedAt=new Date().toISOString();await persistProfiles();setProfileStatus(`モード名を「${name}」へ変更しました。`,"ok")}
+  async function deleteProfile(){ensureProfiles();const list=profileList();if(list.length<=1)return setProfileStatus("最後の1モードは削除できません。","bad");const id=$("settingsProfileSelect").value,p=list.find(x=>x.id===id);if(!p||!confirm(`「${p.name}」を削除しますか？`))return;state.settings.settingProfiles=list.filter(x=>x.id!==id);state.settings.activeSettingProfileId=state.settings.settingProfiles[0].id;await activateProfile(state.settings.activeSettingProfileId);setProfileStatus(`「${p.name}」を削除しました。`,"ok")}
+  function exportProfiles(){ensureProfiles();downloadText(`TheKeiba_SettingProfiles_${new Date().toISOString().slice(0,10)}.json`,JSON.stringify({app:"The競馬 Ultimate NEXT Professional",version:APP_VERSION,exportedAt:new Date().toISOString(),activeSettingProfileId:state.settings.activeSettingProfileId,settingProfiles:profileList()},null,2),"application/json")}
+  async function importProfilesFile(file){const data=JSON.parse(await file.text()),incoming=Array.isArray(data.settingProfiles)?data.settingProfiles:[];if(!incoming.length)throw new Error("設定モードがありません");const normalized=incoming.map((p,i)=>({id:String(p.id||`profile-import-${Date.now()}-${i}`),name:String(p.name||`読込モード${i+1}`),values:{...p.values},createdAt:p.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()}));const map=new Map(profileList().map(p=>[p.id,p]));for(const p of normalized)map.set(p.id,p);state.settings.settingProfiles=[...map.values()];state.settings.activeSettingProfileId=String(data.activeSettingProfileId||normalized[0].id);await persistProfiles();await activateProfile(state.settings.activeSettingProfileId);setProfileStatus(`${normalized.length}モードを読み込みました。`,"ok")}
+
+  window.updateBridgeDiagnostics=function(label="",kind=""){
+    const badge=$("bridgeHealthBadge"),diag=$("bridgeDiag");const ready=hasResidentialBridge(),route=BRIDGE_DIAG.lastRoute||state.settings.bridgeMode||"未検出";
+    if(badge){badge.innerHTML=`<span class="status-dot ${kind==="ok"||ready?"on":""}"></span>${esc(label|| (ready?"Userscript接続済み":"未接続"))}`}
+    if(diag)diag.textContent=[`Version: ${APP_VERSION}`,`Route: ${route}`,`Userscript ready: ${ready}`,`Direct bridge: ${!!BRIDGE_DIAG.direct}`,`Last ready: ${BRIDGE_DIAG.lastReadyAt||"-"}`,`Last request: ${BRIDGE_DIAG.lastRequestAt||"-"}`,`Last response: ${BRIDGE_DIAG.lastResponseAt||"-"}`,`Handshake count: ${BRIDGE_DIAG.handshakes||0}`,`Bridge mode: ${state.settings.bridgeMode||"auto"}`,`Worker URL: ${state.settings.bridgeUrl||"未設定"}`,`Online: ${navigator.onLine}`,`Visibility: ${document.visibilityState}`,`Last error: ${BRIDGE_DIAG.lastError||"-"}`].join("\n")
+  };
+  let reconnectBusy=false;async function reconnectBridge({silent=false}={}){if(reconnectBusy)return false;reconnectBusy=true;try{updateBridgeDiagnostics("再検出中");state.settings.bridgeMode="auto";if(typeof window.__theKeibaBridgeHandshake==="function")window.__theKeibaBridgeHandshake();const d=await detectBridgeMode();updateBridgeDiagnostics("接続済み","ok");if(!silent)bridgeLog("Bridge再検出成功",d);return true}catch(e){BRIDGE_DIAG.lastError=e.message;updateBridgeDiagnostics("未接続","bad");if(!silent)bridgeLog("Bridge再検出失敗: "+e.message);return false}finally{reconnectBusy=false}}
+  async function copyBridgeDiagnostics(){updateBridgeDiagnostics();const text=$("bridgeDiag")?.textContent+"\n\nLog:\n"+($("bridgeLog")?.textContent||"");try{await navigator.clipboard.writeText(text);bridgeLog("Bridge診断をコピーしました")}catch{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();bridgeLog("Bridge診断をコピーしました")}}
+
+  const baseApply=applySettings;
+  applySettings=function(applySimDefaults=true){baseApply(applySimDefaults);applyCloneUi();renderProfiles()};
+  const baseSave=saveAppSettings;
+  saveAppSettings=async function(){captureCloneUiToState();await baseSave();const active=profileList().find(x=>x.id===state.settings.activeSettingProfileId);if(active){active.values=captureProfileValues();active.updatedAt=new Date().toISOString();await putOne("settings",{key:"app",value:state.settings})}renderProfiles()};
+  const baseRead=readSimConfig;
+  readSimConfig=function(){const c=baseRead();c.maxRaces=Number(c.maxRaces||0)>0?Number(c.maxRaces):Number.MAX_SAFE_INTEGER;return c};
+  function ticketEnabled(type,c){if(type==="bracketQuinella"&&!c.useBracket)return false;if((type==="trio"||type==="trifecta")&&!c.useTrioTrifecta)return false;if((type==="wide"||type==="quinella")&&!c.useWideQuinella)return false;return true}
+  function estimatedTicketRate(ticket,entries){const nums=ticket.ticketType==="bracketQuinella"?(ticket.frames||[]):ticket.horses||[],selected=ticket.ticketType==="bracketQuinella"?entries.filter(e=>nums.includes(Number(e.frameNo))):entries.filter(e=>nums.includes(Number(e.horseNo)));if(!selected.length)return 0;return selected.reduce((a,e)=>a+Number(e.ev||0),0)/selected.length*100}
+  const baseBuild=buildSimulationCandidate;
+  buildSimulationCandidate=async function(race,result,c){const item=await baseBuild(race,result,c);let disabledHit=false;item.candidateTickets=item.candidateTickets.filter(t=>{const enabled=ticketEnabled(t.ticketType,c);if(!enabled)disabledHit=true;return enabled});if(c.offTicketPolicy==="skipRace"&&disabledHit)item.candidateTickets=[];item.candidateTickets=item.candidateTickets.filter(t=>{const rate=estimatedTicketRate(t,item.entries);t.estimatedReturnRate=rate;return rate>=Math.max(c.avoidToragami?100:0,Number(c.minReturnRate||0))});if(c.nagoyaMode&&race.placeName==="名古屋"){item.candidateTickets=item.candidateTickets.filter(t=>!["bracketQuinella","exacta","trifecta"].includes(t.ticketType));const trio=item.candidateTickets.filter(t=>t.ticketType==="trio").slice(0,2),other=item.candidateTickets.filter(t=>t.ticketType!=="trio");item.candidateTickets=[...other,...trio].slice(0,3)}else item.candidateTickets=item.candidateTickets.slice(0,c.maxTickets);item.rankScore=simulationDailyRankScore(item.candidateEntries,c.dailyRankBasis);return item};
+  allocateSequentialCandidates=function(items,c){const days=new Map();for(const item of items){const key=item.race.date,day=days.get(key)||{remaining:c.dailyBudget,boughtRaces:0,reached:new Set()};if(c.reserveMain&&item.race.raceNo>=c.mainRaceNo)day.reached.add(item.race.placeName);const unreached=c.reserveMain?new Set(items.filter(x=>x.race.date===key&&x.race.raceNo>=c.mainRaceNo).map(x=>x.race.placeName).filter(p=>!day.reached.has(p))).size:0,available=Math.max(0,day.remaining-unreached*c.mainReserveAmount),affordable=Math.floor(available/c.unit);if(day.boughtRaces<c.maxRaces&&item.candidateTickets.length){item.purchaseTickets=c.noForceFill?(affordable>=item.candidateTickets.length?[...item.candidateTickets]:[]):item.candidateTickets.slice(0,affordable)}const invest=item.purchaseTickets.length*c.unit;if(invest>0){day.remaining-=invest;day.boughtRaces++}item.remaining=day.remaining;days.set(key,day)}};
+  allocateDailyRankCandidates=function(items,c){const groups=new Map();for(const item of items){const list=groups.get(item.race.date)||[];list.push(item);groups.set(item.race.date,list)}for(const list of groups.values()){let remaining=c.dailyBudget,boughtRaces=0;const ranked=[...list].sort((a,b)=>b.rankScore-a.rankScore||a.race.placeName.localeCompare(b.race.placeName)||a.race.raceNo-b.race.raceNo);for(const item of ranked){if(boughtRaces>=c.maxRaces||!item.candidateTickets.length){item.remaining=remaining;continue}const affordable=Math.floor(remaining/c.unit);item.purchaseTickets=c.noForceFill?(affordable>=item.candidateTickets.length?[...item.candidateTickets]:[]):item.candidateTickets.slice(0,affordable);const invest=item.purchaseTickets.length*c.unit;if(invest>0){remaining-=invest;boughtRaces++}item.remaining=remaining}for(const item of list)if(item.remaining===undefined)item.remaining=remaining}};
+
+  function wireV1020(){
+    ensureProfiles();applyCloneUi();renderProfiles();updateBridgeDiagnostics("確認中");
+    $("settingsProfileSelect").onchange=()=>{const p=profileList().find(x=>x.id===$("settingsProfileSelect").value);$("settingsProfileName").value=p?.name||""};
+    $("settingsProfileApplyBtn").onclick=()=>activateProfile($("settingsProfileSelect").value);$("settingsProfileNewBtn").onclick=newProfile;$("settingsProfileCloneBtn").onclick=cloneProfile;$("settingsProfileOverwriteBtn").onclick=overwriteProfile;$("settingsProfileRenameBtn").onclick=renameProfile;$("settingsProfileDeleteBtn").onclick=deleteProfile;$("settingsProfileExportBtn").onclick=exportProfiles;$("settingsProfileImportBtn").onclick=()=>$("settingsProfileImportFile").click();$("settingsProfileImportFile").onchange=async e=>{const f=e.target.files?.[0];if(!f)return;try{await importProfilesFile(f)}catch(err){setProfileStatus("読込失敗: "+err.message,"bad")}e.target.value=""};
+    $("bridgeSaveBtn").onclick=async()=>{state.settings.bridgeUrl=String($("bridgeUrl").value||"").trim().replace(/\/+$/,"");state.settings.bridgeMode="auto";await putOne("settings",{key:"app",value:state.settings});bridgeLog(state.settings.bridgeUrl?"Worker Bridge URLを保存しました":"Userscript優先・Worker URL空欄で保存しました");updateBridgeDiagnostics()};$("bridgeReconnectBtn").onclick=()=>reconnectBridge();$("bridgeCopyDiagBtn").onclick=copyBridgeDiagnostics;
+    document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(()=>reconnectBridge({silent:true}),350)});window.addEventListener("focus",()=>setTimeout(()=>reconnectBridge({silent:true}),350));window.addEventListener("online",()=>setTimeout(()=>reconnectBridge({silent:true}),500));
+    [1800,5200,12000].forEach(ms=>setTimeout(()=>{if(!hasResidentialBridge())reconnectBridge({silent:true})},ms));
+  }
+  window.addEventListener("DOMContentLoaded",()=>setTimeout(wireV1020,120));
 })();
 </script>
 
