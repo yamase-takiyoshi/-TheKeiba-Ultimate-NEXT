@@ -73,7 +73,7 @@ label{display:block;font-size:13px;font-weight:800;color:var(--muted);margin-bot
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.10 NAR & Venue Fix</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.11 NAR Result Fix</small></div></div>
   <div class="header-actions"><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -268,7 +268,7 @@ async function residentialBridgeText(target){
 }
 function hasResidentialBridge(){return !!((typeof window.__narBridgeDirect==='function'&&window.__narBridgeHasDirect)||window.__NAR_BRIDGE_READY__);}
 
-const APP_VERSION="1.0.10";
+const APP_VERSION="1.0.11";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const SIM_TICKET_TYPES=["win","place","bracketQuinella","quinella","wide","exacta","trio","trifecta"];
@@ -606,19 +606,52 @@ function bridgePageUrls(type,rid,kind){
   if(kind==="JRA"){
     if(type==="shutuba")return[`https://race.netkeiba.com/race/shutuba.html?${q}&rf=race_submenu`];
     if(type==="odds")return[`https://race.netkeiba.com/odds/index.html?${q}`];
-    return[`https://race.netkeiba.com/race/result.html?${q}&rf=race_submenu`]
+    return[
+      `https://race.netkeiba.com/race/result.html?${q}&rf=race_list`,
+      `https://race.netkeiba.com/race/result.html?${q}&rf=race_submenu`
+    ]
   }
-  if(type==="shutuba")return[`https://nar.netkeiba.com/race/shutuba.html?${q}`,`https://nar.sp.netkeiba.com/race/shutuba.html?${q}`];
-  if(type==="odds")return[`https://nar.netkeiba.com/odds/index.html?${q}`,`https://nar.sp.netkeiba.com/odds/index.html?${q}`];
-  return[`https://nar.netkeiba.com/race/result.html?${q}`,`https://nar.sp.netkeiba.com/race/result.html?${q}`]
+  if(type==="shutuba")return[
+    `https://nar.netkeiba.com/race/shutuba.html?${q}&rf=race_list`,
+    `https://nar.sp.netkeiba.com/race/shutuba.html?${q}`
+  ];
+  if(type==="odds")return[
+    `https://nar.netkeiba.com/odds/index.html?${q}`,
+    `https://nar.sp.netkeiba.com/odds/index.html?${q}`
+  ];
+  return[
+    `https://nar.sp.netkeiba.com/race/race_result.html?${q}`,
+    `https://nar.netkeiba.com/race/result.html?${q}&rf=race_list`,
+    `https://nar.netkeiba.com/race/result.html?${q}&mode=result`,
+    `https://nar.sp.netkeiba.com/race/result.html?${q}`
+  ]
+}
+function bridgePageLooksUseful(type,html){
+  if(blockedBridgeHtml(html)||String(html||"").length<=200)return false;
+  if(type!=="result")return true;
+  try{
+    const doc=new DOMParser().parseFromString(html,"text/html"),text=(doc.body?.textContent||"").replace(/\s+/g," ");
+    const hasPayout=/(払戻金|払い戻し|払戻一覧)/.test(text)&&/(単勝|複勝|馬連|馬単|3連複|3連単)/.test(text);
+    const hasFinish=/(?:^|\s)\d{1,2}\s*着(?:\s|$)|着順/.test(text);
+    const cancelled=/(取止|取り止め|中止|不成立|返還)/.test(text);
+    return hasPayout&&(hasFinish||cancelled)
+  }catch{return false}
 }
 async function bridgeLoadHtmlPage(type,rid,kind,mode,{required=false}={}){
   const errors=[];
   if(mode==="legacy"){
-    try{const raw=await bridgeLegacyType(type,rid,kind),html=unwrapBridgeHtml(raw);if(!blockedBridgeHtml(html)&&html.length>200)return{html,url:`type:${type}`};errors.push(`type:${type} 内容不正`)}catch(e){errors.push(`type:${type} ${e.message}`)}
+    try{
+      const raw=await bridgeLegacyType(type,rid,kind),html=unwrapBridgeHtml(raw);
+      if(bridgePageLooksUseful(type,html))return{html,url:`type:${type}`};
+      errors.push(`type:${type} 内容不正`)
+    }catch(e){errors.push(`type:${type} ${e.message}`)}
   }
   for(const url of bridgePageUrls(type,rid,kind)){
-    try{const raw=await bridgeLegacyUrl(url),html=unwrapBridgeHtml(raw);if(!blockedBridgeHtml(html)&&html.length>200)return{html,url};errors.push(`${new URL(url).host} 内容不正`)}catch(e){errors.push(`${new URL(url).host} ${e.message}`)}
+    try{
+      const raw=await bridgeLegacyUrl(url),html=unwrapBridgeHtml(raw);
+      if(bridgePageLooksUseful(type,html))return{html,url};
+      errors.push(`${new URL(url).host} 内容不正`)
+    }catch(e){errors.push(`${new URL(url).host} ${e.message}`)}
   }
   if(required)throw new Error(`${type}取得失敗 ${errors.join(" / ")}`);
   return{html:"",url:"",errors}
@@ -685,14 +718,106 @@ function parseShutubaHtml(raw,rid,kind,date){
   return{race,entries}
 }
 function parseOddsHtml(raw){const html=unwrapBridgeHtml(raw),doc=new DOMParser().parseFromString(html,"text/html"),out=new Map(),rows=[...doc.querySelectorAll("tr")];for(const row of rows){const no=findHorseNo(row);if(!no)continue;let odds=numberFromText(textOf(row,[".Odds","td.Odds","[class*='Odds']"])),pop=numberFromText(textOf(row,[".Popular","td.Popular","[class*='Popular']",".Ninki","[class*='Ninki']"]));if(!odds){const vals=[...row.querySelectorAll("td")].map(x=>x.textContent.replace(/,/g,"").trim()).filter(x=>/^\d+\.\d+$/.test(x));if(vals.length)odds=Number(vals[0])}if(odds)out.set(no,{odds,popularity:pop})}return out}
+function resultTextTokens(doc){
+  const out=[],walker=doc.createTreeWalker(doc.body||doc,4);
+  while(walker.nextNode()){
+    const text=String(walker.currentNode.nodeValue||"").replace(/\u00a0/g," ").trim();
+    if(!text)continue;
+    out.push(...text.split(/\s+/).filter(Boolean))
+  }
+  return out
+}
+function parseFinishFromResultTokens(tokens){
+  const finish=[];
+  let start=0,stop=tokens.findIndex(t=>/^(?:払戻金|払い戻し|払戻一覧)$/.test(t));
+  if(stop<0)stop=tokens.length;
+  const marker=tokens.findIndex(t=>/結果・着順|着順/.test(t));if(marker>=0)start=marker;
+  for(let i=start;i<stop;i++){
+    let rank=0,j=i+1;
+    let m=String(tokens[i]).match(/^(\d{1,2})着$/);
+    if(m)rank=Number(m[1]);
+    else if(/^\d{1,2}$/.test(tokens[i])&&/^着$/.test(tokens[i+1]||"")){rank=Number(tokens[i]);j=i+2}
+    else continue;
+    if(!(rank>=1&&rank<=18))continue;
+    const nums=[];
+    for(let k=j;k<Math.min(stop,j+10);k++){
+      if(/^\d{1,2}$/.test(tokens[k]))nums.push(Number(tokens[k]));
+      if(nums.length>=2)break
+    }
+    const horseNo=nums.length>=2?nums[1]:0;
+    if(horseNo>=1&&horseNo<=18)finish[rank-1]=horseNo
+  }
+  return finish
+}
+function parsePayoutsFromResultTokens(tokens){
+  const payouts={win:{},place:{},bracketQuinella:{},quinella:{},wide:{},exacta:{},trio:{},trifecta:{}};
+  const marker=tokens.findIndex(t=>/^(?:払戻金|払い戻し|払戻一覧)$/.test(t));
+  if(marker<0)return payouts;
+  const defs=[
+    {labels:["単勝"],type:"win",size:1},
+    {labels:["複勝"],type:"place",size:1},
+    {labels:["枠連"],type:"bracketQuinella",size:2},
+    {labels:["馬連"],type:"quinella",size:2},
+    {labels:["ワイド"],type:"wide",size:2},
+    {labels:["枠単"],type:"skip",size:2},
+    {labels:["馬単"],type:"exacta",size:2},
+    {labels:["3連複","三連複"],type:"trio",size:3},
+    {labels:["3連単","三連単"],type:"trifecta",size:3}
+  ];
+  const hits=[];
+  for(let i=marker+1;i<tokens.length;i++){
+    const d=defs.find(x=>x.labels.includes(tokens[i]));if(d)hits.push({i,d})
+  }
+  for(let h=0;h<hits.length;h++){
+    const {i,d}=hits[h];if(d.type==="skip")continue;
+    const end=h+1<hits.length?hits[h+1].i:tokens.length,segment=tokens.slice(i+1,end),money=[];
+    let firstMoney=segment.length;
+    for(let k=0;k<segment.length;k++){
+      const m=String(segment[k]).match(/^([\d,]+)円$/);
+      if(m){if(firstMoney===segment.length)firstMoney=k;money.push(Number(m[1].replace(/,/g,"")))}
+    }
+    if(!money.length)continue;
+    const nums=[];
+    for(const token of segment.slice(0,firstMoney)){
+      if(/^\d{1,2}$/.test(token))nums.push(Number(token));
+      else{
+        const m=String(token).match(/^(\d{1,2})[-→>](\d{1,2})(?:[-→>](\d{1,2}))?$/);
+        if(m)nums.push(...m.slice(1).filter(Boolean).map(Number))
+      }
+    }
+    const count=Math.min(money.length,Math.floor(nums.length/d.size));
+    for(let n=0;n<count;n++){
+      const combo=nums.slice(n*d.size,(n+1)*d.size),value=money[n];
+      if(!value||combo.some(x=>!(x>=1&&x<=18)))continue;
+      let key="";
+      if(d.type==="win"||d.type==="place")key=String(combo[0]);
+      else if(d.type==="bracketQuinella"||d.type==="quinella"||d.type==="wide")key=canonicalPair(combo[0],combo[1]);
+      else if(d.type==="exacta")key=`${combo[0]}>${combo[1]}`;
+      else if(d.type==="trio")key=canonicalTrio(combo[0],combo[1],combo[2]);
+      else if(d.type==="trifecta")key=`${combo[0]}>${combo[1]}>${combo[2]}`;
+      if(key)payouts[d.type][key]=value
+    }
+  }
+  return payouts
+}
 function parseResultHtml(html,rid){
   const raw=unwrapBridgeHtml(html),doc=new DOMParser().parseFromString(raw,"text/html"),finish=[];
-  const rows=[...doc.querySelectorAll("tr.HorseList,table.RaceTable01 tbody tr,table.ResultTable tbody tr,table.race_table_01 tbody tr,[class*='ResultTable'] tbody tr")];
-  for(const row of rows){
-    const cells=[...row.querySelectorAll("th,td")].map(x=>x.textContent.replace(/\s+/g," ").trim());
-    const rank=numberFromText(textOf(row,[".Rank",".Result_Num","td.Result_Num","td:first-child"]))||numberFromText(cells[0]);
-    const no=numberFromText(textOf(row,[".Umaban",".Horse_Num","td.Umaban","[class*='Umaban']"]))||findHorseNo(row);
-    if(rank>=1&&rank<=18&&no>=1&&no<=18)finish[rank-1]=no;
+  const rowSet=new Set([
+    ...doc.querySelectorAll("tr.HorseList,table.RaceTable01 tbody tr,table.ResultTable tbody tr,table.race_table_01 tbody tr,[class*='ResultTable'] tbody tr"),
+    ...[...doc.querySelectorAll("tr")].filter(row=>row.querySelector("a[href*='/horse/'],a[href*='db.netkeiba.com/horse'],a[href*='db.sp.netkeiba.com/horse']"))
+  ]);
+  for(const row of rowSet){
+    const cellEls=[...row.querySelectorAll("th,td")],cells=cellEls.map(x=>x.textContent.replace(/\s+/g," ").trim());
+    let rank=numberFromText(textOf(row,[".Rank",".Result_Num","td.Result_Num","td:first-child"]));
+    let no=numberFromText(textOf(row,[".Umaban",".Horse_Num","td.Umaban","[class*='Umaban']"]));
+    const horseCell=cellEls.findIndex(x=>x.querySelector?.("a[href*='/horse/'],a[href*='db.netkeiba.com/horse'],a[href*='db.sp.netkeiba.com/horse']"));
+    if(horseCell>=0){
+      const before=cells.slice(0,horseCell).map(x=>/^\d{1,2}$/.test(x)?Number(x):0).filter(Boolean);
+      if(!rank&&before.length)rank=before[0];
+      if(!no&&before.length)no=before.at(-1)
+    }
+    if(!rank)rank=numberFromText(cells[0]);
+    if(rank>=1&&rank<=18&&no>=1&&no<=18)finish[rank-1]=no
   }
   const payouts={win:{},place:{},bracketQuinella:{},quinella:{},wide:{},exacta:{},trio:{},trifecta:{}};
   const put=(type,combo,money)=>{if(!combo||!money)return;payouts[type][combo]=money};
@@ -721,11 +846,14 @@ function parseResultHtml(html,rid){
       else if(type==="bracketQuinella"||type==="quinella"||type==="wide")put(type,canonicalPair(c[0],c[1]),v);
       else if(type==="exacta")put(type,`${c[0]}>${c[1]}`,v);
       else if(type==="trio")put(type,canonicalTrio(c[0],c[1],c[2]),v);
-      else if(type==="trifecta")put(type,`${c[0]}>${c[1]}>${c[2]}`,v);
+      else if(type==="trifecta")put(type,`${c[0]}>${c[1]}>${c[2]}`,v)
     }
   }
+  const tokens=resultTextTokens(doc),tokenFinish=parseFinishFromResultTokens(tokens),tokenPayouts=parsePayoutsFromResultTokens(tokens);
+  if(!finish.filter(Boolean).length)tokenFinish.forEach((n,i)=>{if(n)finish[i]=n});
+  for(const type of Object.keys(payouts))if(!Object.keys(payouts[type]).length)Object.assign(payouts[type],tokenPayouts[type]);
   const hasPayout=Object.values(payouts).some(x=>Object.keys(x).length);
-  return finish.filter(Boolean).length||hasPayout?normalizeResult({race_id:rid,finishOrder:finish.filter(Boolean),payouts}):null;
+  return finish.filter(Boolean).length||hasPayout?normalizeResult({race_id:rid,finishOrder:finish.filter(Boolean),payouts}):null
 }
 async function detectBridgeMode(){
   const date=compactDate($("bridgeDate")?.value)||compactDate(isoToday());
