@@ -73,7 +73,7 @@ label{display:block;font-size:13px;font-weight:800;color:var(--muted);margin-bot
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.9 Name & Split Fix</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.10 NAR & Venue Fix</small></div></div>
   <div class="header-actions"><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -268,7 +268,7 @@ async function residentialBridgeText(target){
 }
 function hasResidentialBridge(){return !!((typeof window.__narBridgeDirect==='function'&&window.__narBridgeHasDirect)||window.__NAR_BRIDGE_READY__);}
 
-const APP_VERSION="1.0.9";
+const APP_VERSION="1.0.10";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const SIM_TICKET_TYPES=["win","place","bracketQuinella","quinella","wide","exacta","trio","trifecta"];
@@ -305,11 +305,36 @@ function sanitizeRaceName(value,raceNo=0){
   return s;
 }
 function raceNameForDisplay(r){return sanitizeRaceName(r?.name||r?.raceName||"",Number(r?.raceNo||r?.race||0))}
-function normalizeRace(r){const id=String(r.race_id||r.raceId||"").trim();if(!id)throw new Error("race_idがありません");return{race_id:id,type:String(r.type||r.provider||"NAR").toUpperCase(),date:compactDate(r.date),placeName:String(r.placeName||r.place||"不明"),placeCode:Number(r.placeCode||0),raceNo:Number(r.raceNo||r.race||0),name:sanitizeRaceName(r.name||r.raceName||"",Number(r.raceNo||r.race||0)),surface:String(r.surface||""),distance:Number(r.distance||0),className:String(r.className||r.class||""),weather:String(r.weather||""),trackCondition:String(r.trackCondition||r.track||""),startTime:String(r.startTime||""),status:String(r.status||""),sourceUrl:String(r.sourceUrl||"")}}
-function normalizeEntry(e,rid){const n=Number(e.horseNo||e.number||e.umaban||0);if(!n)throw new Error(`馬番がありません: ${rid}`);const prob=Number(e.probWin??e.probability??0);const odds=Number(e.odds||0);const ai=Number(e.ai??e.score??0);return{id:`${rid}-${String(n).padStart(2,"0")}`,race_id:rid,frameNo:Number(e.frameNo||e.frame||0),horseNo:n,horseId:String(e.horseId||""),horseName:String(e.horseName||e.name||""),sexAge:String(e.sexAge||""),jockey:String(e.jockey||""),trainer:String(e.trainer||""),weight:Number(e.weight||0),horseWeight:String(e.horseWeight||""),popularity:Number(e.popularity||e.pop||0),odds,probWin:prob,probPlace:Number(e.probPlace||0),ev:Number(e.ev||(prob&&odds?prob*odds:0)),ai,style:String(e.style||""),memo:String(e.memo||"")}}
-function normalizeResult(r){const id=String(r.race_id||r.raceId||"").trim();if(!id)throw new Error("結果race_idがありません");return{race_id:id,finishOrder:(r.finishOrder||r.order||[]).map(Number).filter(Boolean),payouts:normalizePayouts(r.payouts||{}),confirmedAt:String(r.confirmedAt||new Date().toISOString())}}
+function normalizeRace(r){
+  const id=String(r?.race_id||r?.raceId||r?.id||"").trim();if(!id)throw new Error("race_idがありません");
+  const raceNo=Number(r?.raceNo||r?.race_no||r?.race||r?.number||Number(id.slice(-2))||0);
+  return{race_id:id,type:String(r?.type||r?.provider||r?.kind||"NAR").toUpperCase(),date:compactDate(r?.date||r?.raceDate||r?.race_date||""),placeName:String(r?.placeName||r?.place_name||r?.place||r?.venue||"不明"),placeCode:Number(r?.placeCode||r?.place_code||id.slice(4,6)||0),raceNo,name:sanitizeRaceName(r?.name||r?.raceName||r?.race_name||r?.title||"",raceNo),surface:String(r?.surface||r?.trackType||r?.track_type||""),distance:Number(r?.distance||0),className:String(r?.className||r?.class_name||r?.class||""),weather:String(r?.weather||""),trackCondition:String(r?.trackCondition||r?.track_condition||r?.track||""),startTime:String(r?.startTime||r?.start_time||r?.postTime||""),status:String(r?.status||""),sourceUrl:String(r?.sourceUrl||r?.source_url||"")}
+}
+function normalizeEntry(e,rid){
+  const n=Number(e?.horseNo||e?.horse_no||e?.horseNumber||e?.horse_number||e?.number||e?.umaban||e?.馬番||0);if(!n)throw new Error(`馬番がありません: ${rid}`);
+  const prob=Number(e?.probWin??e?.prob_win??e?.probability??0),odds=Number(e?.odds??e?.winOdds??e?.win_odds??0),ai=Number(e?.ai??e?.score??e?.aiScore??0);
+  return{id:`${rid}-${String(n).padStart(2,"0")}`,race_id:rid,frameNo:Number(e?.frameNo||e?.frame_no||e?.frame||e?.waku||0),horseNo:n,horseId:String(e?.horseId||e?.horse_id||""),horseName:String(e?.horseName||e?.horse_name||e?.name||""),sexAge:String(e?.sexAge||e?.sex_age||""),jockey:String(e?.jockey||e?.jockeyName||e?.jockey_name||""),trainer:String(e?.trainer||e?.trainerName||e?.trainer_name||""),weight:Number(e?.weight||e?.carriedWeight||e?.carried_weight||0),horseWeight:String(e?.horseWeight||e?.horse_weight||""),popularity:Number(e?.popularity||e?.popular||e?.pop||0),odds,probWin:prob,probPlace:Number(e?.probPlace||e?.prob_place||0),ev:Number(e?.ev||(prob&&odds?prob*odds:0)),ai,style:String(e?.style||""),memo:String(e?.memo||"")}
+}
+function normalizeFinishOrder(value){
+  if(Array.isArray(value))return value.map(x=>Number(x?.horseNo||x?.horse_no||x?.number||x)).filter(Boolean);
+  if(typeof value==="string")return(value.match(/\d+/g)||[]).map(Number).filter(Boolean);
+  if(value&&typeof value==="object")return Object.values(value).map(x=>Number(x?.horseNo||x?.horse_no||x?.number||x)).filter(Boolean);
+  return[]
+}
+function normalizeResult(r){
+  const id=String(r?.race_id||r?.raceId||r?.id||"").trim();if(!id)throw new Error("結果race_idがありません");
+  return{race_id:id,finishOrder:normalizeFinishOrder(r?.finishOrder??r?.finish_order??r?.order??r?.ranking??[]),payouts:normalizePayouts(r?.payouts||r?.payments||r?.refunds||{}),confirmedAt:String(r?.confirmedAt||r?.confirmed_at||new Date().toISOString())}
+}
 function normalizeStrategy(s){return{id:String(s.id||`strategy-${Date.now()}`),name:String(s.name||"無題戦略"),ticketType:String(s.ticketType||"win"),priority:String(s.priority||"ai"),topN:Number(s.topN||3),maxTickets:Number(s.maxTickets||6),minEv:Number(s.minEv??1),minAi:Number(s.minAi??80),minOdds:Number(s.minOdds??1),maxOdds:Number(s.maxOdds??999),unit:Number(s.unit||100),dailyBudget:Number(s.dailyBudget||2000),maxRaces:Number(s.maxRaces||6),agreementMode:String(s.agreementMode||"on"),places:Array.isArray(s.places)?s.places.map(String):[],enabled:s.enabled!==false}}
-function parsePayload(p){const races=Array.isArray(p.races)?p.races.map(normalizeRace):[],entries=[],results=Array.isArray(p.results)?p.results.map(normalizeResult):[],strategies=Array.isArray(p.strategies)?p.strategies.map(normalizeStrategy):[];if(Array.isArray(p.entries))for(const e of p.entries){const rid=String(e.race_id||e.raceId||"");if(rid)entries.push(normalizeEntry(e,rid))}else if(p.entries&&typeof p.entries==="object")for(const [rid,list] of Object.entries(p.entries))for(const e of list||[])entries.push(normalizeEntry(e,rid));return{races,entries,results,strategies}}
+function parsePayload(p){
+  const races=[],entries=[],results=[],strategies=[];
+  for(const r of Array.isArray(p?.races)?p.races:[]){try{races.push(normalizeRace(r))}catch(e){console.warn("race skip",e,r)}}
+  const entryGroups=Array.isArray(p?.entries)?[["",p.entries]]:(p?.entries&&typeof p.entries==="object"?Object.entries(p.entries):[]);
+  for(const [groupRid,list] of entryGroups)for(const e of list||[]){const rid=String(e?.race_id||e?.raceId||groupRid||"").trim();if(!rid)continue;try{entries.push(normalizeEntry(e,rid))}catch(err){console.warn("entry skip",err,e)}}
+  for(const r of Array.isArray(p?.results)?p.results:[]){try{results.push(normalizeResult(r))}catch(e){console.warn("result skip",e,r)}}
+  for(const x of Array.isArray(p?.strategies)?p.strategies:[]){try{strategies.push(normalizeStrategy(x))}catch(e){console.warn("strategy skip",e,x)}}
+  return{races,entries,results,strategies}
+}
 async function importPayload(payload,{silent=false,deferRefresh=false}={}){const d=parsePayload(payload);if(!d.races.length&&!d.entries.length&&!d.results.length&&!d.strategies.length)throw new Error("登録できるデータがありません");if(d.races.length)await putMany("races",d.races);if(d.entries.length)await putMany("entries",d.entries);if(d.results.length)await putMany("results",d.results);if(d.strategies.length)await putMany("strategies",d.strategies);if(!deferRefresh)await refreshAll();if(!silent)alert(`登録完了\nレース ${d.races.length}件\n出走馬 ${d.entries.length}件\n結果 ${d.results.length}件\n戦略 ${d.strategies.length}件`);return d}
 function buildNavigation(){for(const id of ["desktopNav","mobileNav"])$(id).innerHTML=NAV_ITEMS.map((x,i)=>`<button class="nav-btn ${i?"":"active"}" data-view="${x[0]}"><span>${x[1]}</span><span>${x[2]}</span></button>`).join("");document.querySelectorAll(".nav-btn").forEach(b=>b.onclick=()=>showView(b.dataset.view))}
 async function showView(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===`view-${id}`));document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.view===id));if(id==="dashboard")await renderDashboard();if(id==="calendar")await renderCalendar();if(id==="race")await refreshRaceSelector();if(id==="database")await renderDbCounts();if(id==="strategies")await renderStrategies();if(id==="simulation")await renderSimPlaceOptions();if(id==="live")renderLivePanels()}
@@ -451,7 +476,25 @@ function ticketScore(type,nums,entries){if(type==="bracketQuinella"){const selec
 function generateTickets(type,entries,maxTickets=999){if(type==="all"){const combined=SIM_TICKET_TYPES.flatMap(ticketType=>generateTickets(ticketType,entries,999));const order=new Map(SIM_TICKET_TYPES.map((t,i)=>[t,i]));combined.sort((a,b)=>b.score-a.score||(order.get(a.ticketType)-order.get(b.ticketType)));return combined.slice(0,maxTickets)}const nums=entries.map(e=>e.horseNo),sets=type==="win"||type==="place"?nums.map(n=>[n]):type==="bracketQuinella"?bracketPairs(entries):type==="quinella"||type==="wide"?combinations(nums,2):type==="exacta"?permutations(nums,2):type==="trio"?combinations(nums,3):permutations(nums,3);return sets.slice(0,maxTickets).map(a=>({ticketType:type,key:ticketKey(type,a),horses:type==="bracketQuinella"?[]:a,frames:type==="bracketQuinella"?a:[],score:ticketScore(type,a,entries)}))}
 function getSelectedSimPlaces(){if($("simPlaceAll")?.checked)return[];return[...document.querySelectorAll('#simPlaceOptions input[type="checkbox"]:checked')].map(x=>x.value)}
 function updateSimPlaceSummary(){const places=getSelectedSimPlaces(),all=$("simPlaceAll")?.checked;state.simSelectedPlaces=all?[]:places;if($("simPlaceSummary"))$("simPlaceSummary").textContent=all?"全開催場":places.length?`${places.length}場：${places.join("・")}`:"開催場未選択"}
-async function renderSimPlaceOptions(preferred=state.simSelectedPlaces){if(!$("simPlaceOptions"))return;const start=compactDate($("simStart").value),end=compactDate($("simEnd").value),type=$("simType").value,races=await getAll("races"),places=[...new Set(races.filter(r=>(!start||r.date>=start)&&(!end||r.date<=end)&&(!type||r.type===type)).map(r=>r.placeName).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ja"));const selected=new Set(Array.isArray(preferred)?preferred:[]),allMode=!selected.size;$("simPlaceAll").checked=allMode;$("simPlaceOptions").innerHTML=places.length?places.map(p=>`<label class="sim-place-option"><input type="checkbox" value="${esc(p)}" ${allMode||selected.has(p)?"checked":""}>${esc(p)}</label>`).join(""):`<span class="muted">選択期間・区分に登録済み開催場がありません</span>`;document.querySelectorAll('#simPlaceOptions input[type="checkbox"]').forEach(cb=>cb.onchange=()=>{$("simPlaceAll").checked=false;updateSimPlaceSummary()});updateSimPlaceSummary()}
+function simMasterPlaces(type){
+  if(type==="JRA")return Object.values(BRIDGE_JRA_PLACES);
+  if(type==="NAR")return Object.values(BRIDGE_NAR_PLACES);
+  return[...Object.values(BRIDGE_JRA_PLACES),...Object.values(BRIDGE_NAR_PLACES)]
+}
+async function renderSimPlaceOptions(preferred=state.simSelectedPlaces){
+  if(!$("simPlaceOptions"))return;
+  const start=compactDate($("simStart").value),end=compactDate($("simEnd").value),type=$("simType").value,races=await getAll("races"),types=type?[type]:["JRA","NAR"],placeSet=new Set(),fallbackTypes=[];
+  for(const t of types){
+    const registered=[...new Set(races.filter(r=>r.type===t&&(!start||r.date>=start)&&(!end||r.date<=end)).map(r=>r.placeName).filter(x=>x&&x!=="不明"))];
+    if(registered.length)registered.forEach(x=>placeSet.add(x));else{fallbackTypes.push(t);simMasterPlaces(t).forEach(x=>placeSet.add(x))}
+  }
+  const places=[...placeSet].sort((a,b)=>a.localeCompare(b,"ja")),selected=new Set((Array.isArray(preferred)?preferred:[]).filter(p=>placeSet.has(p))),allMode=!selected.size;
+  $("simPlaceAll").checked=allMode;
+  $("simPlaceOptions").innerHTML=places.map(p=>`<label class="sim-place-option"><input type="checkbox" value="${esc(p)}" ${allMode||selected.has(p)?"checked":""}>${esc(p)}</label>`).join("")||`<span class="muted">開催場候補がありません</span>`;
+  if(fallbackTypes.length){$("simPlaceOptions").insertAdjacentHTML("afterbegin",`<span class="muted" style="grid-column:1/-1">${fallbackTypes.join("・")}は未同期のため全開催場候補を表示しています</span>`)}
+  document.querySelectorAll('#simPlaceOptions input[type="checkbox"]').forEach(cb=>cb.onchange=()=>{$("simPlaceAll").checked=false;updateSimPlaceSummary()});
+  updateSimPlaceSummary()
+}
 function readSimConfig(){return{strategyId:$("simStrategy").value,start:compactDate($("simStart").value),end:compactDate($("simEnd").value),type:$("simType").value,places:getSelectedSimPlaces(),ticketType:$("simTicket").value,dailyBudget:Number($("simDailyBudget").value||0),unit:Number($("simUnit").value||100),topN:Number($("simTopN").value||3),maxTickets:Number($("simMaxTickets").value||6),maxRaces:Number($("simMaxRace").value||6),minEv:Number($("simMinEv").value||0),minAi:Number($("simMinAi").value||0),minOdds:Number($("simMinOdds").value||0),maxOdds:Number($("simMaxOdds").value||999),priority:$("simPriority").value,agreementMode:$("simAgreement").value}}
 function ticketPayout(result,ticket){return Number(result.payouts?.[ticket.ticketType]?.[ticket.key]||0)}
 async function runSimulationCore(){const c=readSimConfig(),[races,results]=await Promise.all([getAll("races"),getAll("results")]),resMap=new Map(results.map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places.length||c.places.includes(r.placeName))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(b.placeName)||a.raceNo-b.raceNo),days=new Map(),rows=[];let bank=0;for(const race of filtered){const result=resMap.get(race.race_id);if(!result)continue;const day=days.get(race.date)||{remaining:c.dailyBudget,boughtRaces:0};let entries=await getByIndex("entries","race_id",race.race_id);recalcEntryScores(entries);const qualifies=e=>e.ev>=c.minEv&&e.ai>=c.minAi&&e.odds>=c.minOdds&&e.odds<=c.maxOdds;let candidateEntries=entries.filter(qualifies);const sorters={ai:(a,b)=>b.ai-a.ai,ev:(a,b)=>b.ev-a.ev,expected:(a,b)=>(b.ev*b.odds)-(a.ev*a.odds),balanced:(a,b)=>(b.ai+b.ev*25)-(a.ai+a.ev*25)};candidateEntries.sort(sorters[c.priority]||sorters.ai);candidateEntries=candidateEntries.slice(0,c.topN);const candidateTickets=generateTickets(c.ticketType,candidateEntries,c.maxTickets);let purchaseTickets=[];if(day.boughtRaces<c.maxRaces){const affordable=Math.floor(day.remaining/c.unit);purchaseTickets=candidateTickets.slice(0,affordable)}const invest=purchaseTickets.length*c.unit;if(invest>0){day.remaining-=invest;day.boughtRaces++}days.set(race.date,day);const candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0);let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((s,t)=>s+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,remaining:day.remaining})}state.simResult=rows;const totalBet=rows.reduce((s,x)=>s+x.invest,0),totalPay=rows.reduce((s,x)=>s+x.pay,0),summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0};const id=await addOne("simulations",{createdAt:new Date().toISOString(),config:c,summary,rows:rows.map(x=>({...x,race:x.race,result:undefined}))});renderSimulation(summary);await renderDashboard();return id}
@@ -475,7 +518,7 @@ async function syncBacktestPeriod(){
   if(dates.length>92)return alert("1回の同期は92日以内にしてください");
   if(!confirm(`${dates.length}日分の開催一覧・出馬表・オッズ・結果を取得します。\n通信量が多く、数分以上かかる場合があります。続けますか？`))return;
   BACKTEST_SYNC.running=true;BACKTEST_SYNC.stop=false;$("simSyncBtn").disabled=true;$("simStopSyncBtn").disabled=false;
-  const oldDate=$("bridgeDate").value;let listDays=0,totalRaces=0,loaded=0,confirmed=0,failed=0,skipped=0;
+  const oldDate=$("bridgeDate").value;let listDays=0,totalRaces=0,loaded=0,confirmed=0,failed=0,skipped=0,lastError="";
   try{
     await detectBridgeMode();
     for(const date of dates){
@@ -484,7 +527,7 @@ async function syncBacktestPeriod(){
       $("bridgeDate").value=`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}`;
       setSimSyncStatus(`開催一覧取得中 ${displayDate(date)}　一覧 ${listDays}/${dates.length}日　レース成功 ${loaded}R　結果 ${confirmed}R`);
       let races=[];
-      try{races=await bridgeLoadList({silent:true,deferRefresh:true});listDays++}catch(e){failed++;continue}
+      try{races=await bridgeLoadList({silent:true,deferRefresh:true});listDays++}catch(e){failed++;lastError=`${displayDate(date)} 一覧: ${e.message}`;setSimSyncStatus(`一覧取得失敗 ${lastError}`);continue}
       races=races.filter(r=>(!c.type||String(r.type||r.provider||"").toUpperCase()===c.type)&&(!c.places?.length||c.places.includes(r.placeName)));totalRaces+=races.length;
       for(const race of races){
         if(BACKTEST_SYNC.stop)break;
@@ -493,13 +536,13 @@ async function syncBacktestPeriod(){
         if(existingResult&&existingEntries.length){skipped++;confirmed++;continue}
         setSimSyncStatus(`${displayDate(date)} ${race.placeName||""} ${race.raceNo||race.race||""}R 同期中　${loaded+failed+skipped+1}/${Math.max(totalRaces,1)}　確定結果 ${confirmed}R`);
         const ok=await bridgeLoadBundle(rid,true,true);
-        if(ok){loaded++;if(await getOne("results",rid))confirmed++}else failed++;
+        if(ok){loaded++;if(await getOne("results",rid))confirmed++}else{failed++;lastError=`${displayDate(date)} ${race.placeName||""} ${race.raceNo||race.race||""}R: ${window.__LAST_BUNDLE_ERROR__||"取得失敗"}`}
         await new Promise(resolve=>setTimeout(resolve,120));
       }
     }
-    await refreshAll();
+    await refreshAll();await renderSimPlaceOptions(c.places);
     const cov=await backtestCoverage(c);
-    setSimSyncStatus(`${BACKTEST_SYNC.stop?"同期停止":"同期完了"}　登録対象 ${cov.races}R　確定結果 ${cov.results}R　取得成功 ${loaded}R　既存 ${skipped}R　失敗 ${failed}件`);
+    setSimSyncStatus(`${BACKTEST_SYNC.stop?"同期停止":"同期完了"}　登録対象 ${cov.races}R　確定結果 ${cov.results}R　取得成功 ${loaded}R　既存 ${skipped}R　失敗 ${failed}件${lastError?`\n最後の失敗 ${lastError}`:""}`);
     return cov;
   }catch(e){setSimSyncStatus("同期エラー: "+e.message);throw e}
   finally{$("bridgeDate").value=oldDate;BACKTEST_SYNC.running=false;$("simSyncBtn").disabled=false;$("simStopSyncBtn").disabled=true}
@@ -548,7 +591,7 @@ async function deleteEntryEditor(){const rid=$("edEntryRaceId").value.trim(),n=N
 async function saveResultEditor(){const r=normalizeResult({race_id:$("edResultRaceId").value,finishOrder:$("edFinishOrder").value.split(",").map(x=>Number(x.trim())).filter(Boolean),payouts:JSON.parse($("edPayouts").value||"{}")});await putOne("results",r);await refreshAll();alert("結果保存")}
 async function loadResultEditor(){const r=await getOne("results",$("edResultRaceId").value.trim());if(!r)return alert("未登録");$("edFinishOrder").value=(r.finishOrder||[]).join(",");$("edPayouts").value=JSON.stringify(r.payouts,null,2)}
 const BRIDGE_JRA_PLACES={"01":"札幌","02":"函館","03":"福島","04":"新潟","05":"東京","06":"中山","07":"中京","08":"京都","09":"阪神","10":"小倉"};
-const BRIDGE_NAR_PLACES={"30":"門別","35":"盛岡","36":"水沢","42":"浦和","43":"船橋","44":"大井","45":"川崎","46":"金沢","47":"笠松","48":"名古屋","50":"園田","51":"姫路","54":"高知","55":"佐賀"};
+const BRIDGE_NAR_PLACES={"30":"門別","35":"盛岡","36":"水沢","42":"浦和","43":"船橋","44":"大井","45":"川崎","46":"金沢","47":"笠松","48":"名古屋","50":"園田","51":"姫路","54":"高知","55":"佐賀","65":"帯広(ば)"};
 async function getBridgeBase(save=true){const input=String($("bridgeUrl")?.value||"").trim(),raw=input||String(state.settings.bridgeUrl||"").trim();if(!raw)throw new Error("Bridge URL未設定");const base=raw.replace(/\/+$/,"");state.settings.bridgeUrl=base;if($("bridgeUrl"))$("bridgeUrl").value=base;if(save&&state.db)await putOne("settings",{key:"app",value:state.settings});return base}
 async function fetchTextResponse(url){const res=await fetch(url,{cache:"no-store"}),text=await res.text();return{res,text}}
 async function bridgeFetch(path){const base=await getBridgeBase();const {res,text}=await fetchTextResponse(base+path);if(!res.ok)throw new Error(`HTTP ${res.status}`);try{return JSON.parse(text)}catch{throw new Error("JSON応答ではありません")}}
@@ -557,6 +600,29 @@ async function bridgeLegacyUrl(target){
   const base=await getBridgeBase();const {res,text}=await fetchTextResponse(base+"?url="+encodeURIComponent(target));if(!res.ok)throw new Error(`HTTP ${res.status}`);return text
 }
 async function bridgeLegacyType(type,rid,kind){const base=await getBridgeBase();const url=base+`?type=${encodeURIComponent(type)}&kind=${encodeURIComponent(kind)}&race_id=${encodeURIComponent(rid)}`;const {res,text}=await fetchTextResponse(url);if(!res.ok)throw new Error(`HTTP ${res.status}`);return text}
+function blockedBridgeHtml(raw){const t=String(unwrapBridgeHtml(raw)||"").toLowerCase();return !t||/access denied|forbidden|captcha|cloudflare|akamai reference|request rejected|エラーが発生しました/.test(t)}
+function bridgePageUrls(type,rid,kind){
+  const q=`race_id=${encodeURIComponent(rid)}`;
+  if(kind==="JRA"){
+    if(type==="shutuba")return[`https://race.netkeiba.com/race/shutuba.html?${q}&rf=race_submenu`];
+    if(type==="odds")return[`https://race.netkeiba.com/odds/index.html?${q}`];
+    return[`https://race.netkeiba.com/race/result.html?${q}&rf=race_submenu`]
+  }
+  if(type==="shutuba")return[`https://nar.netkeiba.com/race/shutuba.html?${q}`,`https://nar.sp.netkeiba.com/race/shutuba.html?${q}`];
+  if(type==="odds")return[`https://nar.netkeiba.com/odds/index.html?${q}`,`https://nar.sp.netkeiba.com/odds/index.html?${q}`];
+  return[`https://nar.netkeiba.com/race/result.html?${q}`,`https://nar.sp.netkeiba.com/race/result.html?${q}`]
+}
+async function bridgeLoadHtmlPage(type,rid,kind,mode,{required=false}={}){
+  const errors=[];
+  if(mode==="legacy"){
+    try{const raw=await bridgeLegacyType(type,rid,kind),html=unwrapBridgeHtml(raw);if(!blockedBridgeHtml(html)&&html.length>200)return{html,url:`type:${type}`};errors.push(`type:${type} 内容不正`)}catch(e){errors.push(`type:${type} ${e.message}`)}
+  }
+  for(const url of bridgePageUrls(type,rid,kind)){
+    try{const raw=await bridgeLegacyUrl(url),html=unwrapBridgeHtml(raw);if(!blockedBridgeHtml(html)&&html.length>200)return{html,url};errors.push(`${new URL(url).host} 内容不正`)}catch(e){errors.push(`${new URL(url).host} ${e.message}`)}
+  }
+  if(required)throw new Error(`${type}取得失敗 ${errors.join(" / ")}`);
+  return{html:"",url:"",errors}
+}
 function bridgeLog(msg,data){$("bridgeLog").textContent=`${new Date().toLocaleTimeString()} ${msg}${data!==undefined?"\n"+(typeof data==="string"?data:JSON.stringify(data,null,2)):""}`}
 function raceKindFromId(rid){const code=String(rid||"").slice(4,6);return BRIDGE_JRA_PLACES[code]?"JRA":"NAR"}
 function bridgePlaceName(rid,kind,context=""){const code=String(rid||"").slice(4,6),map=kind==="JRA"?BRIDGE_JRA_PLACES:BRIDGE_NAR_PLACES;if(map[code])return map[code];const names=[...Object.values(BRIDGE_JRA_PLACES),...Object.values(BRIDGE_NAR_PLACES)];return names.find(n=>String(context).includes(n))||`場${code}`}
@@ -604,8 +670,21 @@ function extractNarKaisaiIds(raw,date){
   return[...ids]
 }
 function findHorseNo(row){const t=textOf(row,[".Umaban",".Horse_Num",".Num","td.Umaban","[class*='Umaban']"]);if(t){const n=numberFromText(t);if(n>=1&&n<=18)return n}const cells=[...row.querySelectorAll?.("td")||[]].map(x=>x.textContent.trim());for(const c of cells.slice(0,4)){const n=Number(c);if(Number.isInteger(n)&&n>=1&&n<=18)return n}return 0}
-function parseShutubaHtml(html,rid,kind,date){const doc=new DOMParser().parseFromString(html,"text/html"),allText=(doc.body?.textContent||"").replace(/\s+/g," "),title=textOf(doc,[".RaceName",".Race_Name","h1"]),meta=textOf(doc,[".RaceData01",".RaceData02",".RaceData",".RaceInfo"]),sd=(meta+" "+allText).match(/(芝|ダート|障害|ダ)\s*([0-9]{3,4})m?/),rows=[...doc.querySelectorAll("tr.HorseList,table.Shutuba_Table tbody tr,.RaceTable01 tbody tr,li.HorseList")],entries=[],seen=new Set();for(const row of rows){const horseName=textOf(row,[".Horse_Name",".HorseInfo .Horse_Name","a[href*='/horse/']"]);if(!horseName)continue;const horseNo=findHorseNo(row);if(!horseNo||seen.has(horseNo))continue;seen.add(horseNo);const odds=numberFromText(textOf(row,[".Odds",".Popular .Odds","td.Odds","[class*='Odds']"])),pop=numberFromText(textOf(row,[".Popular","td.Popular","[class*='Popular']"])),jockey=textOf(row,[".Jockey","a[href*='/jockey/']"]),trainer=textOf(row,[".Trainer","a[href*='/trainer/']"]),sexAge=textOf(row,[".Barei",".HorseInfo .Barei","[class*='Barei']"]),frameNo=numberFromText(textOf(row,[".Waku","[class*='Waku']"])),weight=numberFromText(textOf(row,[".Futan","[class*='Futan']"])),horseWeight=textOf(row,[".Weight",".HorseWeight","[class*='Weight']"]),marketProb=odds>0?0.78/odds:0,ai=pop?Math.max(35,103-pop*4):50;entries.push(normalizeEntry({frameNo,horseNo,horseName,sexAge,jockey,trainer,weight,horseWeight,popularity:pop,odds,probWin:marketProb,ai,ev:marketProb*odds},rid))}const race=normalizeRace({race_id:rid,type:kind,date:compactDate(date),placeName:bridgePlaceName(rid,kind,allText),placeCode:Number(rid.slice(4,6)),raceNo:Number(rid.slice(-2)),name:sanitizeRaceName(title,Number(rid.slice(-2))),surface:sd?(sd[1]==="ダ"?"ダート":sd[1]):"",distance:sd?Number(sd[2]):0,className:"",status:"出馬表取得"});return{race,entries}}
-function parseOddsHtml(html){const doc=new DOMParser().parseFromString(html,"text/html"),out=new Map(),rows=[...doc.querySelectorAll("tr")];for(const row of rows){const no=findHorseNo(row);if(!no)continue;let odds=numberFromText(textOf(row,[".Odds","td.Odds","[class*='Odds']"])),pop=numberFromText(textOf(row,[".Popular","td.Popular","[class*='Popular']"]));if(!odds){const vals=[...row.querySelectorAll("td")].map(x=>x.textContent.replace(/,/g,"").trim()).filter(x=>/^\d+\.\d+$/.test(x));if(vals.length)odds=Number(vals[0])}if(odds)out.set(no,{odds,popularity:pop})}return out}
+function parseEntriesFromHtml(raw,rid){
+  const html=unwrapBridgeHtml(raw),doc=new DOMParser().parseFromString(html,"text/html"),selectors="tr.HorseList,tr[class*='HorseList'],table.Shutuba_Table tbody tr,table.RaceTable01 tbody tr,table.ResultTable tbody tr,table.race_table_01 tbody tr,li.HorseList,[class*='RaceTable'] tbody tr",rows=[...doc.querySelectorAll(selectors)],entries=[],seen=new Set();
+  for(const row of rows){
+    const horseName=textOf(row,[".Horse_Name",".HorseInfo .Horse_Name",".HorseName","[class*='HorseName']","a[href*='/horse/']"]);if(!horseName)continue;
+    const horseNo=findHorseNo(row);if(!horseNo||seen.has(horseNo))continue;seen.add(horseNo);
+    const odds=numberFromText(textOf(row,[".Odds",".Popular .Odds","td.Odds","[class*='Odds']"])),pop=numberFromText(textOf(row,[".Popular","td.Popular","[class*='Popular']",".Ninki","[class*='Ninki']"])),jockey=textOf(row,[".Jockey","[class*='Jockey']","a[href*='/jockey/']"]),trainer=textOf(row,[".Trainer","[class*='Trainer']","a[href*='/trainer/']"]),sexAge=textOf(row,[".Barei",".HorseInfo .Barei","[class*='Barei']","[class*='SexAge']"]),frameNo=numberFromText(textOf(row,[".Waku","[class*='Waku']",".Waku1",".Waku2",".Waku3",".Waku4",".Waku5",".Waku6",".Waku7",".Waku8"])),weight=numberFromText(textOf(row,[".Futan","[class*='Futan']"])),horseWeight=textOf(row,[".Weight",".HorseWeight","[class*='HorseWeight']"]),marketProb=odds>0?0.78/odds:0,ai=pop?Math.max(35,103-pop*4):50;
+    try{entries.push(normalizeEntry({frameNo,horseNo,horseName,sexAge,jockey,trainer,weight,horseWeight,popularity:pop,odds,probWin:marketProb,ai,ev:marketProb*odds},rid))}catch(e){console.warn("entry parse skip",e)}
+  }
+  return entries
+}
+function parseShutubaHtml(raw,rid,kind,date){
+  const html=unwrapBridgeHtml(raw),doc=new DOMParser().parseFromString(html,"text/html"),allText=(doc.body?.textContent||"").replace(/\s+/g," "),title=textOf(doc,[".RaceName",".Race_Name","[class*='RaceName']","h1","title"]),meta=textOf(doc,[".RaceData01",".RaceData02",".RaceData",".RaceInfo","[class*='RaceData']"]),sd=(meta+" "+allText).match(/(芝|ダート|障害|ダ|直)\s*([0-9]{3,4})m?/),entries=parseEntriesFromHtml(html,rid),race=normalizeRace({race_id:rid,type:kind,date:compactDate(date),placeName:bridgePlaceName(rid,kind,allText),placeCode:Number(rid.slice(4,6)),raceNo:Number(rid.slice(-2)),name:sanitizeRaceName(title,Number(rid.slice(-2))),surface:sd?(sd[1]==="ダ"?"ダート":sd[1]):"",distance:sd?Number(sd[2]):0,className:"",status:entries.length?"出馬表取得":"ページ取得"});
+  return{race,entries}
+}
+function parseOddsHtml(raw){const html=unwrapBridgeHtml(raw),doc=new DOMParser().parseFromString(html,"text/html"),out=new Map(),rows=[...doc.querySelectorAll("tr")];for(const row of rows){const no=findHorseNo(row);if(!no)continue;let odds=numberFromText(textOf(row,[".Odds","td.Odds","[class*='Odds']"])),pop=numberFromText(textOf(row,[".Popular","td.Popular","[class*='Popular']",".Ninki","[class*='Ninki']"]));if(!odds){const vals=[...row.querySelectorAll("td")].map(x=>x.textContent.replace(/,/g,"").trim()).filter(x=>/^\d+\.\d+$/.test(x));if(vals.length)odds=Number(vals[0])}if(odds)out.set(no,{odds,popularity:pop})}return out}
 function parseResultHtml(html,rid){
   const raw=unwrapBridgeHtml(html),doc=new DOMParser().parseFromString(raw,"text/html"),finish=[];
   const rows=[...doc.querySelectorAll("tr.HorseList,table.RaceTable01 tbody tr,table.ResultTable tbody tr,table.race_table_01 tbody tr,[class*='ResultTable'] tbody tr")];
@@ -717,9 +796,37 @@ async function bridgeLoadList({silent=false,deferRefresh=false}={}){
     return races
   }catch(e){if(!silent)bridgeLog("失敗: "+e.message);throw e}
 }
-async function bridgeLoadBundle(rid=$("bridgeRaceId").value.trim(),silent=false,deferRefresh=false){try{if(!rid)throw new Error("race_id未指定");const mode=state.settings.bridgeMode&&state.settings.bridgeMode!=="auto"?state.settings.bridgeMode:(await detectBridgeMode()).mode;if(mode==="rest"){const [race,entry,odds,result]=await Promise.all([bridgeFetch(`/race/${encodeURIComponent(rid)}`),bridgeFetch(`/entry/${encodeURIComponent(rid)}`),bridgeFetch(`/odds/${encodeURIComponent(rid)}`).catch(()=>[]),bridgeFetch(`/result/${encodeURIComponent(rid)}`).catch(()=>null)]),r=race.race||race,en=Array.isArray(entry)?entry:entry.entries||[],od=Array.isArray(odds)?odds:odds.odds||[],oMap=new Map(od.map(x=>[Number(x.horseNo||x.number),Number(x.odds||0)])),merged=en.map(e=>({...e,odds:oMap.get(Number(e.horseNo||e.number))||e.odds})),payload={races:[r],entries:{[rid]:merged},results:result?[{race_id:rid,...(result.result||result)}]:[]};await importPayload(payload,{silent:true,deferRefresh});if(!silent)bridgeLog("RESTレース一式登録",{race:rid,entries:merged.length,result:!!result})}else{const kind=raceKindFromId(rid),date=compactDate($("bridgeDate").value),host=kind==="NAR"?"https://nar.netkeiba.com":"https://race.netkeiba.com",pages=mode==="browser"?await Promise.all([residentialBridgeText(`${host}/race/shutuba.html?race_id=${encodeURIComponent(rid)}&rf=race_submenu`),residentialBridgeText(`${host}/odds/index.html?race_id=${encodeURIComponent(rid)}`).catch(()=>""),residentialBridgeText(`${host}/race/result.html?race_id=${encodeURIComponent(rid)}&rf=race_submenu`).catch(()=>"")]):await Promise.all([bridgeLegacyType("shutuba",rid,kind),bridgeLegacyType("odds",rid,kind).catch(()=>""),bridgeLegacyType("result",rid,kind).catch(()=>"")]),[shutuba,oddsHtml,resultHtml]=pages,parsed=parseShutubaHtml(shutuba,rid,kind,date),oddsMap=oddsHtml?parseOddsHtml(oddsHtml):new Map();for(const e of parsed.entries){const o=oddsMap.get(e.horseNo);if(o){e.odds=o.odds||e.odds;e.popularity=o.popularity||e.popularity;const mp=e.odds?0.78/e.odds:0;e.probWin=e.probWin||mp;e.ev=Number((e.probWin*e.odds).toFixed(3))}}const result=resultHtml?parseResultHtml(resultHtml,rid):null;if(result)parsed.race.status="確定";await importPayload({races:[parsed.race],entries:{[rid]:parsed.entries},results:result?[result]:[]},{silent:true,deferRefresh});if(!silent)bridgeLog("既存Workerからレース一式登録",{race_id:rid,kind,entries:parsed.entries.length,result:!!result})}if(!deferRefresh)await refreshAll();return true}catch(e){if(!silent)bridgeLog("失敗: "+e.message);return false}}
+async function bridgeLoadBundle(rid=$("bridgeRaceId").value.trim(),silent=false,deferRefresh=false){
+  try{
+    if(!rid)throw new Error("race_id未指定");
+    const existingRace=await getOne("races",rid),mode=state.settings.bridgeMode&&state.settings.bridgeMode!=="auto"?state.settings.bridgeMode:(await detectBridgeMode()).mode,kind=String(existingRace?.type||raceKindFromId(rid)).toUpperCase(),date=compactDate(existingRace?.date||$("bridgeDate").value);
+    if(mode==="rest"){
+      const paths=[`/race/${encodeURIComponent(rid)}`,`/entry/${encodeURIComponent(rid)}`,`/odds/${encodeURIComponent(rid)}`,`/result/${encodeURIComponent(rid)}`],settled=await Promise.allSettled(paths.map(p=>bridgeFetch(p))),value=i=>settled[i].status==="fulfilled"?settled[i].value:null;
+      const raceData=value(0),entryData=value(1),oddsData=value(2),resultData=value(3),r=raceData?.race||raceData||existingRace;
+      if(!r)throw new Error("REST race取得失敗");
+      const en=Array.isArray(entryData)?entryData:(entryData?.entries||entryData?.horses||[]),od=Array.isArray(oddsData)?oddsData:(oddsData?.odds||[]),oMap=new Map(od.map(x=>[Number(x.horseNo||x.horse_no||x.number||x.umaban),Number(x.odds||x.winOdds||0)])),merged=en.map(e=>({...e,odds:oMap.get(Number(e.horseNo||e.horse_no||e.number||e.umaban))||e.odds})),resultBody=resultData?.result||resultData,payload={races:[{...existingRace,...r,race_id:rid,type:kind,date:date||compactDate(r.date)}],entries:{[rid]:merged},results:resultBody?[{race_id:rid,...resultBody}]:[]};
+      await importPayload(payload,{silent:true,deferRefresh});
+      if(!silent)bridgeLog("RESTレース一式登録",{race:rid,kind,entries:merged.length,result:!!resultBody})
+    }else{
+      const shutubaPage=await bridgeLoadHtmlPage("shutuba",rid,kind,mode),resultPage=await bridgeLoadHtmlPage("result",rid,kind,mode),oddsPage=await bridgeLoadHtmlPage("odds",rid,kind,mode);
+      if(!shutubaPage.html&&!resultPage.html)throw new Error("出馬表・結果ページの両方を取得できません");
+      const baseHtml=shutubaPage.html||resultPage.html,parsed=parseShutubaHtml(baseHtml,rid,kind,date),resultEntries=resultPage.html?parseEntriesFromHtml(resultPage.html,rid):[],entryMap=new Map([...parsed.entries,...resultEntries].map(e=>[e.horseNo,e])),entries=[...entryMap.values()],oddsMap=oddsPage.html?parseOddsHtml(oddsPage.html):new Map();
+      for(const e of entries){const o=oddsMap.get(e.horseNo);if(o){e.odds=o.odds||e.odds;e.popularity=o.popularity||e.popularity;const mp=e.odds?0.78/e.odds:0;e.probWin=e.probWin||mp;e.ev=Number((e.probWin*e.odds).toFixed(3))}}
+      const result=resultPage.html?parseResultHtml(resultPage.html,rid):null,race={...existingRace,...parsed.race,race_id:rid,type:kind,date:date||parsed.race.date,placeName:existingRace?.placeName&&existingRace.placeName!=="不明"?existingRace.placeName:parsed.race.placeName,sourceUrl:shutubaPage.url||resultPage.url};
+      if(result)race.status="確定";else if(entries.length)race.status="出馬表取得";
+      await importPayload({races:[race],entries:{[rid]:entries},results:result?[result]:[]},{silent:true,deferRefresh});
+      if(!silent)bridgeLog("レース一式登録",{race_id:rid,kind,entries:entries.length,result:!!result,route:{shutuba:shutubaPage.url,result:resultPage.url,odds:oddsPage.url}})
+    }
+    if(!deferRefresh)await refreshAll();
+    return true
+  }catch(e){
+    window.__LAST_BUNDLE_ERROR__=e.message;
+    if(!silent)bridgeLog("失敗: "+e.message);
+    return false
+  }
+}
 async function bridgeSyncDay(){try{const races=await bridgeLoadList({silent:true});let ok=0;for(const r of races){const rid=r.race_id||r.raceId;if(rid&&await bridgeLoadBundle(rid,true))ok++;bridgeLog(`同期 ${ok}/${races.length}`,{current:rid})}bridgeLog("当日同期完了",{total:races.length,success:ok})}catch(e){bridgeLog("同期失敗: "+e.message)}}
-async function refreshAll(){await Promise.all([renderDashboard(),refreshRaceSelector(),renderDbCounts(),refreshStrategySelect()]);if(document.querySelector("#view-calendar.active"))await renderCalendar()}
+async function refreshAll(){await Promise.all([renderDashboard(),refreshRaceSelector(),renderDbCounts(),refreshStrategySelect()]);if(document.querySelector("#view-calendar.active"))await renderCalendar();if(document.querySelector("#view-simulation.active"))await renderSimPlaceOptions(state.simSelectedPlaces)}
 const SPLIT_ANALYSIS_URL="https://yamase-takiyoshi.github.io/-TheKeiba-Ultimate-NEXT/keiba_profit_spec_chart_switcher_candle_v22_dark_light.html";
 function isSplitMenuAutoHide(){
   const saved=localStorage.getItem("TheKeibaSplitAutoHideMenu");
