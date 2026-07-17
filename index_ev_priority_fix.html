@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<title>The競馬 Ultimate NEXT Professional v1.0.14 EV Daily Rank Fix</title>
+<style>
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#07111f}
+#app{display:block;width:100%;height:100%;border:0;background:#07111f}
+#error{display:none;position:fixed;inset:16px;z-index:9999;padding:16px;border-radius:14px;background:#2b1020;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;white-space:pre-wrap;overflow:auto}
+</style>
+</head>
+<body>
+<iframe id="app" src="./index.html?evDailyRankFix=1" title="The競馬 Ultimate NEXT Professional"></iframe>
+<div id="error"></div>
+<script>
+(() => {
+  "use strict";
+
+  const frame = document.getElementById("app");
+  const errorBox = document.getElementById("error");
+
+  function showError(error) {
+    errorBox.style.display = "block";
+    errorBox.textContent = "EV日次横断修正の適用に失敗しました。\n\n" + (error && error.stack ? error.stack : String(error));
+  }
+
+  function installPatch() {
+    try {
+      const doc = frame.contentDocument;
+      if (!doc || !doc.documentElement) throw new Error("元のindex.htmlへアクセスできません。同じGitHub Pages内に配置してください。");
+
+      const patch = doc.createElement("script");
+      patch.id = "evDailyRankFixScript";
+      patch.textContent = String.raw`
+(() => {
+  "use strict";
+  if (window.__EV_DAILY_RANK_FIX__) return;
+  window.__EV_DAILY_RANK_FIX__ = "1.0.14";
+
+  const num = value => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const mean = values => {
+    const valid = values.map(num).filter(Number.isFinite);
+    return valid.length ? valid.reduce((sum, value) => sum + value, 0) / valid.length : -Infinity;
+  };
+
+  function entryPriority(entry, priority) {
+    if (priority === "ev") return num(entry.ev);
+    if (priority === "expected") return num(entry.ev) * num(entry.odds);
+    if (priority === "balanced") return num(entry.ai) + num(entry.ev) * 25;
+    return num(entry.ai);
+  }
+
+  function racePriority(candidateEntries, priority) {
+    if (!candidateEntries.length) return -Infinity;
+    return mean(candidateEntries.map(entry => entryPriority(entry, priority)));
+  }
+
+  function chronological(a, b) {
+    return String(a.race.date).localeCompare(String(b.race.date)) ||
+      String(a.race.placeName).localeCompare(String(b.race.placeName), "ja") ||
+      num(a.race.raceNo) - num(b.race.raceNo);
+  }
+
+  runSimulationCore = async function runSimulationCoreEvDailyRankFix() {
+    const c = readSimConfig();
+    const [races, results] = await Promise.all([getAll("races"), getAll("results")]);
+    const resultMap = new Map(results.map(result => [result.race_id, result]));
+
+    const filtered = races
+      .filter(race =>
+        (!c.start || race.date >= c.start) &&
+        (!c.end || race.date <= c.end) &&
+        (!c.type || race.type === c.type) &&
+        (!c.places.length || c.places.includes(race.placeName))
+      )
+      .sort((a, b) =>
+        String(a.date).localeCompare(String(b.date)) ||
+        String(a.placeName).localeCompare(String(b.placeName), "ja") ||
+        num(a.raceNo) - num(b.raceNo)
+      );
+
+    const entrySorters = {
+      ai: (a, b) => num(b.ai) - num(a.ai),
+      ev: (a, b) => num(b.ev) - num(a.ev),
+      expected: (a, b) => num(b.ev) * num(b.odds) - num(a.ev) * num(a.odds),
+      balanced: (a, b) => (num(b.ai) + num(b.ev) * 25) - (num(a.ai) + num(a.ev) * 25)
+    };
+
+    const plans = [];
+
+    // 第1段階：全開催場・全レースの候補を先に作成する。
+    for (const race of filtered) {
+      const result = resultMap.get(race.race_id);
+      if (!result) continue;
+
+      const entries = await getByIndex("entries", "race_id", race.race_id);
+      recalcEntryScores(entries);
+
+      const qualifies = entry =>
+        num(entry.ev) >= num(c.minEv) &&
+        num(entry.ai) >= num(c.minAi) &&
+        num(entry.odds) >= num(c.minOdds) &&
+        num(entry.odds) <= num(c.maxOdds);
+
+      let candidateEntries = entries.filter(qualifies);
+      candidateEntries.sort(entrySorters[c.priority] || entrySorters.ai);
+      candidateEntries = candidateEntries.slice(0, Math.max(0, Math.floor(num(c.topN))));
+
+      const candidateTickets = generateTickets(c.ticketType, candidateEntries, Math.max(0, Math.floor(num(c.maxTickets))));
+      const candidateHit = candidateTickets.some(ticket => ticketPayout(result, ticket) > 0);
+
+      plans.push({
+        race,
+        result,
+        entries,
+        ticketType: c.ticketType,
+        candidateEntries,
+        candidateTickets,
+        candidateHit,
+        priorityScore: racePriority(candidateEntries, c.priority),
+        purchaseTickets: [],
+        dailyRank: 0,
+        remaining: 0
+      });
+    }
+
+    // 第2段階：日付ごとに全開催場を横断し、選択指標の降順で購入枠を配分する。
+    const plansByDay = new Map();
+    for (const plan of plans) {
+      if (!plansByDay.has(plan.race.date)) plansByDay.set(plan.race.date, []);
+      plansByDay.get(plan.race.date).push(plan);
+    }
+
+    const unit = Math.max(1, num(c.unit));
+    const maxRaces = Math.max(0, Math.floor(num(c.maxRaces)));
+
+    for (const dayPlans of plansByDay.values()) {
+      dayPlans.sort((a, b) =>
+        num(b.priorityScore) - num(a.priorityScore) ||
+        num(b.candidateEntries[0]?.ev) - num(a.candidateEntries[0]?.ev) ||
+        num(b.candidateEntries[0]?.ai) - num(a.candidateEntries[0]?.ai) ||
+        String(a.race.placeName).localeCompare(String(b.race.placeName), "ja") ||
+        num(a.race.raceNo) - num(b.race.raceNo)
+      );
+
+      let remaining = Math.max(0, num(c.dailyBudget));
+      let boughtRaces = 0;
+
+      for (const plan of dayPlans) {
+        if (!plan.candidateTickets.length || boughtRaces >= maxRaces) {
+          plan.remaining = remaining;
+          continue;
+        }
+
+        const affordable = Math.floor(remaining / unit);
+        if (affordable <= 0) {
+          plan.remaining = remaining;
+          continue;
+        }
+
+        plan.purchaseTickets = plan.candidateTickets.slice(0, affordable);
+        const invest = plan.purchaseTickets.length * unit;
+        if (invest > 0) {
+          remaining -= invest;
+          boughtRaces += 1;
+          plan.dailyRank = boughtRaces;
+        }
+        plan.remaining = remaining;
+      }
+    }
+
+    // 表示と資金推移は時系列に戻す。
+    plans.sort(chronological);
+    const rows = [];
+    let bank = 0;
+
+    for (const plan of plans) {
+      const { race, result, entries, candidateTickets, purchaseTickets } = plan;
+      const invest = purchaseTickets.length * unit;
+      const purchaseHit = purchaseTickets.some(ticket => ticketPayout(result, ticket) > 0);
+      let pay = 0;
+      for (const ticket of purchaseTickets) pay += ticketPayout(result, ticket) * (unit / 100);
+      const profit = pay - invest;
+      bank += profit;
+
+      const ticketBreakdown = Object.fromEntries(SIM_TICKET_TYPES.map(type => [type, {
+        candidate: candidateTickets.filter(ticket => ticket.ticketType === type).length,
+        purchase: purchaseTickets.filter(ticket => ticket.ticketType === type).length,
+        pay: purchaseTickets
+          .filter(ticket => ticket.ticketType === type)
+          .reduce((sum, ticket) => sum + ticketPayout(result, ticket) * (unit / 100), 0)
+      }]));
+
+      rows.push({
+        race,
+        result,
+        entries,
+        ticketType: c.ticketType,
+        candidateTickets,
+        purchaseTickets,
+        ticketBreakdown,
+        candidateHit: plan.candidateHit,
+        purchaseHit,
+        miss: plan.candidateHit && !purchaseHit,
+        invest,
+        pay,
+        profit,
+        roi: invest ? pay / invest * 100 : 0,
+        bank,
+        remaining: plan.remaining,
+        priorityScore: plan.priorityScore,
+        dailyRank: plan.dailyRank
+      });
+    }
+
+    state.simResult = rows;
+    const totalBet = rows.reduce((sum, row) => sum + row.invest, 0);
+    const totalPay = rows.reduce((sum, row) => sum + row.pay, 0);
+    const summary = {
+      raceCount: rows.length,
+      boughtCount: rows.filter(row => row.invest > 0).length,
+      candidateHits: rows.filter(row => row.candidateHit).length,
+      purchaseHits: rows.filter(row => row.purchaseHit).length,
+      missHits: rows.filter(row => row.miss).length,
+      totalBet,
+      totalPay,
+      profit: totalPay - totalBet,
+      roi: totalBet ? totalPay / totalBet * 100 : 0
+    };
+
+    const id = await addOne("simulations", {
+      createdAt: new Date().toISOString(),
+      config: { ...c, allocation: "daily-cross-venue-rank-v1.0.14" },
+      summary,
+      rows: rows.map(row => ({ ...row, race: row.race, result: undefined }))
+    });
+
+    renderSimulation(summary);
+    setSimSyncStatus(
+      "全開催場横断順位で購入枠を配分しました。" +
+      " 優先順位=" + ({ ai: "AI", ev: "EV", expected: "期待払戻", balanced: "総合" }[c.priority] || c.priority) +
+      " / 購入=" + summary.boughtCount + "R / ROI=" + summary.roi.toFixed(1) + "%"
+    );
+    await renderDashboard();
+    await syncSimulationToAnalysis({ force: true, reason: "EV日次横断バックテスト完了" });
+    return id;
+  };
+
+  window.runSimulationCore = runSimulationCore;
+
+  const versionLabel = document.querySelector(".brand small");
+  if (versionLabel) versionLabel.textContent = "Real Data Edition v1.0.14 EV Daily Rank Fix";
+  document.title = "The競馬 Ultimate NEXT Professional v1.0.14";
+
+  const notice = document.querySelector("#view-simulation .notice");
+  if (notice && !notice.dataset.evDailyRankFix) {
+    notice.dataset.evDailyRankFix = "1";
+    notice.insertAdjacentHTML(
+      "beforeend",
+      "<br><strong style='color:var(--good)'>v1.0.14：日付ごとに全開催場の候補を統合し、選択した優先順位で並べてから1日予算・購入R上限を適用します。</strong>"
+    );
+  }
+
+  console.info("[The競馬] v1.0.14 EV Daily Rank Fix applied");
+})();
+`;
+      doc.documentElement.appendChild(patch);
+      patch.remove();
+    } catch (error) {
+      showError(error);
+    }
+  }
+
+  frame.addEventListener("load", () => setTimeout(installPatch, 0));
+})();
+</script>
+</body>
+</html>
