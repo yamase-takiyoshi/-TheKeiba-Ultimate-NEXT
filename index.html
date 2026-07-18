@@ -50,13 +50,14 @@ label{display:block;font-size:13px;font-weight:800;color:var(--muted);margin-bot
 .sim-place-picker{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--bg)}
 .sim-place-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:9px}.sim-place-summary{color:var(--muted);font-size:13px;font-weight:800}
 .sim-place-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:7px;max-height:190px;overflow:auto;padding:3px}
-.sim-place-option{display:flex;align-items:center;gap:7px;margin:0;padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:linear-gradient(180deg,color-mix(in srgb,var(--panel2) 92%,white 8%),var(--panel2));color:var(--text);font-size:13px;font-weight:800;cursor:pointer;transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .12s ease}
+.sim-place-option{display:flex;align-items:center;gap:7px;margin:0;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:linear-gradient(180deg,color-mix(in srgb,var(--panel2) 92%,white 8%),var(--panel2));color:var(--text);font-size:13px;font-weight:800;cursor:pointer;transition:background .18s ease,border-color .18s ease,transform .12s ease;position:relative}
 .sim-place-option:hover{transform:translateY(-1px)}
 .sim-place-option input{width:auto;margin:0;accent-color:#35d79a}
 .sim-place-option.all{border-color:color-mix(in srgb,var(--accent) 50%,var(--line))}
-.sim-place-option.selected,.sim-place-option:has(input:checked){background:linear-gradient(180deg,rgba(92,255,197,.36) 0%,rgba(54,217,154,.42) 45%,rgba(18,120,84,.62) 100%);border-color:#63f0ba;box-shadow:0 0 0 1px rgba(99,240,186,.34),inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 22px rgba(123,255,217,.16);color:#f6fffb;text-shadow:0 1px 0 rgba(0,0,0,.18)}
-.sim-place-option.selected input,.sim-place-option:has(input:checked) input{accent-color:#baffea}
-.sim-place-option.all.selected,.sim-place-option.all:has(input:checked){background:linear-gradient(180deg,rgba(130,255,213,.4) 0%,rgba(63,227,166,.46) 42%,rgba(20,134,93,.72) 100%);border-color:#7df6c8}
+.sim-place-option.selected,.sim-place-option:has(input:checked){background:linear-gradient(180deg,color-mix(in srgb,var(--panel2) 88%,white 12%),var(--panel2));border-color:var(--line);box-shadow:none;color:var(--text);text-shadow:none}
+.sim-place-option.selected::after,.sim-place-option:has(input:checked)::after{content:"🟢";margin-left:auto;font-size:15px;line-height:1;filter:drop-shadow(0 0 3px rgba(120,255,190,.25))}
+.sim-place-option.selected input,.sim-place-option:has(input:checked) input{accent-color:#35d79a}
+.sim-place-option.all.selected,.sim-place-option.all:has(input:checked){background:linear-gradient(180deg,color-mix(in srgb,var(--panel2) 88%,white 12%),var(--panel2));border-color:var(--line)}
 .empty{padding:28px;text-align:center;color:var(--muted)}
 .tabs{display:flex;gap:8px;overflow:auto;margin-bottom:14px}.tab{white-space:nowrap}.tab.active{background:var(--accent);color:#031321;border-color:var(--accent)}
 .calendar-head{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}.calendar-head div{text-align:center;color:var(--muted);font-size:12px;font-weight:800}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.cal-day{min-height:86px;border:1px solid var(--line);border-radius:11px;padding:7px;background:var(--bg-soft);cursor:pointer}.cal-day:hover{border-color:var(--accent)}.cal-day.out{opacity:.35}.cal-day.selected{outline:2px solid var(--accent)}.cal-num{font-weight:900}.cal-events{display:flex;flex-direction:column;gap:4px;margin-top:7px}.cal-event{font-size:11px;padding:3px 5px;border-radius:6px;background:var(--panel2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cal-event.jra{border-left:3px solid var(--accent)}.cal-event.nar{border-left:3px solid var(--good)}
@@ -185,7 +186,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.1.3 Crystal Green</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.1.4 Green Dot</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -775,7 +776,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.1.3-ipad-bridgefix-green";
+const APP_VERSION="1.1.4-ipad-bridgefix-dot";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
