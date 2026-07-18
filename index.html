@@ -5,6 +5,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
+<meta name="format-detection" content="telephone=no">
+<meta name="mobile-web-app-capable" content="yes">
 <title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition</title>
 <style>
 :root{
@@ -147,6 +152,20 @@ linear-gradient(135deg,color-mix(in srgb,var(--panel) 90%,var(--accent) 10%),var
 .backup-status.ok{color:var(--good)}.backup-status.bad{color:var(--bad)}
 @media(max-width:760px){.backup-actions .btn{flex:1 1 calc(50% - 8px)}.backup-actions .btn.primary{flex-basis:100%}}
 
+
+/* iPad / iOS Safari operation refinements */
+html{-webkit-text-size-adjust:100%}
+body{-webkit-tap-highlight-color:transparent}
+button,.btn,.nav-btn,.tab,select,input[type="checkbox"],input[type="radio"]{touch-action:manipulation}
+input,select,textarea{font-size:16px}
+.table-wrap{-webkit-overflow-scrolling:touch}
+@supports (-webkit-touch-callout:none){
+  .app-header{padding-top:max(10px,env(safe-area-inset-top))}
+  .main{min-height:100dvh}
+  textarea,input,select{-webkit-appearance:none;appearance:none}
+  select{background-image:none}
+}
+
 </style>
 
 <style id="targetRdbStyles">
@@ -160,7 +179,7 @@ linear-gradient(135deg,color-mix(in srgb,var(--panel) 90%,var(--accent) 10%),var
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.1.0 Local-first D1 Query</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.1.2 iPad Bridge Fix</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -504,10 +523,11 @@ linear-gradient(135deg,color-mix(in srgb,var(--panel) 90%,var(--accent) 10%),var
         <div class="code-box" id="bridgeLog" style="margin-top:8px">未接続</div>
       </div>
       <div class="card"><h3>対応経路</h3><div class="code-box">【優先順位】
-1. Tampermonkey住宅IP Userscript Direct
-2. Userscript postMessage Bridge
-3. REST型 Worker: /ping /race/list /race /entry /odds /result
-4. 既存Worker互換: ?url=対象URL
+1. iPad共有DOMメールボックス Bridge v1.6.3
+2. Tampermonkey住宅IP Userscript Direct
+3. Userscript postMessage Bridge
+4. REST型 Worker: /ping /race/list /race /entry /odds /result
+5. 既存Worker互換: ?url=対象URL
 5. 既存Worker互換: ?type=shutuba|odds|result&kind=JRA|NAR&race_id=...
 
 Userscript利用時はWorker URLを空欄にできます。取得失敗Rは1回だけ自動再試行し、成功数と失敗数を分けて表示します。</div></div>
@@ -552,7 +572,13 @@ Userscript利用時はWorker URLを空欄にできます。取得失敗Rは1回�
       <div class="card"><h3>DBMS・D1設定</h3>
         <div class="form-grid">
           <div class="field"><label>DBMSモード</label><select id="dbmsMode"><option value="local">IndexedDBのみ</option><option value="manual">ローカル優先・手動D1</option><option value="auto">ローカル優先・D1自動差分同期</option></select></div>
-          <div class="field wide"><label>D1 Worker API URL</label><input type="url" id="d1ApiUrl" placeholder="https://example.workers.dev"></div><div class="field wide"><label>D1 API Token 任意</label><input type="password" id="d1ApiToken" autocomplete="off" placeholder="WorkerにAPI_TOKENを設定した場合だけ入力"></div><div class="field wide"><label>RDB画面 URL</label><input type="url" id="rdbConsoleUrl" value="https://takuya-20f.pages.dev/"></div>
+          
+<div class="notice" style="margin-top:12px">
+  <strong>iPad運用：</strong>
+  このHTMLはFilesアプリのプレビューではなく、GitHub Pagesへ置いてSafariで開いてください。
+  ホーム画面へ追加するとアプリのように起動できます。D1とWorkerの設定はCloudflareのWeb画面だけで行えます。
+</div>
+<div class="field wide"><label>D1 Worker API URL</label><input type="url" id="d1ApiUrl" placeholder="https://example.workers.dev"></div><div class="field wide"><label>D1 API Token 任意</label><input type="password" id="d1ApiToken" autocomplete="off" placeholder="WorkerにAPI_TOKENを設定した場合だけ入力"></div><div class="field wide"><label>RDB画面 URL</label><input type="url" id="rdbConsoleUrl" value="https://takuya-20f.pages.dev/"></div>
           <div class="field"><label>D1自動同期</label><select id="d1AutoSync"><option value="on">ON</option><option value="off">OFF</option></select></div>
           <div class="field"><label>送信バッチ件数</label><input id="d1BatchSize" type="number" min="25" max="400" step="25" value="250"></div>
           <div class="field"><label>通信タイムアウト秒</label><input id="d1TimeoutSec" type="number" min="5" max="60" value="20"></div>
@@ -620,7 +646,7 @@ const BRIDGE_DIAG=window.__THEKEIBA_BRIDGE_DIAG__={ready:false,direct:false,last
     BRIDGE_DIAG.handshakes++;try{window.postMessage({__narBridge:"ping",source:"TheKeiba",ts:Date.now()},"*");window.postMessage({__narBridge:"hello",source:"TheKeiba",ts:Date.now()},"*")}catch(e){BRIDGE_DIAG.lastError=e.message}
   }
   window.addEventListener("message",function(ev){
-    if(ev.source!==window)return;const d=ev&&ev.data;if(!d||!d.__narBridge)return;
+    if(ev.source&&ev.source!==window)return;const d=ev&&ev.data;if(!d||!d.__narBridge)return;
     if(d.__narBridge==="ready"||d.__narBridge==="pong"||d.__narBridge==="status"){markReady("postMessage");return}
     if(d.__narBridge==="response"&&d.id&&pending[d.id]){BRIDGE_DIAG.lastResponseAt=new Date().toISOString();if(Number(d.status)>0)markReady("postMessage");pending[d.id](d);delete pending[d.id]}
   });
@@ -655,7 +681,95 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   try{const html=await residentialBridgeText(target,{timeout});if(!looksLikeNetkeibaResponse(html))throw new Error("応答はありましたがnetkeibaページではありません");BRIDGE_DIAG.lastError="";BRIDGE_DIAG.lastRoute=BRIDGE_DIAG.direct?"direct":"postMessage";return{ok:true,chars:html.length,elapsed:Date.now()-started,route:BRIDGE_DIAG.lastRoute}}catch(e){BRIDGE_DIAG.lastError=e.message;return{ok:false,error:e.message,elapsed:Date.now()-started}}
 }
 
-const APP_VERSION="1.1.0";
+
+// iPad Safari Bridge Fix: Userscript v1.6.3 shared-DOM mailbox direct client.
+(function installIpadDomMailboxClient(){
+  "use strict";
+  const ROOT_ID="__nar_bridge_dom_v163__";
+  const REQUEST_CLASS="nar-bridge-request-v163";
+  const RESPONSE_CLASS="nar-bridge-response-v163";
+  let installed=false,seq=0,pending=Object.create(null),observer=null;
+
+  function root(){
+    return document.getElementById(ROOT_ID);
+  }
+  function finish(node){
+    if(!node||node.nodeType!==1||!node.classList?.contains(RESPONSE_CLASS))return;
+    const id=node.getAttribute("data-id")||"",item=pending[id];
+    if(!item){try{node.remove()}catch{};return}
+    delete pending[id];clearTimeout(item.timer);
+    const status=Number(node.getAttribute("data-status")||0);
+    const error=node.getAttribute("data-error")||"";
+    const body=node.textContent||"";
+    try{node.remove()}catch{}
+    BRIDGE_DIAG.lastResponseAt=new Date().toISOString();
+    if(!status)item.reject(new Error(error||"Userscript DOM bridge error"));
+    else item.resolve({status,text:body});
+  }
+  function observe(mailbox){
+    if(observer)return;
+    observer=new MutationObserver(records=>{
+      for(const record of records)for(const node of record.addedNodes){
+        finish(node);
+        if(node?.querySelectorAll)for(const child of node.querySelectorAll("."+RESPONSE_CLASS))finish(child);
+      }
+    });
+    observer.observe(mailbox,{childList:true,subtree:true});
+    for(const node of mailbox.querySelectorAll("."+RESPONSE_CLASS))finish(node);
+  }
+  function install(){
+    if(typeof window.__narBridgeDirect==="function"&&window.__narBridgeHasDirect)return true;
+    const mailbox=root();
+    if(!mailbox)return false;
+    observe(mailbox);
+    window.__narBridgeDirect=function(url,options={}){
+      return new Promise((resolve,reject)=>{
+        const box=root();
+        if(!box){reject(new Error("Bridge DOMメールボックスが見つかりません"));return}
+        const id="tkdom_"+(++seq)+"_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
+        const timeout=Math.max(3000,Number(options.timeout||20000));
+        const timer=setTimeout(()=>{
+          if(!pending[id])return;
+          delete pending[id];
+          BRIDGE_DIAG.lastError="Userscript DOM bridge timeout";
+          reject(new Error("Userscript DOM bridge timeout"));
+        },timeout);
+        pending[id]={resolve,reject,timer};
+        BRIDGE_DIAG.lastRequestAt=new Date().toISOString();
+        const req=document.createElement("div");
+        req.className=REQUEST_CLASS;
+        req.setAttribute("data-id",id);
+        req.setAttribute("data-url",String(url||""));
+        box.appendChild(req);
+      });
+    };
+    window.__narBridgeFetch=window.__narBridgeDirect;
+    window.__narBridgeHasDirect=true;
+    window.__NAR_BRIDGE_READY__=true;
+    window.__narBridgeVersion=
+      document.documentElement.getAttribute("data-nar-bridge-ready")||"1.6.3-dom";
+    BRIDGE_DIAG.ready=true;
+    BRIDGE_DIAG.direct=true;
+    BRIDGE_DIAG.lastRoute="dom-mailbox";
+    BRIDGE_DIAG.lastReadyAt=new Date().toISOString();
+    BRIDGE_DIAG.lastError="";
+    installed=true;
+    try{window.updateBridgeDiagnostics?.("DOMメールボックス接続済み","ok")}catch{}
+    return true;
+  }
+  window.__theKeibaInstallDomBridge=install;
+  install();
+  let tries=0;
+  const timer=setInterval(()=>{
+    if(install()||++tries>=100)clearInterval(timer);
+  },150);
+  document.addEventListener("visibilitychange",()=>{
+    if(document.visibilityState==="visible")setTimeout(install,100);
+  });
+  window.addEventListener("focus",()=>setTimeout(install,100));
+})();
+
+const APP_VERSION="1.1.2-ipad-bridgefix";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -2464,9 +2578,9 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   window.updateBridgeDiagnostics=function(label="",kind=""){
     const badge=$("bridgeHealthBadge"),diag=$("bridgeDiag");const ready=hasResidentialBridge(),route=BRIDGE_DIAG.lastRoute||state.settings.bridgeMode||"未検出";
     if(badge){badge.innerHTML=`<span class="status-dot ${kind==="ok"||ready?"on":""}"></span>${esc(label|| (ready?"Userscript接続済み":"未接続"))}`}
-    if(diag)diag.textContent=[`Version: ${APP_VERSION}`,`Route: ${route}`,`Userscript ready: ${ready}`,`Direct bridge: ${!!BRIDGE_DIAG.direct}`,`Last ready: ${BRIDGE_DIAG.lastReadyAt||"-"}`,`Last request: ${BRIDGE_DIAG.lastRequestAt||"-"}`,`Last response: ${BRIDGE_DIAG.lastResponseAt||"-"}`,`Handshake count: ${BRIDGE_DIAG.handshakes||0}`,`Bridge mode: ${state.settings.bridgeMode||"auto"}`,`Worker URL: ${state.settings.bridgeUrl||"未設定"}`,`Online: ${navigator.onLine}`,`Visibility: ${document.visibilityState}`,`Last error: ${BRIDGE_DIAG.lastError||"-"}`].join("\n")
+    if(diag)diag.textContent=[`Version: ${APP_VERSION}`,`Route: ${route}`,`Userscript ready: ${ready}`,`Direct bridge: ${!!BRIDGE_DIAG.direct}`,`Bridge version: ${window.__narBridgeVersion||document.documentElement.getAttribute("data-nar-bridge-ready")||"-"}`,`DOM mailbox: ${!!document.getElementById("__nar_bridge_dom_v163__")}`,`Last ready: ${BRIDGE_DIAG.lastReadyAt||"-"}`,`Last request: ${BRIDGE_DIAG.lastRequestAt||"-"}`,`Last response: ${BRIDGE_DIAG.lastResponseAt||"-"}`,`Handshake count: ${BRIDGE_DIAG.handshakes||0}`,`Bridge mode: ${state.settings.bridgeMode||"auto"}`,`Worker URL: ${state.settings.bridgeUrl||"未設定"}`,`Online: ${navigator.onLine}`,`Visibility: ${document.visibilityState}`,`Last error: ${BRIDGE_DIAG.lastError||"-"}`].join("\n")
   };
-  let reconnectBusy=false;async function reconnectBridge({silent=false}={}){if(reconnectBusy)return false;reconnectBusy=true;try{updateBridgeDiagnostics("再検出中");state.settings.bridgeMode="auto";if(typeof window.__theKeibaBridgeHandshake==="function")window.__theKeibaBridgeHandshake();const d=await detectBridgeMode();updateBridgeDiagnostics("接続済み","ok");if(!silent)bridgeLog("Bridge再検出成功",d);return true}catch(e){BRIDGE_DIAG.lastError=e.message;updateBridgeDiagnostics("未接続","bad");if(!silent)bridgeLog("Bridge再検出失敗: "+e.message);return false}finally{reconnectBusy=false}}
+  let reconnectBusy=false;async function reconnectBridge({silent=false}={}){if(reconnectBusy)return false;reconnectBusy=true;try{updateBridgeDiagnostics("再検出中");state.settings.bridgeMode="auto";if(typeof window.__theKeibaInstallDomBridge==="function")window.__theKeibaInstallDomBridge();if(typeof window.__theKeibaBridgeHandshake==="function")window.__theKeibaBridgeHandshake();const d=await detectBridgeMode();updateBridgeDiagnostics("接続済み","ok");if(!silent)bridgeLog("Bridge再検出成功",d);return true}catch(e){BRIDGE_DIAG.lastError=e.message;updateBridgeDiagnostics("未接続","bad");if(!silent)bridgeLog("Bridge再検出失敗: "+e.message);return false}finally{reconnectBusy=false}}
   async function copyBridgeDiagnostics(){updateBridgeDiagnostics();const text=$("bridgeDiag")?.textContent+"\n\nLog:\n"+($("bridgeLog")?.textContent||"");try{await navigator.clipboard.writeText(text);bridgeLog("Bridge診断をコピーしました")}catch{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();bridgeLog("Bridge診断をコピーしました")}}
 
   const baseApply=applySettings;
