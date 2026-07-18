@@ -229,7 +229,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.7 フォワード開催場複数選択</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.8 EV分析設定モード戦略追加</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -3586,6 +3586,154 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,2150),{once:true});else setTimeout(wire,350);
 })();
 </script>
+
+
+<script id="evModeStrategyDropdownPatch">
+/* v1.2.8 EV分析設定モードを戦略一覧へ追加 */
+(function(){
+  "use strict";
+  const BUILTIN_ID="ev-analysis-mode";
+  const BUILTIN_NAME="EV分析設定モード";
+  const ORDER_IDS=["default-win","trio-pro","value-wide",BUILTIN_ID];
+  const TICKET_FALLBACK="all";
+
+  function orderScore(s={}){
+    const id=String(s.id||"");
+    const idx=ORDER_IDS.indexOf(id);
+    return idx>=0?idx:1000;
+  }
+  function sortForUi(list=[]){
+    return [...list].sort((a,b)=>orderScore(a)-orderScore(b)||String(a.name||"").localeCompare(String(b.name||""),"ja")||String(a.id||"").localeCompare(String(b.id||""),"ja"));
+  }
+  function renderOptions(select,list,oldValue){
+    if(!select)return;
+    select.innerHTML=list.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("");
+    if(list.some(s=>String(s.id)===String(oldValue)))select.value=String(oldValue);
+  }
+  function builtInStrategy(){
+    const current=typeof readConfig==="function"?readConfig():{};
+    const mode=(typeof state==="object"&&state?.settings?.cloneMode)?String(state.settings.cloneMode):"roi100";
+    const base=(typeof state==="object"&&state?.settings?.cloneAllAgreeBaseMode)?String(state.settings.cloneAllAgreeBaseMode):"roi100";
+    const ticket=String(current.ticketType||current.simTicket||TICKET_FALLBACK||"all");
+    return normalizeStrategy({
+      id:BUILTIN_ID,
+      name:BUILTIN_NAME,
+      ticketType:ticket||"all",
+      predictionMode:"clone",
+      priority:"ev",
+      topN:Number(current.topN||3),
+      maxTickets:Number(current.maxTickets||6),
+      minEv:Number(current.minEv??1),
+      minAi:Number(current.minAi??68),
+      minOdds:Number(current.minOdds??1),
+      maxOdds:Number(current.maxOdds??999),
+      unit:Number(current.unit||100),
+      dailyBudget:Number(current.dailyBudget||2000),
+      maxRaces:Number(current.maxRaces||6),
+      agreementMode:String(current.agreementMode||"on"),
+      budgetMode:String(current.budgetMode||"sequential"),
+      dailyRankBasis:String(current.dailyRankBasis||"ev"),
+      sourceEvMode:"inherit",
+      sourceEvAllAgreeBaseMode:"inherit",
+      cloneMode:mode,
+      cloneAllAgreeBaseMode:base,
+      enabled:true
+    });
+  }
+  async function ensureBuiltIn(){
+    if(typeof getAll!=="function"||typeof putOne!=="function"||typeof normalizeStrategy!=="function")return null;
+    const list=await getAll("strategies");
+    const existing=list.find(s=>String(s.id||"")===BUILTIN_ID||String(s.name||"")===BUILTIN_NAME);
+    const rec=builtInStrategy();
+    if(existing){
+      const merged=normalizeStrategy({...existing,id:BUILTIN_ID,name:BUILTIN_NAME,sourceEvMode:existing.sourceEvMode||"inherit",sourceEvAllAgreeBaseMode:existing.sourceEvAllAgreeBaseMode||"inherit"});
+      if(String(existing.id)!==BUILTIN_ID||String(existing.name)!==BUILTIN_NAME){await putOne("strategies",merged);}
+      return merged;
+    }
+    await putOne("strategies",rec);
+    return rec;
+  }
+  async function refreshPredictionSelectorOnly(){
+    const pred=document.getElementById("predStrategySelector");
+    if(!pred||typeof getAll!=="function")return;
+    const list=sortForUi(await getAll("strategies"));
+    const sim=document.getElementById("simStrategy");
+    const old=pred.value||sim?.value||state.currentStrategyId||"";
+    renderOptions(pred,list,old);
+  }
+
+  if(typeof ensureDefaultStrategies==="function"){
+    const prev=ensureDefaultStrategies;
+    ensureDefaultStrategies=async function(){const out=await prev();await ensureBuiltIn();return out};
+  }
+  if(typeof refreshStrategySelect==="function"){
+    const prev=refreshStrategySelect;
+    refreshStrategySelect=async function(){
+      await ensureBuiltIn();
+      const result=await prev();
+      const list=sortForUi(await getAll("strategies"));
+      const sim=document.getElementById("simStrategy");
+      const old=sim?.value||state.currentStrategyId||"";
+      renderOptions(sim,list,old);
+      await refreshPredictionSelectorOnly();
+      return result;
+    };
+  }
+  if(typeof renderStrategies==="function"){
+    const prev=renderStrategies;
+    renderStrategies=async function(){
+      await ensureBuiltIn();
+      const result=await prev();
+      const list=sortForUi(await getAll("strategies"));
+      const box=document.getElementById("strategyList");
+      if(box){
+        box.innerHTML=list.map(s=>`<div class="strategy-card ${s.id===state.currentStrategyId?"active":""}" data-strategy-id="${esc(s.id)}"><strong>${esc(s.name)}</strong><div class="muted">${TICKET_LABELS[s.ticketType]} / EV ${s.minEv} / AI ${s.minAi}</div></div>`).join("")||`<div class="empty">戦略なし</div>`;
+        document.querySelectorAll("[data-strategy-id]").forEach(c=>c.onclick=async()=>{state.currentStrategyId=c.dataset.strategyId;await renderStrategies();await loadStrategyEditor(state.currentStrategyId)});
+      }
+      await refreshStrategySelect();
+      return result;
+    };
+  }
+  if(typeof loadStrategyEditor==="function"){
+    const prev=loadStrategyEditor;
+    loadStrategyEditor=async function(id){
+      await ensureBuiltIn();
+      const target=id||state.currentStrategyId||BUILTIN_ID;
+      const out=await prev(target);
+      if(String(target)===BUILTIN_ID){
+        const noteId="evModeStrategyEditorHint";
+        let note=document.getElementById(noteId);
+        if(!note){
+          note=document.createElement("div");
+          note.id=noteId;
+          note.className="notice";
+          note.style.marginTop="10px";
+          const anchor=document.getElementById("saveStrategyBtn")?.closest(".toolbar")||document.getElementById("strName")?.closest(".card");
+          if(anchor)anchor.insertAdjacentElement("beforebegin",note);
+        }
+        note.textContent="この戦略は設定タブの EV分析 設定モード をそのまま使います。モードを変更したい時は設定タブで切り替えてください。";
+        note.hidden=false;
+      }else{
+        const note=document.getElementById("evModeStrategyEditorHint");
+        if(note)note.hidden=true;
+      }
+      return out;
+    };
+  }
+  if(typeof refreshSelectors==="function"){
+    const prev=refreshSelectors;
+    refreshSelectors=async function(preferredRace=""){
+      await ensureBuiltIn();
+      const out=await prev(preferredRace);
+      await refreshPredictionSelectorOnly();
+      return out;
+    };
+  }
+  if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(async()=>{try{await ensureBuiltIn();await refreshPredictionSelectorOnly()}catch(e){console.warn(e)}},1200),{once:true});
+  else setTimeout(async()=>{try{await ensureBuiltIn();await refreshPredictionSelectorOnly()}catch(e){console.warn(e)}},300);
+})();
+</script>
+
 
 <!-- v1.2.3: 性齢フィールド取得・保持・検索・スナップショット表示を強化 -->
 </body>
