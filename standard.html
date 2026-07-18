@@ -2,6 +2,7 @@
 <!-- TheKeiba Link Integrated: Standard edition -->
 <html lang="ja">
 <head>
+<script id="earlySharedTheme">(function(){try{var v=localStorage.getItem("TheKeibaSharedThemeV2")||localStorage.getItem("TheKeibaTheme");v=/^(?:light|ライト)$/i.test(String(v||""))?"light":/^(?:dark|ダーク)$/i.test(String(v||""))?"dark":"";if(v)document.documentElement.setAttribute("data-theme",v)}catch(e){}})();</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111f">
@@ -140,7 +141,7 @@ body.split-mode .app-shell.split-open{grid-template-columns:minmax(360px,1fr) mi
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.28 Split Auto Hide Menu Standard</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.2.0 Forward Test + Snapshot Restore Standard</small></div></div>
   <div class="header-actions"><a class="btn small" href="index.html" title="最適化DBMS・D1Sync統合版を開く">🗄 DBMS版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -396,6 +397,48 @@ REST型: /ping /race/list /race /entry /odds /result
 URL欄の値は「設定保存」を押さなくても各ボタンで即時使用します。</div></div>
     </section>
 
+
+      <section class="view" id="view-forward">
+        <h2 class="page-title">フォワードテスト</h2>
+        <div class="grid fw-stats">
+          <div class="stat span-3"><div class="stat-label">セッション</div><div class="stat-value" id="fwStatSession">未開始</div></div>
+          <div class="stat span-3"><div class="stat-label">現在資金</div><div class="stat-value" id="fwStatCapital">¥0</div></div>
+          <div class="stat span-3"><div class="stat-label">投資／払戻</div><div class="stat-value" id="fwStatTurnover">¥0／¥0</div></div>
+          <div class="stat span-3"><div class="stat-label">収支／ROI</div><div class="stat-value" id="fwStatProfit">¥0／-</div></div>
+        </div>
+        <div class="card">
+          <div class="toolbar"><h3 style="margin:0 auto 0 0">フォワードテスト管理</h3><span class="badge" id="fwSessionStatus">停止中</span></div>
+          <div class="form-grid">
+            <div class="field wide"><label>セッション</label><select id="fwSessionSelect"></select></div>
+            <div class="field wide"><label>新規セッション名</label><input id="fwSessionName" placeholder="例 7月JRAフォワード"></div>
+            <div class="field"><label>開始元金</label><input id="fwInitialCapital" type="number" step="100" value="100000"></div>
+            <div class="field"><label>1日予算</label><input id="fwDailyBudget" type="number" step="100" value="2000"></div>
+            <div class="field"><label>1点金額</label><input id="fwUnit" type="number" step="100" value="100"></div>
+            <div class="field"><label>最低EV</label><input id="fwMinEv" type="number" step="0.01" value="1.00"></div>
+            <div class="field"><label>最低AI</label><input id="fwMinAi" type="number" step="1" value="80"></div>
+            <div class="field"><label>候補上位</label><input id="fwTopN" type="number" min="1" max="18" value="3"></div>
+            <div class="field"><label>最大買い目</label><input id="fwMaxTickets" type="number" min="1" max="100" value="6"></div>
+            <div class="field"><label>券種</label><select id="fwTicketType"><option value="win">単勝</option><option value="place">複勝</option><option value="bracketQuinella">枠連</option><option value="wide">ワイド</option><option value="quinella">馬連</option><option value="exacta">馬単</option><option value="trio">3連複</option><option value="trifecta">3連単</option><option value="all">全券種</option></select></div>
+            <div class="field"><label>優先順位</label><select id="fwPriority"><option value="ev">EV順</option><option value="ai">AI順</option><option value="expected">期待払戻順</option><option value="balanced">AI・EV総合</option></select></div>
+            <div class="field"><label>発走前自動固定</label><input id="fwAutoMinutes" type="number" min="1" max="180" value="10"></div>
+            <div class="field"><label>自動監視</label><select id="fwAutoEnabled"><option value="on">ON</option><option value="off">OFF</option></select></div>
+          </div>
+          <div class="toolbar" style="margin-top:13px"><button class="btn good" id="fwStartBtn">新規開始</button><button class="btn" id="fwLoadSessionBtn">選択セッションを開く</button><button class="btn bad" id="fwEndBtn">終了</button></div>
+          <div class="notice" style="margin-top:12px">レース前の馬柱・オッズ・人気・AI・EV・設定・買い目を固定し、結果確定後に同じ判断を自動精算します。自動監視はこのHTMLを開いている間に動作し、再表示時にも未精算レースを確認します。</div>
+        </div>
+        <div class="card">
+          <div class="toolbar"><h3 style="margin:0 auto 0 0">対象レースと判断固定</h3><span class="badge" id="fwIntegrityBadge">未来情報なし</span></div>
+          <div class="form-grid"><div class="field wide"><label>対象レース</label><select id="fwRaceSelector"></select></div><div class="field"><label>&nbsp;</label><button class="btn" id="fwUseCurrentRaceBtn">馬柱のレースを選択</button></div></div>
+          <div class="toolbar" style="margin-top:13px"><button class="btn" id="fwCaptureBtn">レース・馬柱を保存</button><button class="btn primary" id="fwLockBtn">判断を確定</button><button class="btn good" id="fwSettleBtn">結果取込・精算</button><button class="btn" id="fwRefreshBtn">更新</button></div>
+          <div class="code-box" id="fwStatusBox" style="margin-top:12px">セッションを開始してください。</div>
+        </div>
+        <div class="card">
+          <div class="toolbar"><h3 style="margin:0 auto 0 0">スナップショット履歴</h3><button class="btn small" id="fwShowAllBtn">全履歴</button></div>
+          <div class="table-wrap"><table><thead><tr><th>保存日時</th><th>段階</th><th>レース</th><th>出走</th><th>買い目</th><th>投資</th><th>収支</th><th>完全性</th><th>操作</th></tr></thead><tbody id="fwSnapshotRows"></tbody></table></div>
+        </div>
+        <div class="card" id="fwPreviewCard" hidden></div>
+      </section>
+
     <section class="view" id="view-settings">
       <h2 class="page-title">設定</h2>
       <div class="card"><div class="form-grid"><div class="field"><label>テーマ</label><select id="themeSelect"><option value="dark">ダーク</option><option value="light">ライト</option></select></div><div class="field"><label>既定開始元金</label><input id="defaultInitialCapital" type="number" step="100" value="100000"></div><div class="field"><label>既定最低EV</label><input id="defaultMinEv" type="number" step="0.01" value="1.00"></div><div class="field"><label>既定最低AI</label><input id="defaultMinAi" type="number" value="80"></div><div class="field"><label>既定1日予算</label><input id="defaultBudget" type="number" value="2000"></div><div class="field"><label>既定1点金額</label><input id="defaultUnit" type="number" value="100"></div><div class="field"><label>AI補正強度</label><input id="aiStrength" type="number" step="0.1" value="1"></div></div><div class="toolbar" style="margin-top:13px"><button class="btn primary" id="settingsSaveBtn">保存</button></div></div>
@@ -491,8 +534,8 @@ async function residentialBridgeText(target){
 }
 function hasResidentialBridge(){return !!((typeof window.__narBridgeDirect==='function'&&window.__narBridgeHasDirect)||window.__NAR_BRIDGE_READY__);}
 
-const APP_VERSION="1.0.26";
-const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["settings","⚙","設定"]];
+const APP_VERSION="1.2.0-forward-snapshot-standard";
+const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const SIM_TICKET_TYPES=["win","place","bracketQuinella","quinella","wide","exacta","trio","trifecta"];
 const DB_STORES={
@@ -1772,6 +1815,128 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   }
   window.productIntelligenceWire=wire;
   window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,1100));
+})();
+</script>
+
+
+<style id="forwardTestStyles">
+.fw-stats .stat-value{font-size:clamp(18px,2vw,28px)}
+#fwSnapshotRows td{vertical-align:top}.fw-actions{display:flex;flex-wrap:wrap;gap:6px}.fw-stage{font-weight:900}
+.fw-stage.locked{color:var(--warn)}.fw-stage.settled{color:var(--good)}.fw-stage.captured{color:var(--accent)}.fw-stage.safety{color:var(--purple)}
+.fw-preview-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.fw-diff{white-space:pre-wrap;line-height:1.7}
+:root[data-theme="light"] body,body[data-theme="light"]{background:var(--bg)!important;color:var(--text)!important}
+:root[data-theme="light"] .app-header,:root[data-theme="light"] .sidebar,:root[data-theme="light"] .mobile-nav,:root[data-theme="light"] .card,:root[data-theme="light"] .stat,:root[data-theme="light"] .strategy-card,:root[data-theme="light"] .modal-card{color:var(--text)}
+</style>
+
+
+<script id="forwardTestSnapshotScript">
+(function(){
+  "use strict";
+  const THEME_KEY="TheKeibaSharedThemeV2",ACTIVE_KEY="forward-active",SESSION_PREFIX="forward-session:";
+  const FW={activeSessionId:"",showAll:false,timer:null,busy:false};
+  const byId=id=>document.getElementById(id);
+  const clone=v=>{try{return structuredClone(v)}catch(_){return JSON.parse(JSON.stringify(v??null))}};
+  const n=(v,d=0)=>{v=Number(v);return Number.isFinite(v)?v:d};
+  const money=v=>"¥"+Math.round(n(v)).toLocaleString();
+  const dateText=v=>{try{return new Date(v).toLocaleString()}catch(_){return String(v||"")}};
+  const stageLabel=s=>({captured:"取得保存",locked:"判断確定",settled:"精算済み",safety:"復元直前",branch:"分岐開始",manual:"手動保存"}[s]||s||"保存");
+  const normalizeTheme=v=>/^(?:light|ライト)$/i.test(String(v||""))?"light":"dark";
+  function enforceTheme(v){
+    v=normalizeTheme(v);state.settings.theme=v;document.documentElement.dataset.theme=v;if(document.body)document.body.dataset.theme=v;
+    try{localStorage.setItem(THEME_KEY,v);localStorage.setItem("TheKeibaTheme",v)}catch(_){}
+    const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=v==="light"?"#eef3f8":"#07111f";
+    if(byId("themeBtn"))byId("themeBtn").textContent=v==="dark"?"🌙":"☀️";if(byId("themeSelect"))byId("themeSelect").value=v;
+  }
+  const oldApplySettings=applySettings;
+  applySettings=function(){
+    const stored=(()=>{try{return localStorage.getItem(THEME_KEY)}catch(_){return""}})();
+    state.settings.theme=normalizeTheme(state.settings.theme||stored);oldApplySettings.apply(this,arguments);enforceTheme(state.settings.theme);
+  };
+  function wireTheme(){
+    enforceTheme(state.settings.theme||(()=>{try{return localStorage.getItem(THEME_KEY)}catch(_){return"dark"}})());
+    byId("themeSelect")?.addEventListener("change",async e=>{state.settings.theme=normalizeTheme(e.target.value);enforceTheme(state.settings.theme);try{await putOne("settings",{key:"app",value:state.settings})}catch(_){}});
+    document.querySelectorAll('a[href="standard.html"],a[href="index.html"]').forEach(a=>a.addEventListener("click",()=>enforceTheme(state.settings.theme)));
+    window.addEventListener("pageshow",()=>enforceTheme(state.settings.theme));document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")enforceTheme(state.settings.theme)});
+  }
+  async function getSession(id){if(!id)return null;return (await getOne("settings",SESSION_PREFIX+id))?.value||null}
+  async function saveSession(s){s.updatedAt=new Date().toISOString();await putOne("settings",{key:SESSION_PREFIX+s.id,value:s});return s}
+  async function allSessions(){return (await getAll("settings")).filter(x=>String(x.key||"").startsWith(SESSION_PREFIX)).map(x=>x.value).filter(Boolean).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)))}
+  async function setActive(id){FW.activeSessionId=id||"";await putOne("settings",{key:ACTIVE_KEY,value:FW.activeSessionId});try{localStorage.setItem("TheKeibaForwardActive",FW.activeSessionId)}catch(_){} }
+  async function loadActive(){const row=await getOne("settings",ACTIVE_KEY);FW.activeSessionId=String(row?.value||localStorage.getItem("TheKeibaForwardActive")||"")}
+  function readConfig(){return{
+    initialCapital:Math.max(0,n(byId("fwInitialCapital")?.value,100000)),dailyBudget:Math.max(0,n(byId("fwDailyBudget")?.value,2000)),unit:Math.max(100,n(byId("fwUnit")?.value,100)),
+    minEv:Math.max(0,n(byId("fwMinEv")?.value,1)),minAi:Math.max(0,n(byId("fwMinAi")?.value,80)),topN:Math.max(1,n(byId("fwTopN")?.value,3)),maxTickets:Math.max(1,n(byId("fwMaxTickets")?.value,6)),
+    ticketType:byId("fwTicketType")?.value||"win",priority:byId("fwPriority")?.value||"ev",autoMinutes:Math.max(1,n(byId("fwAutoMinutes")?.value,10)),autoEnabled:byId("fwAutoEnabled")?.value!=="off"
+  }}
+  function writeConfig(c={}){for(const [id,key] of [["fwInitialCapital","initialCapital"],["fwDailyBudget","dailyBudget"],["fwUnit","unit"],["fwMinEv","minEv"],["fwMinAi","minAi"],["fwTopN","topN"],["fwMaxTickets","maxTickets"],["fwAutoMinutes","autoMinutes"]])if(byId(id)&&c[key]!=null)byId(id).value=c[key];if(byId("fwTicketType")&&c.ticketType)byId("fwTicketType").value=c.ticketType;if(byId("fwPriority")&&c.priority)byId("fwPriority").value=c.priority;if(byId("fwAutoEnabled"))byId("fwAutoEnabled").value=c.autoEnabled===false?"off":"on"}
+  async function startSession(parent=null){
+    const c=readConfig(),id="fw-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),name=String(byId("fwSessionName")?.value||"").trim()||`フォワード ${new Date().toLocaleDateString()}`;
+    const s={id,name,status:"active",createdAt:new Date().toISOString(),endedAt:null,parentSessionId:parent?.id||null,parentSnapshotId:parent?.snapshotId||null,config:c,initialCapital:c.initialCapital,capital:c.initialCapital,totalBet:0,totalPay:0,lockedCount:0,settledCount:0};
+    await saveSession(s);await setActive(id);await renderForward();status(`セッション「${name}」を開始しました。レース前データを保存し、判断を確定してください。`);return s
+  }
+  async function endSession(){const s=await getSession(FW.activeSessionId);if(!s)return status("終了するセッションがありません。","bad");if(!confirm(`「${s.name}」を終了しますか？`))return;s.status="ended";s.endedAt=new Date().toISOString();await saveSession(s);await renderForward();status("セッションを終了しました。")}
+  function status(text,kind=""){const el=byId("fwStatusBox");if(el){el.textContent=String(text||"");el.classList.toggle("good",kind==="good");el.classList.toggle("bad",kind==="bad")}}
+  async function renderSessionList(){const list=await allSessions(),sel=byId("fwSessionSelect");if(!sel)return;if(FW.activeSessionId&&!list.some(x=>x.id===FW.activeSessionId))FW.activeSessionId="";sel.innerHTML=`<option value="">未選択</option>`+list.map(s=>`<option value="${esc(s.id)}">${esc(s.name)}｜${s.status==="active"?"進行中":"終了"}｜${dateText(s.createdAt)}</option>`).join("");sel.value=FW.activeSessionId||""}
+  async function renderRaceList(){const races=await getAll("races"),sel=byId("fwRaceSelector");if(!sel)return;const current=sel.value||state.currentRaceId||"";races.sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))||n(a.raceNo)-n(b.raceNo));sel.innerHTML=`<option value="">レースを選択</option>`+races.map(r=>`<option value="${esc(r.race_id)}">${esc(displayDate(r.date))} ${esc(r.type||"")} ${esc(r.placeName||"")} ${n(r.raceNo)}R ${esc(raceNameForDisplay(r))}</option>`).join("");if(races.some(r=>r.race_id===current))sel.value=current}
+  async function forwardSnapshots(sessionId=""){const rows=(await getAll("snapshots")).filter(x=>String(x.kind||"").startsWith("forward")||["captured","locked","settled","branch"].includes(x.stage));return rows.filter(x=>!sessionId||x.sessionId===sessionId).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)))}
+  async function manualRaceSnapshot(stage="manual",label="",extra={}){
+    const rid=extra.race_id||state.currentRaceId||byId("fwRaceSelector")?.value;if(!rid)throw new Error("レースを選択してください");const [race,entries,result]=await Promise.all([getOne("races",rid),getByIndex("entries","race_id",rid),getOne("results",rid)]);if(!race)throw new Error("レース情報がありません");
+    const rec={kind:stage==="manual"?"manual-race":"forward-snapshot",stage,race_id:rid,createdAt:new Date().toISOString(),label:label||stageLabel(stage),race:clone(race),entries:clone(entries),result:stage==="settled"?clone(result):extra.includeResult?clone(result):null,observedResultPresent:!!result,settingsSnapshot:clone(state.settings),dataCutoffAt:new Date().toISOString(),...extra};
+    rec.id=await addOne("snapshots",rec);return rec
+  }
+  async function enhancedSaveSnapshot(){try{const label=prompt("スナップショット名",`馬柱 ${new Date().toLocaleString()}`);if(label===null)return;await manualRaceSnapshot("manual",label,{includeResult:true});await renderReplayList();alert("レース・馬柱・結果・設定を保存しました")}catch(e){alert(e.message)}}
+  function sorter(priority){const map=typeof simulationEntrySorters==="function"?simulationEntrySorters():{};return map[priority]||((a,b)=>n(b.ev)-n(a.ev)||n(b.ai)-n(a.ai))}
+  async function dailyLockedInvest(sessionId,date){const rows=await forwardSnapshots(sessionId);return rows.filter(x=>x.stage==="locked"&&String(x.race?.date||"")===String(date||"")).reduce((s,x)=>s+n(x.invest),0)}
+  async function captureOnly(silent=false){try{const s=await getSession(FW.activeSessionId);if(!s)throw new Error("先にセッションを開始してください");const rid=byId("fwRaceSelector")?.value;if(!rid)throw new Error("対象レースを選択してください");const rec=await manualRaceSnapshot("captured","レース前取得",{sessionId:s.id,race_id:rid,config:clone(readConfig()),includeResult:false,integrity:"clean"});if(!silent)alert("レース・馬柱スナップショットを保存しました");await renderForward();return rec}catch(e){status(e.message,"bad");if(!silent)alert(e.message);return null}}
+  async function lockDecision(opts={}){
+    if(FW.busy)return;FW.busy=true;try{
+      const s=await getSession(FW.activeSessionId);if(!s||s.status!=="active")throw new Error("進行中のセッションを選択してください");const rid=byId("fwRaceSelector")?.value;if(!rid)throw new Error("対象レースを選択してください");
+      const old=await forwardSnapshots(s.id),existing=old.find(x=>x.race_id===rid&&x.stage==="locked"&&!old.some(y=>y.stage==="settled"&&y.decisionId===x.decisionId));if(existing&&!opts.force)throw new Error("このレースは既に判断確定済みです。履歴の「分岐」で別条件を検証できます");
+      const [race,rawEntries,resultNow]=await Promise.all([getOne("races",rid),getByIndex("entries","race_id",rid),getOne("results",rid)]);if(!race)throw new Error("レース情報がありません");if(!rawEntries.length)throw new Error("馬柱がありません");
+      const c=readConfig();s.config=clone(c);let entries=clone(rawEntries);recalcEntryScores(entries);let candidates=entries.filter(e=>n(e.odds)>0&&n(e.ev)>=c.minEv&&n(e.ai)>=c.minAi).sort(sorter(c.priority)).slice(0,c.topN);const candidateTickets=generateTickets(c.ticketType,candidates,c.maxTickets);
+      const spent=await dailyLockedInvest(s.id,race.date),remainingDay=Math.max(0,c.dailyBudget-spent),affordable=Math.min(Math.floor(remainingDay/c.unit),Math.floor(s.capital/c.unit),c.maxTickets),purchaseTickets=candidateTickets.slice(0,affordable),invest=purchaseTickets.length*c.unit,decisionId="decision-"+Date.now()+"-"+Math.random().toString(36).slice(2,6),before=s.capital;
+      const rec={kind:"forward-snapshot",stage:"locked",sessionId:s.id,decisionId,race_id:rid,createdAt:new Date().toISOString(),label:"判断確定",race:clone(race),entries:clone(entries),result:null,observedResultPresent:!!resultNow,integrity:resultNow?"result-present-at-lock":"clean",settingsSnapshot:clone(state.settings),config:clone(c),candidateEntries:clone(candidates),candidateTickets:clone(candidateTickets),purchaseTickets:clone(purchaseTickets),invest,capitalBefore:before,capitalAfter:before-invest,dataCutoffAt:new Date().toISOString()};rec.id=await addOne("snapshots",rec);
+      s.capital=before-invest;s.totalBet=n(s.totalBet)+invest;s.lockedCount=n(s.lockedCount)+1;await saveSession(s);await renderForward();const msg=`判断を固定しました。候補 ${candidateTickets.length}点、購入 ${purchaseTickets.length}点、投資 ${money(invest)}。${resultNow?"注意: 確定結果が既にDBに存在したため完全性警告を付与しました。":"未来情報は保存していません。"}`;status(msg,resultNow?"bad":"good");if(!opts.silent)alert(msg);return rec
+    }catch(e){status(e.message,"bad");if(!opts.silent)alert(e.message)}finally{FW.busy=false}
+  }
+  async function settleDecision(opts={}){
+    if(FW.busy)return;FW.busy=true;try{
+      const s=await getSession(FW.activeSessionId);if(!s)throw new Error("セッションを選択してください");const rid=byId("fwRaceSelector")?.value;if(!rid)throw new Error("対象レースを選択してください");const rows=await forwardSnapshots(s.id),settledIds=new Set(rows.filter(x=>x.stage==="settled").map(x=>x.decisionId)),locked=rows.find(x=>x.race_id===rid&&x.stage==="locked"&&!settledIds.has(x.decisionId));if(!locked)throw new Error("未精算の判断確定スナップショットがありません");
+      const result=await getOne("results",rid);if(!result)throw new Error("結果・払戻がまだ登録されていません");let pay=0;for(const t of locked.purchaseTickets||[])pay+=ticketPayout(result,t)*(n(locked.config?.unit,100)/100);const profit=pay-n(locked.invest),candidateHit=(locked.candidateTickets||[]).some(t=>ticketPayout(result,t)>0),purchaseHit=(locked.purchaseTickets||[]).some(t=>ticketPayout(result,t)>0);
+      const rec={...clone(locked),id:undefined,stage:"settled",kind:"forward-snapshot",createdAt:new Date().toISOString(),label:"結果確定・精算",parentSnapshotId:locked.id,result:clone(result),pay,profit,roi:n(locked.invest)?pay/n(locked.invest)*100:0,candidateHit,purchaseHit,capitalBeforeSettlement:s.capital,capitalAfterSettlement:s.capital+pay,settledAt:new Date().toISOString(),integrity:locked.integrity||"clean"};delete rec.id;rec.id=await addOne("snapshots",rec);
+      s.capital=n(s.capital)+pay;s.totalPay=n(s.totalPay)+pay;s.settledCount=n(s.settledCount)+1;await saveSession(s);await renderForward();const msg=`精算しました。払戻 ${money(pay)}、収支 ${profit>=0?"+":""}${money(profit)}、現在資金 ${money(s.capital)}。`;status(msg,"good");if(!opts.silent)alert(msg);return rec
+    }catch(e){status(e.message,"bad");if(!opts.silent)alert(e.message)}finally{FW.busy=false}
+  }
+  async function saveSafetySnapshot(rid){try{return await manualRaceSnapshot("safety","復元直前 自動保存",{race_id:rid,includeResult:true,safety:true})}catch(_){return null}}
+  async function clearRaceEntries(rid){const rows=await getByIndex("entries","race_id",rid);for(const e of rows)await deleteOne("entries",e.id)}
+  async function restoreSnapshot(id,full=false){
+    const snap=await getOne("snapshots",n(id));if(!snap?.race)throw new Error("スナップショットが見つかりません");if(!confirm(`${dateText(snap.createdAt)} のレース・馬柱へ戻しますか？\n現在状態は復元直前スナップショットとして自動保存します。`))return;
+    await saveSafetySnapshot(snap.race_id);await clearRaceEntries(snap.race_id);await putOne("races",clone(snap.race));if(snap.entries?.length)await putMany("entries",clone(snap.entries));if(snap.result)await putOne("results",clone(snap.result));else await deleteOne("results",snap.race_id);
+    if(full&&snap.settingsSnapshot){state.settings={...state.settings,...clone(snap.settingsSnapshot)};await putOne("settings",{key:"app",value:state.settings});applySettings(true)}if(full&&snap.sessionId){await setActive(snap.sessionId)}
+    state.currentRaceId=snap.race_id;await refreshAll();await showView("race");if(byId("raceSelector"))byId("raceSelector").value=snap.race_id;await openRace(snap.race_id);alert(full?"レース・馬柱・結果・設定・フォワード状態を完全復元しました。":"レース・馬柱・結果を復元しました。")
+  }
+  async function branchSnapshot(id){const snap=await getOne("snapshots",n(id));if(!snap?.race)throw new Error("分岐元が見つかりません");const parent=snap.sessionId?await getSession(snap.sessionId):null;const c=clone(snap.config||parent?.config||readConfig());writeConfig({...c,initialCapital:n(snap.capitalBefore,parent?.capital||c.initialCapital||100000)});byId("fwSessionName").value=`${parent?.name||"フォワード"} 分岐 ${new Date().toLocaleTimeString()}`;const s=await startSession({id:parent?.id||null,snapshotId:snap.id});await manualRaceSnapshot("branch","分岐開始",{sessionId:s.id,race_id:snap.race_id,parentSnapshotId:snap.id,race:clone(snap.race),entries:clone(snap.entries),config:clone(c),includeResult:false});await restoreSnapshot(snap.id,true);await setActive(s.id);await showView("forward");status("元の履歴を保持したまま、選択スナップショットから分岐しました。","good")}
+  async function previewSnapshot(id,compare=false){const s=await getOne("snapshots",n(id));if(!s?.race)return;const card=byId("fwPreviewCard");if(!card)return;let diff="";if(compare){const current=await getByIndex("entries","race_id",s.race_id),map=new Map(current.map(e=>[n(e.horseNo),e])),lines=[];for(const e of s.entries||[]){const c=map.get(n(e.horseNo));if(!c){lines.push(`${e.horseNo}番 ${e.horseName}: 現在データなし`);continue}const changes=[];for(const [k,label] of [["odds","オッズ"],["popularity","人気"],["horseWeight","馬体重"],["jockey","騎手"],["ai","AI"],["ev","EV"]])if(String(e[k]??"")!==String(c[k]??""))changes.push(`${label} ${e[k]??"-"}→${c[k]??"-"}`);if(changes.length)lines.push(`${e.horseNo}番 ${e.horseName}: ${changes.join("、")}`)}diff=`<h3>現在との差分</h3><div class="code-box fw-diff">${esc(lines.join("\n")||"差分はありません")}</div>`}
+    card.hidden=false;card.innerHTML=`<div class="fw-preview-head"><h3 style="margin-right:auto">${esc(s.label||stageLabel(s.stage))}</h3><span class="badge">${dateText(s.createdAt)}</span><button class="btn small" id="fwPreviewClose">閉じる</button></div><div class="notice">${esc(s.race.placeName||"")} ${n(s.race.raceNo)}R ${esc(raceNameForDisplay(s.race))}　データ期限 ${dateText(s.dataCutoffAt||s.createdAt)}</div><div class="table-wrap" style="margin-top:12px"><table><thead><tr><th>枠</th><th>馬番</th><th>馬名</th><th>騎手</th><th>人気</th><th>オッズ</th><th>AI</th><th>EV</th></tr></thead><tbody>${(s.entries||[]).sort((a,b)=>n(a.horseNo)-n(b.horseNo)).map(e=>`<tr><td>${e.frameNo||"-"}</td><td>${e.horseNo}</td><td>${esc(e.horseName||"")}</td><td>${esc(e.jockey||"")}</td><td>${e.popularity||"-"}</td><td>${n(e.odds).toFixed(1)}</td><td>${n(e.ai).toFixed(1)}</td><td>${n(e.ev).toFixed(3)}</td></tr>`).join("")}</tbody></table></div>${diff}`;byId("fwPreviewClose").onclick=()=>card.hidden=true;card.scrollIntoView({behavior:"smooth",block:"start"})
+  }
+  async function deleteSnapshotRecord(id){if(!confirm("このスナップショットを削除しますか？"))return;await deleteOne("snapshots",n(id));await renderForward();if(state.currentRaceId)await renderReplayList()}
+  async function renderSnapshotRows(){const rows=await forwardSnapshots(FW.showAll?"":FW.activeSessionId),tbody=byId("fwSnapshotRows");if(!tbody)return;tbody.innerHTML=rows.map(s=>{const p=n(s.profit),integrity=s.integrity==="clean"?"正常":s.integrity==="result-present-at-lock"?"結果存在警告":"-";return`<tr><td>${dateText(s.createdAt)}</td><td><span class="fw-stage ${esc(s.stage||"")}">${esc(stageLabel(s.stage))}</span></td><td>${esc(s.race?.placeName||"")} ${n(s.race?.raceNo)}R<br><span class="muted">${esc(s.race_id||"")}</span></td><td>${s.entries?.length||0}頭</td><td>${s.purchaseTickets?.length??s.candidateTickets?.length??0}点</td><td>${money(s.invest||0)}</td><td>${s.stage==="settled"?(p>=0?"+":"")+money(p):"-"}</td><td>${esc(integrity)}</td><td><div class="fw-actions"><button class="btn small" data-fw-preview="${s.id}">表示</button><button class="btn small" data-fw-compare="${s.id}">比較</button><button class="btn small" data-fw-restore="${s.id}">馬柱復元</button><button class="btn small" data-fw-full="${s.id}">完全復元</button><button class="btn small" data-fw-branch="${s.id}">分岐</button><button class="btn small bad" data-fw-delete="${s.id}">削除</button></div></td></tr>`}).join("")||`<tr><td colspan="9" class="empty">スナップショットはありません</td></tr>`;wireSnapshotButtons(tbody)}
+  function wireSnapshotButtons(root=document){root.querySelectorAll("[data-fw-preview]").forEach(b=>b.onclick=()=>previewSnapshot(b.dataset.fwPreview));root.querySelectorAll("[data-fw-compare]").forEach(b=>b.onclick=()=>previewSnapshot(b.dataset.fwCompare,true));root.querySelectorAll("[data-fw-restore]").forEach(b=>b.onclick=()=>restoreSnapshot(b.dataset.fwRestore,false).catch(e=>alert(e.message)));root.querySelectorAll("[data-fw-full]").forEach(b=>b.onclick=()=>restoreSnapshot(b.dataset.fwFull,true).catch(e=>alert(e.message)));root.querySelectorAll("[data-fw-branch]").forEach(b=>b.onclick=()=>branchSnapshot(b.dataset.fwBranch).catch(e=>alert(e.message)));root.querySelectorAll("[data-fw-delete]").forEach(b=>b.onclick=()=>deleteSnapshotRecord(b.dataset.fwDelete))}
+  async function enhancedReplayList(){if(!state.currentRaceId)return;const all=(await getByIndex("snapshots","race_id",state.currentRaceId)).filter(x=>x.race).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt))),box=byId("replayList");if(!box)return;box.innerHTML=all.map(s=>`<div class="strategy-card"><strong>${esc(s.label||stageLabel(s.stage))}</strong><div class="muted">${dateText(s.createdAt)}｜出走 ${s.entries?.length||0}頭｜${esc(stageLabel(s.stage))}</div><div class="fw-actions" style="margin-top:8px"><button class="btn small" data-fw-preview="${s.id}">表示</button><button class="btn small" data-fw-compare="${s.id}">比較</button><button class="btn small" data-fw-restore="${s.id}">馬柱復元</button><button class="btn small" data-fw-full="${s.id}">完全復元</button><button class="btn small" data-fw-branch="${s.id}">分岐</button></div></div>`).join("")||`<div class="empty">履歴なし</div>`;wireSnapshotButtons(box)}
+  async function renderStats(){const s=await getSession(FW.activeSessionId);byId("fwStatSession").textContent=s?.name||"未開始";byId("fwStatCapital").textContent=money(s?.capital||0);byId("fwStatTurnover").textContent=`${money(s?.totalBet||0)}／${money(s?.totalPay||0)}`;const profit=n(s?.totalPay)-n(s?.totalBet),roi=n(s?.totalBet)?n(s.totalPay)/n(s.totalBet)*100:0;byId("fwStatProfit").textContent=s?`${profit>=0?"+":""}${money(profit)}／${n(s.totalBet)?roi.toFixed(1)+"%":"-"}`:"¥0／-";byId("fwSessionStatus").textContent=s?(s.status==="active"?"進行中":"終了"):"停止中";if(s)writeConfig(s.config||{})}
+  async function renderForward(){await renderSessionList();await renderRaceList();await renderStats();await renderSnapshotRows();const s=await getSession(FW.activeSessionId);if(s&&!byId("fwStatusBox").textContent.trim())status(`「${s.name}」を表示しています。`)}
+  function raceStartDate(r){const d=String(r?.date||"").replace(/\D/g,"");const tm=String(r?.startTime||"").match(/(\d{1,2}):(\d{2})/);if(d.length!==8||!tm)return null;return new Date(n(d.slice(0,4)),n(d.slice(4,6))-1,n(d.slice(6,8)),n(tm[1]),n(tm[2]),0,0)}
+  async function autoTick(){if(FW.busy)return;const s=await getSession(FW.activeSessionId);if(!s||s.status!=="active"||s.config?.autoEnabled===false)return;const rid=byId("fwRaceSelector")?.value||state.currentRaceId;if(!rid)return;const race=await getOne("races",rid);if(!race)return;const start=raceStartDate(race),now=Date.now(),minutes=n(s.config?.autoMinutes,10),rows=await forwardSnapshots(s.id),pending=rows.find(x=>x.race_id===rid&&x.stage==="locked"&&!rows.some(y=>y.stage==="settled"&&y.decisionId===x.decisionId));if(start&&now>=start.getTime()-minutes*60000&&now<start.getTime()&&!pending){byId("fwRaceSelector").value=rid;await lockDecision({silent:true})}const result=await getOne("results",rid);if(result&&pending){byId("fwRaceSelector").value=rid;await settleDecision({silent:true})}}
+  function wireForward(){
+    byId("fwStartBtn").onclick=()=>startSession().catch(e=>alert(e.message));byId("fwEndBtn").onclick=()=>endSession().catch(e=>alert(e.message));byId("fwLoadSessionBtn").onclick=async()=>{await setActive(byId("fwSessionSelect").value);await renderForward()};byId("fwSessionSelect").onchange=async()=>{await setActive(byId("fwSessionSelect").value);await renderForward()};
+    byId("fwUseCurrentRaceBtn").onclick=()=>{if(!state.currentRaceId)return alert("先に馬柱でレースを開いてください");byId("fwRaceSelector").value=state.currentRaceId};byId("fwCaptureBtn").onclick=()=>captureOnly();byId("fwLockBtn").onclick=()=>lockDecision();byId("fwSettleBtn").onclick=()=>settleDecision();byId("fwRefreshBtn").onclick=()=>renderForward();byId("fwShowAllBtn").onclick=()=>{FW.showAll=!FW.showAll;byId("fwShowAllBtn").textContent=FW.showAll?"選択セッションのみ":"全履歴";renderSnapshotRows()};
+    byId("raceSnapshotBtn").onclick=enhancedSaveSnapshot;if(byId("replayRefreshBtn"))byId("replayRefreshBtn").onclick=enhancedReplayList;
+    const oldShow=showView;showView=async function(id){await oldShow(id);if(id==="forward")await renderForward();if(id==="race"&&state.currentRaceId)await enhancedReplayList()};
+    window.saveSnapshot=enhancedSaveSnapshot;window.renderReplayList=enhancedReplayList;window.TheKeibaForward={render:renderForward,lock:lockDecision,settle:settleDecision,restore:restoreSnapshot};
+    clearInterval(FW.timer);FW.timer=setInterval(()=>autoTick().catch(console.error),60000);window.addEventListener("pageshow",()=>autoTick().catch(console.error));document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")autoTick().catch(console.error)});
+  }
+  async function boot(){try{await loadActive();wireTheme();wireForward();if(typeof TEXT_IO_LABELS==="object")TEXT_IO_LABELS.forward="フォワード";await renderForward();await autoTick()}catch(e){console.error("Forward test init",e);status("フォワードテスト初期化エラー: "+e.message,"bad")}}
+  if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(boot,1750),{once:true});else setTimeout(boot,250);
 })();
 </script>
 
