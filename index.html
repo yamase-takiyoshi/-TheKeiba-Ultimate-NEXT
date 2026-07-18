@@ -229,7 +229,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.8 EV分析設定モード戦略追加</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.9 EV分析設定モード連動修正</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -3731,6 +3731,164 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   }
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(async()=>{try{await ensureBuiltIn();await refreshPredictionSelectorOnly()}catch(e){console.warn(e)}},1200),{once:true});
   else setTimeout(async()=>{try{await ensureBuiltIn();await refreshPredictionSelectorOnly()}catch(e){console.warn(e)}},300);
+})();
+</script>
+
+
+
+<script id="evModeStrategyLogicFixPatch">
+/* v1.2.9 EV分析設定モード動的連動 + SIM件数表示整合 */
+(function(){
+  "use strict";
+  const BUILTIN_ID="ev-analysis-mode";
+  const byId=id=>document.getElementById(id);
+  const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+  const debutRe=/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i;
+
+  function effectiveMode(s={}){
+    const mode=String(s.cloneMode||"roi100");
+    return mode==="all_agree"?String(s.cloneAllAgreeBaseMode||"roi100"):mode;
+  }
+  function priorityFor(s={}){
+    if(s.cloneTicketPriority==="ev")return"ev";
+    const mode=effectiveMode(s);
+    return mode==="payout_max"?"expected":/^hitrate|hitroi/.test(mode)?"ai":"ev";
+  }
+  function budgetModeFor(s={}){return s.cloneAllocationMode==="daily_rank"?"dailyRank":"sequential"}
+  function rankBasisFor(s={}){return s.cloneDailyRankMetric==="adjusted_ev"?"adjusted":s.cloneDailyRankMetric==="learned_profit"?"learned":"ev"}
+  function isBuiltinSelected(){return String(byId("simStrategy")?.value||state.currentStrategyId||"")===BUILTIN_ID}
+  function modeLabel(mode){return window.__THEKEIBA_CLONE_MODE_LABELS__?.[mode]||mode||"EV分析"}
+
+  function settingsValues(){
+    const s=state.settings||{},mode=String(s.cloneMode||"roi100");
+    return{
+      strategyId:BUILTIN_ID,
+      predictionMode:"clone",
+      type:s.cloneNar===true?"NAR":"JRA",
+      ticketType:s.cloneTicketType||"all",
+      dailyBudget:n(s.cloneDailyLimit,2000),
+      unit:Math.max(100,n(s.clonePointAmount,100)),
+      topN:Math.max(1,n(s.cloneTopN,3)),
+      maxTickets:Math.max(1,n(s.cloneMaxTickets,5)),
+      maxRaces:n(s.cloneMaxRaces,0)>0?n(s.cloneMaxRaces):Number.MAX_SAFE_INTEGER,
+      minEv:n(s.defaultMinEv,1),
+      minAi:n(s.cloneMinAi,s.defaultMinAi||68),
+      minOdds:n(s.cloneMinOdds,1),
+      maxOdds:n(s.cloneMaxOdds,999),
+      priority:priorityFor(s),
+      agreementMode:(mode==="all_agree"||s.cloneTicketPriority==="all_agree")?"on":"off",
+      budgetMode:budgetModeFor(s),
+      dailyRankBasis:rankBasisFor(s),
+      raceBudget:n(s.cloneRaceBudget,500),
+      minReturnRate:n(s.cloneMinReturnRate,120),
+      avoidToragami:s.cloneAvoidToragami!==false,
+      useBracket:s.cloneUseBracket!==false,
+      useTrioTrifecta:s.cloneUseTrioTrifecta!==false,
+      useWideQuinella:s.cloneUseWideQuinella!==false,
+      offTicketPolicy:s.cloneOffTicketPolicy||"ticketOnly",
+      nagoyaMode:s.cloneNagoyaMode===true,
+      narMoveAdjust:s.cloneNarMoveAdjust!==false,
+      narMoveLearn:s.cloneNarMoveLearn===true,
+      skipDebutRaces:s.cloneSkipDebut!==false,
+      reserveMain:s.cloneReserveMain===true,
+      mainRaceNo:n(s.cloneMainRaceNo,11),
+      mainReserveAmount:n(s.cloneMainReserve,0),
+      noForceFill:s.cloneForceFill!==true,
+      cloneCompat:s.cloneCompatEnabled!==false,
+      cloneMode:mode,
+      cloneAllAgreeBaseMode:s.cloneAllAgreeBaseMode||"roi100",
+      cloneTicketPriority:s.cloneTicketPriority||"normal",
+      dailyRankMinRoi:n(s.cloneDailyRankMinRoi,120),
+      settingsAuthority:true,
+      simSettingsUnlocked:false,
+      cloneMinEVByType:{
+        win:n(s.cloneMinEvWin,1.08),place:n(s.cloneMinEvPlace,1.08),bracketQuinella:n(s.cloneMinEvBracket,1.15),
+        wide:n(s.cloneMinEvWide,1.10),quinella:n(s.cloneMinEvQuinella,1.15),exacta:n(s.cloneMinEvExacta,1.20),
+        trio:n(s.cloneMinEvTrio,1.25),trifecta:n(s.cloneMinEvTrifecta,1.50)
+      }
+    };
+  }
+  function writeSettingsToSim(){
+    const v=settingsValues(),map={simPredictionMode:"predictionMode",simType:"type",simTicket:"ticketType",simDailyBudget:"dailyBudget",simUnit:"unit",simTopN:"topN",simMaxTickets:"maxTickets",simMaxRace:"maxRaces",simMinEv:"minEv",simMinAi:"minAi",simMinOdds:"minOdds",simMaxOdds:"maxOdds",simPriority:"priority",simAgreement:"agreementMode",simBudgetMode:"budgetMode",simDailyRankBasis:"dailyRankBasis"};
+    for(const [id,key] of Object.entries(map)){const el=byId(id);if(el)el.value=String(v[key]===Number.MAX_SAFE_INTEGER?0:v[key])}
+    if(byId("simStrategy"))byId("simStrategy").value=BUILTIN_ID;
+    state.currentStrategyId=BUILTIN_ID;
+    if(typeof updateModeUi==="function")updateModeUi();
+    renderLinkUi();
+    return v;
+  }
+  function renderLinkUi(){
+    if(!isBuiltinSelected())return;
+    const s=state.settings||{},v=settingsValues(),mode=String(s.cloneMode||"roi100"),base=String(s.cloneAllAgreeBaseMode||"roi100");
+    const title=byId("simAuthorityTitle"),summary=byId("simAuthoritySummary"),help=byId("simAuthorityHelp"),notice=byId("simModeNotice");
+    if(title)title.textContent="EV分析設定モード連動";
+    if(summary)summary.textContent=`${modeLabel(mode)}${mode==="all_agree"?` → ${modeLabel(base)}`:""} / ${v.type} / ${TICKET_LABELS[v.ticketType]||v.ticketType} / 1日${v.dailyBudget.toLocaleString()}円`;
+    if(help)help.textContent="この戦略は通常戦略の固定値ではなく、設定タブのEV分析設定モード・券種・予算・EV閾値を実行時に直接読み込みます。SIM個別編集値は使用しません。";
+    if(notice)notice.textContent=`EV分析設定モードを動的連動して実行します。現在「${modeLabel(mode)}」です。期間と開催場だけをSIM側から使用し、券種・予算・点数・EV・AI・オッズ・優先順位は設定タブの保存値を使用します。`;
+  }
+  async function refreshBuiltinRecord(){
+    if(typeof getOne!=="function"||typeof putOne!=="function"||typeof normalizeStrategy!=="function")return;
+    const old=await getOne("strategies",BUILTIN_ID),v=settingsValues();
+    const rec=normalizeStrategy({...old,id:BUILTIN_ID,name:"EV分析設定モード",ticketType:v.ticketType,predictionMode:"clone",priority:v.priority,topN:v.topN,maxTickets:v.maxTickets,minEv:v.minEv,minAi:v.minAi,minOdds:v.minOdds,maxOdds:v.maxOdds,unit:v.unit,dailyBudget:v.dailyBudget,maxRaces:v.maxRaces===Number.MAX_SAFE_INTEGER?0:v.maxRaces,agreementMode:v.agreementMode,budgetMode:v.budgetMode,dailyRankBasis:v.dailyRankBasis,sourceEvMode:"inherit",sourceEvAllAgreeBaseMode:"inherit",enabled:true});
+    await putOne("strategies",rec);
+  }
+
+  if(typeof applyStrategyToSim==="function"){
+    const prev=applyStrategyToSim;
+    applyStrategyToSim=async function(id=state.currentStrategyId){
+      if(String(id)!==BUILTIN_ID)return prev(id);
+      await refreshBuiltinRecord();
+      writeSettingsToSim();
+      await showView("simulation");
+      await renderSimPlaceOptions(state.simSelectedPlaces||[]);
+      renderLinkUi();
+      return getOne("strategies",BUILTIN_ID);
+    };
+  }
+  if(typeof readSimConfig==="function"){
+    const prev=readSimConfig;
+    readSimConfig=function(){
+      const c=prev();
+      if(!isBuiltinSelected())return c;
+      const v=settingsValues();
+      return{...c,...v,start:c.start,end:c.end,places:Array.isArray(c.places)?c.places:[]};
+    };
+  }
+  if(typeof backtestCoverage==="function"){
+    const prev=backtestCoverage;
+    backtestCoverage=async function(c=readSimConfig()){
+      const base=await prev(c),[races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]);
+      const filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places?.length||c.places.includes(r.placeName)));
+      const resultIds=new Set(results.map(r=>r.race_id));
+      const confirmed=filtered.filter(r=>resultIds.has(r.race_id));
+      const excludedDebut=c.skipDebutRaces?confirmed.filter(r=>debutRe.test(`${r.name||""} ${r.className||""}`)).length:0;
+      return{...base,unconfirmed:Math.max(0,filtered.length-confirmed.length),excludedDebut,executable:Math.max(0,confirmed.length-excludedDebut)};
+    };
+  }
+  if(typeof runSimulation==="function"){
+    const prev=runSimulation;
+    runSimulation=async function(){
+      if(isBuiltinSelected()){writeSettingsToSim();renderLinkUi()}
+      const out=await prev();
+      try{
+        const c=readSimConfig(),cov=await backtestCoverage(c),actual=Array.isArray(state.simResult)?state.simResult.length:cov.executable;
+        const parts=[`登録対象 ${cov.races}R`,`確定結果 ${cov.results}R`];
+        if(cov.unconfirmed)parts.push(`未確定 ${cov.unconfirmed}R`);
+        if(cov.excludedDebut)parts.push(`新馬等除外 ${cov.excludedDebut}R`);
+        parts.push(`集計 ${actual}R`);
+        setSimSyncStatus(parts.join("　"));
+        const label=byId("simRaceCount")?.previousElementSibling;if(label)label.textContent="集計R";
+      }catch(e){console.warn("SIM件数表示",e)}
+      return out;
+    };
+  }
+  function wire(){
+    byId("simStrategy")?.addEventListener("change",()=>{if(isBuiltinSelected()){writeSettingsToSim();renderLinkUi()}});
+    byId("settingsModeSaveBtn")?.addEventListener("click",()=>setTimeout(async()=>{await refreshBuiltinRecord();if(isBuiltinSelected()){writeSettingsToSim();renderLinkUi()}},250));
+    byId("settingsSaveBtn")?.addEventListener("click",()=>setTimeout(async()=>{await refreshBuiltinRecord();if(isBuiltinSelected()){writeSettingsToSim();renderLinkUi()}},250));
+    setTimeout(async()=>{try{await refreshBuiltinRecord();if(isBuiltinSelected()){writeSettingsToSim();renderLinkUi()}}catch(e){console.warn("EV分析設定モード修復",e)}},900);
+  }
+  if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",wire,{once:true});else wire();
 })();
 </script>
 
