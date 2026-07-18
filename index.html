@@ -191,10 +191,12 @@ input,select,textarea{font-size:16px}
 /* v1.1.7 設定モード完全権限 + JSONファイル保存 */
 .sim-authority-card{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:13px;border-left-color:var(--warn);background:linear-gradient(180deg,color-mix(in srgb,var(--panel2) 90%,var(--warn) 10%),var(--panel2))}
 .sim-authority-card strong{color:var(--warn)}.sim-authority-card .sim-authority-copy{flex:1;min-width:240px;line-height:1.55}.sim-authority-summary{font-weight:900;color:var(--text)}
-.sim-setting-locked{position:relative}.sim-setting-locked>label:after{content:"  🔒設定で決定";color:var(--warn);font-size:10px;white-space:nowrap}
+.sim-setting-locked,.sim-setting-unlocked{position:relative}.sim-setting-locked>label:after{content:"  🔒設定で決定";color:var(--warn);font-size:10px;white-space:nowrap}.sim-setting-unlocked>label:after{content:"  🔓SIMで変更可";color:var(--good);font-size:10px;white-space:nowrap}
 .sim-setting-locked input:disabled,.sim-setting-locked select:disabled{opacity:1;color:var(--text);-webkit-text-fill-color:var(--text);background:color-mix(in srgb,var(--panel2) 82%,var(--bg));border-style:dashed;cursor:not-allowed}
 .sim-setting-locked input:disabled:focus,.sim-setting-locked select:disabled:focus{box-shadow:none;border-color:var(--line)}
-@media(max-width:760px){.sim-authority-card .btn{width:100%}.sim-setting-locked>label:after{display:block;margin-top:2px}}
+.sim-setting-unlocked input:not(:disabled),.sim-setting-unlocked select:not(:disabled){border-color:color-mix(in srgb,var(--good) 58%,var(--line));background:color-mix(in srgb,var(--panel2) 90%,var(--good) 10%);box-shadow:0 0 0 1px color-mix(in srgb,var(--good) 10%,transparent)}
+.sim-authority-card.sim-unlocked{border-left-color:var(--good);background:linear-gradient(180deg,color-mix(in srgb,var(--panel2) 90%,var(--good) 10%),var(--panel2))}.sim-authority-card.sim-unlocked strong{color:var(--good)}
+@media(max-width:760px){.sim-authority-card .btn{width:100%}.sim-setting-locked>label:after,.sim-setting-unlocked>label:after{display:block;margin-top:2px}}
 
 </style>
 
@@ -209,7 +211,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.1 EV Strategy Mode + Forward Test</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.2 EV Strategy Mode + SIM Unlock + Forward Test</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -274,7 +276,7 @@ input,select,textarea{font-size:16px}
     <section class="view" id="view-simulation">
       <h2 class="page-title">期間横断シミュレーション</h2>
       <div class="card">
-        <div class="notice sim-authority-card" id="simAuthorityCard"><div class="sim-authority-copy"><strong>設定モード完全権限</strong><div id="simAuthoritySummary" class="sim-authority-summary">設定を読み込んでいます。</div><small>SIM画面では期間と開催場だけを指定します。券種・予算・点数・EV・AI・オッズ・優先順位・同意・予算配分は「設定」の保存値を直接読み、画面値はアルゴリズムに使用しません。</small></div><button type="button" class="btn warn" id="simAuthoritySettingsBtn">⚙ 設定を開く</button></div>
+        <div class="notice sim-authority-card" id="simAuthorityCard"><div class="sim-authority-copy"><strong id="simAuthorityTitle">設定モード完全権限</strong><div id="simAuthoritySummary" class="sim-authority-summary">設定を読み込んでいます。</div><small id="simAuthorityHelp">SIM画面では期間と開催場だけを指定します。券種・予算・点数・EV・AI・オッズ・優先順位・同意・予算配分は「設定」の保存値を直接読み、画面値はアルゴリズムに使用しません。</small></div><button type="button" class="btn good" id="simAuthorityToggleBtn">🔓 SIM設定を解除</button><button type="button" class="btn warn" id="simAuthoritySettingsBtn">⚙ 設定を開く</button></div>
         <div class="form-grid">
           <div class="field"><label>戦略</label><select id="simStrategy"></select></div><div class="field"><label>設定モード</label><select id="simPredictionMode"><option value="custom">戦略・個別設定</option><option value="ai">AI重視</option><option value="ev">EV重視</option><option value="expected">期待払戻重視</option><option value="balanced">総合バランス</option><option value="agreement">全て同意</option><option value="clone">完全クローン EV分析互換</option></select></div><div class="field"><label>開始日</label><input id="simStart" type="date"></div><div class="field"><label>終了日</label><input id="simEnd" type="date"></div><div class="field"><label>区分</label><select id="simType"><option value="">JRA・NAR</option><option>JRA</option><option>NAR</option></select></div>
           <div class="field full"><label>開催場（単数・複数選択）</label><div class="sim-place-picker"><div class="sim-place-actions"><label class="sim-place-option all"><input type="checkbox" id="simPlaceAll" checked>全開催場</label><button class="btn small" type="button" id="simPlaceSelectAllBtn">全場選択</button><button class="btn small" type="button" id="simPlaceClearBtn">選択解除</button><span class="sim-place-summary" id="simPlaceSummary">全開催場</span></div><div class="sim-place-options" id="simPlaceOptions"><span class="muted">登録開催場を読込中です</span></div></div></div>
@@ -2917,44 +2919,97 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 </script>
 
 <script id="settingsAuthorityScript">
-/* v1.1.7 Settings Authority + Forward Test + Snapshot Restore: SIM設定一本化・JSON保存先選択・上書き */
+/* v1.2.2 Settings Authority + SIM Unlock + Forward Test + Snapshot Restore
+   設定タブ完全権限と、期間横断SIMの一時個別編集を安全に切替える。 */
 (function(){
   "use strict";
   const LOCK_IDS=["simStrategy","simPredictionMode","simType","simTicket","simDailyBudget","simUnit","simTopN","simMaxTickets","simMaxRace","simMinEv","simMinAi","simMinOdds","simMaxOdds","simPriority","simAgreement","simBudgetMode","simDailyRankBasis"];
+  const UNLOCK_KEY="TheKeibaSimSettingsUnlockedV1";
   const TICKET_NAMES={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
   const MODE_NAMES=window.__THEKEIBA_CLONE_MODE_LABELS__||{};
   const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
   const byId=id=>document.getElementById(id);
+  let runtimeUnlocked=false;
   function effectiveMode(s){return String(s.cloneMode||"roi100")==="all_agree"?String(s.cloneAllAgreeBaseMode||"roi100"):String(s.cloneMode||"roi100")}
   function priorityFor(s){if(s.cloneTicketPriority==="ev")return"ev";const mode=effectiveMode(s);return mode==="payout_max"?"expected":/^hitrate|hitroi/.test(mode)?"ai":"ev"}
   function budgetModeFor(s){return s.cloneAllocationMode==="daily_rank"?"dailyRank":"sequential"}
   function rankBasisFor(s){return s.cloneDailyRankMetric==="adjusted_ev"?"adjusted":s.cloneDailyRankMetric==="learned_profit"?"learned":"ev"}
-  function lockSimControls(){
-    for(const id of LOCK_IDS){const el=byId(id);if(!el)continue;el.disabled=true;el.setAttribute("aria-disabled","true");el.title="この値は設定タブの保存値で決定されます";el.closest(".field")?.classList.add("sim-setting-locked")}
+  function isSimUnlocked(){
+    if(runtimeUnlocked)return true;
+    try{if(localStorage.getItem(UNLOCK_KEY)==="1")return true}catch(_){}
+    return typeof state!=="undefined"&&state.settings?.simSettingsUnlocked===true;
+  }
+  function snapshotSimValues(){
+    return Object.fromEntries(LOCK_IDS.map(id=>[id,byId(id)?.value]).filter(([,v])=>v!==undefined));
+  }
+  function restoreSimValues(values){for(const [id,value] of Object.entries(values||{})){const el=byId(id);if(el)el.value=value}}
+  function applySimControlState(){
+    const unlocked=isSimUnlocked(),budgetMode=byId("simBudgetMode")?.value||"sequential";
+    for(const id of LOCK_IDS){
+      const el=byId(id);if(!el)continue;
+      const dependentDisabled=unlocked&&id==="simDailyRankBasis"&&budgetMode!=="dailyRank";
+      el.disabled=unlocked?dependentDisabled:true;
+      if(el.disabled)el.setAttribute("aria-disabled","true");else el.removeAttribute("aria-disabled");
+      el.title=unlocked?(dependentDisabled?"全日ランキングを選ぶと編集できます":"期間横断SIMで個別に変更できます"):"この値は設定タブの保存値で決定されます";
+      const field=el.closest(".field");field?.classList.toggle("sim-setting-locked",!unlocked);field?.classList.toggle("sim-setting-unlocked",unlocked);
+    }
+    const card=byId("simAuthorityCard"),btn=byId("simAuthorityToggleBtn"),title=byId("simAuthorityTitle"),help=byId("simAuthorityHelp");
+    card?.classList.toggle("sim-unlocked",unlocked);
+    if(btn){btn.textContent=unlocked?"🔒 設定タブ優先へ戻す":"🔓 SIM設定を解除";btn.classList.toggle("good",!unlocked);btn.classList.toggle("warn",unlocked);btn.setAttribute("aria-pressed",unlocked?"true":"false")}
+    if(title)title.textContent=unlocked?"SIM個別編集モード":"設定モード完全権限";
+    if(help)help.textContent=unlocked?"鍵を解除しています。期間・開催場に加え、券種・予算・点数・EV・AI・オッズ・優先順位・同意・予算配分を、このSIM実行だけ個別に変更できます。設定タブの保存値は書き換えません。":"SIM画面では期間と開催場だけを指定します。券種・予算・点数・EV・AI・オッズ・優先順位・同意・予算配分は「設定」の保存値を直接読み、画面値はアルゴリズムに使用しません。";
   }
   function activeProfileName(){const list=Array.isArray(state.settings.settingProfiles)?state.settings.settingProfiles:[];return list.find(x=>x.id===state.settings.activeSettingProfileId)?.name||"標準クローン"}
   function syncAuthorityUi(){
-    if(typeof state==="undefined"||!state.settings)return;const s=state.settings;
-    s.settingsAlgorithmAuthority=true;s.defaultPredictionMode="clone";
-    const values={simPredictionMode:"clone",simType:s.cloneNar===true?"NAR":"JRA",simTicket:s.cloneTicketType||"all",simDailyBudget:n(s.cloneDailyLimit,2000),simUnit:n(s.clonePointAmount,100),simTopN:n(s.cloneTopN,3),simMaxTickets:n(s.cloneMaxTickets,5),simMaxRace:n(s.cloneMaxRaces,0),simMinEv:n(s.defaultMinEv,1),simMinAi:n(s.cloneMinAi,s.defaultMinAi||68),simMinOdds:n(s.cloneMinOdds,1),simMaxOdds:n(s.cloneMaxOdds,999),simPriority:priorityFor(s),simAgreement:(s.cloneMode==="all_agree"||s.cloneTicketPriority==="all_agree")?"on":"off",simBudgetMode:budgetModeFor(s),simDailyRankBasis:rankBasisFor(s)};
-    for(const [id,value] of Object.entries(values)){const el=byId(id);if(el)el.value=String(value)}
-    lockSimControls();
+    if(typeof state==="undefined"||!state.settings)return;const s=state.settings,unlocked=isSimUnlocked();
+    s.settingsAlgorithmAuthority=!unlocked;s.simSettingsUnlocked=unlocked;
+    if(!unlocked){
+      s.defaultPredictionMode="clone";
+      const values={simPredictionMode:"clone",simType:s.cloneNar===true?"NAR":"JRA",simTicket:s.cloneTicketType||"all",simDailyBudget:n(s.cloneDailyLimit,2000),simUnit:n(s.clonePointAmount,100),simTopN:n(s.cloneTopN,3),simMaxTickets:n(s.cloneMaxTickets,5),simMaxRace:n(s.cloneMaxRaces,0),simMinEv:n(s.defaultMinEv,1),simMinAi:n(s.cloneMinAi,s.defaultMinAi||68),simMinOdds:n(s.cloneMinOdds,1),simMaxOdds:n(s.cloneMaxOdds,999),simPriority:priorityFor(s),simAgreement:(s.cloneMode==="all_agree"||s.cloneTicketPriority==="all_agree")?"on":"off",simBudgetMode:budgetModeFor(s),simDailyRankBasis:rankBasisFor(s)};
+      for(const [id,value] of Object.entries(values)){const el=byId(id);if(el)el.value=String(value)}
+    }
+    applySimControlState();
     const mode=String(s.cloneMode||"roi100"),base=effectiveMode(s),summary=byId("simAuthoritySummary");
-    if(summary)summary.textContent=`${activeProfileName()} / ${MODE_NAMES[mode]||mode}${mode==="all_agree"?` → ${MODE_NAMES[base]||base}`:""} / ${s.cloneNar===true?"NAR":"JRA"} / ${TICKET_NAMES[s.cloneTicketType||"all"]||s.cloneTicketType} / 1日${n(s.cloneDailyLimit,2000).toLocaleString()}円`;
-    const notice=byId("simModeNotice");if(notice)notice.textContent=`設定モード完全権限で実行します。SIM画面のロック欄は表示専用です。現在は「${MODE_NAMES[mode]||mode}」、${budgetModeFor(s)==="dailyRank"?"全日ランキング":"レース順"}、NoForceFill ${s.cloneForceFill===true?"OFF":"ON"}です。`;
+    if(summary)summary.textContent=unlocked
+      ?`SIM個別編集 / ${TICKET_NAMES[byId("simTicket")?.value]||byId("simTicket")?.value||"券種未選択"} / 1日${n(byId("simDailyBudget")?.value,0).toLocaleString()}円 / 最低EV ${n(byId("simMinEv")?.value,0).toFixed(2)}`
+      :`${activeProfileName()} / ${MODE_NAMES[mode]||mode}${mode==="all_agree"?` → ${MODE_NAMES[base]||base}`:""} / ${s.cloneNar===true?"NAR":"JRA"} / ${TICKET_NAMES[s.cloneTicketType||"all"]||s.cloneTicketType} / 1日${n(s.cloneDailyLimit,2000).toLocaleString()}円`;
+    const notice=byId("simModeNotice");if(notice)notice.textContent=unlocked
+      ?`SIM個別編集モードで実行します。表示中の入力値をアルゴリズムへ使用します。設定タブと保存済み戦略は変更されません。必要なら「設定を戦略保存」で名前付き保存できます。`
+      :`設定モード完全権限で実行します。SIM画面のロック欄は表示専用です。現在は「${MODE_NAMES[mode]||mode}」、${budgetModeFor(s)==="dailyRank"?"全日ランキング":"レース順"}、NoForceFill ${s.cloneForceFill===true?"OFF":"ON"}です。`;
+    try{document.dispatchEvent(new CustomEvent("thekeiba:sim-authority-change",{detail:{unlocked}}))}catch(_){}
+  }
+  async function setSimUnlocked(value){
+    const next=Boolean(value);
+    if(!next&&isSimUnlocked()&&!confirm("SIM画面で変更した値は設定タブの保存値へ戻ります。再ロックしますか？"))return;
+    runtimeUnlocked=next;
+    try{localStorage.setItem(UNLOCK_KEY,next?"1":"0")}catch(_){}
+    if(typeof state!=="undefined"&&state.settings){state.settings.simSettingsUnlocked=next;state.settings.settingsAlgorithmAuthority=!next;try{await putOne("settings",{key:"app",value:state.settings})}catch(e){console.warn("SIMロック状態の保存に失敗",e)}}
+    if(next){applySimControlState();syncAuthorityUi()}else syncAuthorityUi();
   }
   const previousUpdateModeUi=updateModeUi;
-  updateModeUi=function(){previousUpdateModeUi();lockSimControls()};
+  updateModeUi=function(){previousUpdateModeUi();applySimControlState();if(isSimUnlocked())syncAuthorityUi()};
   const previousApplySettings=applySettings;
-  applySettings=function(applySimDefaults=true){previousApplySettings(applySimDefaults);syncAuthorityUi()};
+  applySettings=function(applySimDefaults=true){
+    const unlocked=isSimUnlocked(),values=unlocked?snapshotSimValues():null;
+    previousApplySettings(unlocked?false:applySimDefaults);
+    if(unlocked)restoreSimValues(values);
+    syncAuthorityUi();
+  };
   const previousSaveAppSettings=saveAppSettings;
-  saveAppSettings=async function(){state.settings.settingsAlgorithmAuthority=true;await previousSaveAppSettings();syncAuthorityUi()};
+  saveAppSettings=async function(){state.settings.settingsAlgorithmAuthority=!isSimUnlocked();state.settings.simSettingsUnlocked=isSimUnlocked();await previousSaveAppSettings();syncAuthorityUi()};
   const previousReadSimConfig=readSimConfig;
   readSimConfig=function(){
-    const c=previousReadSimConfig(),s=state.settings,mode=String(s.cloneMode||"roi100");
-    Object.assign(c,{strategyId:`settings:${state.settings.activeSettingProfileId||"default"}`,predictionMode:"clone",type:s.cloneNar===true?"NAR":"JRA",ticketType:s.cloneTicketType||"all",dailyBudget:n(s.cloneDailyLimit,2000),unit:Math.max(100,n(s.clonePointAmount,100)),topN:Math.max(1,n(s.cloneTopN,3)),maxTickets:Math.max(1,n(s.cloneMaxTickets,5)),maxRaces:n(s.cloneMaxRaces,0)>0?n(s.cloneMaxRaces):Number.MAX_SAFE_INTEGER,minEv:n(s.defaultMinEv,1),minAi:n(s.cloneMinAi,s.defaultMinAi||68),minOdds:n(s.cloneMinOdds,1),maxOdds:n(s.cloneMaxOdds,999),priority:priorityFor(s),agreementMode:(mode==="all_agree"||s.cloneTicketPriority==="all_agree")?"on":"off",budgetMode:budgetModeFor(s),dailyRankBasis:rankBasisFor(s),raceBudget:n(s.cloneRaceBudget,500),minReturnRate:n(s.cloneMinReturnRate,120),avoidToragami:s.cloneAvoidToragami!==false,useBracket:s.cloneUseBracket!==false,useTrioTrifecta:s.cloneUseTrioTrifecta!==false,useWideQuinella:s.cloneUseWideQuinella!==false,offTicketPolicy:s.cloneOffTicketPolicy||"ticketOnly",nagoyaMode:s.cloneNagoyaMode===true,narMoveAdjust:s.cloneNarMoveAdjust!==false,narMoveLearn:s.cloneNarMoveLearn===true,skipDebutRaces:s.cloneSkipDebut!==false,reserveMain:s.cloneReserveMain===true,mainRaceNo:n(s.cloneMainRaceNo,11),mainReserveAmount:n(s.cloneMainReserve,0),noForceFill:s.cloneForceFill!==true,cloneCompat:s.cloneCompatEnabled!==false,cloneMode:mode,cloneAllAgreeBaseMode:s.cloneAllAgreeBaseMode||"roi100",cloneTicketPriority:s.cloneTicketPriority||"normal",dailyRankMinRoi:n(s.cloneDailyRankMinRoi,120),settingsAuthority:true});
+    const c=previousReadSimConfig(),s=state.settings;
+    if(isSimUnlocked()){
+      c.settingsAuthority=false;c.simSettingsUnlocked=true;
+      c.raceBudget=n(s.cloneRaceBudget,500);c.minReturnRate=n(s.cloneMinReturnRate,120);c.avoidToragami=s.cloneAvoidToragami!==false;c.useBracket=s.cloneUseBracket!==false;c.useTrioTrifecta=s.cloneUseTrioTrifecta!==false;c.useWideQuinella=s.cloneUseWideQuinella!==false;c.offTicketPolicy=s.cloneOffTicketPolicy||"ticketOnly";c.nagoyaMode=s.cloneNagoyaMode===true;c.narMoveAdjust=s.cloneNarMoveAdjust!==false;c.narMoveLearn=s.cloneNarMoveLearn===true;c.skipDebutRaces=s.cloneSkipDebut!==false;c.reserveMain=s.cloneReserveMain===true;c.mainRaceNo=n(s.cloneMainRaceNo,11);c.mainReserveAmount=n(s.cloneMainReserve,0);c.noForceFill=s.cloneForceFill!==true;c.cloneCompat=s.cloneCompatEnabled!==false&&c.predictionMode==="clone";c.cloneMode=s.cloneMode||"roi100";c.cloneAllAgreeBaseMode=s.cloneAllAgreeBaseMode||"roi100";c.cloneTicketPriority=s.cloneTicketPriority||"normal";c.dailyRankMinRoi=n(s.cloneDailyRankMinRoi,120);
+      c.cloneMinEVByType={win:n(s.cloneMinEvWin,1.08),place:n(s.cloneMinEvPlace,1.08),bracketQuinella:n(s.cloneMinEvBracket,1.15),wide:n(s.cloneMinEvWide,1.10),quinella:n(s.cloneMinEvQuinella,1.15),exacta:n(s.cloneMinEvExacta,1.20),trio:n(s.cloneMinEvTrio,1.25),trifecta:n(s.cloneMinEvTrifecta,1.50)};
+      return c;
+    }
+    const mode=String(s.cloneMode||"roi100");
+    Object.assign(c,{strategyId:`settings:${state.settings.activeSettingProfileId||"default"}`,predictionMode:"clone",type:s.cloneNar===true?"NAR":"JRA",ticketType:s.cloneTicketType||"all",dailyBudget:n(s.cloneDailyLimit,2000),unit:Math.max(100,n(s.clonePointAmount,100)),topN:Math.max(1,n(s.cloneTopN,3)),maxTickets:Math.max(1,n(s.cloneMaxTickets,5)),maxRaces:n(s.cloneMaxRaces,0)>0?n(s.cloneMaxRaces):Number.MAX_SAFE_INTEGER,minEv:n(s.defaultMinEv,1),minAi:n(s.cloneMinAi,s.defaultMinAi||68),minOdds:n(s.cloneMinOdds,1),maxOdds:n(s.cloneMaxOdds,999),priority:priorityFor(s),agreementMode:(mode==="all_agree"||s.cloneTicketPriority==="all_agree")?"on":"off",budgetMode:budgetModeFor(s),dailyRankBasis:rankBasisFor(s),raceBudget:n(s.cloneRaceBudget,500),minReturnRate:n(s.cloneMinReturnRate,120),avoidToragami:s.cloneAvoidToragami!==false,useBracket:s.cloneUseBracket!==false,useTrioTrifecta:s.cloneUseTrioTrifecta!==false,useWideQuinella:s.cloneUseWideQuinella!==false,offTicketPolicy:s.cloneOffTicketPolicy||"ticketOnly",nagoyaMode:s.cloneNagoyaMode===true,narMoveAdjust:s.cloneNarMoveAdjust!==false,narMoveLearn:s.cloneNarMoveLearn===true,skipDebutRaces:s.cloneSkipDebut!==false,reserveMain:s.cloneReserveMain===true,mainRaceNo:n(s.cloneMainRaceNo,11),mainReserveAmount:n(s.cloneMainReserve,0),noForceFill:s.cloneForceFill!==true,cloneCompat:s.cloneCompatEnabled!==false,cloneMode:mode,cloneAllAgreeBaseMode:s.cloneAllAgreeBaseMode||"roi100",cloneTicketPriority:s.cloneTicketPriority||"normal",dailyRankMinRoi:n(s.cloneDailyRankMinRoi,120),settingsAuthority:true,simSettingsUnlocked:false});
     c.cloneMinEVByType={win:n(s.cloneMinEvWin,1.08),place:n(s.cloneMinEvPlace,1.08),bracketQuinella:n(s.cloneMinEvBracket,1.15),wide:n(s.cloneMinEvWide,1.10),quinella:n(s.cloneMinEvQuinella,1.15),exacta:n(s.cloneMinEvExacta,1.20),trio:n(s.cloneMinEvTrio,1.25),trifecta:n(s.cloneMinEvTrifecta,1.50)};
-    return c
+    return c;
   };
   const previousBuildSimulationCandidate=buildSimulationCandidate;
   buildSimulationCandidate=async function(race,result,c){
@@ -2962,15 +3017,18 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     if(c.cloneTicketPriority==="ev")item.candidateTickets.sort((a,b)=>n(b.cloneEstimatedEv,b.estimatedReturnRate/100)-n(a.cloneEstimatedEv,a.estimatedReturnRate/100)||n(b.score)-n(a.score));
     item.rankScore=simulationDailyRankScore(item.candidateEntries,c.dailyRankBasis);
     if(c.budgetMode==="dailyRank"&&(c.cloneMode==="all_agree"||c.cloneTicketPriority==="all_agree")){const top=item.candidateTickets.slice(0,3),line=n(c.dailyRankMinRoi,120);if(top.length<3||top.some(t=>n(t.estimatedReturnRate,n(t.cloneEstimatedEv)*100)<line))item.candidateTickets=[];else item.candidateTickets=top}
-    return item
+    return item;
   };
   const previousApplyStrategyToSim=applyStrategyToSim;
-  applyStrategyToSim=async function(...args){const result=await previousApplyStrategyToSim(...args);syncAuthorityUi();return result};
+  applyStrategyToSim=async function(...args){const result=await previousApplyStrategyToSim(...args);if(isSimUnlocked())applySimControlState();else syncAuthorityUi();return result};
   const previousRunSimulation=runSimulation;
   runSimulation=async function(){syncAuthorityUi();return previousRunSimulation()};
   function wire(){
     byId("simAuthoritySettingsBtn")?.addEventListener("click",async()=>{await showView("settings");setTimeout(()=>byId("independentEvModeCard")?.scrollIntoView({behavior:"smooth",block:"start"}),80)});
+    byId("simAuthorityToggleBtn")?.addEventListener("click",()=>setSimUnlocked(!isSimUnlocked()));
     for(const id of ["cloneTicketType","cloneMinAi","cloneMode","cloneAllAgreeBaseMode","cloneNar","cloneDailyLimit","clonePointAmount","cloneTopN","cloneMaxTickets","cloneMaxRaces","cloneMinOdds","cloneMaxOdds","cloneTicketPriority","cloneAllocationMode","cloneDailyRankMetric"]){byId(id)?.addEventListener("change",syncAuthorityUi);byId(id)?.addEventListener("input",syncAuthorityUi)}
+    for(const id of LOCK_IDS){byId(id)?.addEventListener("change",()=>{if(isSimUnlocked())syncAuthorityUi()});byId(id)?.addEventListener("input",()=>{if(isSimUnlocked())syncAuthorityUi()})}
+    runtimeUnlocked=(typeof state!=="undefined"&&state.settings?.simSettingsUnlocked===true)||(()=>{try{return localStorage.getItem(UNLOCK_KEY)==="1"}catch(_){return false}})();
     syncAuthorityUi();
   }
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,1450),{once:true});else setTimeout(wire,200);
@@ -3101,7 +3159,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 
 
 <script id="strategyEvModePatch">
-/* v1.2.1 Strategy-specific source EV prediction mode
+/* v1.2.2 Strategy-specific source EV prediction mode
    戦略ごとに設定タブの元EV分析モードを継承または個別固定する。 */
 (function(){
   "use strict";
@@ -3162,12 +3220,14 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   function effectiveMode(meta,s){return meta.sourceEvMode!=="inherit"?meta.sourceEvMode:String(s.cloneMode||"roi100")}
   function renderActiveNotice(){
     installSimNotice();const el=q("strategyEvModeNotice");if(!el||typeof state==="undefined")return;
-    const meta=activeMeta(),s=state.settings||{},mode=effectiveMode(meta,s),specific=meta.sourceEvMode!=="inherit";
+    const meta=activeMeta(),s=state.settings||{},mode=effectiveMode(meta,s),specific=meta.sourceEvMode!=="inherit",simUnlocked=s.simSettingsUnlocked===true;
     const base=mode==="all_agree"?effectiveBase(meta,s):"";
     el.textContent=specific
-      ?`戦略EVモード: 「${modeLabel(mode)}」を個別固定${base?` → 上書き対象「${modeLabel(base)}」`:""}。その他の予算・券種・最低AI等は設定タブを使用します。`
-      :`戦略EVモード: 設定タブに従う 現在「${modeLabel(mode)}」${base?` → 上書き対象「${modeLabel(base)}」`:""}`;
-    el.style.borderLeftColor=specific?"var(--good)":"var(--accent)";
+      ?`戦略EVモード: 「${modeLabel(mode)}」を個別固定${base?` → 上書き対象「${modeLabel(base)}」`:""}。その他の予算・券種・最低AI等は${simUnlocked?"SIM画面の解除値":"設定タブ"}を使用します。`
+      :simUnlocked
+        ?`戦略EVモード: 設定タブに従う 現在「${modeLabel(mode)}」。その他の条件はSIM画面の解除値を使用します。`
+        :`戦略EVモード: 設定タブに従う 現在「${modeLabel(mode)}」${base?` → 上書き対象「${modeLabel(base)}」`:""}`;
+    el.style.borderLeftColor=specific||simUnlocked?"var(--good)":"var(--accent)";
   }
 
   if(typeof normalizeStrategy==="function"){
@@ -3217,6 +3277,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     q("strSourceEvMode")?.addEventListener("change",toggleBaseField);
     q("cloneMode")?.addEventListener("change",renderActiveNotice);q("cloneAllAgreeBaseMode")?.addEventListener("change",renderActiveNotice);
     q("simStrategy")?.addEventListener("change",()=>setTimeout(renderActiveNotice,80));
+    document.addEventListener("thekeiba:sim-authority-change",renderActiveNotice);
     setTimeout(async()=>{try{await refreshStrategySelect();if(state.currentStrategyId)await loadStrategyEditor(state.currentStrategyId);renderActiveNotice()}catch(e){console.warn("strategy EV mode init",e)}},350);
   }
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,1950),{once:true});else setTimeout(wire,300);
