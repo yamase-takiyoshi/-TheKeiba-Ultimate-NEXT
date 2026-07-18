@@ -129,11 +129,18 @@ linear-gradient(135deg,color-mix(in srgb,var(--panel) 90%,var(--accent) 10%),var
 @media(max-width:900px){.pi-shell{grid-template-columns:1fr}.pi-side{position:static}.pi-side-body{max-height:none}.pi-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.pi-note-grid,.pi-analysis-grid{grid-template-columns:1fr}.pi-table-wrap{max-height:58vh}}
 @media(max-width:560px){.pi-kpis{grid-template-columns:1fr 1fr}.pi-kpi-value{font-size:19px}.pi-title{font-size:21px}.pi-filter-row,.pi-sort-row{grid-template-columns:1fr}.pi-filter-row .pi-filter-value{grid-column:auto}.pi-detail-row{grid-template-columns:1fr}.pi-hero{padding:16px}}
 
+/* v1.0.28: 2画面モードでは左メニューを常時自動非表示 */
+body.split-mode .sidebar{display:none!important}
+body.split-mode .mobile-nav{display:none!important}
+body.split-mode .app-shell.split-open{grid-template-columns:minmax(360px,1fr) minmax(430px,46vw)!important}
+@media(max-width:1200px) and (min-width:981px){body.split-mode .app-shell.split-open{grid-template-columns:minmax(330px,1fr) minmax(390px,48vw)!important}}
+@media(max-width:980px){body.split-mode .mobile-nav{display:none!important}body.split-mode .main{padding-bottom:13px}}
+
 </style>
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.27 Split Auto Hide Menu Standard</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Real Data Edition v1.0.28 Split Auto Hide Menu Standard</small></div></div>
   <div class="header-actions"><a class="btn small" href="index.html" title="最適化DBMS・D1Sync統合版を開く">🗄 DBMS版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -405,7 +412,7 @@ URL欄の値は「設定保存」を押さなくても各ボタンで即時使�
       <div class="split-pane-actions">
         <span class="split-sync-status" id="splitSyncStatus" title="左側SIMから右側分析画面への同期状態">未同期</span>
         <button class="btn small" id="splitSyncBtn" title="左側の最新シミュレーション結果を右側へ同期">↔ 同期</button>
-        <button class="btn small" id="splitMenuAutoBtn" title="2画面開始時は左メニューを自動で隠します">☰ メニュー表示</button>
+        <button class="btn small" id="splitMenuAutoBtn" hidden aria-hidden="true" tabindex="-1">左メニュー自動非表示</button>
         <button class="btn small" id="splitRefreshBtn" title="再読み込み">↻</button>
         <button class="btn small" id="splitExternalBtn" title="新しいタブで開く">↗</button>
         <button class="btn small" id="splitCloseBtn" title="閉じる">✕</button>
@@ -1432,33 +1439,31 @@ function applySplitMenuAutoHide(){
   const shell=document.querySelector(".app-shell"),autoBtn=$("splitMenuAutoBtn");
   if(!shell)return;
   const open=shell.classList.contains("split-open");
-  if(!open)shell.classList.remove("split-menu-hidden");
-  const hidden=open&&shell.classList.contains("split-menu-hidden");
+  shell.classList.toggle("split-menu-hidden",open);
+  document.body?.classList.toggle("split-mode",open);
+  document.documentElement.classList.toggle("split-mode",open);
   if(autoBtn){
-    autoBtn.classList.toggle("active",hidden);
-    autoBtn.textContent=hidden?"☰ メニュー表示":"☰ メニュー隠す";
-    autoBtn.title=hidden
-      ?"左メニューを一時的に表示します。次回2画面を開くと再び自動で隠れます"
-      :"左メニューを隠して2画面を広く表示します";
+    autoBtn.hidden=true;
+    autoBtn.setAttribute("aria-hidden","true");
   }
 }
 function toggleSplitMenuAutoHide(){
-  const shell=document.querySelector(".app-shell");
-  if(!shell||!shell.classList.contains("split-open"))return;
-  shell.classList.toggle("split-menu-hidden");
+  /* 2画面では左メニューを常時非表示。手動解除は行わない */
   applySplitMenuAutoHide();
 }
 function setSplitOpen(open){
   const shell=document.querySelector(".app-shell"),frame=$("splitFrame"),btn=$("splitToggleBtn");
   if(!shell||!frame||!btn)return;
-  shell.classList.toggle("split-open",!!open);
-  if(open)shell.classList.add("split-menu-hidden");
-  else shell.classList.remove("split-menu-hidden");
-  btn.classList.toggle("active",!!open);
-  btn.textContent=open?"◧ 分析画面 ON":"◫ 分析画面";
-  if(open&&!frame.src)frame.src=SPLIT_ANALYSIS_URL;
-  if(open)setTimeout(()=>syncSimulationToAnalysis({reason:"分析画面を開く"}),250);
-  localStorage.setItem("TheKeibaSplitOpen",open?"1":"0");
+  const enabled=!!open;
+  shell.classList.toggle("split-open",enabled);
+  shell.classList.toggle("split-menu-hidden",enabled);
+  document.body?.classList.toggle("split-mode",enabled);
+  document.documentElement.classList.toggle("split-mode",enabled);
+  btn.classList.toggle("active",enabled);
+  btn.textContent=enabled?"◧ 分析画面 ON":"◫ 分析画面";
+  if(enabled&&!frame.src)frame.src=SPLIT_ANALYSIS_URL;
+  if(enabled)setTimeout(()=>syncSimulationToAnalysis({reason:"分析画面を開く"}),250);
+  localStorage.setItem("TheKeibaSplitOpen",enabled?"1":"0");
   localStorage.setItem("TheKeibaSplitAutoHideMenu","1");
   applySplitMenuAutoHide();
 }
