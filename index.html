@@ -952,8 +952,9 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
     const body=node.textContent||"";
     try{node.remove()}catch{}
     BRIDGE_DIAG.lastResponseAt=new Date().toISOString();
+    if(error)BRIDGE_DIAG.lastError=error;
     if(!status)item.reject(new Error(error||"Userscript DOM bridge error"));
-    else item.resolve({status,text:body});
+    else item.resolve({status,text:body,error});
   }
   function observe(mailbox){
     if(observer)return;
