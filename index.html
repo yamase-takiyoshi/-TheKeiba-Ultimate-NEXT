@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.16</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.17</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -242,7 +242,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.16 JRA一覧ゼロ件誤判定修復</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.17 JRA HTTP400 Bridge連携修復</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -972,7 +972,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.16-jra-list-zero-guard";
+const APP_VERSION="1.2.17-jra-http400-bridge-fix";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -2053,12 +2053,15 @@ async function bridgeLoadList({silent=false,deferRefresh=false,types=null,allowE
         const groupDate=jraWeekGroupDate(date),prevDate=(()=>{const d=new Date(`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}T12:00:00`);d.setDate(d.getDate()-1);return compactDate(d.toISOString().slice(0,10))})(),
               nextDate=(()=>{const d=new Date(`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}T12:00:00`);d.setDate(d.getDate()+1);return compactDate(d.toISOString().slice(0,10))})();
         const jraTargets=[
-          `https://race.netkeiba.com/top/race_list_sub.html?current_group=10${groupDate}&kaisai_date=${date}`,
-          `https://race.netkeiba.com/top/race_list_sub.html?current_group=10${prevDate}&kaisai_date=${date}`,
-          `https://race.netkeiba.com/top/race_list_sub.html?current_group=10${date}&kaisai_date=${date}`,
-          `https://race.netkeiba.com/top/race_list_sub.html?current_group=10${nextDate}&kaisai_date=${date}`,
-          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}`,
-          `https://race.netkeiba.com/top/race_list.html?kaisai_date=${date}`
+          // 正式な通常一覧を最優先。Bridge v1.6.4は旧カスタムヘッダーを外して取得する。
+          `https://race.netkeiba.com/top/race_list.html?kaisai_date=${date}`,
+          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}&current_group=10${groupDate}#racelist_top_a`,
+          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}&current_group=10${prevDate}#racelist_top_a`,
+          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}&current_group=10${date}#racelist_top_a`,
+          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}&current_group=10${nextDate}#racelist_top_a`,
+          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}#racelist_top_a`,
+          // 一覧系が拒否された場合でもrace_idを含む確定払戻一覧から開催を復元する。
+          `https://race.netkeiba.com/top/payback_list.html?kaisai_date=${date}`
         ];
         let jra=[];
         for(const url of [...new Set(jraTargets)]){
@@ -2098,8 +2101,11 @@ async function bridgeLoadList({silent=false,deferRefresh=false,types=null,allowE
     diagnostics.total=races.length;diagnostics.jra=jraCount;diagnostics.nar=narCount;diagnostics.logs=logs.slice(-12);window.__LAST_LIST_DIAGNOSTICS__=diagnostics;
     if(!races.length&&!successfulPages)throw new Error(`開催一覧の通信に失敗しました${logs.length?` (${logs.slice(-6).join(" / ")})`:""}`);
     if(wanted.has("JRA")&&likelyJraRaceDay(date)&&jraCount===0){
-      const reason=jraParseSignal?"JRA一覧HTMLは取得しましたがrace_id解析が0件です":"JRA開催日の一覧ページを取得できていません";
-      throw new Error(`${reason}。空の開催日として進めず再試行します (${logs.slice(-6).join(" / ")||"診断情報なし"})`)
+      const recent=logs.slice(-8),all400=recent.length&&recent.every(x=>/JRA失敗:Userscript HTTP 400/.test(x));
+      const reason=all400
+        ?"JRA側が旧BridgeヘッダーをHTTP 400で拒否しました。TampermonkeyをBridge v1.6.4へ更新してください"
+        :jraParseSignal?"JRA一覧HTMLは取得しましたがrace_id解析が0件です":"JRA開催日の一覧ページを取得できていません";
+      throw new Error(`${reason}。空の開催日として進めず再試行します (${recent.join(" / ")||"診断情報なし"})`)
     }
     if(!races.length&&!allowEmpty)throw new Error(`開催一覧を解析できません${logs.length?` (${logs.slice(-6).join(" / ")})`:""}`);
     if(races.length){await removeInvalidRaceRecords();await importPayload({races},{silent:true,deferRefresh})}
@@ -4279,7 +4285,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 
 
 <!-- v1.2.15: iPad同期停止表示修復 + Bridge/Worker通信タイムアウト + 開催なし日継続 + 空結果除外 -->
-<!-- v1.2.16: JRA週グループURL修正 + 週末0R誤判定防止 + 一覧解析診断 + キャッシュ識別 -->
+<!-- v1.2.17: JRA週グループURL修正 + 週末0R誤判定防止 + 一覧解析診断 + キャッシュ識別 -->
 <!-- v1.2.3: 性齢フィールド取得・保持・検索・スナップショット表示を強化 -->
 </body>
 </html>
