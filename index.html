@@ -226,10 +226,20 @@ input,select,textarea{font-size:16px}
 @media(max-width:560px){.prediction-history-head{display:block}.prediction-history-actions{margin-top:9px}.prediction-kpis{grid-template-columns:1fr 1fr}}
 </style>
 
+
+<style id="liveConfirmedResultGraphStyles">
+.live-result-btn.active{background:var(--accent);border-color:var(--accent);color:#031321}
+.live-result-card{border-color:color-mix(in srgb,var(--accent) 42%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 96%,var(--accent) 4%),var(--panel))}
+.live-result-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:11px}
+.live-result-head strong{font-size:16px}.live-result-status{white-space:nowrap}.live-result-status.off{color:var(--muted)}.live-result-status.busy{color:var(--warn)}.live-result-status.ok{color:var(--good)}.live-result-status.bad{color:var(--bad)}
+.live-result-foot{margin-top:9px;color:var(--muted);font-size:12px;line-height:1.55}
+@media(max-width:760px){.live-result-btn{flex:1 1 100%}.live-result-head{align-items:flex-start}.live-result-status{width:100%;justify-content:center}}
+</style>
+
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.10 EV分析SIM個別編集修正</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.11 確定結果ライブグラフ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -303,12 +313,12 @@ input,select,textarea{font-size:16px}
           <div class="field"><label>最低オッズ</label><input id="simMinOdds" type="number" step="0.1" value="1"></div><div class="field"><label>最高オッズ</label><input id="simMaxOdds" type="number" step="0.1" value="999"></div><div class="field"><label>優先順位</label><select id="simPriority"><option value="ai">AI</option><option value="ev">EV</option><option value="expected">期待払戻</option><option value="balanced">総合</option></select></div><div class="field"><label>同意モード</label><select id="simAgreement"><option value="on">ON</option><option value="off">OFF</option></select></div>
           <div class="field"><label>予算の使い方</label><select id="simBudgetMode"><option value="sequential">レース順に購入</option><option value="dailyRank">全日ランキング</option></select></div><div class="field"><label>全日ランキング基準</label><select id="simDailyRankBasis"><option value="ev">EVの高い順</option><option value="adjusted">AI補正EVの高い順</option><option value="expected">期待払戻の高い順</option><option value="learned">過去学習後の期待利益順</option></select></div>
         </div>
-        <div class="toolbar" style="margin-top:13px"><button class="btn primary" id="simSyncBtn">期間実データ同期</button><button class="btn warn" id="simStopSyncBtn" disabled>同期停止</button><button class="btn good" id="simRunBtn">バックテスト開始</button><button class="btn" id="simCsvBtn">明細CSV</button><button class="btn" id="simSaveStrategyBtn">設定を戦略保存</button></div>
+        <div class="toolbar" style="margin-top:13px"><button class="btn primary" id="simSyncBtn">期間実データ同期</button><button class="btn warn" id="simStopSyncBtn" disabled>同期停止</button><button class="btn live-result-btn active" id="simLiveGraphBtn" type="button" aria-pressed="true">📈 結果ライブ ON</button><button class="btn good" id="simRunBtn">バックテスト開始</button><button class="btn" id="simCsvBtn">明細CSV</button><button class="btn" id="simSaveStrategyBtn">設定を戦略保存</button></div>
         <div class="notice" id="simModeNotice">先に「期間実データ同期」で出馬表・最終オッズ・確定結果・払戻を保存します。同期済みデータだけを用いてバックテストします。全日ランキングは同じ日付の全候補を比較し、上位から日次予算内で購入します。予算を無理に使い切る補完は行いません。</div>
         <div class="code-box" id="simSyncStatus" style="margin-top:12px">未同期。現在の登録結果件数を確認中です。</div>
       </div>
       <div class="grid"><div class="stat span-2"><div class="stat-label">対象R</div><div class="stat-value" id="simRaceCount">0</div></div><div class="stat span-2"><div class="stat-label">購入R</div><div class="stat-value" id="simBoughtCount">0</div></div><div class="stat span-2"><div class="stat-label">候補的中</div><div class="stat-value" id="simCandidateHits">0</div></div><div class="stat span-2"><div class="stat-label">購入的中</div><div class="stat-value" id="simPurchaseHits">0</div></div><div class="stat span-2"><div class="stat-label">取り逃がし</div><div class="stat-value" id="simMissHits">0</div></div><div class="stat span-2"><div class="stat-label">ROI</div><div class="stat-value" id="simRoi">0%</div></div></div>
-      <div class="card"><canvas class="chart" id="bankChart" width="1200" height="250"></canvas></div>
+      <div class="card live-result-card"><div class="live-result-head"><div><strong>📈 確定結果ライブ資金曲線</strong><div class="muted" id="simLiveGraphHelp">期間実データ同期中、確定結果が増えるたびに暫定集計します。</div></div><span class="badge live-result-status on" id="simLiveGraphStatus"><span class="status-dot on"></span>待機中</span></div><canvas class="chart" id="bankChart" width="1200" height="250"></canvas><div class="live-result-foot" id="simLiveGraphFoot">確定結果のみを使用します。未確定レースはグラフに含みません。</div></div>
       <div class="card"><div class="table-wrap"><table><thead><tr><th>日付</th><th>区分</th><th>開催</th><th>R</th><th>券種</th><th>候補点</th><th>購入点</th><th>候補的中</th><th>購入的中</th><th>投資</th><th>払戻</th><th>収支</th><th>ROI</th></tr></thead><tbody id="simRows"></tbody><tfoot id="simFoot"></tfoot></table></div></div>
     </section>
 
@@ -3899,6 +3909,115 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     setTimeout(async()=>{try{await refreshBuiltinRecord();if(isBuiltinSelected()){if(!isSimUnlocked())writeSettingsToSim();renderLinkUi()}}catch(e){console.warn("EV分析設定モード修復",e)}},900);
   }
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",wire,{once:true});else wire();
+})();
+</script>
+
+
+
+<script id="liveConfirmedResultGraphPatch">
+/* v1.2.11 確定結果を同期中に暫定集計して資金曲線へ反映 */
+(function(){
+  "use strict";
+  const KEY="TheKeibaLiveConfirmedGraphV1";
+  const byId=id=>document.getElementById(id);
+  const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+  const LIVE={enabled:true,busy:false,pending:false,timer:0,lastResultCount:-1,lastRenderedAt:0,lastError:""};
+  try{LIVE.enabled=localStorage.getItem(KEY)!=="0"}catch(_){LIVE.enabled=true}
+
+  function setStatus(text,kind=""){
+    const el=byId("simLiveGraphStatus");if(!el)return;
+    el.classList.remove("on","off","busy","ok","bad");
+    el.classList.add(kind||"on");
+    const dot=kind==="off"||kind==="bad"?"":" on";
+    el.innerHTML=`<span class="status-dot${dot}"></span>${String(text||"")}`;
+  }
+  function updateToggle(){
+    const btn=byId("simLiveGraphBtn");if(!btn)return;
+    btn.textContent=LIVE.enabled?"📈 結果ライブ ON":"📉 結果ライブ OFF";
+    btn.classList.toggle("active",LIVE.enabled);btn.setAttribute("aria-pressed",LIVE.enabled?"true":"false");
+    if(!LIVE.enabled)setStatus("停止中","off");else if(!LIVE.busy)setStatus("待機中","on");
+  }
+  function filteredRaces(races,c){
+    const debutRe=/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i;
+    return races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places?.length||c.places.includes(r.placeName))&&(!c.skipDebutRaces||!debutRe.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.placeName||"").localeCompare(String(b.placeName||""),"ja")||n(a.raceNo)-n(b.raceNo));
+  }
+  async function buildLiveRows(){
+    const c=readSimConfig();
+    const [races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]);
+    const resMap=new Map(results.map(r=>[String(r.race_id||""),r]));
+    const target=filteredRaces(races,c),confirmed=target.filter(r=>resMap.has(String(r.race_id||""))),items=[];
+    for(const race of confirmed){
+      const result=resMap.get(String(race.race_id||""));
+      if(result)items.push(await buildSimulationCandidate(race,result,c));
+    }
+    if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);
+    const rows=[];let bank=0;
+    for(const item of items){
+      const {race,result,entries,candidateTickets,purchaseTickets}=item;
+      const candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;
+      let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);
+      const profit=pay-invest;bank+=profit;
+      const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));
+      rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,remaining:item.remaining,rankScore:item.rankScore,liveConfirmed:true});
+    }
+    const totalBet=rows.reduce((s,x)=>s+x.invest,0),totalPay=rows.reduce((s,x)=>s+x.pay,0);
+    return{c,targetCount:target.length,confirmedCount:confirmed.length,rows,summary:{raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0}};
+  }
+  async function refreshLiveGraph(reason="確定結果更新",force=false){
+    if(!LIVE.enabled)return false;
+    if(LIVE.busy){LIVE.pending=true;return false}
+    LIVE.busy=true;LIVE.pending=false;setStatus("再計算中","busy");
+    try{
+      const data=await buildLiveRows();
+      if(!force&&data.confirmedCount===LIVE.lastResultCount&&Date.now()-LIVE.lastRenderedAt<1500){setStatus(`確定 ${data.confirmedCount}R`,"ok");return true}
+      LIVE.lastResultCount=data.confirmedCount;LIVE.lastRenderedAt=Date.now();
+      state.simResult=data.rows;
+      renderSimulation(data.summary);
+      const countLabel=byId("simRaceCount")?.previousElementSibling;if(countLabel)countLabel.textContent="確定集計R";
+      const foot=byId("simLiveGraphFoot");if(foot)foot.textContent=`${reason}　対象 ${data.targetCount}R / 確定 ${data.confirmedCount}R / 購入 ${data.summary.boughtCount}R / 投資 ${yen(data.summary.totalBet)} / 払戻 ${yen(data.summary.totalPay)} / 収支 ${yen(data.summary.profit)} / ROI ${pct(data.summary.roi)}　※暫定表示`;
+      setStatus(`確定 ${data.confirmedCount}R・${pct(data.summary.roi)}`,"ok");
+      try{await syncSimulationToAnalysis({reason:"確定結果ライブ"})}catch(_){ }
+      return true;
+    }catch(e){LIVE.lastError=e.message;setStatus("更新失敗","bad");const foot=byId("simLiveGraphFoot");if(foot)foot.textContent=`ライブ集計失敗: ${e.message}`;console.error("live confirmed graph",e);return false}
+    finally{
+      LIVE.busy=false;
+      if(LIVE.pending){LIVE.pending=false;scheduleLiveGraph("追加入力",true)}
+    }
+  }
+  function scheduleLiveGraph(reason="確定結果更新",force=false){
+    if(!LIVE.enabled)return;
+    clearTimeout(LIVE.timer);
+    LIVE.timer=setTimeout(()=>refreshLiveGraph(reason,force),220);
+  }
+
+  if(typeof bridgeLoadBundle==="function"){
+    const prev=bridgeLoadBundle;
+    bridgeLoadBundle=async function(...args){
+      const ok=await prev(...args);
+      if(ok&&LIVE.enabled&&typeof BACKTEST_SYNC!=="undefined"&&BACKTEST_SYNC.running)scheduleLiveGraph("同期中の確定結果を反映");
+      return ok;
+    };
+  }
+  if(typeof syncBacktestPeriod==="function"){
+    const prev=syncBacktestPeriod;
+    syncBacktestPeriod=async function(...args){
+      if(LIVE.enabled)await refreshLiveGraph("同期開始時点",true);
+      const out=await prev(...args);
+      if(LIVE.enabled)await refreshLiveGraph(BACKTEST_SYNC.stop?"同期停止時点":"同期完了",true);
+      return out;
+    };
+  }
+  if(typeof runSimulation==="function"){
+    const prev=runSimulation;
+    runSimulation=async function(...args){const out=await prev(...args);if(LIVE.enabled){LIVE.lastResultCount=Array.isArray(state.simResult)?state.simResult.length:LIVE.lastResultCount;setStatus(`確定集計 ${LIVE.lastResultCount}R`,"ok");const foot=byId("simLiveGraphFoot");if(foot)foot.textContent="バックテスト確定表示です。次回の期間実データ同期では、確定結果の増加に合わせて再びライブ更新します。"}return out};
+  }
+  function wire(){
+    updateToggle();
+    byId("simLiveGraphBtn")?.addEventListener("click",async()=>{LIVE.enabled=!LIVE.enabled;try{localStorage.setItem(KEY,LIVE.enabled?"1":"0")}catch(_){}updateToggle();if(LIVE.enabled)await refreshLiveGraph("手動ライブ開始",true)});
+    for(const id of ["simStart","simEnd","simType","simStrategy","simTicket","simDailyBudget","simUnit","simTopN","simMaxTickets","simMaxRace","simMinEv","simMinAi","simMinOdds","simMaxOdds","simPriority","simAgreement","simBudgetMode","simDailyRankBasis"]){byId(id)?.addEventListener("change",()=>{if(LIVE.enabled&&!BACKTEST_SYNC.running)scheduleLiveGraph("SIM条件変更",true)})}
+    if(LIVE.enabled)setTimeout(()=>refreshLiveGraph("保存済み確定結果",true),1100);
+  }
+  if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,2200),{once:true});else setTimeout(wire,450);
 })();
 </script>
 
