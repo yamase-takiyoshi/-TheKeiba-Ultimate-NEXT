@@ -255,7 +255,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.18 リアルタイム同期進捗グラフ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.20 同期進捗率計算修正</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -4331,23 +4331,28 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 (function(){
   "use strict";
   const byId=id=>document.getElementById(id);
-  const MON={running:false,startedAt:0,lastAt:0,progress:0,daysDone:0,daysTotal:0,raceNow:0,raceTotal:0,loaded:0,skipped:0,confirmed:0,failed:0,batchNow:0,batchTotal:0,history:[],raf:0,timer:0,lastMessage:""};
+  const MON={running:false,startedAt:0,lastAt:0,progress:0,dayNow:0,daysDone:0,daysTotal:0,raceNow:0,raceTotal:0,loaded:0,skipped:0,confirmed:0,failed:0,batchNow:0,batchTotal:0,history:[],raf:0,timer:0,lastMessage:""};
   const num=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function css(name,fallback){const v=getComputedStyle(document.documentElement).getPropertyValue(name).trim();return v||fallback}
   function formatTime(sec){sec=Math.max(0,Math.round(num(sec)));if(sec<60)return `${sec}秒`;if(sec<3600)return `${Math.floor(sec/60)}分${sec%60}秒`;return `${Math.floor(sec/3600)}時間${Math.floor(sec%3600/60)}分`}
   function readMatch(text,re){const m=String(text||"").match(re);return m?m.slice(1).map(Number):null}
   function setBadge(label,kind=""){const el=byId("simSyncLiveStatus");if(!el)return;el.classList.remove("running","done","stopped","error");if(kind)el.classList.add(kind);const on=kind==="running"||kind==="done";el.innerHTML=`<span class="status-dot${on?" on":""}"></span>${label}`}
-  function reset(){MON.startedAt=Date.now();MON.lastAt=MON.startedAt;MON.progress=0;MON.daysDone=0;MON.daysTotal=0;MON.raceNow=0;MON.raceTotal=0;MON.loaded=0;MON.skipped=0;MON.confirmed=0;MON.failed=0;MON.batchNow=0;MON.batchTotal=0;MON.history=[];MON.lastMessage="同期を開始しています…";sample(true);render()}
+  function reset(){MON.startedAt=Date.now();MON.lastAt=MON.startedAt;MON.progress=0;MON.dayNow=0;MON.daysDone=0;MON.daysTotal=0;MON.raceNow=0;MON.raceTotal=0;MON.loaded=0;MON.skipped=0;MON.confirmed=0;MON.failed=0;MON.batchNow=0;MON.batchTotal=0;MON.history=[];MON.lastMessage="同期を開始しています…";sample(true);render()}
   function begin(){MON.running=true;reset();setBadge("同期中","running");startClock()}
-  function finish(kind="done"){MON.running=false;if(kind==="done"&&MON.daysTotal)MON.progress=100;sample(true);render();setBadge(kind==="stopped"?"停止":"完了",kind);stopClock()}
+  function finish(kind="done"){MON.running=false;if(kind==="done"&&MON.daysTotal){MON.progress=100;MON.dayNow=MON.daysTotal;MON.daysDone=MON.daysTotal;}sample(true);render();setBadge(kind==="stopped"?"停止":"完了",kind);stopClock()}
   function startClock(){stopClock();MON.timer=setInterval(()=>renderTime(),1000)}
   function stopClock(){if(MON.timer){clearInterval(MON.timer);MON.timer=0}renderTime()}
   function sample(force=false){const now=Date.now();const last=MON.history[MON.history.length-1];if(!force&&last&&now-last.t<450&&Math.abs(last.p-MON.progress)<.05)return;MON.history.push({t:now,p:MON.progress,loaded:MON.loaded,confirmed:MON.confirmed,failed:MON.failed});if(MON.history.length>240)MON.history.splice(0,MON.history.length-240)}
   function parseStatus(message){
     const text=String(message||"");MON.lastMessage=text;MON.lastAt=Date.now();
     let m=readMatch(text,/バッチ\s*(\d+)\/(\d+)/);if(m){MON.batchNow=m[0];MON.batchTotal=m[1]}
-    m=readMatch(text,/全体\s*(\d+)\/(\d+)日/);if(m){MON.daysDone=Math.max(0,m[0]-1);MON.daysTotal=m[1]}else{m=readMatch(text,/処理(?:日)?\s*(\d+)\/(\d+)日/);if(m){MON.daysDone=m[0];MON.daysTotal=m[1]}}
+    m=readMatch(text,/全体\s*(\d+)\/(\d+)日/);
+    if(m){MON.dayNow=m[0];MON.daysDone=Math.max(0,m[0]-1);MON.daysTotal=m[1]}
+    else{
+      m=readMatch(text,/処理(?:日)?\s*(\d+)\/(\d+)日/);
+      if(m){MON.dayNow=m[0];MON.daysDone=Math.max(0,m[0]-1);MON.daysTotal=m[1]}
+    }
     m=readMatch(text,/当日\s*(\d+)\/(\d+)R/);if(m){MON.raceNow=m[0];MON.raceTotal=m[1]}
     else{
       const compact=readMatch(text,/同期中\s*(\d+)\/(\d+)(?:R)?/);
@@ -4372,7 +4377,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   function compactTask(){const lines=MON.lastMessage.split(/\n+/).map(s=>s.trim()).filter(Boolean);return lines.slice(0,3).join("\n")||"同期開始待ち"}
   function render(){
     const bar=byId("simSyncProgressBar"),pctEl=byId("simSyncProgressPercent");if(bar)bar.style.width=`${MON.progress.toFixed(2)}%`;if(pctEl)pctEl.textContent=`${MON.progress.toFixed(1)}%`;
-    const vals={simSyncDays:`${MON.daysDone} / ${MON.daysTotal}`,simSyncRace:`${MON.raceNow} / ${MON.raceTotal}`,simSyncLoaded:`${MON.loaded}R`,simSyncSkipped:`${MON.skipped}R`,simSyncConfirmed:`${MON.confirmed}R`,simSyncFailed:`${MON.failed}件`};for(const [id,v] of Object.entries(vals)){const el=byId(id);if(el)el.textContent=v}
+    const shownDay=MON.daysTotal?(MON.running?Math.max(1,MON.dayNow||MON.daysDone+1):Math.min(MON.daysTotal,MON.dayNow||MON.daysDone)):0;const vals={simSyncDays:`${shownDay} / ${MON.daysTotal}`,simSyncRace:`${MON.raceNow} / ${MON.raceTotal}`,simSyncLoaded:`${MON.loaded}R`,simSyncSkipped:`${MON.skipped}R`,simSyncConfirmed:`${MON.confirmed}R`,simSyncFailed:`${MON.failed}件`};for(const [id,v] of Object.entries(vals)){const el=byId(id);if(el)el.textContent=v}
     const task=byId("simSyncCurrentTask");if(task)task.textContent=compactTask();renderTime();scheduleDraw();
   }
   function scheduleDraw(){if(MON.raf)return;MON.raf=requestAnimationFrame(()=>{MON.raf=0;draw()})}
@@ -4405,6 +4410,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
+<!-- v1.2.20: 処理日1/1を完了日数と誤認して100%になる進捗率バグを修正 -->
 <!-- v1.2.19: 同期中バックテスト二重起動防止 + compact同期進捗30/72対応 + ライブグラフ識別 -->
 <!-- v1.2.18: 同期経過リアルタイム表示 + 進捗率グラフ + ETA -->
 <!-- v1.2.15: iPad同期停止表示修復 + Bridge/Worker通信タイムアウト + 開催なし日継続 + 空結果除外 -->
