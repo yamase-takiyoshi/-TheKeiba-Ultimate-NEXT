@@ -862,19 +862,26 @@ async function withOperationTimeout(task,timeoutMs=20000,label="処理"){
 }
 async function residentialBridgeText(target,{timeout=18000}={}){
   const limit=Math.max(3000,Number(timeout||18000));
+  const accept=(r,route)=>{
+    if(typeof r==="string"){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute=route;BRIDGE_DIAG.lastError="";return r}
+    if(r&&Number(r.status)>=200&&Number(r.status)<400){
+      BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute=route;BRIDGE_DIAG.lastError="";
+      BRIDGE_DIAG.lastFinalUrl=String(r.finalUrl||target);BRIDGE_DIAG.lastProfile=Number(r.profile||0);
+      return String(r.text||"")
+    }
+    const status=Number(r?.status||0),where=String(r?.finalUrl||target),profile=r?.profile!=null?` p${r.profile}`:"",detail=String(r?.error||"");
+    throw new Error(detail||`Userscript HTTP ${status}${profile} ${where}`)
+  };
   if(typeof window.__narBridgeDirect==="function"&&window.__narBridgeHasDirect){
     BRIDGE_DIAG.direct=true;
-    const r=await withOperationTimeout(()=>window.__narBridgeDirect(target,{timeout:limit}),limit+1500,"Userscript直接通信");
-    if(typeof r==="string"){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="direct";BRIDGE_DIAG.lastError="";return r}
-    if(r&&Number(r.status)>=200&&Number(r.status)<400){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="direct";BRIDGE_DIAG.lastError="";return String(r.text||"")}
-    throw new Error((r&&r.error)||`Userscript HTTP ${(r&&r.status)||0}`)
+    const r=await withOperationTimeout(()=>window.__narBridgeDirect(target,{timeout:limit}),limit+2500,"Userscript直接通信");
+    return accept(r,"direct")
   }
   if(typeof window.__theKeibaBridgeHandshake==="function")window.__theKeibaBridgeHandshake();
   if(typeof window.__narBridgeFetch==="function"){
-    const r=await withOperationTimeout(()=>window.__narBridgeFetch(target,{timeout:limit}),limit+1500,"Userscript通信");
-    if(typeof r==="string"){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="postMessage";BRIDGE_DIAG.lastError="";return r}
-    if(r&&Number(r.status)>=200&&Number(r.status)<400){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="postMessage";BRIDGE_DIAG.lastError="";window.__NAR_BRIDGE_READY__=true;return String(r.text||"")}
-    throw new Error((r&&r.error)||`Userscript HTTP ${(r&&r.status)||0}`)
+    const r=await withOperationTimeout(()=>window.__narBridgeFetch(target,{timeout:limit}),limit+2500,"Userscript通信");
+    window.__NAR_BRIDGE_READY__=true;
+    return accept(r,"postMessage")
   }
   throw new Error("Userscript住宅IPブリッジ未検出")
 }
@@ -885,7 +892,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
 }
 
 
-// iPad Safari Bridge Fix: Userscript v1.6.3 shared-DOM mailbox direct client.
+// iPad Safari Bridge Fix: Userscript v1.6.5 compatible shared-DOM mailbox direct client.
 (function installIpadDomMailboxClient(){
   "use strict";
   const ROOT_ID="__nar_bridge_dom_v163__";
@@ -904,10 +911,12 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
     const status=Number(node.getAttribute("data-status")||0);
     const error=node.getAttribute("data-error")||"";
     const body=node.textContent||"";
+    const finalUrl=node.getAttribute("data-final-url")||"";
+    const profile=Number(node.getAttribute("data-profile")||0);
     try{node.remove()}catch{}
     BRIDGE_DIAG.lastResponseAt=new Date().toISOString();
     if(!status)item.reject(new Error(error||"Userscript DOM bridge error"));
-    else item.resolve({status,text:body});
+    else item.resolve({status,text:body,finalUrl,profile,error});
   }
   function observe(mailbox){
     if(observer)return;
@@ -950,7 +959,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
     window.__narBridgeHasDirect=true;
     window.__NAR_BRIDGE_READY__=true;
     window.__narBridgeVersion=
-      document.documentElement.getAttribute("data-nar-bridge-ready")||"1.6.3-dom";
+      document.documentElement.getAttribute("data-nar-bridge-ready")||"1.6.5-dom";
     BRIDGE_DIAG.ready=true;
     BRIDGE_DIAG.direct=true;
     BRIDGE_DIAG.lastRoute="dom-mailbox";
@@ -1793,6 +1802,19 @@ function likelyJraRaceDay(date){
   const d=new Date(`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}T12:00:00`);
   return d.getDay()===0||d.getDay()===6
 }
+function jraListTargetUrls(date){
+  date=compactDate(date);if(!date)return[];
+  const groupDate=jraWeekGroupDate(date),prevDate=(()=>{const d=new Date(`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}T12:00:00`);d.setDate(d.getDate()-1);return compactDate(d.toISOString().slice(0,10))})(),nextDate=(()=>{const d=new Date(`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}T12:00:00`);d.setDate(d.getDate()+1);return compactDate(d.toISOString().slice(0,10))})();
+  return[...new Set([
+    `https://race.netkeiba.com/top/race_list.html?kaisai_date=${date}`,
+    `https://race.sp.netkeiba.com/?kaisai_date=${date}&pid=race_list`,
+    `https://race.netkeiba.com/top/race_list_sub.html?current_group=10${groupDate}&kaisai_date=${date}`,
+    `https://race.netkeiba.com/top/race_list_sub.html?current_group=10${prevDate}&kaisai_date=${date}`,
+    `https://race.netkeiba.com/top/race_list_sub.html?current_group=10${date}&kaisai_date=${date}`,
+    `https://race.netkeiba.com/top/race_list_sub.html?current_group=10${nextDate}&kaisai_date=${date}`,
+    `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}`
+  ])]
+}
 function raceListHtmlSignals(raw){
   const html=unwrapBridgeHtml(raw),text=html.replace(/<[^>]*>/g," ").replace(/\s+/g," ");
   return{
@@ -2050,28 +2072,18 @@ async function bridgeLoadList({silent=false,deferRefresh=false,types=null,allowE
       diagnostics.pages.push({route:"REST",count:races.length})
     }else{
       if(wanted.has("JRA")){
-        const groupDate=jraWeekGroupDate(date),prevDate=(()=>{const d=new Date(`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}T12:00:00`);d.setDate(d.getDate()-1);return compactDate(d.toISOString().slice(0,10))})(),
-              nextDate=(()=>{const d=new Date(`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}T12:00:00`);d.setDate(d.getDate()+1);return compactDate(d.toISOString().slice(0,10))})();
-        const jraTargets=[
-          // 正式な通常一覧を最優先。Bridge v1.6.4は旧カスタムヘッダーを外して取得する。
-          `https://race.netkeiba.com/top/race_list.html?kaisai_date=${date}`,
-          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}&current_group=10${groupDate}#racelist_top_a`,
-          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}&current_group=10${prevDate}#racelist_top_a`,
-          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}&current_group=10${date}#racelist_top_a`,
-          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}&current_group=10${nextDate}#racelist_top_a`,
-          `https://race.netkeiba.com/top/race_list_sub.html?kaisai_date=${date}#racelist_top_a`,
-          // 一覧系が拒否された場合でもrace_idを含む確定払戻一覧から開催を復元する。
-          `https://race.netkeiba.com/top/payback_list.html?kaisai_date=${date}`
-        ];
+        const jraTargets=jraListTargetUrls(date),weekend=likelyJraRaceDay(date);
         let jra=[];
-        for(const url of [...new Set(jraTargets)]){
+        for(const url of jraTargets){
           if(BACKTEST_SYNC?.stop)throw new Error("同期停止");
           try{
             const raw=await bridgeLegacyUrl(url,{timeout:22000}),html=unwrapBridgeHtml(raw),sig=raceListHtmlSignals(html),part=parseRaceListHtml(html,"JRA",date);
             successfulPages++;jraParseSignal=jraParseSignal||sig.hasRaceId||sig.hasRaceRows;
-            diagnostics.pages.push({type:"JRA",url:url.replace(/^https?:\/\//,""),chars:sig.chars,hasRaceId:sig.hasRaceId,hasRaceRows:sig.hasRaceRows,ended:sig.ended,count:part.length});
+            diagnostics.pages.push({type:"JRA",url:url.replace(/^https?:\/\//,""),chars:sig.chars,hasRaceId:sig.hasRaceId,hasRaceRows:sig.hasRaceRows,validPage:sig.validPage,weatherNotice:sig.weatherNotice,count:part.length});
             if(part.length){jra=part;logs.push(`JRA:${part.length}R`);break}
-            if(sig.hasRaceId||sig.hasRaceRows)logs.push(`JRA解析0R:${sig.chars}字`);else if(sig.ended)logs.push("JRA旧一覧終了ページ");else logs.push(`JRA開催情報なし:${sig.chars}字`)
+            if(sig.hasRaceId||sig.hasRaceRows)logs.push(`JRA解析0R:${sig.chars}字`);
+            else if(!weekend&&sig.validPage&&!sig.blocked){logs.push(`JRA開催なし:${sig.chars}字`);break}
+            else logs.push(`JRA開催情報なし:${sig.chars}字`)
           }catch(e){logs.push(`JRA失敗:${e.message}`);diagnostics.pages.push({type:"JRA",error:e.message})}
         }
         jraCount=jra.length;races.push(...jra)
@@ -2101,11 +2113,8 @@ async function bridgeLoadList({silent=false,deferRefresh=false,types=null,allowE
     diagnostics.total=races.length;diagnostics.jra=jraCount;diagnostics.nar=narCount;diagnostics.logs=logs.slice(-12);window.__LAST_LIST_DIAGNOSTICS__=diagnostics;
     if(!races.length&&!successfulPages)throw new Error(`開催一覧の通信に失敗しました${logs.length?` (${logs.slice(-6).join(" / ")})`:""}`);
     if(wanted.has("JRA")&&likelyJraRaceDay(date)&&jraCount===0){
-      const recent=logs.slice(-8),all400=recent.length&&recent.every(x=>/JRA失敗:Userscript HTTP 400/.test(x));
-      const reason=all400
-        ?"JRA側が旧BridgeヘッダーをHTTP 400で拒否しました。TampermonkeyをBridge v1.6.4へ更新してください"
-        :jraParseSignal?"JRA一覧HTMLは取得しましたがrace_id解析が0件です":"JRA開催日の一覧ページを取得できていません";
-      throw new Error(`${reason}。空の開催日として進めず再試行します (${recent.join(" / ")||"診断情報なし"})`)
+      const reason=jraParseSignal?"JRA一覧HTMLは取得しましたがrace_id解析が0件です":"JRA開催日の一覧ページを取得できていません";
+      throw new Error(`${reason}。空の開催日として進めず再試行します (${logs.slice(-6).join(" / ")||"診断情報なし"})`)
     }
     if(!races.length&&!allowEmpty)throw new Error(`開催一覧を解析できません${logs.length?` (${logs.slice(-6).join(" / ")})`:""}`);
     if(races.length){await removeInvalidRaceRecords();await importPayload({races},{silent:true,deferRefresh})}
@@ -3109,7 +3118,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   window.updateBridgeDiagnostics=function(label="",kind=""){
     const badge=$("bridgeHealthBadge"),diag=$("bridgeDiag");const ready=hasResidentialBridge(),route=BRIDGE_DIAG.lastRoute||state.settings.bridgeMode||"未検出";
     if(badge){badge.innerHTML=`<span class="status-dot ${kind==="ok"||ready?"on":""}"></span>${esc(label|| (ready?"Userscript接続済み":"未接続"))}`}
-    if(diag)diag.textContent=[`Version: ${APP_VERSION}`,`Route: ${route}`,`Userscript ready: ${ready}`,`Direct bridge: ${!!BRIDGE_DIAG.direct}`,`Bridge version: ${window.__narBridgeVersion||document.documentElement.getAttribute("data-nar-bridge-ready")||"-"}`,`DOM mailbox: ${!!document.getElementById("__nar_bridge_dom_v163__")}`,`Last ready: ${BRIDGE_DIAG.lastReadyAt||"-"}`,`Last request: ${BRIDGE_DIAG.lastRequestAt||"-"}`,`Last response: ${BRIDGE_DIAG.lastResponseAt||"-"}`,`Handshake count: ${BRIDGE_DIAG.handshakes||0}`,`Bridge mode: ${state.settings.bridgeMode||"auto"}`,`Worker URL: ${state.settings.bridgeUrl||"未設定"}`,`Online: ${navigator.onLine}`,`Visibility: ${document.visibilityState}`,`Last error: ${BRIDGE_DIAG.lastError||"-"}`].join("\n")
+    if(diag)diag.textContent=[`Version: ${APP_VERSION}`,`Route: ${route}`,`Userscript ready: ${ready}`,`Direct bridge: ${!!BRIDGE_DIAG.direct}`,`Bridge version: ${window.__narBridgeVersion||document.documentElement.getAttribute("data-nar-bridge-ready")||"-"}`,`DOM mailbox: ${!!document.getElementById("__nar_bridge_dom_v163__")}`,`Last ready: ${BRIDGE_DIAG.lastReadyAt||"-"}`,`Last request: ${BRIDGE_DIAG.lastRequestAt||"-"}`,`Last response: ${BRIDGE_DIAG.lastResponseAt||"-"}`,`Final URL: ${BRIDGE_DIAG.lastFinalUrl||"-"}`,`Request profile: ${BRIDGE_DIAG.lastProfile??"-"}`,`Handshake count: ${BRIDGE_DIAG.handshakes||0}`,`Bridge mode: ${state.settings.bridgeMode||"auto"}`,`Worker URL: ${state.settings.bridgeUrl||"未設定"}`,`Online: ${navigator.onLine}`,`Visibility: ${document.visibilityState}`,`Last error: ${BRIDGE_DIAG.lastError||"-"}`].join("\n")
   };
   let reconnectBusy=false;async function reconnectBridge({silent=false}={}){if(reconnectBusy)return false;reconnectBusy=true;try{updateBridgeDiagnostics("再検出中");state.settings.bridgeMode="auto";if(typeof window.__theKeibaInstallDomBridge==="function")window.__theKeibaInstallDomBridge();if(typeof window.__theKeibaBridgeHandshake==="function")window.__theKeibaBridgeHandshake();const d=await detectBridgeMode();updateBridgeDiagnostics("接続済み","ok");if(!silent)bridgeLog("Bridge再検出成功",d);return true}catch(e){BRIDGE_DIAG.lastError=e.message;updateBridgeDiagnostics("未接続","bad");if(!silent)bridgeLog("Bridge再検出失敗: "+e.message);return false}finally{reconnectBusy=false}}
   async function copyBridgeDiagnostics(){updateBridgeDiagnostics();const text=$("bridgeDiag")?.textContent+"\n\nLog:\n"+($("bridgeLog")?.textContent||"");try{await navigator.clipboard.writeText(text);bridgeLog("Bridge診断をコピーしました")}catch{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();bridgeLog("Bridge診断をコピーしました")}}
@@ -4285,7 +4294,8 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 
 
 <!-- v1.2.15: iPad同期停止表示修復 + Bridge/Worker通信タイムアウト + 開催なし日継続 + 空結果除外 -->
-<!-- v1.2.17: JRA週グループURL修正 + 週末0R誤判定防止 + 一覧解析診断 + キャッシュ識別 -->
+<!-- v1.2.16: JRA週グループURL修正 + 週末0R誤判定防止 + 一覧解析診断 + キャッシュ識別 -->
+<!-- v1.2.17: JRA無指定ヘッダー優先 + PC/スマホ一覧自動切替 + HTTP400詳細診断 + 平日開催なし高速判定 -->
 <!-- v1.2.3: 性齢フィールド取得・保持・検索・スナップショット表示を強化 -->
 </body>
 </html>
