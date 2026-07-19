@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.23</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.24</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -266,7 +266,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.23 EV分析エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.24 EV分析エミュレータ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -1019,7 +1019,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.23-ev-analysis-emulator-sim-reset";
+const APP_VERSION="1.2.24-jra-sp-fix";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
