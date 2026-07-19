@@ -239,7 +239,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.13 自動分割バッチ同期</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.14 DB自動復旧バッチ同期</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -952,7 +952,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.12-sync-free-mode";
+const APP_VERSION="1.2.14-idb-auto-recovery";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -1260,6 +1260,52 @@ async function runSimulationCore(){const c=readSimConfig(),[races,results]=await
 
 const BACKTEST_BATCH_DAYS=92;
 const BACKTEST_SYNC={running:false,stop:false,batch:0,totalBatches:0};
+let INDEXED_DB_RECOVERY_PROMISE=null;
+function indexedDbErrorText(error){
+  return String(error?.message||error?.name||error||"");
+}
+function isIndexedDbClosingError(error){
+  const name=String(error?.name||""),message=indexedDbErrorText(error);
+  return name==="InvalidStateError"||
+    /database connection is closing|connection is closing|database is closed|connection is closed|IDBDatabase.*closing|InvalidStateError/i.test(message);
+}
+async function recoverIndexedDbConnection(reason=""){
+  if(INDEXED_DB_RECOVERY_PROMISE)return INDEXED_DB_RECOVERY_PROMISE;
+  INDEXED_DB_RECOVERY_PROMISE=(async()=>{
+    let lastError=null;
+    for(let attempt=1;attempt<=5;attempt++){
+      try{
+        const old=state.db;
+        state.db=null;
+        try{old?.close()}catch(_){}
+        setSimSyncStatus(`ローカルDB接続を自動復旧中 ${attempt}/5${reason?`\n${reason}`:""}`);
+        await new Promise(resolve=>setTimeout(resolve,250*attempt));
+        const db=await openDB();
+        if(!db)throw new Error("IndexedDB再接続結果が空です");
+        setSimSyncStatus(`ローカルDB接続を復旧しました${reason?`\n${reason}`:""}\n同期処理を同じ位置から再試行します。`);
+        return db;
+      }catch(e){
+        lastError=e;
+        await new Promise(resolve=>setTimeout(resolve,500*attempt));
+      }
+    }
+    throw lastError||new Error("IndexedDBの自動復旧に失敗しました");
+  })();
+  try{return await INDEXED_DB_RECOVERY_PROMISE}
+  finally{INDEXED_DB_RECOVERY_PROMISE=null}
+}
+async function withIndexedDbRecovery(task,label="",maxAttempts=3){
+  let lastError=null;
+  for(let attempt=1;attempt<=maxAttempts;attempt++){
+    try{return await task()}
+    catch(e){
+      lastError=e;
+      if(!isIndexedDbClosingError(e)||attempt>=maxAttempts)throw e;
+      await recoverIndexedDbConnection(`${label||"DB処理"}\n${indexedDbErrorText(e)}`);
+    }
+  }
+  throw lastError;
+}
 function setSimSyncStatus(message){if($("simSyncStatus"))$("simSyncStatus").textContent=message}
 function isSimStoredMode(){return ($("simDataMode")?.value||"sync")==="stored"}
 function splitBacktestBatches(dates,size=BACKTEST_BATCH_DAYS){
@@ -1278,7 +1324,7 @@ async function updateSimDataModeUi({refreshStatus=true}={}){
   if(stopBtn){stopBtn.disabled=stored||!BACKTEST_SYNC.running;stopBtn.hidden=stored}
   if(notice)notice.textContent=stored
     ?"同期なしモード：通信を行わず、DB・履歴・スナップショット復元済みの保存データだけでバックテストします。期間制限はありません。未取得・未確定レースは自動的に除外し、レース・馬柱・結果・設定・スナップショットは上書きしません。"
-    :"実データ同期モード：指定期間を最大92日単位のバッチへ自動分割し、全バッチを順番に同期します。1年でも開始日と終了日を一度指定するだけです。取得済みレースは自動スキップします。";
+    :"実データ同期モード：指定期間を最大92日単位のバッチへ自動分割し、全バッチを順番に同期します。DB接続がiPad側で一時終了しても、自動再接続して同じ日・レースから再試行します。取得済みレースは自動スキップします。";
   if(liveHelp)liveHelp.textContent=stored?"保存済みの確定結果だけを再集計します。ネット通信は行いません。":"自動分割バッチ同期中、確定結果が増えるたびに暫定集計します。";
   if(liveFoot&&stored)liveFoot.textContent="同期なしモードです。保存済みの確定結果のみを使用し、未確定レースはグラフに含みません。";
   if(refreshStatus&&state.db){
@@ -1324,11 +1370,15 @@ async function syncBacktestPeriod(){
         setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　${displayDate(batchStart)}～${displayDate(batchEnd)}\n開催一覧取得中 ${displayDate(date)}　バッチ内 ${dayIndex+1}/${batch.length}日　全体 ${processedDays+1}/${dates.length}日\n取得成功 ${loaded}R　既存 ${skipped}R　確定結果 ${confirmed}R　失敗 ${failed}件`);
         let races=[];
         try{
-          races=await bridgeLoadList({silent:true,deferRefresh:true});
+          races=await withIndexedDbRecovery(
+            ()=>bridgeLoadList({silent:true,deferRefresh:true}),
+            `${displayDate(date)} 開催一覧の保存`,
+            3
+          );
           listDays++;
         }catch(e){
-          failed++;processedDays++;lastError=`${displayDate(date)} 一覧: ${e.message}`;
-          setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　一覧取得失敗\n${lastError}\n次の日へ継続します。`);
+          failed++;processedDays++;lastError=`${displayDate(date)} 一覧: ${indexedDbErrorText(e)}`;
+          setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　一覧取得失敗\n${lastError}\n同日を再試行しても復旧できなかったため、次の日へ継続します。`);
           await new Promise(resolve=>setTimeout(resolve,1200));
           continue;
         }
@@ -1338,18 +1388,39 @@ async function syncBacktestPeriod(){
           if(BACKTEST_SYNC.stop)break;
           const race=races[raceIndex],rid=race.race_id||race.raceId;
           if(!rid)continue;
-          const [existingResult,existingEntries]=await Promise.all([getOne("results",rid),getByIndex("entries","race_id",rid)]);
+          const [existingResult,existingEntries]=await withIndexedDbRecovery(
+            ()=>Promise.all([getOne("results",rid),getByIndex("entries","race_id",rid)]),
+            `${rid} 既存データ確認`,
+            3
+          );
           if(existingResult&&existingEntries.length){skipped++;confirmed++;continue}
           setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　${displayDate(date)} ${race.placeName||""} ${race.raceNo||race.race||""}R\nバッチ内 ${dayIndex+1}/${batch.length}日　全体 ${processedDays+1}/${dates.length}日　当日 ${raceIndex+1}/${races.length}R\n取得成功 ${loaded}R　既存 ${skipped}R　確定結果 ${confirmed}R　失敗 ${failed}件`);
-          let ok=await bridgeLoadBundle(rid,true,true);
-          if(!ok&&!BACKTEST_SYNC.stop){
-            retried++;
-            await new Promise(resolve=>setTimeout(resolve,900));
+          let ok=false;
+          for(let attempt=1;attempt<=3&&!BACKTEST_SYNC.stop;attempt++){
             ok=await bridgeLoadBundle(rid,true,true);
+            if(ok)break;
+            const bundleError=window.__LAST_BUNDLE_ERROR__||"取得失敗";
+            if(isIndexedDbClosingError(bundleError)){
+              retried++;
+              try{
+                await recoverIndexedDbConnection(`${displayDate(date)} ${race.placeName||""} ${race.raceNo||race.race||""}R\n${bundleError}`);
+              }catch(recoveryError){
+                window.__LAST_BUNDLE_ERROR__=`${bundleError} / DB復旧失敗: ${indexedDbErrorText(recoveryError)}`;
+                break;
+              }
+            }else if(attempt<3){
+              retried++;
+              await new Promise(resolve=>setTimeout(resolve,900));
+            }
           }
           if(ok){
             loaded++;
-            if(await getOne("results",rid))confirmed++;
+            const savedResult=await withIndexedDbRecovery(
+              ()=>getOne("results",rid),
+              `${rid} 結果保存確認`,
+              3
+            );
+            if(savedResult)confirmed++;
           }else{
             failed++;
             lastError=`${displayDate(date)} ${race.placeName||""} ${race.raceNo||race.race||""}R: ${window.__LAST_BUNDLE_ERROR__||"取得失敗"}`;
@@ -1363,8 +1434,8 @@ async function syncBacktestPeriod(){
         await new Promise(resolve=>setTimeout(resolve,2000));
       }
     }
-    await refreshAll();await renderSimPlaceOptions(c.places);
-    const cov=await backtestCoverage(c),elapsedSec=Math.max(1,Math.round((Date.now()-startedAt)/1000)),elapsedLabel=elapsedSec>=60?`${Math.floor(elapsedSec/60)}分${elapsedSec%60}秒`:`${elapsedSec}秒`;
+    await withIndexedDbRecovery(()=>refreshAll(),"同期完了後の画面更新",3);await renderSimPlaceOptions(c.places);
+    const cov=await withIndexedDbRecovery(()=>backtestCoverage(c),"同期完了後の集計",3),elapsedSec=Math.max(1,Math.round((Date.now()-startedAt)/1000)),elapsedLabel=elapsedSec>=60?`${Math.floor(elapsedSec/60)}分${elapsedSec%60}秒`:`${elapsedSec}秒`;
     setSimSyncStatus(`${BACKTEST_SYNC.stop?"バッチ同期停止":"全バッチ同期完了"}　${BACKTEST_SYNC.batch}/${batches.length}バッチ　処理 ${processedDays}/${dates.length}日\n登録対象 ${cov.races}R　確定結果 ${cov.results}R　取得成功 ${loaded}R　既存 ${skipped}R　再試行 ${retried}回　失敗 ${failed}件\n所要時間 ${elapsedLabel}${lastError?`\n最後の失敗 ${lastError}`:""}`);
     return{...cov,batches:batches.length,processedDays,loaded,skipped,failed,retried,stopped:BACKTEST_SYNC.stop};
   }catch(e){
@@ -2358,7 +2429,25 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     }
     state.db=db;
     window.__THE_KEIBA_DB_VERSION__=db.version;
-    state.db.onversionchange=()=>{try{state.db.close()}catch(_){};alert("DBMSが更新されました。画面を再読み込みしてください。")};
+    const openedDb=state.db;
+    state.db.onversionchange=()=>{
+      try{openedDb.close()}catch(_){}
+      if(state.db===openedDb)state.db=null;
+      if(typeof BACKTEST_SYNC!=="undefined"&&BACKTEST_SYNC.running){
+        setSimSyncStatus("別タブまたはiPadのページ復元によりローカルDB接続が更新されました。\n自動再接続してバッチ同期を継続します。");
+        setTimeout(()=>recoverIndexedDbConnection("DBバージョン変更を検出").catch(e=>{
+          setSimSyncStatus("ローカルDB自動復旧失敗\n"+indexedDbErrorText(e));
+        }),700);
+      }else{
+        console.warn("IndexedDB version changed. It will be reopened on the next operation.");
+      }
+    };
+    if("onclose" in state.db)state.db.onclose=()=>{
+      if(state.db===openedDb)state.db=null;
+      if(typeof BACKTEST_SYNC!=="undefined"&&BACKTEST_SYNC.running){
+        setTimeout(()=>recoverIndexedDbConnection("iPad/SafariによるDB接続終了を検出").catch(()=>{}),500);
+      }
+    };
     return state.db
   };
 
@@ -4096,7 +4185,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 </script>
 
 
-<!-- v1.2.13: SIM同期なしモード + 92日単位の自動分割バッチ同期 -->
+<!-- v1.2.14: IndexedDB接続終了の自動復旧 + 同日同レース再試行 -->
 <!-- v1.2.3: 性齢フィールド取得・保持・検索・スナップショット表示を強化 -->
 </body>
 </html>
