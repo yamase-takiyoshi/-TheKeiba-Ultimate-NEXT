@@ -229,7 +229,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.9 EV分析設定モード連動修正</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.10 EV分析SIM個別編集修正</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -3737,7 +3737,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 
 
 <script id="evModeStrategyLogicFixPatch">
-/* v1.2.9 EV分析設定モード動的連動 + SIM件数表示整合 */
+/* v1.2.10 EV分析設定モード動的連動 + SIM個別編集尊重 + SIM件数表示整合 */
 (function(){
   "use strict";
   const BUILTIN_ID="ev-analysis-mode";
@@ -3757,6 +3757,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   function budgetModeFor(s={}){return s.cloneAllocationMode==="daily_rank"?"dailyRank":"sequential"}
   function rankBasisFor(s={}){return s.cloneDailyRankMetric==="adjusted_ev"?"adjusted":s.cloneDailyRankMetric==="learned_profit"?"learned":"ev"}
   function isBuiltinSelected(){return String(byId("simStrategy")?.value||state.currentStrategyId||"")===BUILTIN_ID}
+  function isSimUnlocked(){return typeof state!=="undefined"&&state?.settings?.simSettingsUnlocked===true}
   function modeLabel(mode){return window.__THEKEIBA_CLONE_MODE_LABELS__?.[mode]||mode||"EV分析"}
 
   function settingsValues(){
@@ -3819,12 +3820,18 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   }
   function renderLinkUi(){
     if(!isBuiltinSelected())return;
-    const s=state.settings||{},v=settingsValues(),mode=String(s.cloneMode||"roi100"),base=String(s.cloneAllAgreeBaseMode||"roi100");
+    const s=state.settings||{},v=settingsValues(),mode=String(s.cloneMode||"roi100"),base=String(s.cloneAllAgreeBaseMode||"roi100"),unlocked=isSimUnlocked();
     const title=byId("simAuthorityTitle"),summary=byId("simAuthoritySummary"),help=byId("simAuthorityHelp"),notice=byId("simModeNotice");
-    if(title)title.textContent="EV分析設定モード連動";
-    if(summary)summary.textContent=`${modeLabel(mode)}${mode==="all_agree"?` → ${modeLabel(base)}`:""} / ${v.type} / ${TICKET_LABELS[v.ticketType]||v.ticketType} / 1日${v.dailyBudget.toLocaleString()}円`;
-    if(help)help.textContent="この戦略は通常戦略の固定値ではなく、設定タブのEV分析設定モード・券種・予算・EV閾値を実行時に直接読み込みます。SIM個別編集値は使用しません。";
-    if(notice)notice.textContent=`EV分析設定モードを動的連動して実行します。現在「${modeLabel(mode)}」です。期間と開催場だけをSIM側から使用し、券種・予算・点数・EV・AI・オッズ・優先順位は設定タブの保存値を使用します。`;
+    if(title)title.textContent=unlocked?"EV分析設定モード + SIM個別編集":"EV分析設定モード連動";
+    if(summary)summary.textContent=unlocked
+      ?`EV分析設定モード / SIM個別編集 / ${TICKET_LABELS[byId("simTicket")?.value]||byId("simTicket")?.value||"券種未選択"} / 1日${n(byId("simDailyBudget")?.value,0).toLocaleString()}円 / 最低EV ${n(byId("simMinEv")?.value,0).toFixed(2)}`
+      :`${modeLabel(mode)}${mode==="all_agree"?` → ${modeLabel(base)}`:""} / ${v.type} / ${TICKET_LABELS[v.ticketType]||v.ticketType} / 1日${v.dailyBudget.toLocaleString()}円`;
+    if(help)help.textContent=unlocked
+      ?"この戦略をベースにしていますが、SIM個別編集モード中は表示中のSIM値を優先して実行します。設定タブの保存値は書き換えません。"
+      :"この戦略は通常戦略の固定値ではなく、設定タブのEV分析設定モード・券種・予算・EV閾値を実行時に直接読み込みます。SIM個別編集値は使用しません。";
+    if(notice)notice.textContent=unlocked
+      ?"EV分析設定モードを土台にしつつ、いま画面で変更したSIM個別値で実行します。期間・開催場だけでなく、券種・予算・点数・EV・AI・オッズ・優先順位・同意・予算配分もSIM画面の値を使用します。"
+      :`EV分析設定モードを動的連動して実行します。現在「${modeLabel(mode)}」です。期間と開催場だけをSIM側から使用し、券種・予算・点数・EV・AI・オッズ・優先順位は設定タブの保存値を使用します。`;
   }
   async function refreshBuiltinRecord(){
     if(typeof getOne!=="function"||typeof putOne!=="function"||typeof normalizeStrategy!=="function")return;
@@ -3838,7 +3845,9 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     applyStrategyToSim=async function(id=state.currentStrategyId){
       if(String(id)!==BUILTIN_ID)return prev(id);
       await refreshBuiltinRecord();
-      writeSettingsToSim();
+      if(!isSimUnlocked())writeSettingsToSim();
+      if(byId("simStrategy"))byId("simStrategy").value=BUILTIN_ID;
+      state.currentStrategyId=BUILTIN_ID;
       await showView("simulation");
       await renderSimPlaceOptions(state.simSelectedPlaces||[]);
       renderLinkUi();
@@ -3850,6 +3859,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     readSimConfig=function(){
       const c=prev();
       if(!isBuiltinSelected())return c;
+      if(isSimUnlocked())return{...c,strategyId:BUILTIN_ID,settingsAuthority:false,simSettingsUnlocked:true};
       const v=settingsValues();
       return{...c,...v,start:c.start,end:c.end,places:Array.isArray(c.places)?c.places:[]};
     };
@@ -3868,7 +3878,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   if(typeof runSimulation==="function"){
     const prev=runSimulation;
     runSimulation=async function(){
-      if(isBuiltinSelected()){writeSettingsToSim();renderLinkUi()}
+      if(isBuiltinSelected()&&!isSimUnlocked()){writeSettingsToSim();renderLinkUi()}else if(isBuiltinSelected())renderLinkUi();
       const out=await prev();
       try{
         const c=readSimConfig(),cov=await backtestCoverage(c),actual=Array.isArray(state.simResult)?state.simResult.length:cov.executable;
@@ -3883,10 +3893,10 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     };
   }
   function wire(){
-    byId("simStrategy")?.addEventListener("change",()=>{if(isBuiltinSelected()){writeSettingsToSim();renderLinkUi()}});
-    byId("settingsModeSaveBtn")?.addEventListener("click",()=>setTimeout(async()=>{await refreshBuiltinRecord();if(isBuiltinSelected()){writeSettingsToSim();renderLinkUi()}},250));
-    byId("settingsSaveBtn")?.addEventListener("click",()=>setTimeout(async()=>{await refreshBuiltinRecord();if(isBuiltinSelected()){writeSettingsToSim();renderLinkUi()}},250));
-    setTimeout(async()=>{try{await refreshBuiltinRecord();if(isBuiltinSelected()){writeSettingsToSim();renderLinkUi()}}catch(e){console.warn("EV分析設定モード修復",e)}},900);
+    byId("simStrategy")?.addEventListener("change",()=>{if(isBuiltinSelected()){if(!isSimUnlocked())writeSettingsToSim();renderLinkUi()}});
+    byId("settingsModeSaveBtn")?.addEventListener("click",()=>setTimeout(async()=>{await refreshBuiltinRecord();if(isBuiltinSelected()){if(!isSimUnlocked())writeSettingsToSim();renderLinkUi()}},250));
+    byId("settingsSaveBtn")?.addEventListener("click",()=>setTimeout(async()=>{await refreshBuiltinRecord();if(isBuiltinSelected()){if(!isSimUnlocked())writeSettingsToSim();renderLinkUi()}},250));
+    setTimeout(async()=>{try{await refreshBuiltinRecord();if(isBuiltinSelected()){if(!isSimUnlocked())writeSettingsToSim();renderLinkUi()}}catch(e){console.warn("EV分析設定モード修復",e)}},900);
   }
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",wire,{once:true});else wire();
 })();
