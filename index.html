@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.25</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.26</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -266,7 +266,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.25 EV分析エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.26 EV分析エミュレータ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -1019,7 +1019,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.25-result-gate-fix";
+const APP_VERSION="1.2.26-sync-progress-fix";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -1442,7 +1442,7 @@ async function syncBacktestPeriod(){
       const batch=batches[batchIndex],batchNo=batchIndex+1,batchStart=batch[0],batchEnd=batch.at(-1);
       BACKTEST_SYNC.batch=batchNo;
       setSimSyncStatus(`バッチ ${batchNo}/${batches.length} 開始　${displayDate(batchStart)}～${displayDate(batchEnd)}
-処理日 ${processedDays}/${dates.length}　取得成功 ${loaded}R　既存 ${skipped}R　失敗 ${failed}件`);
+処理日 ${processedDays}/${dates.length}日　取得成功 ${loaded}R　既存 ${skipped}R　失敗 ${failed}件`);
       for(let dayIndex=0;dayIndex<batch.length;dayIndex++){
         if(BACKTEST_SYNC.stop)break;
         const date=batch[dayIndex];
@@ -1472,7 +1472,7 @@ ${lastError}
         if(!races.length){
           noRaceDays++;processedDays++;
           setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　${displayDate(date)} 対象開催なし
-処理日 ${processedDays}/${dates.length}　取得成功 ${loaded}R　既存 ${skipped}R　確定結果 ${confirmed}R　失敗 ${failed}件`);
+処理日 ${processedDays}/${dates.length}日　取得成功 ${loaded}R　既存 ${skipped}R　確定結果 ${confirmed}R　失敗 ${failed}件`);
           await new Promise(resolve=>setTimeout(resolve,80));continue
         }
         totalRaces+=races.length;
@@ -1514,7 +1514,7 @@ ${bundleError}`)}
       }
       if(!BACKTEST_SYNC.stop&&batchIndex<batches.length-1){
         setSimSyncStatus(`バッチ ${batchNo}/${batches.length} 完了　${displayDate(batchStart)}～${displayDate(batchEnd)}
-処理日 ${processedDays}/${dates.length}　開催なし ${noRaceDays}日　取得成功 ${loaded}R　既存 ${skipped}R　失敗 ${failed}件
+処理日 ${processedDays}/${dates.length}日　開催なし ${noRaceDays}日　取得成功 ${loaded}R　既存 ${skipped}R　失敗 ${failed}件
 次のバッチまで2秒待機します。`);
         await new Promise(resolve=>setTimeout(resolve,2000))
       }
@@ -4427,17 +4427,22 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   function parseStatus(message){
     const text=String(message||"");MON.lastMessage=text;MON.lastAt=Date.now();
     let m=readMatch(text,/バッチ\s*(\d+)\/(\d+)/);if(m){MON.batchNow=m[0];MON.batchTotal=m[1]}
-    m=readMatch(text,/全体\s*(\d+)\/(\d+)日/);
-    if(m){MON.dayNow=m[0];MON.daysDone=Math.max(0,m[0]-1);MON.daysTotal=m[1]}
+    m=readMatch(text,/全体\s*(\d+)\/(\d+)日?/);
+    if(m){MON.dayNow=m[0];MON.daysDone=clamp(m[0]-1,0,m[1]);MON.daysTotal=m[1]}
     else{
-      m=readMatch(text,/処理(?:日)?\s*(\d+)\/(\d+)日/);
-      if(m){MON.dayNow=m[0];MON.daysDone=Math.max(0,m[0]-1);MON.daysTotal=m[1]}
+      m=readMatch(text,/処理(?:日)?\s*(\d+)\/(\d+)日?/);
+      if(m){
+        const currentDay=/当日\s*\d+\/\d+R|開催一覧取得中/.test(text);
+        MON.daysTotal=m[1];
+        MON.daysDone=clamp(currentDay?m[0]-1:m[0],0,m[1]);
+        MON.dayNow=currentDay?clamp(m[0],0,m[1]):clamp(MON.daysDone+(MON.daysDone<m[1]?1:0),0,m[1]);
+      }
     }
     m=readMatch(text,/当日\s*(\d+)\/(\d+)R/);if(m){MON.raceNow=m[0];MON.raceTotal=m[1]}
     else{
-      const compact=readMatch(text,/同期中\s*(\d+)\/(\d+)(?:R)?/);
+      const compact=readMatch(text,/(?:^|\n)(?:実データ)?同期中\s*(\d+)\/(\d+)R(?:\s|$)/);
       if(compact){MON.raceNow=compact[0];MON.raceTotal=compact[1]}
-      else if(/開催一覧取得中|対象開催なし|一覧取得失敗/.test(text)){MON.raceNow=0;MON.raceTotal=0}
+      else if(/開催一覧取得中|対象開催なし|一覧取得失敗|バッチ\s*\d+\/\d+\s*開始/.test(text)){MON.raceNow=0;MON.raceTotal=0}
     }
     m=readMatch(text,/取得成功\s*(\d+)R/);if(m)MON.loaded=m[0];
     m=readMatch(text,/既存\s*(\d+)R/);if(m)MON.skipped=m[0];
@@ -4446,7 +4451,10 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     let p=MON.progress;
     if(MON.daysTotal){const partial=MON.raceTotal?clamp(MON.raceNow/MON.raceTotal,0,1):0;p=clamp((MON.daysDone+partial)/MON.daysTotal*100,0,100)}
     else if(MON.raceTotal)p=clamp(MON.raceNow/MON.raceTotal*100,0,100);
-    else if(MON.batchTotal)p=clamp(MON.batchNow/MON.batchTotal*100,0,100);
+    else if(MON.batchTotal){
+      const completedBatches=/バッチ\s*\d+\/\d+\s*完了/.test(text)?MON.batchNow:Math.max(0,MON.batchNow-1);
+      p=clamp(completedBatches/MON.batchTotal*100,0,100)
+    }
     if(/全バッチ同期完了/.test(text))p=100;
     MON.progress=Math.max(MON.progress,p);sample();render();
     if(/バッチ同期エラー|更新失敗|同期エラー/.test(text)){MON.running=false;setBadge("エラー","error");stopClock()}
@@ -4587,6 +4595,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
+<!-- v1.2.26: 同期開始時の1/1バッチ100%誤認を修正・日/レース進捗を優先 -->
 <!-- v1.2.23: index338のみ変更・SIM専用リセット + index339 EV分析エミュレータ予想 -->
 <!-- v1.2.22: バッチグラフ表示切替・状態保存・確定結果グラフ全域表示 -->
 <!-- v1.2.21: バッチ表示切替・確定結果グラフ全域表示 -->
