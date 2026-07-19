@@ -1402,7 +1402,10 @@ async function backtestCoverage(c=readSimConfig()){
   return{races:filtered.length,results:confirmed.length,dates:new Set(filtered.map(r=>r.date)).size};
 }
 async function syncBacktestPeriod(){
-  if(BACKTEST_SYNC.running)return;
+  if(BACKTEST_SYNC.running){
+    setSimSyncStatus("実データ同期はすでに進行中です。現在の同期を継続します。バックテストは同期完了後に実行してください。");
+    return{busy:true};
+  }
   if(isSimStoredMode()){setSimSyncStatus("同期なしモードです。通信せず保存済みデータだけを使用します。実データを取得する場合は「データ準備」を実データ同期へ切り替えてください。");return}
   const c=readSimConfig(),today=compactDate(isoToday()),allDates=dateRangeInclusive(c.start,c.end),dates=allDates.filter(date=>date<=today);
   if(!allDates.length)return alert("開始日と終了日を正しく指定してください");
@@ -1412,7 +1415,9 @@ async function syncBacktestPeriod(){
 開催一覧・出馬表・最終オッズ・結果・払戻を順番に取得します。
 通信が止まった場合は自動タイムアウトして次の日・次レースへ進みます。開始しますか？`))return;
   BACKTEST_SYNC.running=true;BACKTEST_SYNC.stop=false;BACKTEST_SYNC.batch=0;BACKTEST_SYNC.totalBatches=batches.length;
+  const simRunButton=$("simRunBtn"),simRunButtonText=simRunButton?.textContent||"バックテスト開始";
   $("simSyncBtn").disabled=true;$("simStopSyncBtn").disabled=false;$("simStopSyncBtn").textContent="⏹ 同期停止";
+  if(simRunButton){simRunButton.disabled=true;simRunButton.textContent="同期完了待ち";}
   const oldDate=$("bridgeDate").value,startedAt=Date.now();
   let listDays=0,noRaceDays=0,processedDays=0,totalRaces=0,loaded=0,confirmed=0,failed=0,skipped=0,retried=0,lastError="",consecutiveFailures=0;
   try{
@@ -1511,11 +1516,16 @@ ${e.message}`);throw e
   }finally{
     $("bridgeDate").value=oldDate;BACKTEST_SYNC.running=false;BACKTEST_SYNC.batch=0;BACKTEST_SYNC.totalBatches=0;
     $("simStopSyncBtn").disabled=true;$("simStopSyncBtn").textContent="⏹ 同期停止";
+    if(simRunButton){simRunButton.disabled=false;simRunButton.textContent=simRunButtonText;}
     await updateSimDataModeUi({refreshStatus:false})
   }
 }
 
 async function runSimulation(){
+  if(BACKTEST_SYNC.running){
+    setSimSyncStatus("実データ同期中です。同期完了後に「バックテスト開始」を押してください。同期中の確定結果と進捗はライブグラフへ反映します。");
+    return{busy:true};
+  }
   const c=readSimConfig(),cov=await backtestCoverage(c),storedOnly=c.dataMode==="stored";
   const missing=Math.max(0,cov.races-cov.results);
   setSimSyncStatus(`${storedOnly?"同期なし":"実データ同期"}　登録対象 ${cov.races}R　確定結果 ${cov.results}R　登録開催日 ${cov.dates}日${missing?`　未取得・未確定 ${missing}R`:""}`);
@@ -4338,13 +4348,19 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     const text=String(message||"");MON.lastMessage=text;MON.lastAt=Date.now();
     let m=readMatch(text,/バッチ\s*(\d+)\/(\d+)/);if(m){MON.batchNow=m[0];MON.batchTotal=m[1]}
     m=readMatch(text,/全体\s*(\d+)\/(\d+)日/);if(m){MON.daysDone=Math.max(0,m[0]-1);MON.daysTotal=m[1]}else{m=readMatch(text,/処理(?:日)?\s*(\d+)\/(\d+)日/);if(m){MON.daysDone=m[0];MON.daysTotal=m[1]}}
-    m=readMatch(text,/当日\s*(\d+)\/(\d+)R/);if(m){MON.raceNow=m[0];MON.raceTotal=m[1]}else if(/開催一覧取得中|対象開催なし|一覧取得失敗/.test(text)){MON.raceNow=0;MON.raceTotal=0}
+    m=readMatch(text,/当日\s*(\d+)\/(\d+)R/);if(m){MON.raceNow=m[0];MON.raceTotal=m[1]}
+    else{
+      const compact=readMatch(text,/同期中\s*(\d+)\/(\d+)(?:R)?/);
+      if(compact){MON.raceNow=compact[0];MON.raceTotal=compact[1]}
+      else if(/開催一覧取得中|対象開催なし|一覧取得失敗/.test(text)){MON.raceNow=0;MON.raceTotal=0}
+    }
     m=readMatch(text,/取得成功\s*(\d+)R/);if(m)MON.loaded=m[0];
     m=readMatch(text,/既存\s*(\d+)R/);if(m)MON.skipped=m[0];
     m=readMatch(text,/確定結果\s*(\d+)R/);if(m)MON.confirmed=m[0];
     m=readMatch(text,/失敗\s*(\d+)件/);if(m)MON.failed=m[0];
     let p=MON.progress;
     if(MON.daysTotal){const partial=MON.raceTotal?clamp(MON.raceNow/MON.raceTotal,0,1):0;p=clamp((MON.daysDone+partial)/MON.daysTotal*100,0,100)}
+    else if(MON.raceTotal)p=clamp(MON.raceNow/MON.raceTotal*100,0,100);
     else if(MON.batchTotal)p=clamp(MON.batchNow/MON.batchTotal*100,0,100);
     if(/全バッチ同期完了/.test(text))p=100;
     MON.progress=Math.max(MON.progress,p);sample();render();
@@ -4369,12 +4385,27 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   }
   const previousSet=typeof setSimSyncStatus==="function"?setSimSyncStatus:null;
   if(previousSet){setSimSyncStatus=function(message){previousSet(message);try{parseStatus(message)}catch(e){console.warn("同期進捗解析",e)}}}
-  if(typeof syncBacktestPeriod==="function"){const previousSync=syncBacktestPeriod;syncBacktestPeriod=async function(...args){begin();try{const out=await previousSync(...args);if(out?.stopped)finish("stopped");else if(out)finish("done");else{MON.running=false;setBadge("待機中","");stopClock()}return out}catch(e){MON.running=false;setBadge("エラー","error");stopClock();throw e}}}
+  if(typeof syncBacktestPeriod==="function"){const previousSync=syncBacktestPeriod;syncBacktestPeriod=async function(...args){
+    if(typeof BACKTEST_SYNC!=="undefined"&&BACKTEST_SYNC.running){
+      setBadge("同期中","running");
+      return previousSync(...args);
+    }
+    begin();
+    try{
+      const out=await previousSync(...args);
+      if(out?.busy){MON.running=false;setBadge("同期中","running");startClock()}
+      else if(out?.stopped)finish("stopped");
+      else if(out)finish("done");
+      else{MON.running=false;setBadge("待機中","");stopClock()}
+      return out
+    }catch(e){MON.running=false;setBadge("エラー","error");stopClock();throw e}
+  }}
   function wire(){render();setBadge("待機中","");window.addEventListener("resize",scheduleDraw,{passive:true});if(window.ResizeObserver){const c=byId("simSyncProgressChart");if(c)new ResizeObserver(scheduleDraw).observe(c)}const theme=byId("themeBtn");theme?.addEventListener("click",()=>setTimeout(scheduleDraw,80));}
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",wire,{once:true});else wire();
 })();
 </script>
 
+<!-- v1.2.19: 同期中バックテスト二重起動防止 + compact同期進捗30/72対応 + ライブグラフ識別 -->
 <!-- v1.2.18: 同期経過リアルタイム表示 + 進捗率グラフ + ETA -->
 <!-- v1.2.15: iPad同期停止表示修復 + Bridge/Worker通信タイムアウト + 開催なし日継続 + 空結果除外 -->
 <!-- v1.2.17: JRA週グループURL修正 + 週末0R誤判定防止 + 一覧解析診断 + キャッシュ識別 -->
