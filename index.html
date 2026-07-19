@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.26</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.27</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -266,7 +266,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.26 EV分析エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.27 EV分析エミュレータ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -633,7 +633,7 @@ input,select,textarea{font-size:16px}
         <div class="code-box" id="bridgeLog" style="margin-top:8px">未接続</div>
       </div>
       <div class="card"><h3>対応経路</h3><div class="code-box">【優先順位】
-1. iPad共有DOMメールボックス Bridge v1.6.3
+1. iPad共有DOMメールボックス Bridge v1.6.8対応
 2. Tampermonkey住宅IP Userscript Direct
 3. Userscript postMessage Bridge
 4. REST型 Worker: /ping /race/list /race /entry /odds /result
@@ -868,7 +868,37 @@ Userscript利用時はWorker URLを空欄にできます。取得失敗Rは1回�
 "use strict";
 
 // Userscript住宅IPブリッジ。ready通知の取り逃がしを能動ハンドシェイクで復旧する。
-const BRIDGE_DIAG=window.__THEKEIBA_BRIDGE_DIAG__={ready:false,direct:false,lastReadyAt:"",lastRequestAt:"",lastResponseAt:"",lastError:"",lastRoute:"未検出",handshakes:0};
+const BRIDGE_DIAG=window.__THEKEIBA_BRIDGE_DIAG__={ready:false,direct:false,lastReadyAt:"",lastRequestAt:"",lastResponseAt:"",lastCompletedAt:"",lastError:"",lastRoute:"未検出",lastStatus:"-",lastTarget:"",lastDurationMs:0,requestCount:0,responseCount:0,successCount:0,failureCount:0,inFlight:0,handshakes:0};
+function bridgeDiagTargetLabel(value){
+  const raw=String(value||"");
+  try{
+    const outer=new URL(raw,location.href),inner=outer.searchParams.get("url"),url=inner?new URL(inner):outer;
+    return `${url.hostname}${url.pathname}${url.search}`.slice(0,240)
+  }catch(_){return raw.slice(0,240)}
+}
+function bridgeDiagBegin(target,route="bridge"){
+  const token={startedAt:Date.now(),done:false,route};
+  BRIDGE_DIAG.lastRequestAt=new Date(token.startedAt).toISOString();
+  BRIDGE_DIAG.lastTarget=bridgeDiagTargetLabel(target);
+  BRIDGE_DIAG.lastRoute=route||BRIDGE_DIAG.lastRoute;
+  BRIDGE_DIAG.requestCount=Number(BRIDGE_DIAG.requestCount||0)+1;
+  BRIDGE_DIAG.inFlight=Number(BRIDGE_DIAG.inFlight||0)+1;
+  try{window.updateBridgeDiagnostics?.("通信中")}catch(_){}
+  return token
+}
+function bridgeDiagFinish(token,{status=0,error="",responded=false,route=""}={}){
+  if(!token||token.done)return;token.done=true;
+  const finished=Date.now(),code=Number(status||0),success=code>=200&&code<400;
+  BRIDGE_DIAG.inFlight=Math.max(0,Number(BRIDGE_DIAG.inFlight||0)-1);
+  BRIDGE_DIAG.lastCompletedAt=new Date(finished).toISOString();
+  BRIDGE_DIAG.lastDurationMs=Math.max(0,finished-Number(token.startedAt||finished));
+  BRIDGE_DIAG.lastStatus=code||"ERROR";
+  if(route||token.route)BRIDGE_DIAG.lastRoute=route||token.route;
+  if(responded){BRIDGE_DIAG.lastResponseAt=new Date(finished).toISOString();BRIDGE_DIAG.responseCount=Number(BRIDGE_DIAG.responseCount||0)+1}
+  if(success){BRIDGE_DIAG.successCount=Number(BRIDGE_DIAG.successCount||0)+1;BRIDGE_DIAG.lastError=""}
+  else{BRIDGE_DIAG.failureCount=Number(BRIDGE_DIAG.failureCount||0)+1;BRIDGE_DIAG.lastError=String(error||`HTTP ${code||0}`)}
+  try{window.updateBridgeDiagnostics?.(success?"通信成功":"通信失敗",success?"ok":"bad")}catch(_){}
+}
 (function setupResidentialBridge(){
   const pending={};let seq=0;
   function markReady(route="postMessage"){
@@ -910,17 +940,25 @@ async function residentialBridgeText(target,{timeout=18000}={}){
   const limit=Math.max(3000,Number(timeout||18000));
   if(typeof window.__narBridgeDirect==="function"&&window.__narBridgeHasDirect){
     BRIDGE_DIAG.direct=true;
-    const r=await withOperationTimeout(()=>window.__narBridgeDirect(target,{timeout:limit}),limit+1500,"Userscript直接通信");
-    if(typeof r==="string"){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="direct";BRIDGE_DIAG.lastError="";return r}
-    if(r&&Number(r.status)>=200&&Number(r.status)<400){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="direct";BRIDGE_DIAG.lastError="";return String(r.text||"")}
-    throw new Error((r&&r.error)||`Userscript HTTP ${(r&&r.status)||0}`)
+    const token=bridgeDiagBegin(target,"direct");
+    try{
+      const r=await withOperationTimeout(()=>window.__narBridgeDirect(target,{timeout:limit}),limit+1500,"Userscript直接通信"),status=typeof r==="string"?200:Number(r?.status||0);
+      bridgeDiagFinish(token,{status,responded:true,route:"direct",error:r?.error||""});
+      if(typeof r==="string"){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="direct";BRIDGE_DIAG.lastError="";return r}
+      if(r&&status>=200&&status<400){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="direct";BRIDGE_DIAG.lastError="";return String(r.text||"")}
+      throw new Error((r&&r.error)||`Userscript HTTP ${status}`)
+    }catch(e){bridgeDiagFinish(token,{error:e.message,responded:false,route:"direct"});throw e}
   }
   if(typeof window.__theKeibaBridgeHandshake==="function")window.__theKeibaBridgeHandshake();
   if(typeof window.__narBridgeFetch==="function"){
-    const r=await withOperationTimeout(()=>window.__narBridgeFetch(target,{timeout:limit}),limit+1500,"Userscript通信");
-    if(typeof r==="string"){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="postMessage";BRIDGE_DIAG.lastError="";return r}
-    if(r&&Number(r.status)>=200&&Number(r.status)<400){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="postMessage";BRIDGE_DIAG.lastError="";window.__NAR_BRIDGE_READY__=true;return String(r.text||"")}
-    throw new Error((r&&r.error)||`Userscript HTTP ${(r&&r.status)||0}`)
+    const token=bridgeDiagBegin(target,"postMessage");
+    try{
+      const r=await withOperationTimeout(()=>window.__narBridgeFetch(target,{timeout:limit}),limit+1500,"Userscript通信"),status=typeof r==="string"?200:Number(r?.status||0);
+      bridgeDiagFinish(token,{status,responded:true,route:"postMessage",error:r?.error||""});
+      if(typeof r==="string"){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="postMessage";BRIDGE_DIAG.lastError="";return r}
+      if(r&&status>=200&&status<400){BRIDGE_DIAG.ready=true;BRIDGE_DIAG.lastRoute="postMessage";BRIDGE_DIAG.lastError="";window.__NAR_BRIDGE_READY__=true;return String(r.text||"")}
+      throw new Error((r&&r.error)||`Userscript HTTP ${status}`)
+    }catch(e){bridgeDiagFinish(token,{error:e.message,responded:false,route:"postMessage"});throw e}
   }
   throw new Error("Userscript住宅IPブリッジ未検出")
 }
@@ -1019,7 +1057,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.26-sync-progress-fix";
+const APP_VERSION="1.2.27-bridge-diagnostics-fix";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -1729,22 +1767,24 @@ async function loadResultEditor(){const r=await getOne("results",$("edResultRace
 const BRIDGE_JRA_PLACES={"01":"札幌","02":"函館","03":"福島","04":"新潟","05":"東京","06":"中山","07":"中京","08":"京都","09":"阪神","10":"小倉"};
 const BRIDGE_NAR_PLACES={"30":"門別","35":"盛岡","36":"水沢","42":"浦和","43":"船橋","44":"大井","45":"川崎","46":"金沢","47":"笠松","48":"名古屋","50":"園田","51":"姫路","54":"高知","55":"佐賀","65":"帯広(ば)"};
 async function getBridgeBase(save=true){const input=String($("bridgeUrl")?.value||"").trim(),raw=input||String(state.settings.bridgeUrl||"").trim();if(!raw)throw new Error("Bridge URL未設定");const base=raw.replace(/\/+$/,"");state.settings.bridgeUrl=base;if($("bridgeUrl"))$("bridgeUrl").value=base;if(save&&state.db)await putOne("settings",{key:"app",value:state.settings});return base}
-async function fetchTextResponse(url,{timeout=22000}={}){
-  const ms=Math.max(3000,Number(timeout||22000)),controller=new AbortController(),timer=setTimeout(()=>controller.abort(),ms);
+async function fetchTextResponse(url,{timeout=22000,route="Worker"}={}){
+  const ms=Math.max(3000,Number(timeout||22000)),controller=new AbortController(),timer=setTimeout(()=>controller.abort(),ms),token=bridgeDiagBegin(url,route);
   try{
     const res=await fetch(url,{cache:"no-store",signal:controller.signal}),text=await res.text();
+    bridgeDiagFinish(token,{status:res.status,responded:true,route,error:res.ok?"":`HTTP ${res.status}`});
     return{res,text}
   }catch(e){
-    if(e?.name==="AbortError")throw new Error(`通信タイムアウト ${Math.ceil(ms/1000)}秒`);
-    throw e
+    const error=e?.name==="AbortError"?new Error(`通信タイムアウト ${Math.ceil(ms/1000)}秒`):e;
+    bridgeDiagFinish(token,{error:error?.message||String(error),responded:false,route});
+    throw error
   }finally{clearTimeout(timer)}
 }
-async function bridgeFetch(path,{timeout=25000}={}){const base=await getBridgeBase();const {res,text}=await fetchTextResponse(base+path,{timeout});if(!res.ok)throw new Error(`HTTP ${res.status}`);try{return JSON.parse(text)}catch{throw new Error("JSON応答ではありません")}}
+async function bridgeFetch(path,{timeout=25000}={}){const base=await getBridgeBase();const {res,text}=await fetchTextResponse(base+path,{timeout,route:"REST Worker"});if(!res.ok)throw new Error(`HTTP ${res.status}`);try{return JSON.parse(text)}catch{throw new Error("JSON応答ではありません")}}
 async function bridgeLegacyUrl(target,{timeout=20000}={}){
   if(hasResidentialBridge()||state.settings.bridgeMode==="browser")return residentialBridgeText(target,{timeout});
-  const base=await getBridgeBase();const {res,text}=await fetchTextResponse(base+"?url="+encodeURIComponent(target),{timeout});if(!res.ok)throw new Error(`HTTP ${res.status}`);return text
+  const base=await getBridgeBase();const {res,text}=await fetchTextResponse(base+"?url="+encodeURIComponent(target),{timeout,route:"互換Worker"});if(!res.ok)throw new Error(`HTTP ${res.status}`);return text
 }
-async function bridgeLegacyType(type,rid,kind,{timeout=20000}={}){const base=await getBridgeBase();const url=base+`?type=${encodeURIComponent(type)}&kind=${encodeURIComponent(kind)}&race_id=${encodeURIComponent(rid)}`;const {res,text}=await fetchTextResponse(url,{timeout});if(!res.ok)throw new Error(`HTTP ${res.status}`);return text}
+async function bridgeLegacyType(type,rid,kind,{timeout=20000}={}){const base=await getBridgeBase();const url=base+`?type=${encodeURIComponent(type)}&kind=${encodeURIComponent(kind)}&race_id=${encodeURIComponent(rid)}`;const {res,text}=await fetchTextResponse(url,{timeout,route:"互換Worker"});if(!res.ok)throw new Error(`HTTP ${res.status}`);return text}
 function blockedBridgeHtml(raw){
   const html=String(unwrapBridgeHtml(raw)||"");
   if(!html.trim())return true;
@@ -3171,7 +3211,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   window.updateBridgeDiagnostics=function(label="",kind=""){
     const badge=$("bridgeHealthBadge"),diag=$("bridgeDiag");const ready=hasResidentialBridge(),route=BRIDGE_DIAG.lastRoute||state.settings.bridgeMode||"未検出";
     if(badge){badge.innerHTML=`<span class="status-dot ${kind==="ok"||ready?"on":""}"></span>${esc(label|| (ready?"Userscript接続済み":"未接続"))}`}
-    if(diag)diag.textContent=[`Version: ${APP_VERSION}`,`Route: ${route}`,`Userscript ready: ${ready}`,`Direct bridge: ${!!BRIDGE_DIAG.direct}`,`Bridge version: ${window.__narBridgeVersion||document.documentElement.getAttribute("data-nar-bridge-ready")||"-"}`,`DOM mailbox: ${!!document.getElementById("__nar_bridge_dom_v163__")}`,`Last ready: ${BRIDGE_DIAG.lastReadyAt||"-"}`,`Last request: ${BRIDGE_DIAG.lastRequestAt||"-"}`,`Last response: ${BRIDGE_DIAG.lastResponseAt||"-"}`,`Handshake count: ${BRIDGE_DIAG.handshakes||0}`,`Bridge mode: ${state.settings.bridgeMode||"auto"}`,`Worker URL: ${state.settings.bridgeUrl||"未設定"}`,`Online: ${navigator.onLine}`,`Visibility: ${document.visibilityState}`,`Last error: ${BRIDGE_DIAG.lastError||"-"}`].join("\n")
+    if(diag)diag.textContent=[`Version: ${APP_VERSION}`,`Route: ${route}`,`Userscript ready: ${ready}`,`Direct bridge: ${!!BRIDGE_DIAG.direct}`,`Bridge version: ${window.__narBridgeVersion||document.documentElement.getAttribute("data-nar-bridge-ready")||"-"}`,`DOM mailbox: ${!!document.getElementById("__nar_bridge_dom_v163__")}`,`Requests: ${Number(BRIDGE_DIAG.requestCount||0)}  In flight: ${Number(BRIDGE_DIAG.inFlight||0)}`,`Responses: ${Number(BRIDGE_DIAG.responseCount||0)}`,`Success: ${Number(BRIDGE_DIAG.successCount||0)}  Failures: ${Number(BRIDGE_DIAG.failureCount||0)}`,`Last status: ${BRIDGE_DIAG.lastStatus||"-"}`,`Last target: ${BRIDGE_DIAG.lastTarget||"-"}`,`Last duration: ${Number(BRIDGE_DIAG.lastDurationMs||0)} ms`,`Last ready: ${BRIDGE_DIAG.lastReadyAt||"-"}`,`Last request: ${BRIDGE_DIAG.lastRequestAt||"-"}`,`Last response: ${BRIDGE_DIAG.lastResponseAt||"-"}`,`Last completed: ${BRIDGE_DIAG.lastCompletedAt||"-"}`,`Handshake count: ${BRIDGE_DIAG.handshakes||0}`,`Bridge mode: ${state.settings.bridgeMode||"auto"}`,`Worker URL: ${state.settings.bridgeUrl||"未設定"}`,`Online: ${navigator.onLine}`,`Visibility: ${document.visibilityState}`,`Last error: ${BRIDGE_DIAG.lastError||"-"}`].join("\n")
   };
   let reconnectBusy=false;async function reconnectBridge({silent=false}={}){if(reconnectBusy)return false;reconnectBusy=true;try{updateBridgeDiagnostics("再検出中");state.settings.bridgeMode="auto";if(typeof window.__theKeibaInstallDomBridge==="function")window.__theKeibaInstallDomBridge();if(typeof window.__theKeibaBridgeHandshake==="function")window.__theKeibaBridgeHandshake();const d=await detectBridgeMode();updateBridgeDiagnostics("接続済み","ok");if(!silent)bridgeLog("Bridge再検出成功",d);return true}catch(e){BRIDGE_DIAG.lastError=e.message;updateBridgeDiagnostics("未接続","bad");if(!silent)bridgeLog("Bridge再検出失敗: "+e.message);return false}finally{reconnectBusy=false}}
   async function copyBridgeDiagnostics(){updateBridgeDiagnostics();const text=$("bridgeDiag")?.textContent+"\n\nLog:\n"+($("bridgeLog")?.textContent||"");try{await navigator.clipboard.writeText(text);bridgeLog("Bridge診断をコピーしました")}catch{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove();bridgeLog("Bridge診断をコピーしました")}}
@@ -4595,6 +4635,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
+<!-- v1.2.27: Direct/PostMessage/Worker全経路のBridge要求・応答・成功・失敗診断を記録 -->
 <!-- v1.2.26: 同期開始時の1/1バッチ100%誤認を修正・日/レース進捗を優先 -->
 <!-- v1.2.23: index338のみ変更・SIM専用リセット + index339 EV分析エミュレータ予想 -->
 <!-- v1.2.22: バッチグラフ表示切替・状態保存・確定結果グラフ全域表示 -->
