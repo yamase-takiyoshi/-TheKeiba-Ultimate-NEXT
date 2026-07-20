@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.34</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.35</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -280,7 +280,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.34 EV分析エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.35 EV分析エミュレータ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -409,6 +409,43 @@ input,select,textarea{font-size:16px}
       <div class="grid"><div class="stat span-2"><div class="stat-label">対象R</div><div class="stat-value" id="simRaceCount">0</div></div><div class="stat span-2"><div class="stat-label">購入R</div><div class="stat-value" id="simBoughtCount">0</div></div><div class="stat span-2"><div class="stat-label">候補的中</div><div class="stat-value" id="simCandidateHits">0</div></div><div class="stat span-2"><div class="stat-label">購入的中</div><div class="stat-value" id="simPurchaseHits">0</div></div><div class="stat span-2"><div class="stat-label">取り逃がし</div><div class="stat-value" id="simMissHits">0</div></div><div class="stat span-2"><div class="stat-label">ROI</div><div class="stat-value" id="simRoi">0%</div></div></div>
       <div class="card live-result-card" id="simLiveResultCard"><div class="live-result-head"><div><strong>📈 確定結果ライブ資金曲線</strong><div class="muted" id="simLiveGraphHelp">自動分割バッチ同期中、確定結果が増えるたびに暫定集計します。</div></div><span class="badge live-result-status on" id="simLiveGraphStatus"><span class="status-dot on"></span>待機中</span></div><canvas class="chart" id="bankChart" width="1200" height="250"></canvas><div class="live-result-foot" id="simLiveGraphFoot">確定結果のみを使用します。未確定レースはグラフに含みません。</div></div>
       <div class="card"><div class="table-wrap"><table><thead><tr><th>日付</th><th>区分</th><th>開催</th><th>R</th><th>券種</th><th>候補点</th><th>購入点</th><th>候補的中</th><th>購入的中</th><th>投資</th><th>払戻</th><th>収支</th><th>ROI</th></tr></thead><tbody id="simRows"></tbody><tfoot id="simFoot"></tfoot></table></div></div>
+    </section>
+
+    <section class="view" id="view-emulator">
+      <h2 class="page-title">🧪 隔離エミュレータ（期間横断SIM）</h2>
+      <div class="card">
+        <div class="notice"><strong>隔離モード</strong>：この期間横断シミュレーションは本体SIMの実行履歴・現在集計・<code>simulations</code>保存・分析同期を一切変更しません。読むのは登録済みのレース・出馬表・確定結果（読み取り専用）だけです。算法パラメータは「設定」タブの保存値（設定完全権限）をそのまま使い、SIM画面のように期間・区分・開催場だけをここで指定します。結果の買い目・収支明細は下の「SIMへ送る」で同一オリジンのSIM／分析画面へ橋渡しできます。</div>
+        <div class="form-grid">
+          <div class="field"><label>開始日</label><input id="emuStart" type="date"></div>
+          <div class="field"><label>終了日</label><input id="emuEnd" type="date"></div>
+          <div class="field"><label>区分</label><select id="emuType"><option value="">JRA・NAR</option><option>JRA</option><option>NAR</option></select></div>
+          <div class="field wide"><label>開催場（空=全場／カンマ区切りで指定 例: 大井,船橋）</label><input id="emuPlaces" placeholder="全開催場"></div>
+        </div>
+        <div class="toolbar" style="margin-top:12px">
+          <button class="btn primary" id="emuRunBtn">🧪 隔離エミュレータ実行</button>
+          <button class="btn" id="emuSnapshotBtn">⟳ 設定スナップショット更新</button>
+          <button class="btn" id="emuCsvBtn">明細CSV</button>
+          <button class="btn" id="emuCopyBtn">📋 結果JSONコピー</button>
+        </div>
+        <div class="code-box" id="emuStatus" style="margin-top:10px">未実行。「設定」タブの保存値をそのまま使い、本体SIMを汚さず隔離実行します。</div>
+      </div>
+
+      <div class="card">
+        <div class="toolbar"><h3 style="margin:0 auto 0 0">🔗 SIM連携（同一オリジン）</h3><span class="badge" id="emuBridgeBadge">未連携</span></div>
+        <div class="notice">「SIMへ送る」は隔離エミュレータの<strong>買い目・収支明細・集計</strong>を <code>keibaProfitGraphBridge_v1</code>（＋ライブチャンネル）へ書き出し、本体SIMの分析画面（◫）や収支グラフv22がそのまま受け取れる形にします。本体の <code>state.simResult</code> や <code>simulations</code> 保存には触れません。「SIMから受ける」は現在SIM側がブリッジに載せているデータを読み取り、比較用に表示します。</div>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn good" id="emuSendBtn">📤 SIMへ送る（買い目・収支明細）</button>
+          <button class="btn" id="emuRecvBtn">📥 SIMから受ける</button>
+          <button class="btn warn" id="emuClearBridgeBtn">🧹 ブリッジ表示クリア</button>
+        </div>
+        <div class="code-box" id="emuBridgeStatus" style="margin-top:9px">まだ連携していません。</div>
+      </div>
+
+      <div class="grid"><div class="stat span-3"><div class="stat-label">対象R</div><div class="stat-value" id="emuRaceCount">0</div></div><div class="stat span-3"><div class="stat-label">購入R</div><div class="stat-value" id="emuBoughtCount">0</div></div><div class="stat span-3"><div class="stat-label">購入的中</div><div class="stat-value" id="emuHits">0</div></div><div class="stat span-3"><div class="stat-label">ROI</div><div class="stat-value" id="emuRoi">0%</div></div></div>
+
+      <div class="card"><h3 style="margin-top:0">設定スナップショット（隔離実行に使用）</h3><div class="code-box" id="emuSettingsSnap">設定を読み込んでいます。</div></div>
+
+      <div class="card"><div class="table-wrap"><table><thead><tr><th>日付</th><th>区分</th><th>開催</th><th>R</th><th>券種</th><th>候補点</th><th>購入点</th><th>購入的中</th><th>投資</th><th>払戻</th><th>収支</th><th>ROI</th></tr></thead><tbody id="emuRows"></tbody><tfoot id="emuFoot"></tfoot></table></div></div>
     </section>
 
     <section class="view" id="view-analytics">
@@ -1101,8 +1138,8 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.34-metadata-parser-repair";
-const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
+const APP_VERSION="1.2.35-isolated-xsim-emulator";
+const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["emulator","🧪","エミュ"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
 const PREDICTION_MODE_PRESETS={ai:{priority:"ai",agreementMode:"off"},ev:{priority:"ev",agreementMode:"off"},expected:{priority:"expected",agreementMode:"off"},balanced:{priority:"balanced",agreementMode:"off"},agreement:{agreementMode:"on"},clone:{priority:"ev",agreementMode:"off"}};
@@ -1452,7 +1489,8 @@ function simulationDailyRankScore(entries,basis){if(!entries.length)return-1;con
 async function buildSimulationCandidate(race,result,c){let entries=await getByIndex("entries","race_id",race.race_id);recalcEntryScores(entries);const qualifies=e=>e.ev>=c.minEv&&e.ai>=c.minAi&&e.odds>=c.minOdds&&e.odds<=c.maxOdds;let candidateEntries=entries.filter(qualifies);const sorters=simulationEntrySorters();candidateEntries.sort(sorters[c.priority]||sorters.ai);candidateEntries=candidateEntries.slice(0,c.topN);const candidateTickets=generateTickets(c.ticketType,candidateEntries,c.maxTickets);return{race,result,entries,candidateEntries,candidateTickets,purchaseTickets:[],rankScore:simulationDailyRankScore(candidateEntries,c.dailyRankBasis)}}
 function allocateSequentialCandidates(items,c){const days=new Map();for(const item of items){const day=days.get(item.race.date)||{remaining:c.dailyBudget,boughtRaces:0};if(day.boughtRaces<c.maxRaces&&item.candidateTickets.length){const affordable=Math.floor(day.remaining/c.unit);item.purchaseTickets=item.candidateTickets.slice(0,affordable)}const invest=item.purchaseTickets.length*c.unit;if(invest>0){day.remaining-=invest;day.boughtRaces++}item.remaining=day.remaining;days.set(item.race.date,day)}}
 function allocateDailyRankCandidates(items,c){const groups=new Map();for(const item of items){const list=groups.get(item.race.date)||[];list.push(item);groups.set(item.race.date,list)}for(const list of groups.values()){let remaining=c.dailyBudget,boughtRaces=0;const ranked=[...list].sort((a,b)=>b.rankScore-a.rankScore||a.race.placeName.localeCompare(b.race.placeName)||a.race.raceNo-b.race.raceNo);for(const item of ranked){if(boughtRaces>=c.maxRaces||!item.candidateTickets.length){item.remaining=remaining;continue}const affordable=Math.floor(remaining/c.unit);item.purchaseTickets=item.candidateTickets.slice(0,affordable);const invest=item.purchaseTickets.length*c.unit;if(invest>0){remaining-=invest;boughtRaces++}item.remaining=remaining}for(const item of list)if(item.remaining===undefined)item.remaining=remaining}}
-async function runSimulationCore(){const c=readSimConfig(),[races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),resMap=new Map(results.filter(hasUsableConfirmedResult).map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places.length||c.places.includes(r.placeName))&&(!c.skipDebutRaces||!/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(b.placeName)||a.raceNo-b.raceNo),items=[];for(const race of filtered){const result=resMap.get(race.race_id);if(result)items.push(await buildSimulationCandidate(race,result,c))}if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);const rows=[];let bank=0;for(const item of items){const{race,result,entries,candidateTickets,purchaseTickets}=item,candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,capitalBefore:Number(item.capitalBefore??c.initialCapital??0),capitalAfter:Number(item.capitalAfter??((c.initialCapital||0)+bank)),effectiveDailyBudget:Number(item.effectiveDailyBudget??c.dailyBudget??0),capitalDrawdown:Number(item.capitalDrawdown||0),capitalDrawdownPercent:Number(item.capitalDrawdownPercent||0),budgetBlocked:String(item.budgetBlocked||""),remaining:item.remaining,rankScore:item.rankScore})}state.simResult=rows;const totalBet=rows.reduce((sum,x)=>sum+x.invest,0),totalPay=rows.reduce((sum,x)=>sum+x.pay,0),summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0,initialCapital:Number(c.initialCapital||0),finalCapital:Number(rows.at(-1)?.capitalAfter??c.initialCapital??0),capitalReturn:Number(c.initialCapital?((rows.at(-1)?.capitalAfter??c.initialCapital)-c.initialCapital)/c.initialCapital*100:0),maxDrawdown:Math.max(0,...rows.map(x=>Number(x.capitalDrawdown||0))),maxDrawdownPercent:Math.max(0,...rows.map(x=>Number(x.capitalDrawdownPercent||0)))};const id=await addOne("simulations",{createdAt:new Date().toISOString(),config:c,summary,rows:rows.map(x=>({...x,race:x.race,result:undefined}))});renderSimulation(summary);await renderDashboard();await syncSimulationToAnalysis({force:true,reason:"バックテスト完了"});return id}
+async function computeSimulationRows(c){const [races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),resMap=new Map(results.filter(hasUsableConfirmedResult).map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places.length||c.places.includes(r.placeName))&&(!c.skipDebutRaces||!/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(b.placeName)||a.raceNo-b.raceNo),items=[];for(const race of filtered){const result=resMap.get(race.race_id);if(result)items.push(await buildSimulationCandidate(race,result,c))}if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);const rows=[];let bank=0;for(const item of items){const{race,result,entries,candidateTickets,purchaseTickets}=item,candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,capitalBefore:Number(item.capitalBefore??c.initialCapital??0),capitalAfter:Number(item.capitalAfter??((c.initialCapital||0)+bank)),effectiveDailyBudget:Number(item.effectiveDailyBudget??c.dailyBudget??0),capitalDrawdown:Number(item.capitalDrawdown||0),capitalDrawdownPercent:Number(item.capitalDrawdownPercent||0),budgetBlocked:String(item.budgetBlocked||""),remaining:item.remaining,rankScore:item.rankScore})}const totalBet=rows.reduce((sum,x)=>sum+x.invest,0),totalPay=rows.reduce((sum,x)=>sum+x.pay,0),summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0,initialCapital:Number(c.initialCapital||0),finalCapital:Number(rows.at(-1)?.capitalAfter??c.initialCapital??0),capitalReturn:Number(c.initialCapital?((rows.at(-1)?.capitalAfter??c.initialCapital)-c.initialCapital)/c.initialCapital*100:0),maxDrawdown:Math.max(0,...rows.map(x=>Number(x.capitalDrawdown||0))),maxDrawdownPercent:Math.max(0,...rows.map(x=>Number(x.capitalDrawdownPercent||0)))};return{rows,summary}}
+async function runSimulationCore(){const c=readSimConfig();const {rows,summary}=await computeSimulationRows(c);state.simResult=rows;const id=await addOne("simulations",{createdAt:new Date().toISOString(),config:c,summary,rows:rows.map(x=>({...x,race:x.race,result:undefined}))});renderSimulation(summary);await renderDashboard();await syncSimulationToAnalysis({force:true,reason:"バックテスト完了"});return id}
 
 const BACKTEST_BATCH_DAYS=92;
 const BACKTEST_SYNC={running:false,stop:false,batch:0,totalBatches:0};
@@ -2511,8 +2549,8 @@ async function currentSimulationSource(){
   if(last&&Array.isArray(last.rows)&&last.rows.length)return{rows:last.rows,config:last.config||{},summary:last.summary||null,createdAt:last.createdAt||new Date().toISOString(),source:"saved"};
   return{rows:[],config:{},summary:null,createdAt:new Date().toISOString(),source:"none"};
 }
-async function buildProfitGraphBridgeBox(){
-  const src=await currentSimulationSource(),purchased=(src.rows||[]).filter(x=>Number(x?.invest||0)>0);
+async function buildProfitGraphBridgeBox(sourceOverride){
+  const src=sourceOverride||await currentSimulationSource(),purchased=(src.rows||[]).filter(x=>Number(x?.invest||0)>0);
   if(!purchased.length)return null;
   const [allRaces,allEntries,allResults]=await Promise.all([getAll("races"),getAll("entries"),getAll("results")]);
   const raceMap=new Map(allRaces.map(r=>[String(r.race_id||""),r])),entryMap=new Map(),resultMap=new Map(allResults.map(r=>[String(r.race_id),r]));
@@ -5706,5 +5744,151 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 <!-- v1.2.15: iPad同期停止表示修復 + Bridge/Worker通信タイムアウト + 開催なし日継続 + 空結果除外 -->
 <!-- v1.2.17: JRA週グループURL修正 + 週末0R誤判定防止 + 一覧解析診断 + キャッシュ識別 -->
 <!-- v1.2.3: 性齢フィールド取得・保持・検索・スナップショット表示を強化 -->
+<script>
+"use strict";
+/* v1.2.35 隔離エミュレータ：期間横断SIMを本体SIM(履歴/設定/分析同期)を汚さず実行し、同一オリジンのSIM/分析画面へ買い目・収支をブリッジする */
+(function(){
+  const $e=id=>document.getElementById(id);
+  const EMU={last:null};
+  const p2=n=>String(n).padStart(2,"0");
+  const cd=v=>(typeof compactDate==="function")?compactDate(v):String(v||"").replace(/\D/g,"");
+  const T=()=> (typeof TICKET_LABELS!=="undefined"&&TICKET_LABELS)||{};
+  const M=()=> (typeof MODE_LABELS!=="undefined"&&MODE_LABELS)||{};
+
+  // 本体SIMのDOM/state.settings を書き換えず、設定完全権限の値を読み取り専用で取得。期間・区分・開催場だけ隔離入力で上書き。
+  function readEmuConfig(){
+    const base=(typeof readSimConfig==="function")?readSimConfig():{};
+    const c={...base};
+    c.strategyId="";
+    c.start=cd($e("emuStart").value);
+    c.end=cd($e("emuEnd").value);
+    c.type=$e("emuType").value||"";
+    c.dataMode="stored";
+    const raw=String($e("emuPlaces").value||"").trim();
+    c.places=raw?raw.split(/[,、\s]+/).map(s=>s.trim()).filter(Boolean):[];
+    return c;
+  }
+
+  function snapText(c){
+    const L=M(),t=T(),ev=c.cloneMinEVByType||{};
+    return [
+      `設定モード: ${c.predictionMode==="clone"?"完全クローン EV分析互換":(c.predictionMode||"custom")}${c.cloneCompat?` / ${L[c.cloneMode]||c.cloneMode}`:""}`,
+      `券種: ${t[c.ticketType]||c.ticketType}   優先: ${c.priority}   同意: ${c.agreementMode}`,
+      `1日予算: ${c.dailyBudget}円   1点: ${c.unit}円   上位頭数: ${c.topN}   1R最大点数: ${c.maxTickets}   1日最大R: ${c.maxRaces}`,
+      `最低EV: ${c.minEv}   最低AI: ${c.minAi}   オッズ: ${c.minOdds}〜${c.maxOdds}`,
+      `予算配分: ${c.budgetMode}   ランキング基準: ${c.dailyRankBasis}   旨みライン: ${c.minReturnRate||"-"}%`,
+      `新馬見送り: ${c.skipDebutRaces?"ON":"OFF"}   NoForceFill: ${c.noForceFill?"ON":"OFF"}   名古屋: ${c.nagoyaMode?"ON":"OFF"}`,
+      `EV閾値 単${ev.win} 複${ev.place} 枠${ev.bracketQuinella} ワ${ev.wide} 馬連${ev.quinella} 馬単${ev.exacta} 3複${ev.trio} 3単${ev.trifecta}`
+    ].join("\n");
+  }
+  function refreshSnapshot(){try{$e("emuSettingsSnap").textContent=snapText(readEmuConfig());}catch(e){$e("emuSettingsSnap").textContent="スナップショット取得失敗: "+e.message;}}
+
+  async function run(){
+    const btn=$e("emuRunBtn");
+    try{
+      if(typeof computeSimulationRows!=="function")throw new Error("シミュレーションエンジン未初期化");
+      btn.disabled=true;$e("emuStatus").textContent="隔離エミュレータ実行中…（本体SIMには一切書き込みません）";
+      const c=readEmuConfig();
+      $e("emuSettingsSnap").textContent=snapText(c);
+      const out=await computeSimulationRows(c); // 純関数：読み取り専用
+      EMU.last={rows:out.rows,summary:out.summary,config:c,createdAt:new Date().toISOString()};
+      render(out.summary,out.rows);
+      $e("emuStatus").textContent=`完了: 対象${out.summary.raceCount}R / 購入${out.summary.boughtCount}R / ROI ${(out.summary.roi||0).toFixed(1)}% / 収支 ${Math.round(out.summary.profit||0).toLocaleString()}円。本体SIMの履歴・集計・分析同期は未変更です。`;
+    }catch(e){$e("emuStatus").textContent="実行失敗: "+e.message;}
+    finally{btn.disabled=false;}
+  }
+
+  function render(summary,rows){
+    $e("emuRaceCount").textContent=summary.raceCount||0;
+    $e("emuBoughtCount").textContent=summary.boughtCount||0;
+    $e("emuHits").textContent=summary.purchaseHits||0;
+    $e("emuRoi").textContent=(summary.roi||0).toFixed(1)+"%";
+    const t=T();
+    const disp=(typeof displayDate==="function")?displayDate:(v=>String(v||""));
+    const body=rows.map(x=>{const r=x.race||{};const cls=(x.profit||0)>=0?"target-positive":"target-negative";return `<tr><td>${disp(r.date||"")}</td><td>${r.type||""}</td><td>${r.placeName||""}</td><td>${(r.raceNo||0)}R</td><td>${t[x.ticketType]||x.ticketType}</td><td class="num">${x.candidateTickets?.length||0}</td><td class="num">${x.purchaseTickets?.length||0}</td><td class="num">${x.purchaseHit?"的中":""}</td><td class="num">${Math.round(x.invest||0).toLocaleString()}</td><td class="num">${Math.round(x.pay||0).toLocaleString()}</td><td class="num ${cls}">${Math.round(x.profit||0).toLocaleString()}</td><td class="num">${(x.roi||0).toFixed(0)}%</td></tr>`;}).join("");
+    $e("emuRows").innerHTML=body||`<tr><td colspan="12" class="empty">購入対象レースがありません（保存済みの確定結果が必要です）。</td></tr>`;
+    const tb=summary.totalBet||0,tp=summary.totalPay||0;
+    $e("emuFoot").innerHTML=`<tr><th colspan="8">合計</th><th class="num">${Math.round(tb).toLocaleString()}</th><th class="num">${Math.round(tp).toLocaleString()}</th><th class="num ${(tp-tb)>=0?"target-positive":"target-negative"}">${Math.round(tp-tb).toLocaleString()}</th><th class="num">${tb?(tp/tb*100).toFixed(0):0}%</th></tr>`;
+  }
+
+  async function sendToSim(){
+    try{
+      if(!EMU.last||!(EMU.last.rows&&EMU.last.rows.length))throw new Error("先に隔離エミュレータを実行してください");
+      if(typeof buildProfitGraphBridgeBox!=="function")throw new Error("ブリッジ機能がありません");
+      const box=await buildProfitGraphBridgeBox({rows:EMU.last.rows,config:EMU.last.config,summary:EMU.last.summary,createdAt:EMU.last.createdAt,source:"emulator"});
+      if(!box)throw new Error("購入Rが無いため送信できません（投資額>0の購入が必要）");
+      try{localStorage.setItem(PROFIT_GRAPH_BRIDGE_KEY,JSON.stringify(box));}catch(e){throw new Error("localStorage書込失敗: "+e.message);}
+      try{const ch=(typeof getProfitGraphChannel==="function")?getProfitGraphChannel():null;if(ch)ch.postMessage({type:"seed",count:box.data.収支明細.length,source:"emulator"});}catch(_){}
+      $e("emuBridgeBadge").textContent="送信済";
+      $e("emuBridgeStatus").textContent=`SIM／分析画面へ送信しました：購入${box.meta.purchasedR}R・${box.data.収支明細.length}明細・投資${Number(box.data.集計.投資||0).toLocaleString()}円・払戻${Number(box.data.集計.払戻||0).toLocaleString()}円・ROI ${Number(box.data.集計.ROI||0).toFixed(1)}%。分析画面（◫）や収支グラフv22で受け取れます。`;
+    }catch(e){$e("emuBridgeStatus").textContent="送信失敗: "+e.message;}
+  }
+
+  function receiveFromSim(){
+    try{
+      const raw=localStorage.getItem(PROFIT_GRAPH_BRIDGE_KEY);
+      if(!raw){$e("emuBridgeStatus").textContent="SIM側のブリッジデータがありません（本体SIMで同期するか、こちらから送信してください）。";$e("emuBridgeBadge").textContent="受信なし";return;}
+      const box=JSON.parse(raw),d=box.data||{},g=d.集計||{},src=(box.meta&&box.meta.source)||d.source||"不明";
+      $e("emuBridgeBadge").textContent="受信済";
+      $e("emuBridgeStatus").textContent=`現在SIM側ブリッジ：出所=${src} / 明細${(d.収支明細||[]).length}件 / 投資${Number(g.投資||0).toLocaleString()}円 / 払戻${Number(g.払戻||0).toLocaleString()}円 / ROI ${Number(g.ROI||0).toFixed(1)}%（保存 ${box.savedAt||"-"}）。`;
+    }catch(e){$e("emuBridgeStatus").textContent="受信失敗: "+e.message;}
+  }
+
+  function copyJson(){
+    try{
+      if(!EMU.last)throw new Error("先に実行してください");
+      const text=JSON.stringify({config:EMU.last.config,summary:EMU.last.summary,rows:EMU.last.rows.map(x=>({race:x.race,ticketType:x.ticketType,candidate:x.candidateTickets?.length||0,purchase:x.purchaseTickets?.length||0,purchaseHit:!!x.purchaseHit,invest:x.invest,pay:x.pay,profit:x.profit,roi:x.roi}))},null,2);
+      const done=()=>{$e("emuStatus").textContent="結果JSONをコピーしました。";};
+      const fb=()=>{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");}catch(_){}ta.remove();done();};
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done).catch(fb);else fb();
+    }catch(e){$e("emuStatus").textContent="コピー失敗: "+e.message;}
+  }
+
+  function csv(){
+    try{
+      if(!EMU.last||!(EMU.last.rows&&EMU.last.rows.length))throw new Error("先に実行してください");
+      const t=T();
+      const cols=["日付","区分","開催","R","券種","候補点","購入点","購入的中","投資","払戻","収支","ROI"];
+      const q=v=>`"${String(v==null?"":v).replaceAll('"','""')}"`;
+      const lines=[cols.join(",")];
+      for(const x of EMU.last.rows){const r=x.race||{};lines.push([r.date||"",r.type||"",r.placeName||"",(r.raceNo||0)+"R",t[x.ticketType]||x.ticketType,x.candidateTickets?.length||0,x.purchaseTickets?.length||0,x.purchaseHit?1:0,Math.round(x.invest||0),Math.round(x.pay||0),Math.round(x.profit||0),(x.roi||0).toFixed(1)].map(q).join(","));}
+      const blob=new Blob(["\ufeff"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
+      const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`TheKeiba_EMU_${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    }catch(e){$e("emuStatus").textContent="CSV失敗: "+e.message;}
+  }
+
+  function setDefaultDates(){
+    const d=new Date(),y=d.getFullYear(),m=p2(d.getMonth()+1),day=p2(d.getDate());
+    if($e("emuStart")&&!$e("emuStart").value)$e("emuStart").value=`${y}-${m}-01`;
+    if($e("emuEnd")&&!$e("emuEnd").value)$e("emuEnd").value=`${y}-${m}-${day}`;
+  }
+  function probe(){try{$e("emuBridgeBadge").textContent=localStorage.getItem(PROFIT_GRAPH_BRIDGE_KEY)?"SIMデータ有":"未連携";}catch(_){}}
+  function onShow(){setDefaultDates();refreshSnapshot();probe();}
+
+  function wire(){
+    if(!$e("emuRunBtn"))return;
+    $e("emuRunBtn").onclick=run;
+    $e("emuSnapshotBtn").onclick=refreshSnapshot;
+    $e("emuCsvBtn").onclick=csv;
+    $e("emuCopyBtn").onclick=copyJson;
+    $e("emuSendBtn").onclick=sendToSim;
+    $e("emuRecvBtn").onclick=receiveFromSim;
+    $e("emuClearBridgeBtn").onclick=()=>{$e("emuBridgeStatus").textContent="表示のみクリアしました（ブリッジ実データは消していません）。";probe();};
+    setDefaultDates();
+  }
+
+  window.EmuSim={onShow,run,readConfig:readEmuConfig};
+
+  // showView に隔離エミュレータの初期化フックを追加（本体ロジックは変更しない）
+  if(typeof showView==="function"){
+    const _orig=showView;
+    showView=async function(id){await _orig(id);if(id==="emulator"){try{onShow();}catch(_){}}};
+  }
+
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",wire,{once:true});
+  else wire();
+})();
+</script>
+
 </body>
 </html>
