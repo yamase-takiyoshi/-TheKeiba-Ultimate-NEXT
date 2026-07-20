@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.37</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.38</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -280,7 +280,7 @@ input,select,textarea{font-size:16px}
 
 
 <style id="fullSiteEmulatorStyles">
-/* v1.2.37 公開サイト丸ごと本体エミュレータ + SIMリアルタイム転送 */
+/* v1.2.38 公開サイト丸ごと本体エミュレータ + SIMリアルタイム転送 */
 .full-emu-hero{border-color:color-mix(in srgb,var(--purple) 45%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--panel) 92%,var(--purple) 8%),var(--panel))}
 .full-emu-toolbar{display:flex;align-items:end;gap:9px;flex-wrap:wrap}.full-emu-url{flex:1 1 430px;min-width:260px}.full-emu-controls{display:flex;gap:8px;flex-wrap:wrap}
 .full-emu-status{white-space:pre-wrap;line-height:1.55;margin-top:10px}.full-emu-status.ok{color:var(--good)}.full-emu-status.warn{color:var(--warn)}.full-emu-status.bad{color:var(--bad)}
@@ -311,7 +311,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.37 本体エミュ・SIMリアルタイム連携</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.38 本体エミュ・SIMリアルタイム連携</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -500,7 +500,7 @@ input,select,textarea{font-size:16px}
       <h2 class="page-title">🖥 公開サイト丸ごと本体エミュレータ</h2>
       <div class="card full-emu-hero">
         <div class="toolbar"><h3 style="margin:0 auto 0 0">The競馬 EV分析 v5.18.297 ライブ同期型</h3><span class="badge" id="fullEmuStateBadge"><span class="status-dot"></span>未読込</span></div>
-        <div class="notice">公開サイトを専用フレーム内へそのまま導入します。本体エミュで期間横断SIMを開始した後に左メニューの「SIM」へ切り替えても、フレームは破棄・再読込されず処理を継続します。結果はレース単位で親SIMと分析画面へ自動転送されます。同一オリジン時はlocalStorage・IndexedDB・Bridgeと表示テーマも共有します。</div>
+        <div class="notice">公開サイトを専用フレーム内へそのまま導入します。本体エミュで期間横断SIMを開始した後に左メニューの「SIM」へ切り替えても、フレームは破棄・再読込されず処理を継続します。結果はレース単位で親SIMと分析画面へ自動転送されます。同一オリジン時はlocalStorage・IndexedDB・Bridgeを共有し、本体がダークなら本体エミュもダーク、本体がライトなら本体エミュもライトへ即時自動切替します。</div>
         <div class="full-emu-toolbar" style="margin-top:12px">
           <div class="full-emu-url"><label>本体サイトURL</label><input id="fullEmuUrl" type="url" value="https://yamase-takiyoshi.github.io/takuya/" inputmode="url"></div>
           <label class="full-emu-auto" title="本体エミュレータ画面を開いた時に自動読込"><input id="fullEmuAuto" type="checkbox" checked>画面表示時に自動読込</label>
@@ -5807,7 +5807,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
-<!-- v1.2.37: 本体エミュ実行中のSIMリアルタイム閲覧・分析連動・ダーク/ライト/ホワイト背景自動同期 -->
+<!-- v1.2.38: 本体エミュ実行中のSIMリアルタイム閲覧・分析連動・本体追従ダーク/ライト強制同期 -->
 <!-- v1.2.34: 馬場状態・馬齢・馬場・クラス・馬体重のHTML取得強化、旧JRAクラス変換、既存DB一括修復 -->
 <!-- v1.2.32: バッチグラフを操作部直下へ移動・iPad再描画・JRA別日race_id混入防止・過去結果の完全性検証・結果未取得の明示 -->
 <!-- v1.2.31: 同期失敗の直近エラー常時表示、分類・対処候補・履歴・コピー -->
@@ -5973,7 +5973,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 
 
 <script>
-/* v1.2.37 Full Site Live Emulator / realtime SIM mirror / shared theme */
+/* v1.2.38 Full Site Live Emulator / realtime SIM mirror / shared theme */
 (function(){
   "use strict";
   const DEFAULT_URL="https://yamase-takiyoshi.github.io/takuya/";
@@ -6035,20 +6035,60 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     try{themeChannel=new BroadcastChannel(THEME_CHANNEL_NAME)}catch(_){themeChannel=null}
     return themeChannel
   }
+  function themePalette(theme){
+    theme=normalizeTheme(theme);
+    return theme==="light"?{
+      bg:"#eef3f8",bg2:"#f8fbfd",soft:"#e7eef6",panel:"#ffffff",panel2:"#e8f0f7",panel3:"#dce8f3",card:"#edf4f9",line:"#cbd8e5",text:"#152235",muted:"#5f7188",chart:"#f8fbfd",chartText:"#20324a"
+    }:{
+      bg:"#07111f",bg2:"#0b1324",soft:"#0a1626",panel:"#0f1d2e",panel2:"#17283d",panel3:"#20344d",card:"#1b2f4d",line:"#2a405a",text:"#f5f7fb",muted:"#9fb0c5",chart:"#08111f",chartText:"#dbeafe"
+    }
+  }
+  function applyThemeDirectlyToFrame(frame,theme){
+    theme=normalizeTheme(theme);if(!frame)return false;
+    try{
+      const win=frame.contentWindow,doc=frame.contentDocument;if(!win||!doc)return false;
+      const root=doc.documentElement,body=doc.body,p=themePalette(theme);
+      root.dataset.theme=theme;root.setAttribute("data-theme",theme);root.style.colorScheme=theme;
+      root.classList.toggle("light-mode",theme==="light");root.classList.toggle("dark-mode",theme==="dark");
+      if(body){body.dataset.theme=theme;body.setAttribute("data-theme",theme);body.classList.toggle("light-mode",theme==="light");body.classList.toggle("dark-mode",theme==="dark")}
+      for(const [name,value] of Object.entries({
+        "--bg":p.bg,"--bg2":p.bg2,"--bg-soft":p.soft,"--panel":p.panel,"--panel2":p.panel2,"--panel3":p.panel3,
+        "--card":p.card,"--line":p.line,"--text":p.text,"--muted":p.muted,"--chart-bg":p.chart,"--chart-text":p.chartText
+      }))root.style.setProperty(name,value);
+      let style=doc.getElementById("theKeibaParentThemeFallbackV2");
+      if(!style){style=doc.createElement("style");style.id="theKeibaParentThemeFallbackV2";(doc.head||root).appendChild(style)}
+      style.textContent=`
+        html,body{color-scheme:${theme}!important;background:var(--bg)!important;color:var(--text)!important}
+        body,.app,.app-shell,.main,.view{color:var(--text)}
+        .app-header,.sidebar,.mobile-nav,.card,.panel,.stat,.strategy-card,.modal-card,.full-emu-frame-shell{border-color:var(--line)}
+        input,select,textarea{background:var(--bg)!important;color:var(--text)!important;border-color:var(--line)!important}
+        table,th,td{border-color:var(--line)!important} th{background:var(--panel2)!important;color:var(--text)!important}
+      `;
+      try{win.localStorage.setItem(SHARED_THEME_KEY,theme);win.localStorage.setItem(LEGACY_THEME_KEY,theme)}catch(_){}
+      try{if(win.state?.settings)win.state.settings.theme=theme}catch(_){}
+      try{const meta=doc.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==="light"?p.bg:"#07111f"}catch(_){}
+      try{const sel=doc.getElementById("themeSelect");if(sel)sel.value=theme}catch(_){}
+      try{const btn=doc.getElementById("themeBtn");if(btn)btn.textContent=theme==="dark"?"🌙":"☀️"}catch(_){}
+      try{if(typeof win.__keibaApplySharedTheme==="function")win.__keibaApplySharedTheme(theme)}catch(_){}
+      return true
+    }catch(_){return false}
+  }
   function syncThemeToFrames(theme=currentTheme(),reason="theme"){
     theme=normalizeTheme(theme);
     try{localStorage.setItem(SHARED_THEME_KEY,theme);localStorage.setItem(LEGACY_THEME_KEY,theme)}catch(_){}
     const payload={type:"TheKeibaThemeSyncV1",theme,reason,at:new Date().toISOString()};
     for(const id of ["fullEmuFrame","splitFrame"]){
-      const frame=byId(id);
-      try{frame?.contentWindow?.postMessage(payload,"*")}catch(_){}
+      const frame=byId(id);if(!frame)continue;
+      try{frame.style.backgroundColor=themePalette(theme).bg}catch(_){}
+      try{frame.contentWindow?.postMessage(payload,"*")}catch(_){}
+      try{applyThemeDirectlyToFrame(frame,theme)}catch(_){}
       try{
-        const direct=frame?.contentWindow?.__keibaApplySharedTheme;
+        const direct=frame.contentWindow?.__keibaApplySharedTheme;
         if(typeof direct==="function")direct(theme)
       }catch(_){}
     }
     try{themeChannelInstance()?.postMessage(payload)}catch(_){}
-    setBadge("fullEmuThemeBadge",theme==="light"?"背景：ライト／ホワイト連動":"背景：ダーク連動","same");
+    setBadge("fullEmuThemeBadge",theme==="light"?"本体連動：ライトモード":"本体連動：ダークモード","same");
   }
 
   function childHookBootstrap(){
@@ -6110,13 +6150,36 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     }
     function applyTheme(theme){
       theme=normalizeTheme(theme);
-      document.documentElement.dataset.theme=theme;if(document.body)document.body.dataset.theme=theme;
+      const root=document.documentElement,body=document.body;
+      const p=theme==="light"?{
+        bg:"#eef3f8",bg2:"#f8fbfd",soft:"#e7eef6",panel:"#ffffff",panel2:"#e8f0f7",panel3:"#dce8f3",card:"#edf4f9",line:"#cbd8e5",text:"#152235",muted:"#5f7188",chart:"#f8fbfd",chartText:"#20324a"
+      }:{
+        bg:"#07111f",bg2:"#0b1324",soft:"#0a1626",panel:"#0f1d2e",panel2:"#17283d",panel3:"#20344d",card:"#1b2f4d",line:"#2a405a",text:"#f5f7fb",muted:"#9fb0c5",chart:"#08111f",chartText:"#dbeafe"
+      };
+      root.dataset.theme=theme;root.setAttribute("data-theme",theme);root.style.colorScheme=theme;
+      root.classList.toggle("light-mode",theme==="light");root.classList.toggle("dark-mode",theme==="dark");
+      if(body){body.dataset.theme=theme;body.setAttribute("data-theme",theme);body.classList.toggle("light-mode",theme==="light");body.classList.toggle("dark-mode",theme==="dark")}
+      for(const [name,value] of Object.entries({
+        "--bg":p.bg,"--bg2":p.bg2,"--bg-soft":p.soft,"--panel":p.panel,"--panel2":p.panel2,"--panel3":p.panel3,
+        "--card":p.card,"--line":p.line,"--text":p.text,"--muted":p.muted,"--chart-bg":p.chart,"--chart-text":p.chartText
+      }))root.style.setProperty(name,value);
+      let style=document.getElementById("theKeibaParentThemeFallbackV2");
+      if(!style){style=document.createElement("style");style.id="theKeibaParentThemeFallbackV2";(document.head||root).appendChild(style)}
+      style.textContent=`
+        html,body{color-scheme:${theme}!important;background:var(--bg)!important;color:var(--text)!important}
+        body,.app,.app-shell,.main,.view{color:var(--text)}
+        .app-header,.sidebar,.mobile-nav,.card,.panel,.stat,.strategy-card,.modal-card{border-color:var(--line)}
+        input,select,textarea{background:var(--bg)!important;color:var(--text)!important;border-color:var(--line)!important}
+        table,th,td{border-color:var(--line)!important} th{background:var(--panel2)!important;color:var(--text)!important}
+      `;
       try{localStorage.setItem("TheKeibaSharedThemeV2",theme);localStorage.setItem("TheKeibaTheme",theme)}catch(_){}
       try{
         if(typeof state!=="undefined"&&state?.settings)state.settings.theme=theme;
         if(typeof applySettings==="function")applySettings(false)
       }catch(_){}
-      const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==="light"?"#eef3f8":"#07111f";
+      try{const sel=document.getElementById("themeSelect");if(sel)sel.value=theme}catch(_){}
+      try{const btn=document.getElementById("themeBtn");if(btn)btn.textContent=theme==="dark"?"🌙":"☀️"}catch(_){}
+      const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==="light"?p.bg:"#07111f";
       return theme
     }
     function emit(reason="poll",force=false){
@@ -6139,10 +6202,22 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
       if(d.type==="TheKeibaThemeSyncV1")applyTheme(d.theme);
       if(d.type==="TheKeibaFullEmuRequestLiveV1")emit("parent-request",true)
     });
-    window.__THEKEIBA_PARENT_LIVE_HOOK_V1__={emit,applyTheme,rowsNow,summaryNow,version:1};
+    window.__keibaApplySharedTheme=applyTheme;
+    window.__THEKEIBA_PARENT_LIVE_HOOK_V1__={emit,applyTheme,rowsNow,summaryNow,version:2};
     wrap("renderSimulation");wrap("runSimulation");wrap("runSimulationCore");wrap("syncSimulationToAnalysis");
+    try{
+      const themeChannel=new BroadcastChannel("TheKeibaThemeSyncV1");
+      themeChannel.addEventListener("message",ev=>{const d=ev?.data;if(d?.type==="TheKeibaThemeSyncV1")applyTheme(d.theme)});
+      window.addEventListener("pagehide",()=>{try{themeChannel.close()}catch(_){}},{once:true})
+    }catch(_){}
+    window.addEventListener("storage",ev=>{if(ev.key==="TheKeibaSharedThemeV2"||ev.key==="TheKeibaTheme")applyTheme(ev.newValue)});
+    const themeObserver=new MutationObserver(()=>{
+      let expected="";try{expected=localStorage.getItem("TheKeibaSharedThemeV2")||localStorage.getItem("TheKeibaTheme")||""}catch(_){}
+      expected=normalizeTheme(expected);if(normalizeTheme(document.documentElement.dataset.theme)!==expected)applyTheme(expected)
+    });
+    themeObserver.observe(document.documentElement,{attributes:true,attributeFilter:["data-theme","class"]});
     timer=setInterval(()=>emit("interval",false),650);
-    window.addEventListener("pagehide",()=>{try{clearInterval(timer)}catch(_){}},{once:true});
+    window.addEventListener("pagehide",()=>{try{clearInterval(timer);themeObserver.disconnect()}catch(_){}},{once:true});
     try{applyTheme(localStorage.getItem("TheKeibaSharedThemeV2")||localStorage.getItem("TheKeibaTheme")||document.documentElement.dataset.theme)}catch(_){}
     setTimeout(()=>emit("hook-ready",true),80)
   }
