@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.28</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.30</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -263,10 +263,23 @@ input,select,textarea{font-size:16px}
 @media(max-width:900px){.sync-live-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:560px){.sync-live-progress-row{grid-template-columns:1fr}.sync-live-percent{text-align:left}.sync-live-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.sync-live-chart{height:190px}.sync-live-status{width:100%;justify-content:center}}
 </style>
+
+<style id="capitalFileDatabaseStyles">
+/* v1.2.29 元金管理・SIM/DBファイル保存・テキストDB */
+.capital-card{border-color:color-mix(in srgb,var(--warn) 42%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 94%,var(--warn) 6%),var(--panel))}
+.capital-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:12px 0}.capital-kpi{padding:11px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);min-width:0}.capital-kpi small{display:block;color:var(--muted);font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.capital-kpi strong{display:block;margin-top:5px;font-size:19px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.capital-alert{white-space:pre-wrap;line-height:1.6}.capital-alert.good{border-left-color:var(--good);color:var(--text)}.capital-alert.warn{border-left-color:var(--warn);color:var(--text)}.capital-alert.bad{border-left-color:var(--bad);color:var(--text)}
+.capital-table{min-width:1050px}.capital-table .num{text-align:right;font-variant-numeric:tabular-nums}.capital-stop{color:var(--bad);font-weight:900}
+.file-manager-card{border-color:color-mix(in srgb,var(--accent) 38%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 96%,var(--accent) 4%),var(--panel))}.file-destination{white-space:pre-wrap;line-height:1.55}.file-destination strong{color:var(--text)}
+.db-text-area{min-height:310px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.45;white-space:pre;overflow:auto}.db-text-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.db-text-status{white-space:pre-wrap;min-height:44px}
+.track-condition-bad{color:var(--bad);font-weight:900}
+@media(max-width:1050px){.capital-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.capital-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.capital-kpi strong{font-size:17px}.file-manager-card .btn,.db-text-actions .btn{flex:1 1 calc(50% - 8px)}.file-manager-card .btn.primary,.db-text-actions .btn.primary{flex-basis:100%}}
+</style>
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.28 EV分析エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.30 EV分析エミュレータ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -316,7 +329,7 @@ input,select,textarea{font-size:16px}
       <div class="card">
         <div class="form-grid">
           <div class="field"><label>開催場</label><input id="sPlace" placeholder="盛岡、東京"></div><div class="field"><label>馬名</label><input id="sHorse"></div><div class="field"><label>騎手</label><input id="sJockey"></div><div class="field"><label>調教師</label><input id="sTrainer"></div>
-          <div class="field"><label>区分</label><select id="sType"><option value="">すべて</option><option>JRA</option><option>NAR</option></select></div><div class="field"><label>芝・ダート</label><select id="sSurface"><option value="">すべて</option><option>芝</option><option>ダート</option><option>障害</option></select></div><div class="field"><label>クラス</label><input id="sClass"></div><div class="field"><label>馬場</label><input id="sTrack"></div>
+          <div class="field"><label>区分</label><select id="sType"><option value="">すべて</option><option>JRA</option><option>NAR</option></select></div><div class="field"><label>芝・ダート</label><select id="sSurface"><option value="">すべて</option><option>芝</option><option>ダート</option><option>障害</option></select></div><div class="field"><label>クラス</label><input id="sClass"></div><div class="field"><label>馬場状態</label><select id="sTrack"><option value="">すべて</option><option value="良">良</option><option value="稍重">稍重</option><option value="重">重</option><option value="不良">不良</option><option value="不明">不明・未取得</option></select></div>
           <div class="field"><label>最低距離</label><input id="sMinDistance" type="number" value="0"></div><div class="field"><label>最高距離</label><input id="sMaxDistance" type="number" value="9999"></div><div class="field"><label>人気上限</label><input id="sMaxPopularity" type="number" value="99"></div><div class="field"><label>最低AI</label><input id="sMinAi" type="number" value="0"></div>
           <div class="field"><label>最低オッズ</label><input id="sMinOdds" type="number" step="0.1" value="0"></div><div class="field"><label>最高オッズ</label><input id="sMaxOdds" type="number" step="0.1" value="999"></div><div class="field"><label>最低EV</label><input id="sMinEv" type="number" step="0.01" value="0"></div><div class="field"><label>並び順</label><select id="sSort"><option value="ai">AI降順</option><option value="ev">EV降順</option><option value="oddsAsc">オッズ昇順</option><option value="oddsDesc">オッズ降順</option><option value="pop">人気順</option><option value="date">日付順</option></select></div>
           <div class="field"><label>上限件数</label><input id="sLimit" type="number" value="500"></div>
@@ -324,7 +337,7 @@ input,select,textarea{font-size:16px}
         <div class="toolbar" style="margin-top:13px"><button class="btn primary" id="searchRunBtn">検索</button><button class="btn" id="searchResetBtn">初期化</button><button class="btn" id="searchSaveBtn">条件保存</button><button class="btn" id="searchLoadBtn">保存条件</button><button class="btn" id="searchCsvBtn">CSV</button></div>
         <div class="code-box" id="sqlPreview">条件を入力してください。</div>
       </div>
-      <div class="card"><div class="toolbar"><h3 id="searchCountTitle" style="margin:0 auto 0 0">検索結果 0件</h3><select id="pivotDimension" style="width:auto"><option value="place">開催場別</option><option value="jockey">騎手別</option><option value="trainer">調教師別</option><option value="surface">馬場種別</option><option value="distance">距離帯別</option><option value="popularity">人気帯別</option><option value="odds">オッズ帯別</option></select><button class="btn" id="pivotRunBtn">クロス集計</button></div><div class="table-wrap"><table><thead><tr><th>race_id</th><th>日付</th><th>区分</th><th>開催</th><th>R</th><th>馬番</th><th>馬名</th><th>性齢</th><th>騎手</th><th>人気</th><th>単勝</th><th>EV</th><th>AI</th></tr></thead><tbody id="searchRows"></tbody></table></div></div>
+      <div class="card"><div class="toolbar"><h3 id="searchCountTitle" style="margin:0 auto 0 0">検索結果 0件</h3><select id="pivotDimension" style="width:auto"><option value="place">開催場別</option><option value="class">クラス別</option><option value="age">馬齢別</option><option value="jockey">騎手別</option><option value="trainer">調教師別</option><option value="surface">馬場種別</option><option value="trackCondition">馬場状態別</option><option value="distance">距離帯別</option><option value="popularity">人気帯別</option><option value="odds">オッズ帯別</option></select><button class="btn" id="pivotRunBtn">クロス集計</button></div><div class="table-wrap"><table><thead><tr><th>race_id</th><th>日付</th><th>区分</th><th>開催</th><th>R</th><th>クラス</th><th>馬場状態</th><th>馬番</th><th>馬名</th><th>性齢</th><th>騎手</th><th>人気</th><th>単勝</th><th>EV</th><th>AI</th></tr></thead><tbody id="searchRows"></tbody></table></div></div>
       <div class="card"><h3>クロス集計</h3><div id="pivotResult" class="empty">検索後にクロス集計を実行してください</div></div>
     </section>
 
@@ -345,6 +358,32 @@ input,select,textarea{font-size:16px}
         <div class="code-box" id="simDataResetStatus" style="margin-top:8px">SIMデータリセットは、SIM実行履歴・現在の集計・右側グラフ連動データだけを消去します。レース・馬柱・オッズ・確定結果・設定・戦略・予想履歴・フォワードテスト・バックアップは残ります。</div>
         <div class="code-box" id="simSyncStatus" style="margin-top:12px">未同期。現在の登録結果件数を確認中です。</div>
       </div>
+
+      <div class="card capital-card" id="capitalManagementCard">
+        <div class="toolbar"><h3 style="margin:0 auto 0 0">💴 元入金・強力予算管理</h3><span class="badge" id="capitalPolicyBadge">固定＋比率の安全側</span></div>
+        <div class="form-grid">
+          <div class="field"><label>元入金</label><input id="simInitialCapital" type="number" min="0" step="1000" value="100000"></div>
+          <div class="field"><label>最低維持残高</label><input id="simReserveCapital" type="number" min="0" step="1000" value="20000"></div>
+          <div class="field"><label>日次予算方式</label><select id="simCapitalPolicy"><option value="hybrid">固定上限と元金比率の小さい方</option><option value="fixed">固定1日予算</option><option value="percent">現在資金の比率</option></select></div>
+          <div class="field"><label>日次リスク率</label><input id="simRiskPercent" type="number" min="0.1" max="100" step="0.1" value="2"></div>
+          <div class="field"><label>最大ドローダウン停止率</label><input id="simMaxDrawdownPercent" type="number" min="0" max="100" step="1" value="20"></div>
+          <div class="field"><label>通算損失停止額 0で無効</label><input id="simStopLossAmount" type="number" min="0" step="1000" value="20000"></div>
+        </div>
+        <div class="toolbar" style="margin-top:12px"><button class="btn primary" id="capitalSettingsSaveBtn">元金設定を保存</button><button class="btn" id="capitalAnalyzeBtn">資金分析を更新</button><button class="btn" id="capitalResetDefaultsBtn">安全値へ戻す</button></div>
+        <div class="capital-kpis">
+          <div class="capital-kpi"><small>元入金</small><strong id="capitalInitialKpi">100,000円</strong></div><div class="capital-kpi"><small>現在資金</small><strong id="capitalCurrentKpi">100,000円</strong></div><div class="capital-kpi"><small>元金損益率</small><strong id="capitalReturnKpi">0.0%</strong></div><div class="capital-kpi"><small>最大DD</small><strong id="capitalDrawdownKpi">0円</strong></div><div class="capital-kpi"><small>予算消化率</small><strong id="capitalUsageKpi">0.0%</strong></div><div class="capital-kpi"><small>余力</small><strong id="capitalAvailableKpi">80,000円</strong></div>
+        </div>
+        <div class="notice capital-alert" id="capitalAlert">元入金を設定すると、最低維持残高・日次予算・最大ドローダウン・損失上限を同時に守って買い目を配分します。</div>
+        <div class="table-wrap" style="margin-top:12px"><table class="capital-table"><thead><tr><th>日付</th><th>開始資金</th><th>有効予算</th><th>投資</th><th>払戻</th><th>日次損益</th><th>終了資金</th><th>日次ROI</th><th>DD</th><th>判定</th></tr></thead><tbody id="capitalDailyRows"><tr><td colspan="10" class="empty">SIM実行後に日別資金管理を表示します</td></tr></tbody></table></div>
+      </div>
+
+      <div class="card file-manager-card" id="simJsonManagerCard">
+        <div class="toolbar"><h3 style="margin:0 auto 0 0">📁 SIM JSON 保存・上書き・読込</h3><span class="badge" id="simJsonFileBadge">保存先未選択</span></div>
+        <div class="form-grid"><div class="field wide"><label>JSONファイル名</label><input id="simJsonName" maxlength="100" value="TheKeiba_SIM" placeholder="例 JRA東京_202607"></div><div class="field"><label>保存範囲</label><select id="simJsonScope"><option value="current">現在のSIM結果</option><option value="all">現在＋SIM全履歴</option></select></div></div>
+        <div class="toolbar" style="margin-top:12px"><button class="btn" id="simChooseFolderBtn">保存フォルダを選択</button><button class="btn primary" id="simJsonSaveAsBtn">フォルダ指定・名前付き保存</button><button class="btn warn" id="simJsonOverwriteBtn">同じJSONへ上書き</button><button class="btn good" id="simJsonLoadBtn">JSON読込</button><input id="simJsonFileInput" type="file" accept=".json,application/json" hidden></div>
+        <div class="notice file-destination" id="simJsonDestination"><strong>保存先:</strong> 未選択。iPadでは共有メニューの「ファイルに保存」でフォルダを指定します。</div><div class="code-box" id="simJsonStatus" style="margin-top:9px">現在の設定・明細・元金分析を1本のJSONに保存できます。</div>
+      </div>
+
       <div class="card sync-live-card" id="simSyncLiveCard">
         <div class="sync-live-head">
           <div><div class="sync-live-title">📊 リアルタイム同期モニター</div><div class="sync-live-sub">日付・レース単位で進捗、経過時間、推定残り時間、成功・確定・失敗件数を更新します。</div></div>
@@ -371,7 +410,7 @@ input,select,textarea{font-size:16px}
 
     <section class="view" id="view-analytics">
       <h2 class="page-title">成績・多角的分析</h2>
-      <div class="card"><div class="toolbar"><select id="analyticsSource" style="width:auto"><option value="last">最新シミュレーション</option><option value="all">全保存シミュレーション</option></select><button class="btn primary" id="analyticsRunBtn">分析更新</button><button class="btn" id="analyticsRaceIdLookupBtn">race_id完全補完</button><button class="btn" id="analyticsDiagnoseBtn">不明の内訳診断</button><span class="badge" id="analyticsLookupStatus">未照会</span></div><div class="notice">分析時は保存済み明細の race_id を主キーに、ローカルのレース・出走馬データを自動照合します。「race_id完全補完」は12桁へ正規化し、出馬表・オッズ・結果ページを照合して欠損項目だけを再取得します。</div></div>
+      <div class="card"><div class="toolbar"><select id="analyticsSource" style="width:auto"><option value="last">最新シミュレーション</option><option value="all">全保存シミュレーション</option></select><button class="btn primary" id="analyticsRunBtn">分析更新</button><button class="btn good" id="analyticsClassAgeRepairBtn">クラス・馬齢DB修復</button><button class="btn" id="analyticsRaceIdLookupBtn">race_id完全補完</button><button class="btn" id="analyticsDiagnoseBtn">不明の内訳診断</button><span class="badge" id="analyticsLookupStatus">未照会</span></div><div class="notice">分析時は保存済み明細の race_id を主キーに、ローカルのレース・出走馬データを自動照合します。「クラス・馬齢DB修復」は表記揺れ・性齢・生年・レース年をローカルで再判定し、「race_id完全補完」は残った欠損だけを外部ページから再取得します。</div></div>
       <div class="grid"><div class="stat span-3"><div class="stat-label">最大ドローダウン</div><div class="stat-value small" id="anaDrawdown">0円</div></div><div class="stat span-3"><div class="stat-label">的中率</div><div class="stat-value small" id="anaHitRate">0%</div></div><div class="stat span-3"><div class="stat-label">利益率</div><div class="stat-value small" id="anaProfitRate">0%</div></div><div class="stat span-3"><div class="stat-label">採用率</div><div class="stat-value small" id="anaAdoptionRate">0%</div></div></div>
       <div class="grid" style="margin-top:12px"><div class="card span-6"><h3>資金曲線</h3><canvas class="chart" id="analyticsBankChart" width="1000" height="250"></canvas></div><div class="card span-6"><h3>ドローダウン</h3><canvas class="chart" id="drawdownChart" width="1000" height="250"></canvas></div></div>
       <div class="card"><div class="tabs"><button class="btn tab active" data-ana="day">日別</button><button class="btn tab" data-ana="place">開催場</button><button class="btn tab" data-ana="ticket">券種</button><button class="btn tab" data-ana="class">クラス</button><button class="btn tab" data-ana="trackCondition">馬場状態</button><button class="btn tab" data-ana="surface">馬場</button><button class="btn tab" data-ana="distance">距離</button><button class="btn tab" data-ana="age">馬齢</button><button class="btn tab" data-ana="sex">性別</button><button class="btn tab" data-ana="popularity">人気帯</button><button class="btn tab" data-ana="odds">オッズ帯</button></div><div id="analyticsTable"></div></div>
@@ -415,7 +454,9 @@ input,select,textarea{font-size:16px}
           <div class="notice backup-file-meta" id="backupFileMeta"><strong>JSON保存先:</strong> 未選択。名前付け保存ではファイル名と保存フォルダを確認できます。</div>
           <div class="code-box backup-status" id="backupStatus">待機中</div>
         </div>
-        <div class="card"><div class="toolbar"><button class="btn primary" id="realSyncBtn">当日実データ同期</button><button class="btn" id="exportBtn">全DB JSON名前付け保存</button><button class="btn" id="importBtn">従来JSON追加読込</button><button class="btn danger" id="clearBtn">全データ削除</button><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="notice">名前付きバックアップは端末内の専用領域に保存されます。JSON名前付け保存ではファイル名と保存フォルダを確認できます。iPhone・iPadでは共有メニューの「ファイルに保存」からフォルダを選択します。「全データ削除」を実行しても端末内の名前付きバックアップは残ります。</div></div>
+        <div class="card file-manager-card"><div class="toolbar"><h3 style="margin:0 auto 0 0">📁 全データベースのフォルダ保存</h3><span class="badge" id="dbJsonFileBadge">保存先未選択</span></div><div class="form-grid"><div class="field wide"><label>DB JSONファイル名</label><input id="dbJsonName" maxlength="100" value="TheKeiba_Ultimate_NEXT_Complete_DBMS"></div></div><div class="toolbar" style="margin-top:12px"><button class="btn" id="dbChooseFolderBtn">保存フォルダを選択</button><button class="btn primary" id="exportBtn">全DB JSONをフォルダ指定保存</button><button class="btn warn" id="dbJsonOverwriteBtn">同じJSONへ上書き</button><button class="btn good" id="importBtn">DB JSON読込</button><button class="btn" id="realSyncBtn">当日実データ同期</button><button class="btn danger" id="clearBtn">全データ削除</button><input id="importFile" type="file" accept=".json,application/json" hidden></div><div class="notice file-destination" id="dbJsonDestination"><strong>保存先:</strong> 未選択。保存時にフォルダとファイル名を指定します。iPadでは共有メニューの「ファイルに保存」を使用します。</div><div class="code-box" id="dbJsonStatus" style="margin-top:9px">全テーブルを1本のJSONへ保存します。</div></div>
+
+        <div class="card" id="dbTextClipboardCard"><div class="toolbar"><h3 style="margin:0 auto 0 0">📋 各データのテキストDBコピペ</h3><span class="badge" id="dbTextCountBadge">0件</span></div><div class="form-grid"><div class="field"><label>対象データ</label><select id="dbTextStore"><option value="races">races レース</option><option value="entries">entries 出走馬</option><option value="results">results 結果・払戻</option><option value="resultRecords">resultRecords 着順明細</option><option value="payouts">payouts 払戻明細</option><option value="bets">bets 投資実績</option><option value="horses">horses 馬</option><option value="jockeys">jockeys 騎手</option><option value="trainers">trainers 調教師</option><option value="strategies">strategies 戦略</option><option value="simulations">simulations SIM履歴</option><option value="snapshots">snapshots スナップショット</option><option value="favorites">favorites お気に入り</option><option value="settings">settings 設定</option><option value="researchViews">researchViews 保存ビュー</option><option value="researchNotes">researchNotes 調査メモ</option><option value="syncQueue">syncQueue 同期キュー</option><option value="syncMeta">syncMeta 同期情報</option><option value="dbLogs">dbLogs DBログ</option><option value="backups">backups 名前付きバックアップ</option></select></div><div class="field"><label>テキスト形式</label><select id="dbTextFormat"><option value="json">JSON配列 再読込向け</option><option value="ndjson">1行1件 JSON Lines</option><option value="tsv">TSV 表計算向け</option></select></div><div class="field"><label>取込方法</label><select id="dbTextImportMode"><option value="merge">追加・同じ主キーは更新</option><option value="replace">対象テーブルを入替</option></select></div></div><textarea class="db-text-area" id="dbTextArea" spellcheck="false" placeholder="DBから作成、またはここへテキストデータを貼り付けます"></textarea><div class="db-text-actions"><button class="btn primary" id="dbTextGenerateBtn">DBからテキスト作成</button><button class="btn good" id="dbTextCopyBtn">全てコピー</button><button class="btn" id="dbTextPasteBtn">クリップボード貼付</button><button class="btn warn" id="dbTextApplyBtn">貼付データをDBへ反映</button><button class="btn" id="dbTextClearBtn">消去</button></div><div class="code-box db-text-status" id="dbTextStatus" style="margin-top:10px">テーブルを選び「DBからテキスト作成」を押してください。TSVは表計算へ、JSONは別端末への移行に使えます。</div></div>
         <div class="grid"><div class="stat span-2"><div class="stat-label">Races</div><div class="stat-value" id="dbRaceCount">0</div></div><div class="stat span-2"><div class="stat-label">Entries</div><div class="stat-value" id="dbEntryCount">0</div></div><div class="stat span-2"><div class="stat-label">Results</div><div class="stat-value" id="dbResultCount">0</div></div><div class="stat span-2"><div class="stat-label">Strategies</div><div class="stat-value" id="dbStrategyCount">0</div></div><div class="stat span-2"><div class="stat-label">Simulations</div><div class="stat-value" id="dbSimCount">0</div></div><div class="stat span-2"><div class="stat-label">Snapshots</div><div class="stat-value" id="dbSnapshotCount">0</div></div></div>
         <div class="grid dbms-kpi-grid" style="margin-top:12px">
           <div class="stat span-3"><div class="stat-label">DBMSモード</div><div class="stat-value small" id="dbmsModeLabel">ローカル優先</div></div>
@@ -617,7 +658,7 @@ input,select,textarea{font-size:16px}
         </div>
         <div class="card"><h3 id="recordTableTitle">レコードテーブル</h3><div class="record-schema" id="recordSchemaView"></div><div id="recordTableView"><div class="empty">更新を押してください</div></div></div>
       </div>
-      <div id="dbTabRaceedit" class="db-tab-panel" hidden><div class="card"><div class="form-grid"><div class="field wide"><label>race_id</label><input id="edRaceId"></div><div class="field"><label>区分</label><select id="edRaceType"><option>JRA</option><option>NAR</option></select></div><div class="field"><label>日付</label><input id="edRaceDate" type="date"></div><div class="field"><label>開催場</label><input id="edRacePlace"></div><div class="field"><label>場コード</label><input id="edRacePlaceCode" type="number"></div><div class="field"><label>開催回</label><input id="edRaceKai" type="number"></div><div class="field"><label>開催日次</label><input id="edRaceDay" type="number"></div><div class="field"><label>R</label><input id="edRaceNo" type="number"></div><div class="field wide"><label>レース名</label><input id="edRaceName"></div><div class="field"><label>芝・ダート</label><select id="edRaceSurface"><option>芝</option><option>ダート</option><option>障害</option></select></div><div class="field"><label>距離</label><input id="edRaceDistance" type="number"></div><div class="field"><label>クラス・グレード</label><input id="edRaceClass"></div><div class="field"><label>方向</label><input id="edRaceDirection" placeholder="右・左・直線"></div><div class="field"><label>頭数</label><input id="edRaceHeadcount" type="number"></div><div class="field"><label>天候</label><input id="edRaceWeather"></div><div class="field"><label>馬場</label><input id="edRaceTrack"></div><div class="field"><label>発走</label><input id="edRaceStart" type="time"></div><div class="field"><label>状態</label><input id="edRaceStatus"></div><div class="field wide"><label>更新日時</label><input id="edRaceUpdatedAt" readonly></div></div><div class="toolbar" style="margin-top:13px"><button class="btn primary" id="saveRaceEditBtn">保存</button><button class="btn" id="loadRaceEditBtn">race_id読込</button><button class="btn danger" id="deleteRaceEditBtn">削除</button></div></div></div>
+      <div id="dbTabRaceedit" class="db-tab-panel" hidden><div class="card"><div class="form-grid"><div class="field wide"><label>race_id</label><input id="edRaceId"></div><div class="field"><label>区分</label><select id="edRaceType"><option>JRA</option><option>NAR</option></select></div><div class="field"><label>日付</label><input id="edRaceDate" type="date"></div><div class="field"><label>開催場</label><input id="edRacePlace"></div><div class="field"><label>場コード</label><input id="edRacePlaceCode" type="number"></div><div class="field"><label>開催回</label><input id="edRaceKai" type="number"></div><div class="field"><label>開催日次</label><input id="edRaceDay" type="number"></div><div class="field"><label>R</label><input id="edRaceNo" type="number"></div><div class="field wide"><label>レース名</label><input id="edRaceName"></div><div class="field"><label>芝・ダート</label><select id="edRaceSurface"><option>芝</option><option>ダート</option><option>障害</option></select></div><div class="field"><label>距離</label><input id="edRaceDistance" type="number"></div><div class="field"><label>クラス・グレード</label><input id="edRaceClass"></div><div class="field"><label>方向</label><input id="edRaceDirection" placeholder="右・左・直線"></div><div class="field"><label>頭数</label><input id="edRaceHeadcount" type="number"></div><div class="field"><label>天候</label><input id="edRaceWeather"></div><div class="field"><label>馬場状態</label><select id="edRaceTrack"><option value="">未取得</option><option value="良">良</option><option value="稍重">稍重</option><option value="重">重</option><option value="不良">不良</option></select></div><div class="field"><label>発走</label><input id="edRaceStart" type="time"></div><div class="field"><label>状態</label><input id="edRaceStatus"></div><div class="field wide"><label>更新日時</label><input id="edRaceUpdatedAt" readonly></div></div><div class="toolbar" style="margin-top:13px"><button class="btn primary" id="saveRaceEditBtn">保存</button><button class="btn" id="loadRaceEditBtn">race_id読込</button><button class="btn danger" id="deleteRaceEditBtn">削除</button></div></div></div>
       <div id="dbTabEntryedit" class="db-tab-panel" hidden><div class="card"><div class="form-grid"><div class="field wide"><label>race_id</label><input id="edEntryRaceId"></div><div class="field"><label>枠番</label><input id="edFrameNo" type="number"></div><div class="field"><label>馬番</label><input id="edHorseNo" type="number"></div><div class="field"><label>horseId</label><input id="edHorseId"></div><div class="field wide"><label>馬名</label><input id="edHorseName"></div><div class="field"><label>性</label><input id="edSex" maxlength="2"></div><div class="field"><label>齢</label><input id="edAge" type="number"></div><div class="field"><label>性齢</label><input id="edSexAge"></div><div class="field"><label>jockeyId</label><input id="edJockeyId"></div><div class="field"><label>騎手</label><input id="edJockey"></div><div class="field"><label>trainerId</label><input id="edTrainerId"></div><div class="field"><label>調教師</label><input id="edTrainer"></div><div class="field"><label>斤量</label><input id="edWeight" type="number" step="0.1"></div><div class="field"><label>馬体重</label><input id="edHorseWeight"></div><div class="field"><label>人気</label><input id="edPopularity" type="number"></div><div class="field"><label>単勝</label><input id="edOdds" type="number" step="0.1"></div><div class="field"><label>予測勝率</label><input id="edProbWin" type="number" step="0.001"></div><div class="field"><label>予測複勝率</label><input id="edProbPlace" type="number" step="0.001"></div><div class="field"><label>EV</label><input id="edEv" type="number" step="0.001"></div><div class="field"><label>AI</label><input id="edAi" type="number" step="0.1"></div><div class="field"><label>脚質</label><input id="edStyle"></div><div class="field wide"><label>更新日時</label><input id="edEntryUpdatedAt" readonly></div></div><div class="toolbar" style="margin-top:13px"><button class="btn primary" id="saveEntryEditBtn">保存</button><button class="btn" id="loadEntryEditBtn">読込</button><button class="btn danger" id="deleteEntryEditBtn">削除</button></div></div></div>
       <div id="dbTabResultedit" class="db-tab-panel" hidden><div class="card"><div class="form-grid"><div class="field wide"><label>race_id</label><input id="edResultRaceId"></div><div class="field wide"><label>着順（カンマ区切り）</label><input id="edFinishOrder" placeholder="3,1,5"></div><div class="field full"><label>払戻JSON</label><textarea id="edPayouts" placeholder='{"win":{"3":520},"place":{"3":180,"1":140,"5":220},"bracketQuinella":{"1-2":760},"quinella":{"1-3":820}}'></textarea></div></div><div class="toolbar"><button class="btn primary" id="saveResultEditBtn">保存</button><button class="btn" id="loadResultEditBtn">読込</button><button class="btn danger" id="deleteResultEditBtn">削除</button></div></div></div>
     </section>
@@ -1057,7 +1098,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.27-bridge-diagnostics-fix";
+const APP_VERSION="1.2.30-class-age-repair";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -1366,7 +1407,7 @@ function simulationDailyRankScore(entries,basis){if(!entries.length)return-1;con
 async function buildSimulationCandidate(race,result,c){let entries=await getByIndex("entries","race_id",race.race_id);recalcEntryScores(entries);const qualifies=e=>e.ev>=c.minEv&&e.ai>=c.minAi&&e.odds>=c.minOdds&&e.odds<=c.maxOdds;let candidateEntries=entries.filter(qualifies);const sorters=simulationEntrySorters();candidateEntries.sort(sorters[c.priority]||sorters.ai);candidateEntries=candidateEntries.slice(0,c.topN);const candidateTickets=generateTickets(c.ticketType,candidateEntries,c.maxTickets);return{race,result,entries,candidateEntries,candidateTickets,purchaseTickets:[],rankScore:simulationDailyRankScore(candidateEntries,c.dailyRankBasis)}}
 function allocateSequentialCandidates(items,c){const days=new Map();for(const item of items){const day=days.get(item.race.date)||{remaining:c.dailyBudget,boughtRaces:0};if(day.boughtRaces<c.maxRaces&&item.candidateTickets.length){const affordable=Math.floor(day.remaining/c.unit);item.purchaseTickets=item.candidateTickets.slice(0,affordable)}const invest=item.purchaseTickets.length*c.unit;if(invest>0){day.remaining-=invest;day.boughtRaces++}item.remaining=day.remaining;days.set(item.race.date,day)}}
 function allocateDailyRankCandidates(items,c){const groups=new Map();for(const item of items){const list=groups.get(item.race.date)||[];list.push(item);groups.set(item.race.date,list)}for(const list of groups.values()){let remaining=c.dailyBudget,boughtRaces=0;const ranked=[...list].sort((a,b)=>b.rankScore-a.rankScore||a.race.placeName.localeCompare(b.race.placeName)||a.race.raceNo-b.race.raceNo);for(const item of ranked){if(boughtRaces>=c.maxRaces||!item.candidateTickets.length){item.remaining=remaining;continue}const affordable=Math.floor(remaining/c.unit);item.purchaseTickets=item.candidateTickets.slice(0,affordable);const invest=item.purchaseTickets.length*c.unit;if(invest>0){remaining-=invest;boughtRaces++}item.remaining=remaining}for(const item of list)if(item.remaining===undefined)item.remaining=remaining}}
-async function runSimulationCore(){const c=readSimConfig(),[races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),resMap=new Map(results.filter(hasUsableConfirmedResult).map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places.length||c.places.includes(r.placeName))&&(!c.skipDebutRaces||!/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(b.placeName)||a.raceNo-b.raceNo),items=[];for(const race of filtered){const result=resMap.get(race.race_id);if(result)items.push(await buildSimulationCandidate(race,result,c))}if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);const rows=[];let bank=0;for(const item of items){const{race,result,entries,candidateTickets,purchaseTickets}=item,candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,remaining:item.remaining,rankScore:item.rankScore})}state.simResult=rows;const totalBet=rows.reduce((sum,x)=>sum+x.invest,0),totalPay=rows.reduce((sum,x)=>sum+x.pay,0),summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0};const id=await addOne("simulations",{createdAt:new Date().toISOString(),config:c,summary,rows:rows.map(x=>({...x,race:x.race,result:undefined}))});renderSimulation(summary);await renderDashboard();await syncSimulationToAnalysis({force:true,reason:"バックテスト完了"});return id}
+async function runSimulationCore(){const c=readSimConfig(),[races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),resMap=new Map(results.filter(hasUsableConfirmedResult).map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places.length||c.places.includes(r.placeName))&&(!c.skipDebutRaces||!/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(b.placeName)||a.raceNo-b.raceNo),items=[];for(const race of filtered){const result=resMap.get(race.race_id);if(result)items.push(await buildSimulationCandidate(race,result,c))}if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);const rows=[];let bank=0;for(const item of items){const{race,result,entries,candidateTickets,purchaseTickets}=item,candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,capitalBefore:Number(item.capitalBefore??c.initialCapital??0),capitalAfter:Number(item.capitalAfter??((c.initialCapital||0)+bank)),effectiveDailyBudget:Number(item.effectiveDailyBudget??c.dailyBudget??0),capitalDrawdown:Number(item.capitalDrawdown||0),capitalDrawdownPercent:Number(item.capitalDrawdownPercent||0),budgetBlocked:String(item.budgetBlocked||""),remaining:item.remaining,rankScore:item.rankScore})}state.simResult=rows;const totalBet=rows.reduce((sum,x)=>sum+x.invest,0),totalPay=rows.reduce((sum,x)=>sum+x.pay,0),summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0,initialCapital:Number(c.initialCapital||0),finalCapital:Number(rows.at(-1)?.capitalAfter??c.initialCapital??0),capitalReturn:Number(c.initialCapital?((rows.at(-1)?.capitalAfter??c.initialCapital)-c.initialCapital)/c.initialCapital*100:0),maxDrawdown:Math.max(0,...rows.map(x=>Number(x.capitalDrawdown||0))),maxDrawdownPercent:Math.max(0,...rows.map(x=>Number(x.capitalDrawdownPercent||0)))};const id=await addOne("simulations",{createdAt:new Date().toISOString(),config:c,summary,rows:rows.map(x=>({...x,race:x.race,result:undefined}))});renderSimulation(summary);await renderDashboard();await syncSimulationToAnalysis({force:true,reason:"バックテスト完了"});return id}
 
 const BACKTEST_BATCH_DAYS=92;
 const BACKTEST_SYNC={running:false,stop:false,batch:0,totalBatches:0};
@@ -4694,6 +4735,734 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
+<script id="capitalFileDatabasePatch">
+/* v1.2.29 馬場状態4区分・元入金予算管理・SIM/DBフォルダ保存・各DBテキストコピペ */
+(function(){
+  "use strict";
+  const byId=id=>document.getElementById(id);
+  const CAPITAL_DEFAULTS={initialCapital:100000,reserveCapital:20000,capitalPolicy:"hybrid",riskPercent:2,maxDrawdownPercent:20,stopLossAmount:20000};
+  const FILE_SESSION={
+    sim:{directory:null,handle:null,name:""},
+    db:{directory:null,handle:null,name:""}
+  };
+  const DB_TEXT_STORES=["races","entries","results","resultRecords","payouts","bets","horses","jockeys","trainers","strategies","simulations","snapshots","favorites","settings","researchViews","researchNotes","syncQueue","syncMeta","dbLogs","backups"];
+  const DB_EXPORT_STORES=DB_TEXT_STORES.filter(store=>store!=="backups");
+
+  function finite(value,fallback=0){const n=Number(value);return Number.isFinite(n)?n:fallback}
+  function clampValue(value,min,max){return Math.max(min,Math.min(max,finite(value,min)))}
+  function moneyText(value){return Math.round(finite(value)).toLocaleString("ja-JP")+"円"}
+  function percentText(value){return finite(value).toLocaleString("ja-JP",{minimumFractionDigits:1,maximumFractionDigits:1})+"%"}
+  function safeJsonClone(value){try{return structuredClone(value)}catch(_){return JSON.parse(JSON.stringify(value))}}
+  function canonicalTrackCondition(value,source=""){
+    const direct=String(value??"").replace(/\u3000/g," ").replace(/\s+/g,"").trim();
+    if(/不良/.test(direct))return"不良";
+    if(/稍重|やや重|稍/.test(direct))return"稍重";
+    if(/(?:^|馬場|芝|ダート|ダ)重(?:$|馬場)/.test(direct)||direct==="重")return"重";
+    if(/(?:^|馬場|芝|ダート|ダ)良(?:$|馬場)/.test(direct)||direct==="良")return"良";
+    const text=String(source||"").replace(/\u3000/g," ").replace(/\s+/g," ");
+    let m=text.match(/(?:馬場(?:状態)?|芝|ダート|ダ)\s*[:：]?\s*(不良|稍重|やや重|重|良|稍)(?:馬場)?/);
+    if(!m)m=text.match(/(?:^|[\s（(])(?:馬場)?\s*(不良|稍重|やや重|重|良|稍)\s*馬場?(?:$|[\s）)])/);
+    if(!m)return"";
+    return/稍|やや/.test(m[1])?"稍重":m[1];
+  }
+  window.canonicalTrackCondition=canonicalTrackCondition;
+
+  const baseNormalizeRace=normalizeRace;
+  normalizeRace=function(record){
+    const row=baseNormalizeRace(record),source=[record?.meta,record?.raceData,record?.raceData01,record?.raceData02,record?.name,record?.raceName].filter(Boolean).join(" ");
+    const cond=canonicalTrackCondition(row.trackCondition||row.trackCond||record?.condition,source);
+    row.trackCondition=cond;row.trackCond=cond;
+    return row
+  };
+  const baseAnalyticsTrackConditionLabel=analyticsTrackConditionLabel;
+  analyticsTrackConditionLabel=function(record={}){
+    const direct=canonicalTrackCondition(record.trackCondition||record.track_condition||record.trackCond||record.track_state||record.babaState||record.condition);
+    if(direct)return direct;
+    const inferred=canonicalTrackCondition("",[record.meta,record.raceData,record.name,record.raceName].filter(Boolean).join(" "));
+    return inferred||baseAnalyticsTrackConditionLabel(record)
+  };
+
+  renderSearch=function(){
+    byId("searchCountTitle").textContent="検索結果 "+state.searchResult.length+"件";
+    byId("searchRows").innerHTML=state.searchResult.map(x=>{
+      const cond=canonicalTrackCondition(x.race?.trackCondition||x.race?.trackCond)||"不明";
+      return "<tr><td>"+esc(x.race_id)+"</td><td>"+displayDate(x.race?.date)+"</td><td>"+esc(x.race?.type||"")+"</td><td>"+esc(x.race?.placeName||"")+"</td><td>"+(x.race?.raceNo||"-")+"</td><td class=\""+(cond==="不良"?"track-condition-bad":"")+"\">"+esc(cond)+"</td><td>"+x.horseNo+"</td><td>"+esc(x.horseName)+"</td><td>"+esc(normalizeSexAgeField(x.sexAge,x.sex,x.age)||"-")+"</td><td>"+esc(x.jockey)+"</td><td>"+(x.popularity||"-")+"</td><td>"+finite(x.odds).toFixed(1)+"</td><td class=\""+(x.ev>=1?"good":"bad")+"\">"+finite(x.ev).toFixed(3)+"</td><td>"+finite(x.ai).toFixed(1)+"</td></tr>"
+    }).join("")||"<tr><td colspan=\"14\" class=\"empty\">該当なし</td></tr>"
+  };
+  renderSql=function(f){
+    const c=[];
+    if(f.place)c.push("place LIKE '%"+f.place+"%'");
+    if(f.horse)c.push("horse LIKE '%"+f.horse+"%'");
+    if(f.jockey)c.push("jockey LIKE '%"+f.jockey+"%'");
+    if(f.trainer)c.push("trainer LIKE '%"+f.trainer+"%'");
+    if(f.type)c.push("type='"+f.type+"'");
+    if(f.surface)c.push("surface='"+f.surface+"'");
+    if(f.className)c.push("className LIKE '%"+f.className+"%'");
+    if(f.track)c.push(f.track==="不明"?"COALESCE(trackCondition,'')=''":"trackCondition='"+f.track+"'");
+    c.push("distance BETWEEN "+f.minDistance+" AND "+f.maxDistance,"popularity <= "+f.maxPopularity,"odds BETWEEN "+f.minOdds+" AND "+f.maxOdds,"ev >= "+f.minEv,"ai >= "+f.minAi);
+    byId("sqlPreview").textContent="SELECT * FROM entries JOIN races USING(race_id)\nWHERE "+c.join(" AND ")+"\nLIMIT "+f.limit+";"
+  };
+  runSearch=async function(){
+    const f=readSearchFilters(),[races,entries,results]=await Promise.all([getAll("races"),getAll("entries"),getAll("results")]),rMap=new Map(races.map(r=>[r.race_id,r])),resMap=new Map(results.filter(hasUsableConfirmedResult).map(r=>[r.race_id,r]));
+    let rows=entries.map(e=>({...e,race:rMap.get(e.race_id),result:resMap.get(e.race_id)})).filter(x=>{
+      const r=x.race||{},cond=canonicalTrackCondition(r.trackCondition||r.trackCond);
+      return(!f.place||String(r.placeName||"").includes(f.place))&&(!f.horse||String(x.horseName||"").includes(f.horse))&&(!f.jockey||String(x.jockey||"").includes(f.jockey))&&(!f.trainer||String(x.trainer||"").includes(f.trainer))&&(!f.type||r.type===f.type)&&(!f.surface||r.surface===f.surface)&&(!f.className||String(r.className||"").includes(f.className))&&(!f.track||(f.track==="不明"?!cond:cond===f.track))&&finite(r.distance)>=f.minDistance&&finite(r.distance)<=f.maxDistance&&(!x.popularity||x.popularity<=f.maxPopularity)&&finite(x.odds)>=f.minOdds&&finite(x.odds)<=f.maxOdds&&finite(x.ev)>=f.minEv&&finite(x.ai)>=f.minAi
+    });
+    const sorts={ai:(a,b)=>finite(b.ai)-finite(a.ai),ev:(a,b)=>finite(b.ev)-finite(a.ev),oddsAsc:(a,b)=>finite(a.odds)-finite(b.odds),oddsDesc:(a,b)=>finite(b.odds)-finite(a.odds),pop:(a,b)=>finite(a.popularity,99)-finite(b.popularity,99),date:(a,b)=>String(a.race?.date||"").localeCompare(String(b.race?.date||""))};
+    rows.sort(sorts[f.sort]||sorts.ai);state.searchResult=rows.slice(0,f.limit);renderSearch();renderSql(f)
+  };
+  const baseBucket=bucket;
+  bucket=function(row,dim){if(dim==="trackCondition")return canonicalTrackCondition(row.race?.trackCondition||row.race?.trackCond)||"不明";return baseBucket(row,dim)};
+  exportSearchCsv=function(){
+    exportCsv("target_search.csv",["race_id","date","type","place","race","track_condition","horse_no","horse_name","sex_age","jockey","trainer","popularity","odds","ev","ai"],state.searchResult.map(x=>[x.race_id,x.race?.date,x.race?.type,x.race?.placeName,x.race?.raceNo,canonicalTrackCondition(x.race?.trackCondition||x.race?.trackCond)||"",x.horseNo,x.horseName,normalizeSexAgeField(x.sexAge,x.sex,x.age),x.jockey,x.trainer,x.popularity,x.odds,x.ev,x.ai]))
+  };
+
+  function capitalValuesFromInputs(){
+    return{
+      initialCapital:Math.max(0,finite(byId("simInitialCapital")?.value,CAPITAL_DEFAULTS.initialCapital)),
+      reserveCapital:Math.max(0,finite(byId("simReserveCapital")?.value,CAPITAL_DEFAULTS.reserveCapital)),
+      capitalPolicy:["fixed","percent","hybrid"].includes(byId("simCapitalPolicy")?.value)?byId("simCapitalPolicy").value:CAPITAL_DEFAULTS.capitalPolicy,
+      riskPercent:clampValue(byId("simRiskPercent")?.value,CAPITAL_DEFAULTS.riskPercent,100),
+      maxDrawdownPercent:clampValue(byId("simMaxDrawdownPercent")?.value,0,100),
+      stopLossAmount:Math.max(0,finite(byId("simStopLossAmount")?.value,CAPITAL_DEFAULTS.stopLossAmount))
+    }
+  }
+  function applyCapitalValues(values={}){
+    const v={...CAPITAL_DEFAULTS,...values};
+    if(byId("simInitialCapital"))byId("simInitialCapital").value=Math.max(0,finite(v.initialCapital,CAPITAL_DEFAULTS.initialCapital));
+    if(byId("simReserveCapital"))byId("simReserveCapital").value=Math.max(0,finite(v.reserveCapital,CAPITAL_DEFAULTS.reserveCapital));
+    if(byId("simCapitalPolicy"))byId("simCapitalPolicy").value=["fixed","percent","hybrid"].includes(v.capitalPolicy)?v.capitalPolicy:CAPITAL_DEFAULTS.capitalPolicy;
+    if(byId("simRiskPercent"))byId("simRiskPercent").value=clampValue(v.riskPercent,.1,100);
+    if(byId("simMaxDrawdownPercent"))byId("simMaxDrawdownPercent").value=clampValue(v.maxDrawdownPercent,0,100);
+    if(byId("simStopLossAmount"))byId("simStopLossAmount").value=Math.max(0,finite(v.stopLossAmount,CAPITAL_DEFAULTS.stopLossAmount));
+    updateCapitalPolicyBadge()
+  }
+  function updateCapitalPolicyBadge(){
+    const labels={hybrid:"固定＋比率の安全側",fixed:"固定1日予算",percent:"現在資金の比率"};
+    const badge=byId("capitalPolicyBadge");if(badge)badge.textContent=labels[byId("simCapitalPolicy")?.value]||labels.hybrid
+  }
+  async function saveCapitalSettings(silent=false){
+    const values=capitalValuesFromInputs();
+    if(values.reserveCapital>values.initialCapital&&!silent)alert("最低維持残高が元入金を超えているため、買い目は停止されます。");
+    state.settings={...state.settings,bankrollInitial:values.initialCapital,bankrollReserve:values.reserveCapital,bankrollPolicy:values.capitalPolicy,bankrollRiskPercent:values.riskPercent,bankrollMaxDrawdownPercent:values.maxDrawdownPercent,bankrollStopLossAmount:values.stopLossAmount};
+    await putOne("settings",{key:"app",value:state.settings});
+    try{localStorage.setItem("TheKeibaCapitalManagementV1",JSON.stringify(values))}catch(_){}
+    updateCapitalPolicyBadge();renderCapitalAnalysis();
+    if(!silent){const el=byId("capitalAlert");el.textContent="元金設定を保存し、次回のSIM買い目配分へ反映しました。";el.className="notice capital-alert good"}
+    return values
+  }
+  function loadCapitalSettings(){
+    let local={};try{local=JSON.parse(localStorage.getItem("TheKeibaCapitalManagementV1")||"{}")}catch(_){}
+    applyCapitalValues({
+      initialCapital:state.settings?.bankrollInitial??local.initialCapital??CAPITAL_DEFAULTS.initialCapital,
+      reserveCapital:state.settings?.bankrollReserve??local.reserveCapital??CAPITAL_DEFAULTS.reserveCapital,
+      capitalPolicy:state.settings?.bankrollPolicy??local.capitalPolicy??CAPITAL_DEFAULTS.capitalPolicy,
+      riskPercent:state.settings?.bankrollRiskPercent??local.riskPercent??CAPITAL_DEFAULTS.riskPercent,
+      maxDrawdownPercent:state.settings?.bankrollMaxDrawdownPercent??local.maxDrawdownPercent??CAPITAL_DEFAULTS.maxDrawdownPercent,
+      stopLossAmount:state.settings?.bankrollStopLossAmount??local.stopLossAmount??CAPITAL_DEFAULTS.stopLossAmount
+    })
+  }
+
+  const baseReadSimConfigV129=readSimConfig;
+  readSimConfig=function(){return{...baseReadSimConfigV129(),...capitalValuesFromInputs()}};
+
+  function roundedPoints(amount,unit){return Math.max(0,Math.floor(Math.max(0,finite(amount))/unit))}
+  function effectiveDayBudget(c,capital){
+    const unit=Math.max(1,finite(c.unit,100)),available=Math.max(0,capital-finite(c.reserveCapital,0));
+    const fixed=Math.min(available,Math.max(0,finite(c.dailyBudget,0)));
+    const percent=Math.min(available,Math.max(0,capital)*clampValue(c.riskPercent,.1,100)/100);
+    const raw=c.capitalPolicy==="fixed"?fixed:c.capitalPolicy==="percent"?percent:Math.min(fixed,percent);
+    return roundedPoints(raw,unit)*unit
+  }
+  function capitalStopReason(ctx,c){
+    if(ctx.capital<=finite(c.reserveCapital,0))return"最低維持残高に到達";
+    if(finite(c.stopLossAmount,0)>0&&ctx.initial-ctx.capital>=finite(c.stopLossAmount,0))return"通算損失上限に到達";
+    const dd=ctx.peak-ctx.capital,ddp=ctx.peak>0?dd/ctx.peak*100:0;
+    if(finite(c.maxDrawdownPercent,0)>0&&ddp>=finite(c.maxDrawdownPercent,0))return"最大ドローダウン停止率に到達";
+    return""
+  }
+  function chooseAffordableTickets(item,amount,c){
+    const unit=Math.max(1,finite(c.unit,100)),raceCap=finite(c.raceBudget,0)>0?finite(c.raceBudget):Number.MAX_SAFE_INTEGER;
+    const points=Math.min(roundedPoints(amount,unit),roundedPoints(raceCap,unit));
+    if(!item.candidateTickets?.length||points<=0)return[];
+    if(c.noForceFill&&points<item.candidateTickets.length)return[];
+    return item.candidateTickets.slice(0,points)
+  }
+  function settleCapitalItem(item,planned,c,ctx,effectiveBudget,plannedReason=""){
+    item.capitalBefore=ctx.capital;item.effectiveDailyBudget=effectiveBudget;
+    let reason=capitalStopReason(ctx,c),tickets=reason?[]:[...(planned||[])];
+    const unit=Math.max(1,finite(c.unit,100)),capitalPoints=roundedPoints(ctx.capital-finite(c.reserveCapital,0),unit);
+    if(tickets.length>capitalPoints){
+      reason=reason||"最低維持残高を守るため縮小";
+      tickets=c.noForceFill?[]:tickets.slice(0,capitalPoints)
+    }
+    item.purchaseTickets=tickets;
+    const invest=tickets.length*unit;
+    let pay=0;for(const ticket of tickets)pay+=finite(ticketPayout(item.result,ticket))*(unit/100);
+    ctx.capital=Math.max(0,ctx.capital-invest+pay);ctx.peak=Math.max(ctx.peak,ctx.capital);
+    item.capitalAfter=ctx.capital;item.capitalDrawdown=Math.max(0,ctx.peak-ctx.capital);item.capitalDrawdownPercent=ctx.peak>0?item.capitalDrawdown/ctx.peak*100:0;
+    item.budgetBlocked=reason||plannedReason||"";
+    const afterReason=capitalStopReason(ctx,c);if(afterReason&&!item.budgetBlocked)item.stopTriggered=afterReason;
+    return{invest,pay,reason:item.budgetBlocked,afterReason}
+  }
+  function capitalContext(c){const initial=Math.max(0,finite(c.initialCapital,CAPITAL_DEFAULTS.initialCapital));return{initial,capital:initial,peak:initial}}
+
+  allocateSequentialCandidates=function(items,c){
+    const ctx=capitalContext(c),days=new Map(),mainPlaces=new Map();
+    if(c.reserveMain)for(const item of items)if(finite(item.race?.raceNo)>=finite(c.mainRaceNo,11)){const set=mainPlaces.get(item.race.date)||new Set();set.add(item.race.placeName);mainPlaces.set(item.race.date,set)}
+    for(const item of items){
+      const key=item.race.date;
+      let day=days.get(key);
+      if(!day){const budget=effectiveDayBudget(c,ctx.capital);day={budget,remaining:budget,boughtRaces:0,reached:new Set()};days.set(key,day)}
+      if(c.reserveMain&&finite(item.race.raceNo)>=finite(c.mainRaceNo,11))day.reached.add(item.race.placeName);
+      const unreached=c.reserveMain?[...(mainPlaces.get(key)||[])].filter(place=>!day.reached.has(place)).length:0;
+      const reserved=unreached*Math.max(0,finite(c.mainReserveAmount,0)),available=Math.max(0,day.remaining-reserved);
+      let reason="",planned=[];
+      if(day.boughtRaces>=finite(c.maxRaces,Number.MAX_SAFE_INTEGER))reason="1日最大購入Rに到達";
+      else if(!item.candidateTickets?.length)reason="条件に合う候補なし";
+      else{planned=chooseAffordableTickets(item,available,c);if(!planned.length)reason=available<=0?"日次予算を消化":"全候補を安全に買える予算なし"}
+      const settled=settleCapitalItem(item,planned,c,ctx,day.budget,reason);
+      day.remaining=Math.max(0,day.remaining-settled.invest);if(settled.invest>0)day.boughtRaces++;
+      item.remaining=day.remaining
+    }
+  };
+  allocateDailyRankCandidates=function(items,c){
+    const ctx=capitalContext(c),groups=new Map();
+    for(const item of items){const list=groups.get(item.race.date)||[];list.push(item);groups.set(item.race.date,list)}
+    for(const date of [...groups.keys()].sort()){
+      const list=groups.get(date),budget=effectiveDayBudget(c,ctx.capital),ranked=[...list].sort((a,b)=>finite(b.rankScore)-finite(a.rankScore)||String(a.race.placeName).localeCompare(String(b.race.placeName))||finite(a.race.raceNo)-finite(b.race.raceNo));
+      let plannedRemaining=budget,bought=0;
+      for(const item of ranked){
+        item._capitalPlan=[];item._capitalPlanReason="";
+        if(bought>=finite(c.maxRaces,Number.MAX_SAFE_INTEGER))item._capitalPlanReason="1日最大購入Rに到達";
+        else if(!item.candidateTickets?.length)item._capitalPlanReason="条件に合う候補なし";
+        else{item._capitalPlan=chooseAffordableTickets(item,plannedRemaining,c);if(item._capitalPlan.length){plannedRemaining-=item._capitalPlan.length*Math.max(1,finite(c.unit,100));bought++}else item._capitalPlanReason=plannedRemaining<=0?"日次予算を消化":"全候補を安全に買える予算なし"}
+      }
+      let actualRemaining=budget;
+      for(const item of list){
+        let planned=item._capitalPlan||[];
+        if(planned.length*Math.max(1,finite(c.unit,100))>actualRemaining)planned=chooseAffordableTickets(item,actualRemaining,c);
+        const settled=settleCapitalItem(item,planned,c,ctx,budget,item._capitalPlanReason||"日次ランキング対象外");
+        actualRemaining=Math.max(0,actualRemaining-settled.invest);item.remaining=actualRemaining;
+        delete item._capitalPlan;delete item._capitalPlanReason
+      }
+    }
+  };
+
+  function computeCapitalReport(rows=state.simResult,config=capitalValuesFromInputs()){
+    const c={...capitalValuesFromInputs(),...(config||{})},initial=Math.max(0,finite(c.initialCapital,CAPITAL_DEFAULTS.initialCapital)),reserve=Math.max(0,finite(c.reserveCapital,CAPITAL_DEFAULTS.reserveCapital));
+    let capital=initial,peak=initial,maxDrawdown=0,maxDrawdownPercent=0;
+    const firstStored=rows?.find(row=>Object.prototype.hasOwnProperty.call(row||{},"capitalBefore")),useStoredCapital=!!firstStored&&Math.abs(finite(firstStored.capitalBefore,initial)-initial)<.5;
+    const groups=new Map(),ordered=[];
+    for(const row of rows||[]){
+      const date=String(row.race?.date||row.date||"不明"),before=useStoredCapital&&Object.prototype.hasOwnProperty.call(row,"capitalBefore")?finite(row.capitalBefore,capital):capital;
+      capital=useStoredCapital&&Object.prototype.hasOwnProperty.call(row,"capitalAfter")?finite(row.capitalAfter,before+finite(row.profit)):before+finite(row.profit);
+      peak=Math.max(peak,capital);const dd=Math.max(0,peak-capital),ddp=peak>0?dd/peak*100:0;maxDrawdown=Math.max(maxDrawdown,dd);maxDrawdownPercent=Math.max(maxDrawdownPercent,ddp);
+      let day=groups.get(date);
+      if(!day){day={date,opening:before,budget:finite(row.effectiveDailyBudget,c.dailyBudget),invest:0,pay:0,profit:0,closing:capital,drawdown:dd,drawdownPercent:ddp,reasons:new Set()};groups.set(date,day);ordered.push(day)}
+      day.budget=Math.max(day.budget,finite(row.effectiveDailyBudget,c.dailyBudget));day.invest+=finite(row.invest);day.pay+=finite(row.pay);day.profit+=finite(row.profit);day.closing=capital;day.drawdown=Math.max(day.drawdown,dd);day.drawdownPercent=Math.max(day.drawdownPercent,ddp);if(row.budgetBlocked)day.reasons.add(String(row.budgetBlocked));if(row.stopTriggered)day.reasons.add(String(row.stopTriggered))
+    }
+    let currentStreak=0,maxLosingStreak=0;for(const d of ordered){if(d.profit<0){currentStreak++;maxLosingStreak=Math.max(maxLosingStreak,currentStreak)}else currentStreak=0}
+    const totalBet=ordered.reduce((s,d)=>s+d.invest,0),totalBudget=ordered.reduce((s,d)=>s+d.budget,0),finalCapital=ordered.length?ordered.at(-1).closing:initial;
+    return{config:c,initial,reserve,finalCapital,profit:finalCapital-initial,capitalReturn:initial?(finalCapital-initial)/initial*100:0,maxDrawdown,maxDrawdownPercent,totalBet,totalBudget,budgetUsage:totalBudget?totalBet/totalBudget*100:0,available:Math.max(0,finalCapital-reserve),maxLosingStreak,days:ordered}
+  }
+  function renderCapitalAnalysis(rows=state.simResult,config=null){
+    if(!byId("capitalDailyRows"))return;
+    const report=computeCapitalReport(rows,config||capitalValuesFromInputs());
+    byId("capitalInitialKpi").textContent=moneyText(report.initial);byId("capitalCurrentKpi").textContent=moneyText(report.finalCapital);byId("capitalCurrentKpi").className=report.finalCapital>=report.initial?"good":"bad";
+    byId("capitalReturnKpi").textContent=percentText(report.capitalReturn);byId("capitalReturnKpi").className=report.capitalReturn>=0?"good":"bad";
+    byId("capitalDrawdownKpi").textContent=moneyText(report.maxDrawdown)+" / "+percentText(report.maxDrawdownPercent);byId("capitalUsageKpi").textContent=percentText(report.budgetUsage);byId("capitalAvailableKpi").textContent=moneyText(report.available);
+    byId("capitalDailyRows").innerHTML=report.days.map(day=>{
+      const roi=day.invest?day.pay/day.invest*100:0,reasons=[...day.reasons],status=reasons.length?reasons.join("・"):(day.profit>=0?"正常":"予算内");
+      return "<tr><td>"+displayDate(day.date)+"</td><td class=\"num\">"+moneyText(day.opening)+"</td><td class=\"num\">"+moneyText(day.budget)+"</td><td class=\"num\">"+moneyText(day.invest)+"</td><td class=\"num\">"+moneyText(day.pay)+"</td><td class=\"num "+(day.profit>=0?"good":"bad")+"\">"+moneyText(day.profit)+"</td><td class=\"num\">"+moneyText(day.closing)+"</td><td class=\"num\">"+percentText(roi)+"</td><td class=\"num\">"+moneyText(day.drawdown)+" / "+percentText(day.drawdownPercent)+"</td><td class=\""+(reasons.length?"capital-stop":"")+"\">"+esc(status)+"</td></tr>"
+    }).join("")||"<tr><td colspan=\"10\" class=\"empty\">SIM実行後に日別資金管理を表示します</td></tr>";
+    const warnings=[];
+    if(report.finalCapital<=report.reserve)warnings.push("最低維持残高に到達しています。新規購入を停止します。");
+    if(report.config.maxDrawdownPercent>0&&report.maxDrawdownPercent>=report.config.maxDrawdownPercent)warnings.push("最大ドローダウン停止率に到達しています。");
+    if(report.config.stopLossAmount>0&&-report.profit>=report.config.stopLossAmount)warnings.push("通算損失停止額に到達しています。");
+    if(report.maxLosingStreak>=3)warnings.push("連続赤字日 "+report.maxLosingStreak+"日。設定の見直し候補です。");
+    const alert=byId("capitalAlert");
+    if(warnings.length){alert.textContent=warnings.join("\n");alert.className="notice capital-alert bad"}
+    else if(report.profit<0){alert.textContent="元金は "+moneyText(-report.profit)+" 減少していますが、安全停止条件の範囲内です。余力 "+moneyText(report.available)+"。";alert.className="notice capital-alert warn"}
+    else{alert.textContent="安全条件の範囲内です。元金損益 "+moneyText(report.profit)+"、最大DD "+moneyText(report.maxDrawdown)+"、余力 "+moneyText(report.available)+"。";alert.className="notice capital-alert good"}
+    updateCapitalPolicyBadge();return report
+  }
+  const baseRenderSimulationV129=renderSimulation;
+  renderSimulation=function(summary=null){
+    const result=baseRenderSimulationV129(summary),report=renderCapitalAnalysis(state.simResult,summary?.initialCapital!==undefined?{...capitalValuesFromInputs(),initialCapital:summary.initialCapital}:null);
+    const first=(state.simResult||[]).find(row=>Object.prototype.hasOwnProperty.call(row||{},"capitalBefore")),useStored=!!first&&Math.abs(finite(first.capitalBefore,report.initial)-report.initial)<.5;let running=report.initial;
+    const values=(state.simResult||[]).map(row=>{running=useStored&&Object.prototype.hasOwnProperty.call(row,"capitalAfter")?finite(row.capitalAfter,running+finite(row.profit)):running+finite(row.profit);return running});
+    if(byId("bankChart"))drawLineChart(byId("bankChart"),values,"--accent");
+    const help=byId("simLiveGraphHelp");if(help)help.textContent="元入金 "+moneyText(report.initial)+" から、払戻を反映した実残高を描画します。";
+    const foot=byId("simLiveGraphFoot");if(foot)foot.textContent="現在資金 "+moneyText(report.finalCapital)+" ／ 元金損益 "+moneyText(report.profit)+" ／ 最大DD "+moneyText(report.maxDrawdown)+"（"+percentText(report.maxDrawdownPercent)+"）";
+    return result
+  };
+
+  const baseTextIoApplySimConfigV129=textIoApplySimConfig;
+  textIoApplySimConfig=async function(config={}){
+    await baseTextIoApplySimConfigV129(config);
+    applyCapitalValues({
+      initialCapital:config.initialCapital??config.bankrollInitial??CAPITAL_DEFAULTS.initialCapital,
+      reserveCapital:config.reserveCapital??config.bankrollReserve??CAPITAL_DEFAULTS.reserveCapital,
+      capitalPolicy:config.capitalPolicy??config.bankrollPolicy??CAPITAL_DEFAULTS.capitalPolicy,
+      riskPercent:config.riskPercent??config.bankrollRiskPercent??CAPITAL_DEFAULTS.riskPercent,
+      maxDrawdownPercent:config.maxDrawdownPercent??config.bankrollMaxDrawdownPercent??CAPITAL_DEFAULTS.maxDrawdownPercent,
+      stopLossAmount:config.stopLossAmount??config.bankrollStopLossAmount??CAPITAL_DEFAULTS.stopLossAmount
+    });
+    renderCapitalAnalysis()
+  };
+  const baseTextIoNormalizeSimRowsV129=textIoNormalizeSimRows;
+  textIoNormalizeSimRows=function(rows=[]){
+    const normalized=baseTextIoNormalizeSimRowsV129(rows);
+    return normalized.map((row,i)=>{
+      const src=rows[i]||{};return{...row,capitalBefore:finite(src.capitalBefore,undefined),capitalAfter:finite(src.capitalAfter,undefined),effectiveDailyBudget:finite(src.effectiveDailyBudget,0),capitalDrawdown:finite(src.capitalDrawdown,0),capitalDrawdownPercent:finite(src.capitalDrawdownPercent,0),budgetBlocked:String(src.budgetBlocked||""),stopTriggered:String(src.stopTriggered||"")}
+    })
+  };
+  const baseTextIoBuildDataV129=textIoBuildData;
+  textIoBuildData=async function(viewId){
+    if(viewId!=="database")return baseTextIoBuildDataV129(viewId);
+    const data={forms:textIoCollectForms(viewId),app:"The競馬 Ultimate NEXT Professional",version:APP_VERSION};
+    for(const store of DB_EXPORT_STORES)if(state.db?.objectStoreNames.contains(store))data[store]=await getAll(store);
+    return data
+  };
+  const baseTextIoImportCompleteV129=textIoImportComplete;
+  textIoImportComplete=async function(data={}){
+    await baseTextIoImportCompleteV129(data);
+    for(const store of DB_EXPORT_STORES)if(!["races","entries","results","strategies","simulations","snapshots","favorites","settings"].includes(store)&&Array.isArray(data[store])&&state.db?.objectStoreNames.contains(store))await putMany(store,data[store]);
+    await refreshAll()
+  };
+
+  function ensureJsonName(value,fallback){
+    let name=String(value||fallback||"data").trim().replace(/[\\/:*?"<>|\u0000-\u001f]/g,"_").replace(/\s+/g,"_").slice(0,120)||fallback||"data";
+    return/\.json$/i.test(name)?name:name+".json"
+  }
+  function fileStatus(kind,message,bad=false){
+    const id=kind==="sim"?"simJsonStatus":"dbJsonStatus",el=byId(id);if(el){el.textContent=message;el.classList.toggle("bad",!!bad)}
+  }
+  function updateFileDestination(kind,message=""){
+    const s=FILE_SESSION[kind],dest=byId(kind==="sim"?"simJsonDestination":"dbJsonDestination"),badge=byId(kind==="sim"?"simJsonFileBadge":"dbJsonFileBadge");
+    let text=message;
+    if(!text&&s.directory)text="選択フォルダ: "+(s.directory.name||"選択済み")+" ／ ファイル: "+(s.name||"未保存");
+    if(!text&&s.handle)text="選択ファイル: "+(s.handle.name||s.name||"選択済み")+"（この画面中は直接上書き可能）";
+    if(!text)text="未選択。保存時にフォルダとファイル名を指定します。iPadでは共有メニューの「ファイルに保存」を使用します。";
+    if(dest)dest.innerHTML="<strong>保存先:</strong> "+esc(text);
+    if(badge)badge.textContent=s.name||s.directory?.name||"保存先未選択"
+  }
+  async function ensureWritePermission(handle){
+    if(!handle)return false;
+    if(typeof handle.queryPermission!=="function")return true;
+    let p=await handle.queryPermission({mode:"readwrite"});if(p!=="granted"&&typeof handle.requestPermission==="function")p=await handle.requestPermission({mode:"readwrite"});
+    return p==="granted"
+  }
+  async function writeFileHandle(handle,text){
+    if(!await ensureWritePermission(handle))throw new Error("ファイルの書込みが許可されませんでした");
+    const writable=await handle.createWritable();try{await writable.write(new Blob([text],{type:"application/json;charset=utf-8"}))}finally{await writable.close()}
+  }
+  async function chooseFolder(kind){
+    if(typeof window.showDirectoryPicker!=="function"){
+      fileStatus(kind,"このブラウザはフォルダの事前選択に未対応です。名前付き保存を押し、iPadでは共有メニューの「ファイルに保存」からフォルダを選んでください。");
+      updateFileDestination(kind,"保存ボタンからフォルダを指定します（iPadは「ファイルに保存」）。");return
+    }
+    try{const dir=await window.showDirectoryPicker({mode:"readwrite"});if(!dir)return;FILE_SESSION[kind].directory=dir;FILE_SESSION[kind].handle=null;updateFileDestination(kind);fileStatus(kind,"保存フォルダを選択しました: "+(dir.name||"選択済み"))}catch(e){if(e.name!=="AbortError")fileStatus(kind,"フォルダ選択失敗: "+e.message,true)}
+  }
+  async function saveJsonText(kind,filename,text,{overwrite=false}={}){
+    const session=FILE_SESSION[kind];filename=ensureJsonName(filename,kind==="sim"?"TheKeiba_SIM":"TheKeiba_DB");
+    if(session.directory){
+      if(!await ensureWritePermission(session.directory))throw new Error("保存フォルダへの書込みが許可されませんでした");
+      let handle=null,exists=false;try{handle=await session.directory.getFileHandle(filename);exists=true}catch(e){if(e.name!=="NotFoundError")throw e}
+      if(exists&&!overwrite&&!confirm("「"+filename+"」は選択フォルダに存在します。上書きしますか？"))throw new DOMException("保存を中止しました","AbortError");
+      if(!handle)handle=await session.directory.getFileHandle(filename,{create:true});
+      await writeFileHandle(handle,text);session.handle=handle;session.name=filename;updateFileDestination(kind);return{mode:"directory",name:filename}
+    }
+    if(overwrite&&session.handle){await writeFileHandle(session.handle,text);session.name=session.handle.name||filename;updateFileDestination(kind);return{mode:"handle",name:session.name}}
+    if(typeof window.showSaveFilePicker==="function"&&window.isSecureContext){
+      let handle;
+      if(overwrite&&typeof window.showOpenFilePicker==="function"){
+        const selected=await window.showOpenFilePicker({multiple:false,types:[{description:"JSON",accept:{"application/json":[".json"]}}]});handle=selected?.[0]
+      }else handle=await window.showSaveFilePicker({suggestedName:filename,types:[{description:"JSON",accept:{"application/json":[".json"]}}]});
+      if(!handle)throw new DOMException("保存を中止しました","AbortError");
+      await writeFileHandle(handle,text);session.handle=handle;session.name=handle.name||filename;updateFileDestination(kind);return{mode:"handle",name:session.name}
+    }
+    const file=new File([text],filename,{type:"application/json;charset=utf-8",lastModified:Date.now()});
+    if(typeof navigator.share==="function"&&(!navigator.canShare||navigator.canShare({files:[file]}))){
+      await navigator.share({title:kind==="sim"?"The競馬 SIM JSON":"The競馬 DB JSON",text:overwrite?"同名ファイルを選び「置き換える」を選択してください。":"「ファイルに保存」を選び、保存フォルダを指定してください。",files:[file]});
+      session.handle=null;session.name=filename;updateFileDestination(kind,filename+"（iPad共有メニューで保存。上書き時は同名を置換）");return{mode:"share",name:filename}
+    }
+    downloadText(filename,text,"application/json;charset=utf-8");session.handle=null;session.name=filename;updateFileDestination(kind,filename+"（ブラウザのダウンロード先）");return{mode:"download",name:filename}
+  }
+  function simulationSummary(rows){
+    const basic=textIoSimulationSummary(rows||[]),report=computeCapitalReport(rows||[],readSimConfig());
+    return{...basic,initialCapital:report.initial,finalCapital:report.finalCapital,capitalReturn:report.capitalReturn,maxDrawdown:report.maxDrawdown,maxDrawdownPercent:report.maxDrawdownPercent,budgetUsage:report.budgetUsage}
+  }
+  async function buildSimJsonPayload(){
+    const scope=byId("simJsonScope")?.value||"current",config=readSimConfig(),rows=safeJsonClone(state.simResult||[]),summary=simulationSummary(rows),rawReport=computeCapitalReport(rows,config),capitalReport={...rawReport,days:rawReport.days.map(day=>({...day,reasons:[...day.reasons]}))},payload={format:"TheKeibaSimulationJSON",schema:1,app:"The競馬 Ultimate NEXT Professional",appVersion:APP_VERSION,savedAt:new Date().toISOString(),scope,current:{config,summary,rows},capitalReport};
+    if(scope==="all")payload.simulations=await getAll("simulations");
+    return payload
+  }
+  async function saveSimJson(overwrite=false){
+    try{
+      fileStatus("sim","SIM JSONを作成中です…");const payload=await buildSimJsonPayload(),filename=ensureJsonName(overwrite&&FILE_SESSION.sim.name?FILE_SESSION.sim.name:byId("simJsonName")?.value,"TheKeiba_SIM");
+      const result=await saveJsonText("sim",filename,JSON.stringify(payload,null,2),{overwrite});
+      fileStatus("sim",(overwrite?"上書き保存しました":"名前付き保存しました")+"\nファイル: "+result.name+"\n明細: "+payload.current.rows.length+"R"+(payload.simulations?" ／ 履歴: "+payload.simulations.length+"件":""))
+    }catch(e){if(e.name!=="AbortError")fileStatus("sim","SIM JSON保存失敗: "+e.message,true)}
+  }
+  async function importSimJsonFile(file){
+    try{
+      const raw=JSON.parse(await file.text()),current=raw.format==="TheKeibaSimulationJSON"?raw.current:raw.format==="TheKeibaTextClipboard"?(raw.data||{}):(raw.current||raw),rows=current.rows||raw.rows||[];
+      if(!Array.isArray(rows))throw new Error("SIM明細 rows がありません");
+      if(!confirm(file.name+" を読み込み、現在のSIM画面へ反映しますか？"))return;
+      const config=current.config||raw.config||{};await textIoApplySimConfig(config);
+      state.simResult=textIoNormalizeSimRows(rows);
+      const summary={...(current.summary||raw.summary||simulationSummary(state.simResult))};
+      if(Array.isArray(raw.simulations)&&raw.simulations.length)await putMany("simulations",raw.simulations);
+      else if(state.simResult.length)await addOne("simulations",{createdAt:new Date().toISOString(),importedFrom:file.name,config:readSimConfig(),summary,rows:state.simResult.map(x=>({...x,result:undefined}))});
+      renderSimulation(summary);await renderDashboard();byId("simJsonName").value=file.name.replace(/\.json$/i,"");FILE_SESSION.sim.name=file.name;updateFileDestination("sim",file.name+"（読込元。ブラウザ制限により直接上書きできない場合は同名保存で置換）");
+      fileStatus("sim","SIM JSONを読み込みました\n明細: "+state.simResult.length+"R"+(raw.simulations?" ／ 履歴: "+raw.simulations.length+"件":""))
+    }catch(e){fileStatus("sim","SIM JSON読込失敗: "+e.message,true)}
+  }
+
+  async function buildDbJsonPayload(){
+    const payload={format:"TheKeibaCompleteDatabaseJSON",schema:1,app:"The競馬 Ultimate NEXT Professional",version:APP_VERSION,exportedAt:new Date().toISOString(),stores:{}};
+    for(const store of DB_EXPORT_STORES)if(state.db?.objectStoreNames.contains(store))payload.stores[store]=await getAll(store);
+    return payload
+  }
+  async function saveDbJson(overwrite=false){
+    try{
+      fileStatus("db","全DB JSONを作成中です…");const payload=await buildDbJsonPayload(),filename=ensureJsonName(overwrite&&FILE_SESSION.db.name?FILE_SESSION.db.name:byId("dbJsonName")?.value,"TheKeiba_Ultimate_NEXT_Complete_DBMS");
+      const result=await saveJsonText("db",filename,JSON.stringify(payload,null,2),{overwrite});
+      const total=Object.values(payload.stores).reduce((s,rows)=>s+(Array.isArray(rows)?rows.length:0),0);
+      fileStatus("db",(overwrite?"上書き保存しました":"フォルダ指定保存しました")+"\nファイル: "+result.name+"\n全 "+Object.keys(payload.stores).length+"テーブル ／ "+total.toLocaleString()+"件")
+    }catch(e){if(e.name!=="AbortError")fileStatus("db","全DB JSON保存失敗: "+e.message,true)}
+  }
+  async function importDbJsonFile(file){
+    try{
+      const data=JSON.parse(await file.text()),stores=data.stores||data.payload?.stores||Object.fromEntries(DB_EXPORT_STORES.filter(k=>Array.isArray(data[k])).map(k=>[k,data[k]]));
+      const names=Object.keys(stores).filter(store=>Array.isArray(stores[store])&&state.db?.objectStoreNames.contains(store));
+      if(!names.length)throw new Error("対応するDBテーブルがありません");
+      const total=names.reduce((s,k)=>s+stores[k].length,0);
+      if(!confirm(file.name+" の "+names.length+"テーブル "+total.toLocaleString()+"件を追加・更新しますか？"))return;
+      fileStatus("db","DB JSONを読み込み中です…");
+      for(const store of names)if(stores[store].length)await putMany(store,stores[store]);
+      if(window.__THEKEIBA_V130__?.repairClassAgeData)await window.__THEKEIBA_V130__.repairClassAgeData();
+      const app=await getOne("settings","app");if(app?.value){state.settings={...state.settings,...app.value};applySettings(false);loadCapitalSettings()}
+      await refreshAll();FILE_SESSION.db.name=file.name;byId("dbJsonName").value=file.name.replace(/\.json$/i,"");updateFileDestination("db",file.name+"（読込元）");
+      fileStatus("db","DB JSONを追加・更新しました\n"+names.length+"テーブル ／ "+total.toLocaleString()+"件")
+    }catch(e){fileStatus("db","DB JSON読込失敗: "+e.message,true)}
+  }
+
+  function dbTextStatus(message,bad=false){const el=byId("dbTextStatus");if(el){el.textContent=message;el.classList.toggle("bad",!!bad)}}
+  function tsvCell(value){
+    let text=value!==null&&typeof value==="object"?JSON.stringify(value):String(value??"");
+    if(/[\t\r\n"]/.test(text))text='"'+text.replaceAll('"','""')+'"';
+    return text
+  }
+  function dbRowsToTsv(rows){
+    const fields=[];for(const row of rows)for(const key of Object.keys(row||{}))if(!fields.includes(key))fields.push(key);
+    if(!fields.length)return"";
+    return[fields.map(tsvCell).join("\t"),...rows.map(row=>fields.map(key=>tsvCell(row?.[key])).join("\t"))].join("\n")
+  }
+  function dbTextParseScalar(value,key){
+    const text=String(value??"");if(text==="")return"";
+    if(/^(?:true|false)$/i.test(text))return text.toLowerCase()==="true";if(text==="null")return null;
+    if(/^[\[{]/.test(text))try{return JSON.parse(text)}catch(_){}
+    if(!/(?:^|_)(?:id|date|time|name|type|kind|status|source|url|key)$/i.test(key)&&!/^(?:race_id|horseId|jockeyId|trainerId)$/i.test(key)&&/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/.test(text))return Number(text);
+    return text
+  }
+  function parseDbText(text,format){
+    if(format==="json"){const data=JSON.parse(text);return Array.isArray(data)?data:Array.isArray(data.rows)?data.rows:[]}
+    if(format==="ndjson")return text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean).map((line,i)=>{try{return JSON.parse(line)}catch(e){throw new Error((i+1)+"行目: "+e.message)}});
+    const grid=textIoCsvParse(text,"\t");if(grid.length<2)return[];const headers=grid[0].map(x=>String(x).trim());
+    return grid.slice(1).filter(row=>row.some(v=>v!=="")).map(row=>Object.fromEntries(headers.map((key,i)=>[key,dbTextParseScalar(row[i],key)])))
+  }
+  async function generateDbText(){
+    try{
+      const store=byId("dbTextStore").value;if(!state.db?.objectStoreNames.contains(store))throw new Error("このDBテーブルは未作成です");
+      const rows=await getAll(store),format=byId("dbTextFormat").value;
+      byId("dbTextArea").value=format==="json"?JSON.stringify(rows,null,2):format==="ndjson"?rows.map(JSON.stringify).join("\n"):dbRowsToTsv(rows);
+      byId("dbTextCountBadge").textContent=rows.length.toLocaleString()+"件";dbTextStatus(store+" を "+(format==="json"?"JSON配列":format==="ndjson"?"JSON Lines":"TSV")+" で作成しました。\n"+byId("dbTextArea").value.length.toLocaleString()+"文字")
+    }catch(e){dbTextStatus("テキスト作成失敗: "+e.message,true)}
+  }
+  async function copyTextArea(areaId,statusFn){
+    const area=byId(areaId),text=area?.value||"";if(!text)return statusFn("コピーするデータがありません。",true);
+    try{if(navigator.clipboard?.writeText&&window.isSecureContext)await navigator.clipboard.writeText(text);else{area.focus();area.select();if(!document.execCommand("copy"))throw new Error("copy未対応")}statusFn(text.length.toLocaleString()+"文字をコピーしました。")}catch(_){area.focus();area.select();statusFn("自動コピーできません。選択済みなので長押ししてコピーしてください。",true)}
+  }
+  async function pasteTextArea(areaId,statusFn){
+    const area=byId(areaId);try{if(!navigator.clipboard?.readText||!window.isSecureContext)throw new Error("readText未対応");const text=await navigator.clipboard.readText();if(text)area.value=text;statusFn(text.length.toLocaleString()+"文字を貼り付けました。")}catch(_){area.focus();statusFn("入力欄を長押しして「ペースト」を選んでください。iPadではこの操作が必要な場合があります。",true)}
+  }
+  async function applyDbText(){
+    const store=byId("dbTextStore").value,format=byId("dbTextFormat").value,mode=byId("dbTextImportMode").value,text=byId("dbTextArea").value.trim();
+    if(!text)return dbTextStatus("貼り付けデータがありません。",true);
+    try{
+      if(!state.db?.objectStoreNames.contains(store))throw new Error("このDBテーブルは未作成です");
+      const rows=parseDbText(text,format);if(!rows.length)throw new Error("登録できる行がありません");
+      if(!confirm(store+" へ "+rows.length.toLocaleString()+"件を"+(mode==="replace"?"入れ替え":"追加・更新")+"しますか？"))return;
+      dbTextStatus(store+" へ反映中です…");let before=null;
+      if(mode==="replace")before=await getAll(store);
+      try{if(mode==="replace")await clearStore(store);await putMany(store,rows);if(["races","entries","horses"].includes(store)&&window.__THEKEIBA_V130__?.repairClassAgeData)await window.__THEKEIBA_V130__.repairClassAgeData()}
+      catch(e){if(mode==="replace"&&before){await clearStore(store);if(before.length)await putMany(store,before)}throw e}
+      const app=store==="settings"?await getOne("settings","app"):null;if(app?.value){state.settings={...state.settings,...app.value};applySettings(false);loadCapitalSettings()}
+      await refreshAll();byId("dbTextCountBadge").textContent=rows.length.toLocaleString()+"件";dbTextStatus(store+" へ "+rows.length.toLocaleString()+"件を"+(mode==="replace"?"入れ替え":"追加・更新")+"しました。")
+    }catch(e){dbTextStatus("DB反映失敗: "+e.message,true)}
+  }
+
+  async function repairTrackConditions(){
+    if(!state.db?.objectStoreNames.contains("races"))return 0;
+    const races=await getAll("races"),changed=[];
+    for(const row of races){
+      const cond=canonicalTrackCondition(row.trackCondition||row.trackCond,[row.meta,row.raceData,row.raceData01,row.raceData02].filter(Boolean).join(" "));
+      if(cond&&(row.trackCondition!==cond||row.trackCond!==cond))changed.push({...row,trackCondition:cond,trackCond:cond,updatedAt:row.updatedAt||new Date().toISOString()})
+    }
+    if(changed.length)await putMany("races",changed);return changed.length
+  }
+  async function updateDbTextBadge(){
+    const store=byId("dbTextStore")?.value;if(!store||!state.db?.objectStoreNames.contains(store))return;
+    byId("dbTextCountBadge").textContent=(await countStore(store)).toLocaleString()+"件"
+  }
+  window.__THEKEIBA_V129__={canonicalTrackCondition,capitalValuesFromInputs,effectiveDayBudget,computeCapitalReport,parseDbText,dbRowsToTsv,buildSimJsonPayload,buildDbJsonPayload};
+  function wireAdvancedFeatures(){
+    if(byId("capitalManagementCard")?.dataset.wired)return;
+    byId("capitalManagementCard").dataset.wired="1";loadCapitalSettings();
+    byId("capitalSettingsSaveBtn").onclick=()=>saveCapitalSettings();byId("capitalAnalyzeBtn").onclick=()=>renderCapitalAnalysis();
+    byId("capitalResetDefaultsBtn").onclick=async()=>{if(!confirm("元金管理を安全初期値へ戻しますか？"))return;applyCapitalValues(CAPITAL_DEFAULTS);await saveCapitalSettings(true);renderCapitalAnalysis()};
+    ["simInitialCapital","simReserveCapital","simCapitalPolicy","simRiskPercent","simMaxDrawdownPercent","simStopLossAmount"].forEach(id=>byId(id)?.addEventListener("change",()=>{updateCapitalPolicyBadge();renderCapitalAnalysis()}));
+    byId("simChooseFolderBtn").onclick=()=>chooseFolder("sim");byId("simJsonSaveAsBtn").onclick=()=>saveSimJson(false);byId("simJsonOverwriteBtn").onclick=()=>saveSimJson(true);byId("simJsonLoadBtn").onclick=()=>byId("simJsonFileInput").click();
+    byId("simJsonFileInput").onchange=async e=>{const file=e.target.files?.[0];if(file)await importSimJsonFile(file);e.target.value=""};
+    byId("dbChooseFolderBtn").onclick=()=>chooseFolder("db");byId("exportBtn").onclick=()=>saveDbJson(false);byId("dbJsonOverwriteBtn").onclick=()=>saveDbJson(true);byId("importBtn").onclick=()=>byId("importFile").click();
+    byId("importFile").onchange=async e=>{const file=e.target.files?.[0];if(file)await importDbJsonFile(file);e.target.value=""};
+    byId("dbTextGenerateBtn").onclick=generateDbText;byId("dbTextCopyBtn").onclick=()=>copyTextArea("dbTextArea",dbTextStatus);byId("dbTextPasteBtn").onclick=()=>pasteTextArea("dbTextArea",dbTextStatus);byId("dbTextApplyBtn").onclick=applyDbText;byId("dbTextClearBtn").onclick=()=>{byId("dbTextArea").value="";dbTextStatus("消去しました。")};byId("dbTextStore").onchange=updateDbTextBadge;byId("dbTextFormat").onchange=()=>dbTextStatus("形式を変更しました。「DBからテキスト作成」で作り直せます。");
+    updateFileDestination("sim");updateFileDestination("db");updateDbTextBadge();renderCapitalAnalysis();
+    repairTrackConditions().then(n=>{if(n){renderDbCounts();fileStatus("db","馬場状態を 良・稍重・重・不良 の4区分へ正規化しました: "+n+"R")}}).catch(console.warn);
+    window.addEventListener("resize",()=>setTimeout(()=>{const report=computeCapitalReport(),first=(state.simResult||[]).find(row=>Object.prototype.hasOwnProperty.call(row||{},"capitalBefore")),useStored=!!first&&Math.abs(finite(first.capitalBefore,report.initial)-report.initial)<.5;let running=report.initial;const values=(state.simResult||[]).map(row=>{running=useStored&&Object.prototype.hasOwnProperty.call(row,"capitalAfter")?finite(row.capitalAfter,running+finite(row.profit)):running+finite(row.profit);return running});if(byId("bankChart"))drawLineChart(byId("bankChart"),values,"--accent")},320),{passive:true})
+  }
+  function boot(attempt=0){
+    if(state.db&&byId("capitalManagementCard"))wireAdvancedFeatures();
+    else if(attempt<80)setTimeout(()=>boot(attempt+1),250)
+  }
+  if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(boot,900),{once:true});else setTimeout(boot,250);
+})();
+</script>
+
+<script id="classAgeRepairPatch">
+/* v1.2.30 クラス・馬齢の表記統合、既存DB修復、検索・分析への反映 */
+(function(){
+  "use strict";
+  const byId=id=>document.getElementById(id);
+  const UNKNOWN_RE=/^(?:不明|未取得|取得失敗|取得不能|unknown|null|undefined|なし|[-－―])$/i;
+
+  function text(value){
+    const raw=String(value??"");
+    let decoded=raw;
+    try{decoded=new DOMParser().parseFromString(raw,"text/html").body?.textContent||raw}catch(_){}
+    return decoded.normalize("NFKC").replace(/\u00a0|\u3000/g," ").replace(/\s+/g," ").trim()
+  }
+  function meaningful(value){const s=text(value);return!!s&&!UNKNOWN_RE.test(s)}
+  function romanLevel(value){const s=String(value||"").toUpperCase();return s==="III"||s==="3"?3:s==="II"||s==="2"?2:s==="I"||s==="1"?1:0}
+  function raceClassText(record={}){
+    return [record.className,record.class_name,record.grade,record.class,record.raceClass,record.race_class,record.name,record.raceName,record.race_name,record.title,record.subtitle,record.meta,record.raceData,record.raceData01,record.raceData02,record.condition,record.conditions,record.category].filter(meaningful).map(text).join(" ")
+  }
+  function canonicalRaceClass(value="",source="",type=""){
+    const body=[value,source].filter(meaningful).map(text).join(" ");
+    if(!body)return"";
+    let m=body.match(/(?:^|[^A-Za-z0-9])Jpn\s*(III|II|I|[123])(?:$|[^A-Za-z0-9])/i);
+    if(m)return"Jpn"+romanLevel(m[1]);
+    m=body.match(/(?:^|[^A-Za-z0-9])G\s*(III|II|I|[123])(?:$|[^A-Za-z0-9])/i);
+    if(m)return"G"+romanLevel(m[1]);
+    m=body.match(/(?:^|[^A-Za-z0-9])([ABCDS][1-9])\s*(?:[・\/]|[\-–—])?\s*([ABCDS][1-9])(?:$|[^A-Za-z0-9])/i);
+    if(m&&m[1].toUpperCase()!==m[2].toUpperCase())return m[1].toUpperCase()+"/"+m[2].toUpperCase();
+    m=body.match(/(?:^|[^A-Za-z0-9])([ABCDS])\s*([1-9])(?:\s*(?:組|級|クラス))?(?:$|[^A-Za-z0-9])/i);
+    if(m)return(m[1]+m[2]).toUpperCase();
+    m=body.match(/(?:^|[\s（(])([ABCDS])\s*(?:級|クラス)/i);
+    if(m)return m[1].toUpperCase();
+    m=body.match(/([123])\s*勝\s*(?:クラス|C|Class)?/i);
+    if(m)return m[1]+"勝クラス";
+    m=body.match(/(500|1000|1600)\s*万下/);
+    if(m)return({500:"1勝クラス",1000:"2勝クラス",1600:"3勝クラス"})[m[1]];
+    m=body.match(/障害\s*(未勝利|オープン|OP)/i);
+    if(m)return/未勝利/.test(m[1])?"障害未勝利":"障害オープン";
+    if(/メイク\s*デビュー|新馬|デビュー戦/.test(body))return"新馬";
+    if(/未勝利/.test(body))return"未勝利";
+    if(/リステッド|Listed|(?:^|[\s（(])L(?:$|[\s）)])/i.test(body))return"リステッド";
+    if(/オープン(?:特別)?|(?:^|[^A-Za-z0-9])OP(?:$|[^A-Za-z0-9])/i.test(body))return"オープン";
+    if(/準重賞/.test(body))return"準重賞";
+    if(/重賞|グランプリ|ダービー/.test(body))return"重賞";
+    if(/JRA\s*認定|認定競走/.test(body))return"JRA認定";
+    if(/(?:指定|中央|JRA|地方)?交流(?:競走)?/.test(body))return"交流";
+    if(/選抜|特選/.test(body))return"選抜";
+    if(/一般/.test(body))return"一般";
+    if(/特別/.test(body))return"特別";
+    const ages=[...body.matchAll(/([2-9])\s*歳(?!\s*(?:以上|上|以下|下|超|未満))/g)];
+    if(ages.length)return ages[0][1]+"歳";
+    if(/条件(?:戦|競走)/.test(body))return"条件戦";
+    return""
+  }
+  function classForRace(record={}){return canonicalRaceClass(raceClassText(record),"",record.type||record.kind||record.provider||"")}
+
+  function validAge(value){
+    const s=text(value),m=s.match(/\d{1,2}/),n=m?Number(m[0]):0;
+    return n>=1&&n<30?n:0
+  }
+  function sexFromText(value){
+    const s=text(value).replace(/\s+/g,"");
+    if(/(?:^|[^一-龯ぁ-んァ-ヶ])(?:セ|セン|せん|騸|騙)/.test(s)||/^(?:セ|セン|せん|騸|騙)/.test(s))return"セ";
+    if(/牡/.test(s))return"牡";
+    if(/牝/.test(s))return"牝";
+    if(/^(?:M|MALE|H|HORSE)$/i.test(s))return"牡";
+    if(/^(?:F|FEMALE|MARE)$/i.test(s))return"牝";
+    if(/^(?:G|GELDING|C)$/i.test(s))return"セ";
+    const coded=s.match(/(?:^|[^A-Z])([MFGHC])\s*[\/:\-]?\s*\d{1,2}(?:$|[^A-Z0-9])/i);
+    return coded?({M:"牡",H:"牡",F:"牝",G:"セ",C:"セ"})[coded[1].toUpperCase()]||"":""
+  }
+  function sexAgeFromText(value){
+    const s=text(value),ja=s.match(/(牡|牝|セ|セン|せん|騸|騙)\s*(?:馬)?\s*[\/:\-]?\s*(\d{1,2})\s*(?:歳|才)?/);
+    if(ja){const age=validAge(ja[2]),sex=sexFromText(ja[1]);if(age)return{sex,age,sexAge:sex+age}}
+    const coded=s.match(/(?:^|[^A-Z])([MFGHC])\s*[\/:\-]?\s*(\d{1,2})(?:\s*(?:YO|Y\/O))?(?:$|[^A-Z0-9])/i);
+    if(coded){const age=validAge(coded[2]),sex=sexFromText(coded[1]);if(age)return{sex,age,sexAge:sex+age}}
+    return{sex:sexFromText(s),age:0,sexAge:""}
+  }
+  function labeledAge(value){
+    const s=text(value);let m=s.match(/(?:馬齢|年齢|age|horse\s*age)\s*[:：=]?\s*(\d{1,2})/i);
+    if(!m)m=s.match(/(?:^|[^\d])(\d{1,2})\s*(?:歳|才|yo|y\/o)(?:$|[^A-Za-z0-9])/i);
+    return m?validAge(m[1]):0
+  }
+  function birthYear(record={}){
+    for(const key of ["birthYear","birth_year","yearOfBirth","foaledYear","生年"]){const n=validAge(record[key]);const raw=text(record[key]);if(/^\d{4}$/.test(raw)){const y=Number(raw);if(y>=1980&&y<=new Date().getFullYear())return y}}
+    for(const key of ["birthDate","birth_date","birthday","dateOfBirth","foaled","生年月日"]){const m=text(record[key]).match(/(?:19|20)\d{2}/);if(m)return Number(m[0])}
+    return 0
+  }
+  function raceYear(record={}){const m=text(record.date||record.raceDate||record.race_date||"").match(/(?:19|20)\d{2}/);return m?Number(m[0]):0}
+  function exactRaceAge(record={}){
+    const s=raceClassText(record);let m;
+    const re=/([2-9])\s*歳(?!\s*(?:以上|上|以下|下|超|未満))/g;
+    while((m=re.exec(s))){const n=Number(m[1]);if(n>=2&&n<=9)return n}
+    return 0
+  }
+  function canonicalHorseProfile(record={},fallback={},race={}){
+    const direct=[record.sexAge,record.sex_age,record.sexage,record.barei,record["性齢"],fallback.sexAge,fallback.sex_age,fallback.sexage,fallback.barei,fallback["性齢"]].filter(meaningful);
+    let sex="",age=0;
+    for(const value of direct){const parsed=sexAgeFromText(value);if(!sex&&parsed.sex)sex=parsed.sex;if(!age&&parsed.age)age=parsed.age;if(!age&&/^\d{1,2}\s*(?:歳|才)?$/.test(text(value)))age=validAge(value)}
+    for(const value of [record.sex,record.gender,record["性"],fallback.sex,fallback.gender,fallback["性"]])if(!sex&&meaningful(value))sex=sexFromText(value);
+    for(const value of [record.age,record.horseAge,record.horse_age,record["齢"],fallback.age,fallback.horseAge,fallback.horse_age,fallback["齢"]])if(!age&&meaningful(value))age=validAge(value);
+    const source=[record.rawText,record.rowText,record.text,record.memo,record.note,record.description,fallback.rawText,fallback.rowText,fallback.text,fallback.memo,fallback.note,fallback.description].filter(meaningful).join(" ");
+    if(source){const parsed=sexAgeFromText(source);if(!sex&&parsed.sex)sex=parsed.sex;if(!age&&parsed.age)age=parsed.age;if(!age)age=labeledAge(source)}
+    if(!age){const ry=raceYear(race),by=birthYear(record)||birthYear(fallback),calculated=ry&&by?ry-by:0;if(calculated>=1&&calculated<30)age=calculated}
+    if(!age)age=exactRaceAge(race);
+    return{sex,age,sexAge:sex&&age?sex+age:sex||""}
+  }
+  function augmentRace(record={}){
+    const cls=classForRace(record);if(!cls)return record;
+    return{...record,className:cls,grade:cls}
+  }
+  function augmentEntry(record={},fallback={},race={}){
+    const profile=canonicalHorseProfile(record,fallback,race);
+    if(!profile.sex&&!profile.age)return record;
+    const out={...record};if(profile.sex)out.sex=profile.sex;if(profile.age)out.age=profile.age;if(profile.sexAge)out.sexAge=profile.sexAge;
+    return out
+  }
+
+  const baseNormalizeSexAgeField=normalizeSexAgeField;
+  normalizeSexAgeField=function(value="",sex="",age=0){
+    const profile=canonicalHorseProfile({sexAge:value,sex,age});
+    return profile.sexAge||baseNormalizeSexAgeField(value,sex,age)
+  };
+  const baseExtractSexAgeFromRow=extractSexAgeFromRow;
+  extractSexAgeFromRow=function(row){
+    const direct=baseExtractSexAgeFromRow(row),profile=canonicalHorseProfile({sexAge:direct,rawText:row?.textContent||""});
+    return profile.sexAge||direct||""
+  };
+  const baseNormalizeRace=normalizeRace;
+  normalizeRace=function(record){
+    const row=baseNormalizeRace(record),next=augmentRace({...record,...row});
+    for(const key of ["meta","raceData","raceData01","raceData02","condition","conditions","category"]){if(meaningful(record?.[key]))next[key]=record[key]}
+    return next
+  };
+  const baseNormalizeEntry=normalizeEntry;
+  normalizeEntry=function(record,rid){
+    const row=baseNormalizeEntry(record,rid),profile=canonicalHorseProfile(row,record);
+    if(profile.sex)row.sex=profile.sex;if(profile.age)row.age=profile.age;if(profile.sexAge)row.sexAge=profile.sexAge;
+    return row
+  };
+
+  const basePutOne=putOne,basePutMany=putMany;
+  function prepareStoredRow(store,row){if(!row||typeof row!=="object")return row;if(store==="races")return augmentRace(row);if(store==="entries")return augmentEntry(row);return row}
+  putOne=async function(store,row){return basePutOne(store,prepareStoredRow(store,row))};
+  putMany=async function(store,rows){return basePutMany(store,(Array.isArray(rows)?rows:[]).map(row=>prepareStoredRow(store,row)))};
+
+  const baseAnalyticsClassLabel=analyticsClassLabel;
+  analyticsClassLabel=function(record={}){return classForRace(record)||baseAnalyticsClassLabel(record)};
+  analyticsAgeValue=function(entry={}){return canonicalHorseProfile(entry).age};
+  analyticsSexValue=function(entry={}){const sex=canonicalHorseProfile(entry).sex;return sex==="セ"?"セン":sex};
+  const baseAnalyticsUniqueSelectedEntries=analyticsUniqueSelectedEntries;
+  function entryKey(entry={}){return Number(entry.horseNo||entry.horse_no||0)||String(entry.id||entry.horseId||entry.horseName||"")}
+  function mergeEntry(a={},b={}){const out={...a};for(const [key,value] of Object.entries(b||{}))if(meaningful(value)||Number(value)>0)out[key]=value;return augmentEntry(out,a)}
+  analyticsUniqueSelectedEntries=function(row={}){
+    const race=row.race||row,all=[...(Array.isArray(row.entries)?row.entries:[]),...(Array.isArray(row.candidateEntries)?row.candidateEntries:[]),...(Array.isArray(row.selectedEntries)?row.selectedEntries:[]),...(Array.isArray(row.purchaseEntries)?row.purchaseEntries:[])],full=new Map();
+    for(const entry of all){const key=entryKey(entry);if(key)full.set(key,mergeEntry(full.get(key)||{},entry))}
+    const selected=new Map(),add=entry=>{const key=entryKey(entry);if(!key)return;selected.set(key,augmentEntry(mergeEntry(full.get(key)||{},entry),{},race))};
+    for(const entry of baseAnalyticsUniqueSelectedEntries(row)||[])add(entry);
+    for(const name of ["purchaseEntries","selectedEntries"])for(const entry of Array.isArray(row[name])?row[name]:[])add(entry);
+    if(!selected.size){
+      const numbers=new Set();for(const ticket of Array.isArray(row.purchaseTickets)?row.purchaseTickets:[])for(const n of String(ticket?.key||"").match(/\d{1,2}/g)||[])numbers.add(Number(n));
+      for(const source of [row.purchaseHorseNos,row.selectedHorseNos,row.horseNos])for(const n of Array.isArray(source)?source:[])numbers.add(Number(n?.horseNo||n));
+      if(Number(row.horseNo||row.horse_no||0))numbers.add(Number(row.horseNo||row.horse_no));
+      for(const entry of all)if(numbers.has(Number(entry.horseNo||entry.horse_no||0)))add(entry)
+    }
+    if(!selected.size&&Number(row.invest||0)>0){
+      const direct=(Array.isArray(row.entries)&&row.entries.length===1?row.entries:Array.isArray(row.candidateEntries)&&row.candidateEntries.length===1?row.candidateEntries:[]);for(const entry of direct)add(entry)
+    }
+    if(!selected.size&&Number(row.invest||0)>0){const age=exactRaceAge(race);if(age)selected.set("race-age",{age,sexAge:String(age)})}
+    return[...selected.values()]
+  };
+  const baseAnalyticsMergeEntryRows=analyticsMergeEntryRows;
+  analyticsMergeEntryRows=function(current=[],stored=[]){return baseAnalyticsMergeEntryRows(current,stored).map(entry=>augmentEntry(entry))};
+
+  const baseBucket=bucket;
+  bucket=function(row,dim){
+    if(dim==="class")return analyticsClassLabel(row.race||{})||"不明";
+    if(dim==="age"){const age=analyticsAgeValue(row);return age?age+"歳":"不明"}
+    return baseBucket(row,dim)
+  };
+  renderSearch=function(){
+    byId("searchCountTitle").textContent="検索結果 "+state.searchResult.length+"件";
+    byId("searchRows").innerHTML=state.searchResult.map(raw=>{const x=augmentEntry(raw),cls=analyticsClassLabel(x.race||{})||"不明",cond=canonicalTrackCondition(x.race?.trackCondition||x.race?.trackCond)||"不明",sexAge=normalizeSexAgeField(x.sexAge,x.sex,x.age)||"-";return"<tr><td>"+esc(x.race_id)+"</td><td>"+displayDate(x.race?.date)+"</td><td>"+esc(x.race?.type||"")+"</td><td>"+esc(x.race?.placeName||"")+"</td><td>"+(x.race?.raceNo||"-")+"</td><td>"+esc(cls)+"</td><td class=\""+(cond==="不良"?"track-condition-bad":"")+"\">"+esc(cond)+"</td><td>"+x.horseNo+"</td><td>"+esc(x.horseName)+"</td><td>"+esc(sexAge)+"</td><td>"+esc(x.jockey)+"</td><td>"+(x.popularity||"-")+"</td><td>"+Number(x.odds||0).toFixed(1)+"</td><td class=\""+(x.ev>=1?"good":"bad")+"\">"+Number(x.ev||0).toFixed(3)+"</td><td>"+Number(x.ai||0).toFixed(1)+"</td></tr>"}).join("")||"<tr><td colspan=\"15\" class=\"empty\">該当なし</td></tr>"
+  };
+  runSearch=async function(){
+    const f=readSearchFilters(),[races,entries,results]=await Promise.all([getAll("races"),getAll("entries"),getAll("results")]),rMap=new Map(races.map(r=>[r.race_id,augmentRace(r)])),resMap=new Map(results.filter(hasUsableConfirmedResult).map(r=>[r.race_id,r]));
+    let rows=entries.map(e=>({...augmentEntry(e),race:rMap.get(e.race_id),result:resMap.get(e.race_id)})).filter(x=>{const r=x.race||{},cond=canonicalTrackCondition(r.trackCondition||r.trackCond),cls=analyticsClassLabel(r)||"";return(!f.place||String(r.placeName||"").includes(f.place))&&(!f.horse||String(x.horseName||"").includes(f.horse))&&(!f.jockey||String(x.jockey||"").includes(f.jockey))&&(!f.trainer||String(x.trainer||"").includes(f.trainer))&&(!f.type||r.type===f.type)&&(!f.surface||r.surface===f.surface)&&(!f.className||cls.includes(f.className))&&(!f.track||(f.track==="不明"?!cond:cond===f.track))&&Number(r.distance||0)>=f.minDistance&&Number(r.distance||0)<=f.maxDistance&&(!x.popularity||x.popularity<=f.maxPopularity)&&Number(x.odds||0)>=f.minOdds&&Number(x.odds||0)<=f.maxOdds&&Number(x.ev||0)>=f.minEv&&Number(x.ai||0)>=f.minAi});
+    const sorts={ai:(a,b)=>Number(b.ai||0)-Number(a.ai||0),ev:(a,b)=>Number(b.ev||0)-Number(a.ev||0),oddsAsc:(a,b)=>Number(a.odds||0)-Number(b.odds||0),oddsDesc:(a,b)=>Number(b.odds||0)-Number(a.odds||0),pop:(a,b)=>Number(a.popularity||99)-Number(b.popularity||99),date:(a,b)=>String(a.race?.date||"").localeCompare(String(b.race?.date||""))};
+    rows.sort(sorts[f.sort]||sorts.ai);state.searchResult=rows.slice(0,f.limit);renderSearch();renderSql(f)
+  };
+  exportSearchCsv=function(){
+    exportCsv("target_search.csv",["race_id","date","type","place","race","class","track_condition","horse_no","horse_name","sex_age","age","jockey","trainer","popularity","odds","ev","ai"],state.searchResult.map(raw=>{const x=augmentEntry(raw);return[x.race_id,x.race?.date,x.race?.type,x.race?.placeName,x.race?.raceNo,analyticsClassLabel(x.race||{})||"",canonicalTrackCondition(x.race?.trackCondition||x.race?.trackCond)||"",x.horseNo,x.horseName,normalizeSexAgeField(x.sexAge,x.sex,x.age),analyticsAgeValue(x)||"",x.jockey,x.trainer,x.popularity,x.odds,x.ev,x.ai]}))
+  };
+
+  async function repairClassAgeData(){
+    if(!state.db)throw new Error("データベース未接続です");
+    const races=state.db.objectStoreNames.contains("races")?await getAll("races"):[],entries=state.db.objectStoreNames.contains("entries")?await getAll("entries"):[],horses=state.db.objectStoreNames.contains("horses")?await getAll("horses"):[],raceMap=new Map(races.map(r=>[String(r.race_id||""),r])),horseMap=new Map();
+    for(const horse of horses){if(meaningful(horse.horseId))horseMap.set("id:"+horse.horseId,horse);if(meaningful(horse.horseName||horse.name))horseMap.set("name:"+(horse.horseName||horse.name),horse)}
+    const changedRaces=[],changedEntries=[],now=new Date().toISOString();let remainingClass=0,remainingAge=0;
+    for(const race of races){const next=augmentRace(race),cls=classForRace(next);if(!cls){remainingClass++;continue}if(race.className!==cls||race.grade!==cls)changedRaces.push({...next,updatedAt:now})}
+    for(const entry of entries){const horse=horseMap.get("id:"+entry.horseId)||horseMap.get("name:"+entry.horseName)||{},race=raceMap.get(String(entry.race_id||""))||{},profile=canonicalHorseProfile(entry,horse,race),next=augmentEntry(entry,horse,race);if(!profile.age)remainingAge++;if((profile.sex&&entry.sex!==profile.sex)||(profile.age&&Number(entry.age||0)!==profile.age)||(profile.sexAge&&entry.sexAge!==profile.sexAge))changedEntries.push({...next,updatedAt:now})}
+    if(changedRaces.length)await putMany("races",changedRaces);if(changedEntries.length)await putMany("entries",changedEntries);
+    if(Array.isArray(state.simResult))state.simResult=state.simResult.map(row=>{const race=augmentRace(row.race||{}),fix=list=>(Array.isArray(list)?list.map(entry=>augmentEntry(entry,{},race)):list);return{...row,race,entries:fix(row.entries),candidateEntries:fix(row.candidateEntries),selectedEntries:fix(row.selectedEntries),purchaseEntries:fix(row.purchaseEntries)}});
+    return{races:changedRaces.length,entries:changedEntries.length,remainingClass,remainingAge,totalRaces:races.length,totalEntries:entries.length}
+  }
+  async function runClassAgeRepair(){
+    const btn=byId("analyticsClassAgeRepairBtn");if(btn)btn.disabled=true;setAnalyticsLookupStatus("クラス・馬齢を修復中…");
+    try{const result=await repairClassAgeData();await refreshAll();const rows=await analyticsSourceRows();if(rows.length)await runAnalytics(rows);const remain=result.remainingClass+result.remainingAge,setText=`修復 クラス${result.races}R / 馬齢${result.entries}頭`+(remain?`　残り ${result.remainingClass}R・${result.remainingAge}頭`:"　不明なし");setAnalyticsLookupStatus(setText,remain?"bad":"ok");alert(`クラス・馬齢DB修復が完了しました。\nクラス修復: ${result.races}R\n馬齢・性齢修復: ${result.entries}頭\n未判定: クラス ${result.remainingClass}R / 馬齢 ${result.remainingAge}頭${remain?"\n\n材料が無い残りは「race_id完全補完」で取得できます。":""}`)}catch(e){setAnalyticsLookupStatus("修復失敗","bad");alert("クラス・馬齢DB修復失敗: "+e.message)}finally{if(btn)btn.disabled=false}
+  }
+  function wire(attempt=0){
+    if(!state.db||!byId("analyticsClassAgeRepairBtn")){if(attempt<80)setTimeout(()=>wire(attempt+1),250);return}
+    const btn=byId("analyticsClassAgeRepairBtn");if(!btn.dataset.wired){btn.dataset.wired="1";btn.onclick=runClassAgeRepair}
+    const marker="TheKeibaClassAgeRepairV130";let done=false;try{done=localStorage.getItem(marker)==="1"}catch(_){}
+    if(!done)repairClassAgeData().then(result=>{try{localStorage.setItem(marker,"1")}catch(_){}if(result.races||result.entries){renderDbCounts();if(byId("analyticsLookupStatus")?.textContent==="未照会")setAnalyticsLookupStatus(`自動修復 クラス${result.races}R / 馬齢${result.entries}頭`,result.remainingClass+result.remainingAge?"bad":"ok")}}).catch(console.warn)
+  }
+  window.__THEKEIBA_V130__={canonicalRaceClass,classForRace,canonicalHorseProfile,exactRaceAge,augmentRace,augmentEntry,repairClassAgeData};
+  if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,1300),{once:true});else setTimeout(wire,500);
+})();
+</script>
+
+<!-- v1.2.30: クラス・馬齢のJRA/NAR表記統合、性齢/生年/レース年補完、既存DB修復 -->
+<!-- v1.2.29: 馬場状態4区分・元入金安全予算管理・SIM/DBフォルダJSON・各DBテキストコピペ -->
 <!-- v1.2.28: 分析の不明究明。race_id再構築+緩い照合で照合率向上、分類材料をrow/result/entriesへ拡張、不明の内訳診断ボタン追加 -->
 <!-- v1.2.26: 同期開始時の1/1バッチ100%誤認を修正・日/レース進捗を優先 -->
 <!-- v1.2.23: index338のみ変更・SIM専用リセット + index339 EV分析エミュレータ予想 -->
