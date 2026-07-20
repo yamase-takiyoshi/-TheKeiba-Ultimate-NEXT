@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.35</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.36</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -277,10 +277,26 @@ input,select,textarea{font-size:16px}
 @media(max-width:1050px){.capital-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:620px){.capital-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.capital-kpi strong{font-size:17px}.file-manager-card .btn,.db-text-actions .btn{flex:1 1 calc(50% - 8px)}.file-manager-card .btn.primary,.db-text-actions .btn.primary{flex-basis:100%}}
 </style>
+
+
+<style id="fullSiteEmulatorStyles">
+/* v1.2.36 公開サイト丸ごと本体エミュレータ */
+.full-emu-hero{border-color:color-mix(in srgb,var(--purple) 45%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--panel) 92%,var(--purple) 8%),var(--panel))}
+.full-emu-toolbar{display:flex;align-items:end;gap:9px;flex-wrap:wrap}.full-emu-url{flex:1 1 430px;min-width:260px}.full-emu-controls{display:flex;gap:8px;flex-wrap:wrap}
+.full-emu-status{white-space:pre-wrap;line-height:1.55;margin-top:10px}.full-emu-status.ok{color:var(--good)}.full-emu-status.warn{color:var(--warn)}.full-emu-status.bad{color:var(--bad)}
+.full-emu-frame-shell{position:relative;width:100%;height:calc(100svh - 220px);min-height:620px;margin-top:12px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;transition:max-width .18s ease,margin .18s ease}
+.full-emu-frame-shell.tablet{max-width:1024px;margin-left:auto;margin-right:auto}.full-emu-frame-shell.mobile{max-width:430px;margin-left:auto;margin-right:auto}
+.full-emu-frame-shell iframe{display:block;width:100%;height:100%;border:0;background:#fff}
+.full-emu-cover{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;background:var(--bg);color:var(--muted);z-index:2}.full-emu-cover[hidden]{display:none!important}
+.full-emu-badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.full-emu-badge.same{color:var(--good);border-color:color-mix(in srgb,var(--good) 48%,var(--line))}.full-emu-badge.cross{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 48%,var(--line))}
+.full-emu-auto{display:flex;align-items:center;gap:7px;margin:0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-size:13px;font-weight:850}.full-emu-auto input{width:auto;margin:0}
+@media(max-width:760px){.full-emu-frame-shell{height:calc(100svh - 185px);min-height:520px;border-radius:10px}.full-emu-controls .btn{flex:1 1 calc(50% - 8px)}.full-emu-controls select{flex:1 1 100%}.full-emu-url{min-width:100%}}
+</style>
+
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.35 EV分析エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.36 丸ごと本体エミュレータ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -446,6 +462,36 @@ input,select,textarea{font-size:16px}
       <div class="card"><h3 style="margin-top:0">設定スナップショット（隔離実行に使用）</h3><div class="code-box" id="emuSettingsSnap">設定を読み込んでいます。</div></div>
 
       <div class="card"><div class="table-wrap"><table><thead><tr><th>日付</th><th>区分</th><th>開催</th><th>R</th><th>券種</th><th>候補点</th><th>購入点</th><th>購入的中</th><th>投資</th><th>払戻</th><th>収支</th><th>ROI</th></tr></thead><tbody id="emuRows"></tbody><tfoot id="emuFoot"></tfoot></table></div></div>
+    </section>
+
+
+
+    <section class="view" id="view-site-emulator">
+      <h2 class="page-title">🖥 公開サイト丸ごと本体エミュレータ</h2>
+      <div class="card full-emu-hero">
+        <div class="toolbar"><h3 style="margin:0 auto 0 0">The競馬 EV分析 v5.18.297 ライブ同期型</h3><span class="badge" id="fullEmuStateBadge"><span class="status-dot"></span>未読込</span></div>
+        <div class="notice">公開サイトを別物として作り直すのではなく、全タブ・全画面・設定・期間横断SIM・予想・ライブ・保存機能を専用フレーム内へそのまま導入します。公開側が更新されると、このエミュレータにも次回読込時に反映されます。同じ <code>yamase-takiyoshi.github.io</code> 上へ配置した場合は、localStorage・IndexedDB・Bridgeを同一オリジンで共有できます。</div>
+        <div class="full-emu-toolbar" style="margin-top:12px">
+          <div class="full-emu-url"><label>本体サイトURL</label><input id="fullEmuUrl" type="url" value="https://yamase-takiyoshi.github.io/takuya/" inputmode="url"></div>
+          <label class="full-emu-auto" title="本体エミュレータ画面を開いた時に自動読込"><input id="fullEmuAuto" type="checkbox" checked>画面表示時に自動読込</label>
+        </div>
+        <div class="full-emu-controls" style="margin-top:10px">
+          <button class="btn primary" id="fullEmuLoadBtn">▶ 丸ごと読込</button>
+          <button class="btn" id="fullEmuReloadBtn">↻ 再読込</button>
+          <button class="btn" id="fullEmuHomeBtn">⌂ 本体ホーム</button>
+          <button class="btn good" id="fullEmuBridgeBtn">🔗 Bridge再接続</button>
+          <button class="btn" id="fullEmuOpenBtn">↗ 別タブ</button>
+          <select id="fullEmuViewport" style="width:auto" title="表示幅"><option value="full">全幅</option><option value="tablet">iPad幅</option><option value="mobile">スマホ幅</option></select>
+        </div>
+        <div class="full-emu-badges"><span class="badge" id="fullEmuOriginBadge">接続方式を確認中</span><span class="badge" id="fullEmuBridgeBadge">Bridge未確認</span><span class="badge" id="fullEmuVersionBadge">公開版 v5.18.297</span></div>
+        <div class="code-box full-emu-status" id="fullEmuStatus">「丸ごと読込」を押すと、公開サイト本体をこの画面内で起動します。</div>
+      </div>
+      <div class="card" style="padding:10px">
+        <div class="full-emu-frame-shell" id="fullEmuFrameShell">
+          <div class="full-emu-cover" id="fullEmuCover"><div><strong>🖥 本体エミュレータ</strong><br><br>公開サイトをまだ読み込んでいません。</div></div>
+          <iframe id="fullEmuFrame" title="The競馬 EV分析 丸ごと本体エミュレータ" loading="eager" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
+        </div>
+      </div>
     </section>
 
     <section class="view" id="view-analytics">
@@ -1138,8 +1184,8 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.35-isolated-xsim-emulator";
-const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["emulator","🧪","エミュ"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
+const APP_VERSION="1.2.36-fullsite-emulator";
+const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["emulator","🧪","エミュ"],["site-emulator","🖥","本体エミュ"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
 const PREDICTION_MODE_PRESETS={ai:{priority:"ai",agreementMode:"off"},ev:{priority:"ev",agreementMode:"off"},expected:{priority:"expected",agreementMode:"off"},balanced:{priority:"balanced",agreementMode:"off"},agreement:{agreementMode:"on"},clone:{priority:"ev",agreementMode:"off"}};
@@ -5887,6 +5933,103 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",wire,{once:true});
   else wire();
+})();
+</script>
+
+
+
+<script>
+/* v1.2.36 Full Site Live Emulator */
+(function(){
+  "use strict";
+  const DEFAULT_URL="https://yamase-takiyoshi.github.io/takuya/";
+  const KEY_URL="TheKeibaFullEmulatorUrlV1",KEY_AUTO="TheKeibaFullEmulatorAutoV1",KEY_VIEW="TheKeibaFullEmulatorViewportV1";
+  const byId=id=>document.getElementById(id);
+  let loadedUrl="",loading=false,bridgeInjected=false;
+
+  function cleanUrl(raw){
+    const value=String(raw||"").trim()||DEFAULT_URL;
+    const u=new URL(value,location.href);
+    if(!/^https?:$/.test(u.protocol))throw new Error("http または https のURLだけ使用できます");
+    return u.href;
+  }
+  function sameOrigin(url){try{return new URL(url,location.href).origin===location.origin}catch(_){return false}}
+  function setBadge(id,text,kind=""){
+    const el=byId(id);if(!el)return;el.textContent=text;el.classList.toggle("same",kind==="same");el.classList.toggle("cross",kind==="cross");
+  }
+  function setState(text,on=false){const el=byId("fullEmuStateBadge");if(!el)return;el.innerHTML=`<span class="status-dot ${on?"on":""}"></span>${text}`}
+  function status(text,kind=""){
+    const el=byId("fullEmuStatus");if(!el)return;el.textContent=String(text||"");el.classList.toggle("ok",kind==="ok");el.classList.toggle("warn",kind==="warn");el.classList.toggle("bad",kind==="bad");
+  }
+  function persist(){
+    try{localStorage.setItem(KEY_URL,byId("fullEmuUrl")?.value||DEFAULT_URL);localStorage.setItem(KEY_AUTO,byId("fullEmuAuto")?.checked?"1":"0");localStorage.setItem(KEY_VIEW,byId("fullEmuViewport")?.value||"full")}catch(_){ }
+  }
+  function applyViewport(){
+    const shell=byId("fullEmuFrameShell"),mode=byId("fullEmuViewport")?.value||"full";if(!shell)return;shell.classList.toggle("tablet",mode==="tablet");shell.classList.toggle("mobile",mode==="mobile");persist();
+  }
+  function updateOrigin(url){
+    const same=sameOrigin(url);setBadge("fullEmuOriginBadge",same?"同一オリジン：DB・保存値共有":"別オリジン：表示のみ共有",same?"same":"cross");return same;
+  }
+  function installBridgeAdapter(){
+    const frame=byId("fullEmuFrame");if(!frame||!loadedUrl||!sameOrigin(loadedUrl)){setBadge("fullEmuBridgeBadge","Bridge：別オリジンのため独立","cross");return false}
+    try{
+      const child=frame.contentWindow;if(!child)throw new Error("本体画面へ接続できません");
+      const direct=typeof window.__narBridgeDirect==="function"?window.__narBridgeDirect:null;
+      const fetcher=typeof window.__narBridgeFetch==="function"?window.__narBridgeFetch:direct;
+      if(direct){child.__narBridgeDirect=(url,options={})=>direct(url,options);child.__narBridgeHasDirect=true}
+      if(fetcher)child.__narBridgeFetch=(url,options={})=>fetcher(url,options);
+      if(window.__narBridgeVersion)child.__narBridgeVersion=window.__narBridgeVersion;
+      if(window.__NAR_BRIDGE_READY__||direct){child.__NAR_BRIDGE_READY__=true;child.document?.documentElement?.setAttribute("data-nar-bridge-ready",String(window.__narBridgeVersion||"parent-adapter"))}
+      try{child.__theKeibaBridgeHandshake?.()}catch(_){ }
+      try{child.dispatchEvent(new Event("online"));child.dispatchEvent(new Event("focus"))}catch(_){ }
+      bridgeInjected=!!(direct||fetcher);
+      setBadge("fullEmuBridgeBadge",bridgeInjected?"Bridge：親画面から継承":"Bridge：親画面で未接続",bridgeInjected?"same":"cross");
+      return bridgeInjected;
+    }catch(e){bridgeInjected=false;setBadge("fullEmuBridgeBadge","Bridge接続失敗","cross");status(`本体画面は読み込めましたが、Bridgeアダプタを接続できませんでした。\n${e.message}`,"warn");return false}
+  }
+  function frameInfo(){
+    const frame=byId("fullEmuFrame");if(!frame)return"";
+    try{return frame.contentDocument?.title||"The競馬 EV分析"}catch(_){return"The競馬 EV分析"}
+  }
+  function load(force=false){
+    const frame=byId("fullEmuFrame"),cover=byId("fullEmuCover");if(!frame||loading)return;
+    let url;try{url=cleanUrl(byId("fullEmuUrl")?.value)}catch(e){status(e.message,"bad");return}
+    byId("fullEmuUrl").value=url;persist();updateOrigin(url);loading=true;bridgeInjected=false;setState("読込中");status(`公開サイトを丸ごと読み込んでいます。\n${url}`);
+    if(cover)cover.hidden=true;
+    const target=force?`${url}${url.includes("?")?"&":"?"}_emu_reload=${Date.now()}`:url;
+    frame.src=target;loadedUrl=url;
+  }
+  function reload(){
+    const frame=byId("fullEmuFrame");if(!frame||!loadedUrl)return load(true);
+    loading=true;bridgeInjected=false;setState("再読込中");status("公開サイトの最新版を再読込しています。");
+    try{if(sameOrigin(loadedUrl)&&frame.contentWindow){frame.contentWindow.location.reload()}else load(true)}catch(_){load(true)}
+  }
+  function home(){byId("fullEmuUrl").value=DEFAULT_URL;load(false)}
+  function openTab(){let url;try{url=cleanUrl(byId("fullEmuUrl")?.value)}catch(e){return status(e.message,"bad")}window.open(url,"_blank","noopener")}
+  function onFrameLoad(){
+    if(!loadedUrl)return;loading=false;const same=updateOrigin(loadedUrl);const bridged=installBridgeAdapter();setState("起動中",true);
+    const detail=same?`同一オリジンで起動しました。localStorage・IndexedDBは本体と共有されます。${bridged?" 親画面の住宅IP Bridgeも継承しました。":" Bridgeは親画面側の接続待ちです。"}`:"別オリジンで起動しました。全画面操作はできますが、親画面とのDB・Bridge直接共有は制限されます。";
+    status(`${frameInfo()}\n${detail}\n公開側を更新した後は「再読込」で最新版を反映できます。`,same?"ok":"warn");
+  }
+  function bridgeReconnect(){
+    try{window.__theKeibaInstallDomBridge?.();window.__theKeibaBridgeHandshake?.()}catch(_){ }
+    setTimeout(()=>{const ok=installBridgeAdapter();status(ok?"親画面のBridgeを本体エミュレータへ再接続しました。":"親画面側でBridgeを検出できません。UserscriptまたはWorker設定を確認してください。",ok?"ok":"warn")},250)
+  }
+  function restore(){
+    try{byId("fullEmuUrl").value=localStorage.getItem(KEY_URL)||DEFAULT_URL;byId("fullEmuAuto").checked=localStorage.getItem(KEY_AUTO)!=="0";byId("fullEmuViewport").value=localStorage.getItem(KEY_VIEW)||"full"}catch(_){byId("fullEmuUrl").value=DEFAULT_URL}
+    applyViewport();updateOrigin(byId("fullEmuUrl").value||DEFAULT_URL);
+  }
+  function ensureLoaded(){if(byId("fullEmuAuto")?.checked&&!loadedUrl)load(false)}
+  function wire(){
+    if(!byId("fullEmuFrame"))return;restore();byId("fullEmuLoadBtn").onclick=()=>load(false);byId("fullEmuReloadBtn").onclick=reload;byId("fullEmuHomeBtn").onclick=home;byId("fullEmuBridgeBtn").onclick=bridgeReconnect;byId("fullEmuOpenBtn").onclick=openTab;byId("fullEmuViewport").onchange=applyViewport;byId("fullEmuAuto").onchange=persist;byId("fullEmuUrl").onchange=()=>{persist();updateOrigin(byId("fullEmuUrl").value)};byId("fullEmuFrame").addEventListener("load",onFrameLoad);
+    document.querySelectorAll('[data-view="site-emulator"]').forEach(btn=>btn.addEventListener("click",()=>setTimeout(ensureLoaded,60)));
+  }
+  if(typeof showView==="function"){
+    const previousShowView=showView;
+    showView=async function(id){const result=await previousShowView(id);if(id==="site-emulator")setTimeout(ensureLoaded,60);return result};
+  }
+  window.FullSiteEmulator={load,reload,installBridgeAdapter,ensureLoaded};
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",wire,{once:true});else wire();
 })();
 </script>
 
