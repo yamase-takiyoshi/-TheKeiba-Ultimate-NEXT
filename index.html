@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.32</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.33</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -280,7 +280,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.32 EV分析エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.33 EV分析エミュレータ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -1101,7 +1101,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.32-batch-graph-exact-day-result-verification";
+const APP_VERSION="1.2.33-jra-result-db-source";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -1930,8 +1930,8 @@ function bridgePageUrls(type,rid,kind){
       `https://race.netkeiba.com/odds/index.html?${q}&rf=race_submenu`
     ];
     return[
-      `https://race.sp.netkeiba.com/race/result.html?${q}`,
-      `https://race.sp.netkeiba.com/race/race_result.html?${q}`,
+      `https://db.netkeiba.com/race/${encodeURIComponent(rid)}/`,
+      `https://db.sp.netkeiba.com/race/${encodeURIComponent(rid)}/`,
       `https://race.netkeiba.com/race/result.html?${q}`,
       `https://race.netkeiba.com/race/result.html?${q}&rf=race_list`,
       `https://race.netkeiba.com/race/result.html?${q}&rf=race_submenu`
@@ -1947,6 +1947,7 @@ function bridgePageUrls(type,rid,kind){
     `https://nar.sp.netkeiba.com/odds/index.html?${q}`
   ];
   return[
+    `https://db.netkeiba.com/race/${encodeURIComponent(rid)}/`,
     `https://nar.netkeiba.com/race/result.html?${q}`,
     `https://nar.netkeiba.com/race/result.html?${q}&rf=race_list`,
     `https://nar.netkeiba.com/race/result.html?${q}&mode=result`,
@@ -1961,7 +1962,7 @@ function bridgePageLooksUseful(type,html){
     const horseLinks=doc.querySelectorAll('a[href*="/horse/"],a[href*="horse.html"],a[href*="horse_id="]').length;
     if(type==="shutuba")return horseLinks>0||/(?:出馬表|馬名|騎手|斤量)/.test(text)&&/(?:race_id|HorseList|Umaban)/i.test(source);
     if(type==="odds")return horseLinks>0||/(?:単勝|複勝)/.test(text)&&/(?:オッズ|人気)/.test(text);
-    const hasPayout=/(?:払戻金|払い戻し|払戻一覧|払戻)/.test(text)&&/(?:単勝|複勝|馬連|馬単|3連複|3連単)/.test(text);
+    const hasPayout=(/(?:払戻金|払い戻し|払戻一覧|払戻)/.test(text)||!!doc.querySelector(".pay_table_01,[class*='Payout_Detail']"))&&/(?:単勝|複勝|馬連|馬単|3連複|3連単)/.test(text);
     const hasFinish=/(?:^|\s)\d{1,2}\s*着(?:\s|$)|着順|ResultTable/.test(text+" "+source);
     const cancelled=/(?:取止|取り止め|中止|不成立|返還)/.test(text);
     return hasPayout&&(hasFinish||cancelled)
