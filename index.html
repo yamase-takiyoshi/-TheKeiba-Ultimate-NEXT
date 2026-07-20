@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.31</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.32</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -258,10 +258,10 @@ input,select,textarea{font-size:16px}
 .sync-live-status{white-space:nowrap}.sync-live-status.running{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}.sync-live-status.done{color:var(--good);border-color:color-mix(in srgb,var(--good) 45%,var(--line))}.sync-live-status.stopped,.sync-live-status.error{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
 .sync-live-progress-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;margin-bottom:10px}.sync-live-progress{height:15px}.sync-live-progress>span{width:0;transition:width .22s ease;background:linear-gradient(90deg,var(--accent),var(--good))}.sync-live-percent{font-size:24px;font-weight:950;font-variant-numeric:tabular-nums;min-width:76px;text-align:right}
 .sync-live-current{padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--bg);font-size:13px;font-weight:850;line-height:1.55;min-height:44px;margin-bottom:11px;white-space:pre-wrap}
-.sync-live-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:11px}.sync-live-kpi{padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0}.sync-live-kpi small{display:block;color:var(--muted);font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sync-live-kpi strong{display:block;margin-top:4px;font-size:17px;font-weight:950;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sync-live-kpis{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:11px}.sync-live-kpi{padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0}.sync-live-kpi small{display:block;color:var(--muted);font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sync-live-kpi strong{display:block;margin-top:4px;font-size:17px;font-weight:950;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sync-live-chart{height:210px}.sync-live-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:11px;line-height:1.5}
 .sync-error-panel{margin:11px 0;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden}.sync-error-panel.has-error{border-color:color-mix(in srgb,var(--bad) 60%,var(--line));box-shadow:inset 3px 0 0 var(--bad)}.sync-error-panel summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;cursor:pointer;font-weight:900;list-style:none}.sync-error-panel summary::-webkit-details-marker{display:none}.sync-error-panel summary::before{content:"▶";font-size:10px;color:var(--muted);transition:transform .16s ease}.sync-error-panel[open] summary::before{transform:rotate(90deg)}.sync-error-summary-title{margin-right:auto}.sync-error-body{border-top:1px solid var(--line);padding:11px 13px}.sync-error-latest{white-space:pre-wrap;overflow-wrap:anywhere;padding:10px 11px;border-radius:9px;background:color-mix(in srgb,var(--bad) 9%,var(--panel2));font-size:12px;line-height:1.55}.sync-error-actions{display:flex;gap:8px;flex-wrap:wrap;margin:9px 0}.sync-error-list{display:grid;gap:7px;max-height:260px;overflow:auto}.sync-error-item{padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);font-size:11px;line-height:1.55;overflow-wrap:anywhere}.sync-error-item-head{display:flex;justify-content:space-between;gap:8px;color:var(--muted);margin-bottom:3px}.sync-error-item strong{color:var(--bad)}.sync-error-advice{color:var(--muted);margin-top:3px}
-@media(max-width:900px){.sync-live-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.sync-live-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:560px){.sync-live-progress-row{grid-template-columns:1fr}.sync-live-percent{text-align:left}.sync-live-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.sync-live-chart{height:190px}.sync-live-status{width:100%;justify-content:center}.sync-error-item-head{display:block}}
 </style>
 
@@ -280,7 +280,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.31 EV分析エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.32 EV分析エミュレータ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -355,9 +355,30 @@ input,select,textarea{font-size:16px}
           <div class="field"><label>予算の使い方</label><select id="simBudgetMode"><option value="sequential">レース順に購入</option><option value="dailyRank">全日ランキング</option></select></div><div class="field"><label>全日ランキング基準</label><select id="simDailyRankBasis"><option value="ev">EVの高い順</option><option value="adjusted">AI補正EVの高い順</option><option value="expected">期待払戻の高い順</option><option value="learned">過去学習後の期待利益順</option></select></div>
         </div>
         <div class="toolbar" style="margin-top:13px"><button class="btn primary" id="simSyncBtn">自動分割バッチ同期</button><button class="btn warn" id="simStopSyncBtn" type="button" aria-label="同期停止" disabled>⏹ 同期停止</button><button class="btn batch-view-toggle" id="simBatchToggleBtn" type="button" aria-controls="simSyncLiveCard" aria-expanded="true">📊 バッチグラフを隠す</button><button class="btn live-result-btn active" id="simLiveGraphBtn" type="button" aria-pressed="true">📈 結果ライブ ON</button><button class="btn good" id="simRunBtn">バックテスト開始</button><button class="btn" id="simCsvBtn">明細CSV</button><button class="btn danger" id="simDataResetBtn" type="button">🧹 SIMデータリセット</button><button class="btn" id="simSaveStrategyBtn">設定を戦略保存</button></div>
-        <div class="notice" id="simModeNotice">「実データ同期」は指定期間を最大92日単位のバッチへ自動分割し、順番に取得します。「同期なし・保存済みのみ」は通信せず、DB・履歴・復元済みデータだけを使用します。未取得レースは自動除外します。</div>
+        <div class="notice" id="simModeNotice">「実データ同期」は最大92日単位へ自動分割し、過去レースの確定結果まで検証します。結果なしは成功扱いせず再試行します。バッチグラフはこの操作部の直下へ表示します。「同期なし・保存済みのみ」は通信しません。</div>
         <div class="code-box" id="simDataResetStatus" style="margin-top:8px">SIMデータリセットは、SIM実行履歴・現在の集計・右側グラフ連動データだけを消去します。レース・馬柱・オッズ・確定結果・設定・戦略・予想履歴・フォワードテスト・バックアップは残ります。</div>
         <div class="code-box" id="simSyncStatus" style="margin-top:12px">未同期。現在の登録結果件数を確認中です。</div>
+      </div>
+
+      <div class="card sync-live-card" id="simSyncLiveCard">
+        <div class="sync-live-head">
+          <div><div class="sync-live-title">📊 リアルタイム・バッチグラフ</div><div class="sync-live-sub">操作部の直下で、全期間の進捗、現在の日付・レース、完全取得、結果未取得、失敗件数をリアルタイム更新します。</div></div>
+          <span class="badge sync-live-status" id="simSyncLiveStatus"><span class="status-dot"></span>待機中</span>
+        </div>
+        <div class="sync-live-progress-row"><div class="progress sync-live-progress"><span id="simSyncProgressBar"></span></div><div class="sync-live-percent" id="simSyncProgressPercent">0.0%</div></div>
+        <div class="sync-live-current" id="simSyncCurrentTask">同期開始待ち</div>
+        <div class="sync-live-kpis">
+          <div class="sync-live-kpi"><small>全体日程</small><strong id="simSyncDays">0 / 0</strong></div>
+          <div class="sync-live-kpi"><small>当日レース</small><strong id="simSyncRace">0 / 0</strong></div>
+          <div class="sync-live-kpi"><small>完全取得</small><strong id="simSyncLoaded">0R</strong></div>
+          <div class="sync-live-kpi"><small>既存完全</small><strong id="simSyncSkipped">0R</strong></div>
+          <div class="sync-live-kpi"><small>確定結果</small><strong id="simSyncConfirmed">0R</strong></div>
+          <div class="sync-live-kpi"><small>結果待ち・未取得</small><strong id="simSyncResultMissing">0R</strong></div>
+          <div class="sync-live-kpi"><small>失敗</small><strong id="simSyncFailed">0件</strong></div>
+        </div>
+        <details class="sync-error-panel" id="simSyncErrorPanel"><summary><span class="sync-error-summary-title">⚠ 同期エラー詳細</span><span class="badge" id="simSyncErrorCount">0件</span></summary><div class="sync-error-body"><div class="sync-error-latest" id="simSyncErrorLatest">エラーは記録されていません。</div><div class="sync-error-actions"><button class="btn small" type="button" id="simSyncErrorCopyBtn">エラーをコピー</button><button class="btn small" type="button" id="simSyncErrorClearBtn">履歴を消去</button></div><div class="sync-error-list" id="simSyncErrorList"><div class="muted">同期エラーが発生すると、日付・対象・原因・対処候補をここへ残します。</div></div></div></details>
+        <canvas class="chart sync-live-chart" id="simSyncProgressChart" width="1200" height="210"></canvas>
+        <div class="sync-live-foot"><span id="simSyncElapsed">経過 0秒</span><span id="simSyncEta">残り時間 推定待ち</span><span id="simSyncGraphLegend">全期間の完了率 0～100%</span></div>
       </div>
 
       <div class="card capital-card" id="capitalManagementCard">
@@ -383,26 +404,6 @@ input,select,textarea{font-size:16px}
         <div class="form-grid"><div class="field wide"><label>JSONファイル名</label><input id="simJsonName" maxlength="100" value="TheKeiba_SIM" placeholder="例 JRA東京_202607"></div><div class="field"><label>保存範囲</label><select id="simJsonScope"><option value="current">現在のSIM結果</option><option value="all">現在＋SIM全履歴</option></select></div></div>
         <div class="toolbar" style="margin-top:12px"><button class="btn" id="simChooseFolderBtn">保存フォルダを選択</button><button class="btn primary" id="simJsonSaveAsBtn">フォルダ指定・名前付き保存</button><button class="btn warn" id="simJsonOverwriteBtn">同じJSONへ上書き</button><button class="btn good" id="simJsonLoadBtn">JSON読込</button><input id="simJsonFileInput" type="file" accept=".json,application/json" hidden></div>
         <div class="notice file-destination" id="simJsonDestination"><strong>保存先:</strong> 未選択。iPadでは共有メニューの「ファイルに保存」でフォルダを指定します。</div><div class="code-box" id="simJsonStatus" style="margin-top:9px">現在の設定・明細・元金分析を1本のJSONに保存できます。</div>
-      </div>
-
-      <div class="card sync-live-card" id="simSyncLiveCard">
-        <div class="sync-live-head">
-          <div><div class="sync-live-title">📊 リアルタイム同期モニター</div><div class="sync-live-sub">日付・レース単位で進捗、経過時間、推定残り時間、成功・確定・失敗件数を更新します。</div></div>
-          <span class="badge sync-live-status" id="simSyncLiveStatus"><span class="status-dot"></span>待機中</span>
-        </div>
-        <div class="sync-live-progress-row"><div class="progress sync-live-progress"><span id="simSyncProgressBar"></span></div><div class="sync-live-percent" id="simSyncProgressPercent">0.0%</div></div>
-        <div class="sync-live-current" id="simSyncCurrentTask">同期開始待ち</div>
-        <div class="sync-live-kpis">
-          <div class="sync-live-kpi"><small>処理日</small><strong id="simSyncDays">0 / 0</strong></div>
-          <div class="sync-live-kpi"><small>現在R</small><strong id="simSyncRace">0 / 0</strong></div>
-          <div class="sync-live-kpi"><small>取得成功</small><strong id="simSyncLoaded">0R</strong></div>
-          <div class="sync-live-kpi"><small>既存</small><strong id="simSyncSkipped">0R</strong></div>
-          <div class="sync-live-kpi"><small>確定結果</small><strong id="simSyncConfirmed">0R</strong></div>
-          <div class="sync-live-kpi"><small>失敗</small><strong id="simSyncFailed">0件</strong></div>
-        </div>
-        <details class="sync-error-panel" id="simSyncErrorPanel"><summary><span class="sync-error-summary-title">⚠ 同期エラー詳細</span><span class="badge" id="simSyncErrorCount">0件</span></summary><div class="sync-error-body"><div class="sync-error-latest" id="simSyncErrorLatest">エラーは記録されていません。</div><div class="sync-error-actions"><button class="btn small" type="button" id="simSyncErrorCopyBtn">エラーをコピー</button><button class="btn small" type="button" id="simSyncErrorClearBtn">履歴を消去</button></div><div class="sync-error-list" id="simSyncErrorList"><div class="muted">同期エラーが発生すると、日付・対象・原因・対処候補をここへ残します。</div></div></div></details>
-        <canvas class="chart sync-live-chart" id="simSyncProgressChart" width="1200" height="210"></canvas>
-        <div class="sync-live-foot"><span id="simSyncElapsed">経過 0秒</span><span id="simSyncEta">残り時間 推定待ち</span><span id="simSyncGraphLegend">進捗率の推移 0～100%</span></div>
       </div>
 
       <div class="grid"><div class="stat span-2"><div class="stat-label">対象R</div><div class="stat-value" id="simRaceCount">0</div></div><div class="stat span-2"><div class="stat-label">購入R</div><div class="stat-value" id="simBoughtCount">0</div></div><div class="stat span-2"><div class="stat-label">候補的中</div><div class="stat-value" id="simCandidateHits">0</div></div><div class="stat span-2"><div class="stat-label">購入的中</div><div class="stat-value" id="simPurchaseHits">0</div></div><div class="stat span-2"><div class="stat-label">取り逃がし</div><div class="stat-value" id="simMissHits">0</div></div><div class="stat span-2"><div class="stat-label">ROI</div><div class="stat-value" id="simRoi">0%</div></div></div>
@@ -1100,7 +1101,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.31-sync-error-details";
+const APP_VERSION="1.2.32-batch-graph-exact-day-result-verification";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -1477,7 +1478,7 @@ async function updateSimDataModeUi({refreshStatus=true}={}){
   if(stopBtn){stopBtn.disabled=stored||!BACKTEST_SYNC.running;stopBtn.hidden=stored}
   if(notice)notice.textContent=stored
     ?"同期なしモード：通信を行わず、DB・履歴・スナップショット復元済みの保存データだけでバックテストします。期間制限はありません。未取得・未確定レースは自動的に除外し、レース・馬柱・結果・設定・スナップショットは上書きしません。"
-    :"実データ同期モード：指定期間を最大92日単位のバッチへ自動分割し、全バッチを順番に同期します。DB接続がiPad側で一時終了しても、自動再接続して同じ日・レースから再試行します。取得済みレースは自動スキップします。";
+    :"実データ同期モード：指定期間を最大92日単位のバッチへ自動分割し、全バッチを順番に同期します。過去レースは馬柱・オッズだけでなく確定結果まで確認し、結果なしを成功扱いしません。DB接続がiPad側で一時終了しても、同じ日・レースから自動再試行します。バッチグラフはこの操作部の直下に表示します。";
   if(liveHelp)liveHelp.textContent=stored?"保存済みの確定結果だけを再集計します。ネット通信は行いません。":"自動分割バッチ同期中、確定結果が増えるたびに暫定集計します。";
   if(liveFoot&&stored)liveFoot.textContent="同期なしモードです。保存済みの確定結果のみを使用し、未確定レースはグラフに含みません。";
   if(refreshStatus&&state.db){
@@ -1509,13 +1510,14 @@ async function syncBacktestPeriod(){
   const batches=splitBacktestBatches(dates),rangeLabel=`${displayDate(dates[0])}～${displayDate(dates.at(-1))}`,requestedTypes=c.type?[c.type]:["JRA","NAR"];
   if(!confirm(`${rangeLabel} の ${dates.length}日分を、最大${BACKTEST_BATCH_DAYS}日単位の ${batches.length}バッチへ自動分割して同期します。
 開催一覧・出馬表・最終オッズ・結果・払戻を順番に取得します。
+過去レースは確定結果まで検証し、結果未取得は最大3回再試行してエラー詳細へ残します。
 通信が止まった場合は自動タイムアウトして次の日・次レースへ進みます。開始しますか？`))return;
   BACKTEST_SYNC.running=true;BACKTEST_SYNC.stop=false;BACKTEST_SYNC.batch=0;BACKTEST_SYNC.totalBatches=batches.length;
   const simRunButton=$("simRunBtn"),simRunButtonText=simRunButton?.textContent||"バックテスト開始";
   $("simSyncBtn").disabled=true;$("simStopSyncBtn").disabled=false;$("simStopSyncBtn").textContent="⏹ 同期停止";
   if(simRunButton){simRunButton.disabled=true;simRunButton.textContent="同期完了待ち";}
   const oldDate=$("bridgeDate").value,startedAt=Date.now();
-  let listDays=0,noRaceDays=0,processedDays=0,totalRaces=0,loaded=0,confirmed=0,failed=0,skipped=0,retried=0,lastError="",consecutiveFailures=0;
+  let listDays=0,noRaceDays=0,processedDays=0,totalRaces=0,loaded=0,confirmed=0,resultMissing=0,failed=0,skipped=0,retried=0,lastError="",consecutiveFailures=0;
   try{
     await withOperationTimeout(()=>detectBridgeMode(),32000,"Bridge経路検出");
     for(let batchIndex=0;batchIndex<batches.length;batchIndex++){
@@ -1523,14 +1525,14 @@ async function syncBacktestPeriod(){
       const batch=batches[batchIndex],batchNo=batchIndex+1,batchStart=batch[0],batchEnd=batch.at(-1);
       BACKTEST_SYNC.batch=batchNo;
       setSimSyncStatus(`バッチ ${batchNo}/${batches.length} 開始　${displayDate(batchStart)}～${displayDate(batchEnd)}
-処理日 ${processedDays}/${dates.length}日　取得成功 ${loaded}R　既存 ${skipped}R　失敗 ${failed}件`);
+完了日 ${processedDays}/${dates.length}日　完全取得 ${loaded}R　既存完全 ${skipped}R　結果待ち・未取得 ${resultMissing}R　失敗 ${failed}件`);
       for(let dayIndex=0;dayIndex<batch.length;dayIndex++){
         if(BACKTEST_SYNC.stop)break;
         const date=batch[dayIndex];
         $("bridgeDate").value=`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}`;
         setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　${displayDate(batchStart)}～${displayDate(batchEnd)}
 開催一覧取得中 ${displayDate(date)}　バッチ内 ${dayIndex+1}/${batch.length}日　全体 ${processedDays+1}/${dates.length}日
-取得成功 ${loaded}R　既存 ${skipped}R　確定結果 ${confirmed}R　失敗 ${failed}件`);
+完全取得 ${loaded}R　既存完全 ${skipped}R　確定結果 ${confirmed}R　結果待ち・未取得 ${resultMissing}R　失敗 ${failed}件`);
         let races=[];
         try{
           races=await withIndexedDbRecovery(
@@ -1553,7 +1555,7 @@ ${lastError}
         if(!races.length){
           noRaceDays++;processedDays++;
           setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　${displayDate(date)} 対象開催なし
-処理日 ${processedDays}/${dates.length}日　取得成功 ${loaded}R　既存 ${skipped}R　確定結果 ${confirmed}R　失敗 ${failed}件`);
+完了日 ${processedDays}/${dates.length}日　完全取得 ${loaded}R　既存完全 ${skipped}R　確定結果 ${confirmed}R　結果待ち・未取得 ${resultMissing}R　失敗 ${failed}件`);
           await new Promise(resolve=>setTimeout(resolve,80));continue
         }
         totalRaces+=races.length;
@@ -1566,13 +1568,24 @@ ${lastError}
           );
           if(hasUsableConfirmedResult(existingResult)&&existingEntries.length){skipped++;confirmed++;continue}
           setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　${displayDate(date)} ${race.placeName||""} ${race.raceNo||race.race||""}R
-当日 ${raceIndex+1}/${races.length}R　処理日 ${processedDays+1}/${dates.length}日　検出 ${totalRaces}R
-取得成功 ${loaded}R　既存 ${skipped}R　確定結果 ${confirmed}R　失敗 ${failed}件${lastError?`
+当日 ${raceIndex+1}/${races.length}R　全体日程 ${processedDays+1}/${dates.length}日（完了 ${processedDays}日）　累計検出 ${totalRaces}R
+完全取得 ${loaded}R　既存完全 ${skipped}R　確定結果 ${confirmed}R　結果待ち・未取得 ${resultMissing}R　失敗 ${failed}件${lastError?`
 直近失敗 ${lastError}`:""}`);
-          let ok=false;
+          const resultRequired=date<today;
+          let ok=false,resultReady=false,missingResultAfterFetch=false;
           for(let attempt=1;attempt<=3&&!BACKTEST_SYNC.stop;attempt++){
-            try{ok=await withOperationTimeout(()=>bridgeLoadBundle(rid,true,true),90000,`${race.placeName||""} ${race.raceNo||race.race||""}R取得`)}
+            try{ok=await withOperationTimeout(()=>bridgeLoadBundle(rid,true,true,resultRequired),90000,`${race.placeName||""} ${race.raceNo||race.race||""}R取得`)}
             catch(timeoutError){ok=false;window.__LAST_BUNDLE_ERROR__=indexedDbErrorText(timeoutError)}
+            if(ok){
+              try{
+                const [savedResult,savedEntries]=await withIndexedDbRecovery(
+                  ()=>Promise.all([getOne("results",rid),getByIndex("entries","race_id",rid)]),`${rid} 取得完全性確認`,3
+                );
+                resultReady=hasUsableConfirmedResult(savedResult);
+                if(!savedEntries.length){ok=false;window.__LAST_BUNDLE_ERROR__="出走馬を保存・確認できません"}
+                else if(resultRequired&&!resultReady){ok=false;missingResultAfterFetch=true;window.__LAST_BUNDLE_ERROR__="過去レースの確定結果・払戻を取得または解析できません"}
+              }catch(verifyError){ok=false;window.__LAST_BUNDLE_ERROR__=`取得後のDB確認失敗: ${indexedDbErrorText(verifyError)}`}
+            }
             if(ok)break;
             const bundleError=window.__LAST_BUNDLE_ERROR__||"取得失敗";
             if(isIndexedDbClosingError(bundleError)){
@@ -1580,13 +1593,19 @@ ${lastError}
               try{await recoverIndexedDbConnection(`${displayDate(date)} ${race.placeName||""} ${race.raceNo||race.race||""}R
 ${bundleError}`)}
               catch(recoveryError){window.__LAST_BUNDLE_ERROR__=`${bundleError} / DB復旧失敗: ${indexedDbErrorText(recoveryError)}`;break}
-            }else if(attempt<3){retried++;await new Promise(resolve=>setTimeout(resolve,900))}
+            }else if(attempt<3){
+              retried++;
+              setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　${displayDate(date)} ${race.placeName||""} ${race.raceNo||race.race||""}R　再試行 ${attempt+1}/3
+${bundleError}
+完全取得 ${loaded}R　既存完全 ${skipped}R　確定結果 ${confirmed}R　結果待ち・未取得 ${resultMissing}R　失敗 ${failed}件`);
+              await new Promise(resolve=>setTimeout(resolve,900))
+            }
           }
           if(ok){
             loaded++;consecutiveFailures=0;
-            const savedResult=await withIndexedDbRecovery(()=>getOne("results",rid),`${rid} 結果保存確認`,3);
-            if(hasUsableConfirmedResult(savedResult))confirmed++
+            if(resultReady)confirmed++;else resultMissing++
           }else{
+            if(missingResultAfterFetch)resultMissing++;
             failed++;consecutiveFailures++;lastError=`${displayDate(date)} ${race.placeName||""} ${race.raceNo||race.race||""}R: ${window.__LAST_BUNDLE_ERROR__||"取得失敗"}`
           }
           await new Promise(resolve=>setTimeout(resolve,300))
@@ -1595,18 +1614,18 @@ ${bundleError}`)}
       }
       if(!BACKTEST_SYNC.stop&&batchIndex<batches.length-1){
         setSimSyncStatus(`バッチ ${batchNo}/${batches.length} 完了　${displayDate(batchStart)}～${displayDate(batchEnd)}
-処理日 ${processedDays}/${dates.length}日　開催なし ${noRaceDays}日　取得成功 ${loaded}R　既存 ${skipped}R　失敗 ${failed}件
+完了日 ${processedDays}/${dates.length}日　開催なし ${noRaceDays}日　完全取得 ${loaded}R　既存完全 ${skipped}R　結果待ち・未取得 ${resultMissing}R　失敗 ${failed}件
 次のバッチまで2秒待機します。`);
         await new Promise(resolve=>setTimeout(resolve,2000))
       }
     }
     await withIndexedDbRecovery(()=>refreshAll(),"同期完了後の画面更新",3);await renderSimPlaceOptions(c.places);
     const cov=await withIndexedDbRecovery(()=>backtestCoverage(c),"同期完了後の集計",3),elapsedSec=Math.max(1,Math.round((Date.now()-startedAt)/1000)),elapsedLabel=elapsedSec>=60?`${Math.floor(elapsedSec/60)}分${elapsedSec%60}秒`:`${elapsedSec}秒`;
-    setSimSyncStatus(`${BACKTEST_SYNC.stop?"バッチ同期停止":"全バッチ同期完了"}　${BACKTEST_SYNC.batch}/${batches.length}バッチ　処理 ${processedDays}/${dates.length}日　開催なし ${noRaceDays}日
-登録対象 ${cov.races}R　確定結果 ${cov.results}R　取得成功 ${loaded}R　既存 ${skipped}R　再試行 ${retried}回　失敗 ${failed}件
+    setSimSyncStatus(`${BACKTEST_SYNC.stop?"バッチ同期停止":"全バッチ同期完了"}　${BACKTEST_SYNC.batch}/${batches.length}バッチ　完了日 ${processedDays}/${dates.length}日　開催なし ${noRaceDays}日
+登録対象 ${cov.races}R　確定結果 ${cov.results}R　完全取得 ${loaded}R　既存完全 ${skipped}R　結果待ち・未取得 ${resultMissing}R　再試行 ${retried}回　失敗 ${failed}件
 所要時間 ${elapsedLabel}${lastError?`
 最後の失敗 ${lastError}`:""}`);
-    return{...cov,batches:batches.length,processedDays,noRaceDays,loaded,skipped,failed,retried,stopped:BACKTEST_SYNC.stop}
+    return{...cov,batches:batches.length,processedDays,noRaceDays,loaded,skipped,confirmed,resultMissing,failed,retried,stopped:BACKTEST_SYNC.stop}
   }catch(e){
     setSimSyncStatus(`バッチ同期エラー　バッチ ${BACKTEST_SYNC.batch}/${batches.length}
 ${e.message}`);throw e
@@ -1948,6 +1967,23 @@ function bridgePageLooksUseful(type,html){
     return hasPayout&&(hasFinish||cancelled)
   }catch{return false}
 }
+function racePageCalendarDate(raw){
+  const html=unwrapBridgeHtml(raw);if(!html)return"";
+  try{
+    const doc=new DOMParser().parseFromString(html,"text/html"),parts=[
+      doc.querySelector('meta[property="og:title"]')?.getAttribute("content")||"",
+      doc.querySelector('meta[name="description"]')?.getAttribute("content")||"",
+      doc.title||"",
+      textOf(doc,[".RaceData01",".RaceData02",".RaceData",".RaceInfo","[class*='RaceData']","[class*='RaceInfo']"])
+    ];
+    for(const value of parts){
+      let m=String(value||"").match(/((?:19|20)\d{2})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日/);
+      if(!m)m=String(value||"").match(/((?:19|20)\d{2})[-\/.](\d{1,2})[-\/.](\d{1,2})/);
+      if(m)return`${m[1]}${String(m[2]).padStart(2,"0")}${String(m[3]).padStart(2,"0")}`
+    }
+  }catch(_){ }
+  return""
+}
 async function bridgeLoadHtmlPage(type,rid,kind,mode,{required=false}={}){
   const errors=[];
   const accept=(html,url)=>bridgePageLooksUseful(type,html)?{html,url}:null;
@@ -2019,6 +2055,7 @@ function parseRaceListHtml(raw,kind,date){
     map.set(rid,normalizeRace({race_id:rid,type:kind,date,placeName:placeMap[placeCode],placeCode:Number(placeCode),raceNo,name,startTime:timeMatch?timeMatch[0]:"",status:"一覧取得",sourceUrl:href}))
   }
   for(const node of doc.querySelectorAll('a[href*="race_id"],a[href*="race-id"],a[data-race_id],a[data-race-id],[data-race_id],[data-race-id]')){
+    if(node.closest?.('template,[hidden],[aria-hidden="true"],[style*="display:none"],[style*="display: none"],.is-hide,.is-hidden,.hidden,.d-none,.Hide,[class*="DisplayNone"]'))continue;
     const href=node.getAttribute("href")||"",dataId=node.getAttribute("data-race_id")||node.getAttribute("data-race-id")||"";
     const source=`${href} ${dataId}`.replace(/&amp;/gi,"&");
     const m=source.match(/race[_-]?id(?:=|%3D|\\u003[dD]|["'\s:]+)((?:19|20)\d{10,12})/i)||source.match(/((?:19|20)\d{10})/);
@@ -2032,7 +2069,9 @@ function parseRaceListHtml(raw,kind,date){
     /race[_-]?id(?:=|%3D|\\u003[dD]|["'\s:]+)((?:19|20)\d{10,12})/gi,
     /[?&]race_id=((?:19|20)\d{10,12})/gi
   ];
-  for(const re of patterns){let m;while((m=re.exec(html))){
+  // 通常の一覧リンクを取得できた場合、HTML全体の予備走査は行わない。
+  // JRAページには別日タブ用のrace_idも埋め込まれるため、全体走査すると1日に100R超を誤登録する。
+  if(!map.size)for(const re of patterns){let m;while((m=re.exec(html))){
     const start=Math.max(0,m.index-220),end=Math.min(html.length,re.lastIndex+320);
     const context=new DOMParser().parseFromString(html.slice(start,end),"text/html").body?.textContent||"";
     add(m[1],context,"")
@@ -2272,6 +2311,7 @@ async function bridgeLoadList({silent=false,deferRefresh=false,types=null,allowE
             const raw=await bridgeLegacyUrl(url,{timeout:22000}),html=unwrapBridgeHtml(raw),sig=raceListHtmlSignals(html),part=parseRaceListHtml(html,"JRA",date);
             successfulPages++;jraParseSignal=jraParseSignal||sig.hasRaceId||sig.hasRaceRows;
             diagnostics.pages.push({type:"JRA",url:url.replace(/^https?:\/\//,""),chars:sig.chars,hasRaceId:sig.hasRaceId,hasRaceRows:sig.hasRaceRows,ended:sig.ended,count:part.length});
+            if(part.length>36){logs.push(`JRA日付混在:${part.length}R（1日上限36R超）`);diagnostics.pages.at(-1).mixedDates=true;continue}
             if(part.length){jra=part;logs.push(`JRA:${part.length}R`);break}
             if(sig.hasRaceId||sig.hasRaceRows)logs.push(`JRA解析0R:${sig.chars}字`);else if(sig.ended)logs.push("JRA旧一覧終了ページ");else logs.push(`JRA開催情報なし:${sig.chars}字`)
           }catch(e){logs.push(`JRA失敗:${e.message}`);diagnostics.pages.push({type:"JRA",error:e.message})}
@@ -2297,10 +2337,12 @@ async function bridgeLoadList({silent=false,deferRefresh=false,types=null,allowE
       }
     }
     const uniq=new Map(races.filter(r=>r?.race_id).map(r=>[normalizeAnalyticsRaceIdValue(r.race_id||r.raceId),{...r,race_id:normalizeAnalyticsRaceIdValue(r.race_id||r.raceId)}]));
-    races=[...uniq.values()].filter(r=>r.race_id&&wanted.has(String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase()));
+    const uniqueRaces=[...uniq.values()],wrongDateRaces=uniqueRaces.filter(r=>{const d=compactDate(r.date||r.raceDate||r.race_date||"");return d&&d!==date});
+    races=uniqueRaces.filter(r=>{const d=compactDate(r.date||r.raceDate||r.race_date||"");return(!d||d===date)&&r.race_id&&wanted.has(String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase())});
     jraCount=races.filter(r=>String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase()==="JRA").length;
     narCount=races.filter(r=>String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase()==="NAR").length;
-    diagnostics.total=races.length;diagnostics.jra=jraCount;diagnostics.nar=narCount;diagnostics.logs=logs.slice(-12);window.__LAST_LIST_DIAGNOSTICS__=diagnostics;
+    diagnostics.total=races.length;diagnostics.jra=jraCount;diagnostics.nar=narCount;diagnostics.wrongDateFiltered=wrongDateRaces.length;diagnostics.logs=logs.slice(-12);window.__LAST_LIST_DIAGNOSTICS__=diagnostics;
+    if(jraCount>36)throw new Error(`JRA一覧の日付混在を検出しました: ${displayDate(date)} に ${jraCount}R（1日上限36R超）。別日race_idは登録せず再試行します`);
     if(!races.length&&!successfulPages)throw new Error(`開催一覧の通信に失敗しました${logs.length?` (${logs.slice(-6).join(" / ")})`:""}`);
     if(wanted.has("JRA")&&likelyJraRaceDay(date)&&jraCount===0){
       const recent=logs.slice(-8),all400=recent.length&&recent.every(x=>/JRA失敗:Userscript HTTP 400/.test(x));
@@ -2330,12 +2372,15 @@ async function bridgeLoadBundle(rid=$("bridgeRaceId").value.trim(),silent=false,
     if(mode==="rest"){
       const paths=[`/race/${encodeURIComponent(rid)}`,`/entry/${encodeURIComponent(rid)}`,`/odds/${encodeURIComponent(rid)}`,`/result/${encodeURIComponent(rid)}`],settled=await Promise.allSettled(paths.map(p=>bridgeFetch(p))),value=i=>settled[i].status==="fulfilled"?settled[i].value:null;
       const raceData=value(0),entryData=value(1),oddsData=value(2),resultData=value(3),r=raceData?.race||raceData||existingRace;if(!r)throw new Error("REST race取得失敗");
-      const en=Array.isArray(entryData)?entryData:(entryData?.entries||entryData?.horses||[]),od=Array.isArray(oddsData)?oddsData:(oddsData?.odds||[]),oMap=new Map(od.map(x=>[Number(x.horseNo||x.horse_no||x.number||x.umaban),Number(x.odds||x.winOdds||0)])),merged=en.map(e=>({...e,odds:oMap.get(Number(e.horseNo||e.horse_no||e.number||e.umaban))||e.odds})),resultBody=resultData?.result||resultData,mergedRace=mergeRaceMetadata(existingRace,{...r,race_id:rid,type:kind,date:date||compactDate(r.date)}),payload={races:[mergedRace],entries:{[rid]:merged},results:resultBody?[{race_id:rid,...resultBody}]:[]};
+      const sourceDate=compactDate(r?.date||r?.raceDate||r?.race_date||"");if(date&&sourceDate&&sourceDate!==date)throw new Error(`race_id日付不一致 指定 ${displayDate(date)} / REST ${displayDate(sourceDate)} / ${rid}`);
+      const en=Array.isArray(entryData)?entryData:(entryData?.entries||entryData?.horses||[]),od=Array.isArray(oddsData)?oddsData:(oddsData?.odds||[]),oMap=new Map(od.map(x=>[Number(x.horseNo||x.horse_no||x.number||x.umaban),Number(x.odds||x.winOdds||0)])),merged=en.map(e=>({...e,odds:oMap.get(Number(e.horseNo||e.horse_no||e.number||e.umaban))||e.odds})),resultBody=resultData?.result||resultData,mergedRace=mergeRaceMetadata(existingRace,{...r,race_id:rid,type:kind,date:sourceDate||date}),payload={races:[mergedRace],entries:{[rid]:merged},results:resultBody?[{race_id:rid,...resultBody}]:[]};
       await importPayload(payload,{silent:true,deferRefresh});if(!silent)bridgeLog("RESTレース一式登録",{race:rid,kind,entries:merged.length,result:!!resultBody})
     }else{
       const shutubaPage=await bridgeLoadHtmlPage("shutuba",rid,kind,mode),oddsPage=await bridgeLoadHtmlPage("odds",rid,kind,mode);let resultPage={html:"",url:"",errors:[]};
-      if(forceResult||shouldFetchRaceResult(existingRace,date))resultPage=await bridgeLoadHtmlPage("result",rid,kind,mode);
+      if(forceResult||shouldFetchRaceResult(existingRace,date))resultPage=await bridgeLoadHtmlPage("result",rid,kind,mode,{required:forceResult});
       if(!shutubaPage.html&&!oddsPage.html&&!resultPage.html){const details=[...(shutubaPage.errors||[]),...(oddsPage.errors||[]),...(resultPage.errors||[])].slice(-6).join(" / ");throw new Error(`出馬表・オッズ・結果ページを取得できません${details?` (${details})`:""}`)}
+      const actualDates=[resultPage.html,shutubaPage.html,oddsPage.html].map(racePageCalendarDate).filter(Boolean),actualDate=actualDates[0]||"";
+      if(date&&actualDate&&actualDate!==date)throw new Error(`race_id日付不一致 指定 ${displayDate(date)} / 取得ページ ${displayDate(actualDate)} / ${rid}`);
       const parsedPages=[shutubaPage.html?parseShutubaHtml(shutubaPage.html,rid,kind,date):null,oddsPage.html?parseShutubaHtml(oddsPage.html,rid,kind,date):null,resultPage.html?parseShutubaHtml(resultPage.html,rid,kind,date):null].filter(Boolean),sourceEntries=[...parsedPages.flatMap(p=>p.entries||[]),...parseEntriesFromOddsHtml(oddsPage.html,rid),...(resultPage.html?parseEntriesFromHtml(resultPage.html,rid):[])],entryMap=new Map();
       for(const e of sourceEntries){const n=Number(e.horseNo||0);if(!n)continue;entryMap.set(n,mergeEntryRecords(entryMap.get(n)||{},e))}const entries=[...entryMap.values()],oddsMap=oddsPage.html?parseOddsHtml(oddsPage.html):new Map();
       for(const e of entries){const o=oddsMap.get(e.horseNo);if(o){e.odds=o.odds||e.odds;e.popularity=o.popularity||e.popularity;const mp=e.odds?0.78/e.odds:0;e.probWin=e.probWin||mp;e.ev=Number((e.probWin*e.odds).toFixed(3))}}
@@ -4553,26 +4598,28 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 (function(){
   "use strict";
   const byId=id=>document.getElementById(id);
-  const MON={running:false,startedAt:0,lastAt:0,progress:0,dayNow:0,daysDone:0,daysTotal:0,raceNow:0,raceTotal:0,loaded:0,skipped:0,confirmed:0,failed:0,batchNow:0,batchTotal:0,history:[],raf:0,timer:0,lastMessage:""};
+  const MON={running:false,startedAt:0,lastAt:0,progress:0,dayNow:0,daysDone:0,daysTotal:0,raceNow:0,raceTotal:0,loaded:0,skipped:0,confirmed:0,resultMissing:0,failed:0,batchNow:0,batchTotal:0,history:[],raf:0,timer:0,lastMessage:""};
   const num=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function css(name,fallback){const v=getComputedStyle(document.documentElement).getPropertyValue(name).trim();return v||fallback}
   function formatTime(sec){sec=Math.max(0,Math.round(num(sec)));if(sec<60)return `${sec}秒`;if(sec<3600)return `${Math.floor(sec/60)}分${sec%60}秒`;return `${Math.floor(sec/3600)}時間${Math.floor(sec%3600/60)}分`}
   function readMatch(text,re){const m=String(text||"").match(re);return m?m.slice(1).map(Number):null}
   function setBadge(label,kind=""){const el=byId("simSyncLiveStatus");if(!el)return;el.classList.remove("running","done","stopped","error");if(kind)el.classList.add(kind);const on=kind==="running"||kind==="done";el.innerHTML=`<span class="status-dot${on?" on":""}"></span>${label}`}
-  function reset(){MON.startedAt=Date.now();MON.lastAt=MON.startedAt;MON.progress=0;MON.dayNow=0;MON.daysDone=0;MON.daysTotal=0;MON.raceNow=0;MON.raceTotal=0;MON.loaded=0;MON.skipped=0;MON.confirmed=0;MON.failed=0;MON.batchNow=0;MON.batchTotal=0;MON.history=[];MON.lastMessage="同期を開始しています…";sample(true);render()}
+  function reset(){MON.startedAt=Date.now();MON.lastAt=MON.startedAt;MON.progress=0;MON.dayNow=0;MON.daysDone=0;MON.daysTotal=0;MON.raceNow=0;MON.raceTotal=0;MON.loaded=0;MON.skipped=0;MON.confirmed=0;MON.resultMissing=0;MON.failed=0;MON.batchNow=0;MON.batchTotal=0;MON.history=[];MON.lastMessage="同期を開始しています…";sample(true);render()}
   function begin(){MON.running=true;reset();setBadge("同期中","running");startClock()}
   function finish(kind="done"){MON.running=false;if(kind==="done"&&MON.daysTotal){MON.progress=100;MON.dayNow=MON.daysTotal;MON.daysDone=MON.daysTotal;}sample(true);render();setBadge(kind==="stopped"?"停止":"完了",kind);stopClock()}
   function startClock(){stopClock();MON.timer=setInterval(()=>renderTime(),1000)}
   function stopClock(){if(MON.timer){clearInterval(MON.timer);MON.timer=0}renderTime()}
-  function sample(force=false){const now=Date.now();const last=MON.history[MON.history.length-1];if(!force&&last&&now-last.t<450&&Math.abs(last.p-MON.progress)<.05)return;MON.history.push({t:now,p:MON.progress,loaded:MON.loaded,confirmed:MON.confirmed,failed:MON.failed});if(MON.history.length>240)MON.history.splice(0,MON.history.length-240)}
+  function sample(force=false){const now=Date.now(),dayP=MON.raceTotal?clamp(MON.raceNow/MON.raceTotal*100,0,100):0;const last=MON.history[MON.history.length-1];if(!force&&last&&now-last.t<450&&Math.abs(last.p-MON.progress)<.05&&Math.abs((last.dayP||0)-dayP)<.2)return;MON.history.push({t:now,p:MON.progress,dayP,loaded:MON.loaded,confirmed:MON.confirmed,resultMissing:MON.resultMissing,failed:MON.failed});if(MON.history.length>240)MON.history.splice(0,MON.history.length-240)}
   function parseStatus(message){
     const text=String(message||"");MON.lastMessage=text;MON.lastAt=Date.now();
     let m=readMatch(text,/バッチ\s*(\d+)\/(\d+)/);if(m){MON.batchNow=m[0];MON.batchTotal=m[1]}
-    m=readMatch(text,/全体\s*(\d+)\/(\d+)日?/);
+    m=readMatch(text,/全体(?:日程)?\s*(\d+)\/(\d+)日?/);
     if(m){MON.dayNow=m[0];MON.daysDone=clamp(m[0]-1,0,m[1]);MON.daysTotal=m[1]}
     else{
-      m=readMatch(text,/処理(?:日)?\s*(\d+)\/(\d+)日?/);
+      const done=readMatch(text,/完了日\s*(\d+)\/(\d+)日?/);
+      if(done){MON.daysDone=clamp(done[0],0,done[1]);MON.daysTotal=done[1];MON.dayNow=clamp(done[0]+(done[0]<done[1]?1:0),0,done[1])}
+      m=done?null:readMatch(text,/処理(?:日)?\s*(\d+)\/(\d+)日?/);
       if(m){
         const currentDay=/当日\s*\d+\/\d+R|開催一覧取得中/.test(text);
         MON.daysTotal=m[1];
@@ -4586,9 +4633,10 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
       if(compact){MON.raceNow=compact[0];MON.raceTotal=compact[1]}
       else if(/開催一覧取得中|対象開催なし|一覧取得失敗|バッチ\s*\d+\/\d+\s*開始/.test(text)){MON.raceNow=0;MON.raceTotal=0}
     }
-    m=readMatch(text,/取得成功\s*(\d+)R/);if(m)MON.loaded=m[0];
-    m=readMatch(text,/既存\s*(\d+)R/);if(m)MON.skipped=m[0];
+    m=readMatch(text,/(?:完全取得|取得成功)\s*(\d+)R/);if(m)MON.loaded=m[0];
+    m=readMatch(text,/既存(?:完全)?\s*(\d+)R/);if(m)MON.skipped=m[0];
     m=readMatch(text,/確定結果\s*(\d+)R/);if(m)MON.confirmed=m[0];
+    m=readMatch(text,/結果(?:待ち・未取得|未取得|待ち)\s*(\d+)R/);if(m)MON.resultMissing=m[0];
     m=readMatch(text,/失敗\s*(\d+)件/);if(m)MON.failed=m[0];
     let p=MON.progress;
     if(MON.daysTotal){const partial=MON.raceTotal?clamp(MON.raceNow/MON.raceTotal,0,1):0;p=clamp((MON.daysDone+partial)/MON.daysTotal*100,0,100)}
@@ -4605,18 +4653,22 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   }
   function renderTime(){const elapsed=MON.startedAt?(Date.now()-MON.startedAt)/1000:0;const elapsedEl=byId("simSyncElapsed"),etaEl=byId("simSyncEta");if(elapsedEl)elapsedEl.textContent=`経過 ${formatTime(elapsed)}`;let eta="残り時間 推定待ち";if(MON.running&&MON.progress>=1&&MON.progress<100){const remain=elapsed*(100-MON.progress)/MON.progress;if(Number.isFinite(remain)&&remain<864000)eta=`残り 約${formatTime(remain)}`}else if(!MON.running&&MON.progress>=100)eta="同期完了";if(etaEl)etaEl.textContent=eta}
   function compactTask(){const lines=MON.lastMessage.split(/\n+/).map(s=>s.trim()).filter(Boolean);return lines.slice(0,3).join("\n")||"同期開始待ち"}
+  function progressText(value){value=clamp(num(value),0,100);return`${value>0&&value<1?value.toFixed(2):value.toFixed(1)}%`}
   function render(){
-    const bar=byId("simSyncProgressBar"),pctEl=byId("simSyncProgressPercent");if(bar)bar.style.width=`${MON.progress.toFixed(2)}%`;if(pctEl)pctEl.textContent=`${MON.progress.toFixed(1)}%`;
-    const shownDay=MON.daysTotal?(MON.running?Math.max(1,MON.dayNow||MON.daysDone+1):Math.min(MON.daysTotal,MON.dayNow||MON.daysDone)):0;const vals={simSyncDays:`${shownDay} / ${MON.daysTotal}`,simSyncRace:`${MON.raceNow} / ${MON.raceTotal}`,simSyncLoaded:`${MON.loaded}R`,simSyncSkipped:`${MON.skipped}R`,simSyncConfirmed:`${MON.confirmed}R`,simSyncFailed:`${MON.failed}件`};for(const [id,v] of Object.entries(vals)){const el=byId(id);if(el)el.textContent=v}
-    const task=byId("simSyncCurrentTask");if(task)task.textContent=compactTask();renderTime();scheduleDraw();
+    const bar=byId("simSyncProgressBar"),pctEl=byId("simSyncProgressPercent");if(bar){bar.style.width=`${MON.progress.toFixed(3)}%`;bar.style.minWidth=MON.progress>0?"2px":"0"}if(pctEl)pctEl.textContent=progressText(MON.progress);
+    const shownDay=MON.daysTotal?(MON.running?Math.max(1,MON.dayNow||MON.daysDone+1):Math.min(MON.daysTotal,MON.dayNow||MON.daysDone)):0;const vals={simSyncDays:`${shownDay} / ${MON.daysTotal}`,simSyncRace:`${MON.raceNow} / ${MON.raceTotal}`,simSyncLoaded:`${MON.loaded}R`,simSyncSkipped:`${MON.skipped}R`,simSyncConfirmed:`${MON.confirmed}R`,simSyncResultMissing:`${MON.resultMissing}R`,simSyncFailed:`${MON.failed}件`};for(const [id,v] of Object.entries(vals)){const el=byId(id);if(el)el.textContent=v}
+    const task=byId("simSyncCurrentTask");if(task)task.textContent=compactTask();const legend=byId("simSyncGraphLegend"),dayP=MON.raceTotal?MON.raceNow/MON.raceTotal*100:0;if(legend)legend.textContent=`青 全期間 ${progressText(MON.progress)}　緑 当日 ${progressText(dayP)}`;renderTime();scheduleDraw();
   }
   function scheduleDraw(){if(MON.raf)return;MON.raf=requestAnimationFrame(()=>{MON.raf=0;draw()})}
   function draw(){
-    const canvas=byId("simSyncProgressChart");if(!canvas)return;const rect=canvas.getBoundingClientRect(),dpr=Math.max(1,window.devicePixelRatio||1),w=Math.max(300,Math.round(rect.width)),h=Math.max(150,Math.round(rect.height));if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}
+    const canvas=byId("simSyncProgressChart"),card=byId("simSyncLiveCard"),view=byId("view-simulation");if(!canvas||card?.hidden||!view?.classList.contains("active"))return;const rect=canvas.getBoundingClientRect();if(rect.width<2||rect.height<2){setTimeout(scheduleDraw,120);return}const dpr=Math.max(1,window.devicePixelRatio||1),w=Math.max(300,Math.round(rect.width)),h=Math.max(150,Math.round(rect.height));if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}
     const ctx=canvas.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);const bg=css("--bg","#07111f"),line=css("--line","#2a405a"),muted=css("--muted","#9fb0c5"),accent=css("--accent","#42b8ff"),good=css("--good","#38d27a");ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
     const pad={l:42,r:14,t:14,b:28},cw=w-pad.l-pad.r,ch=h-pad.t-pad.b;ctx.font="11px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif";ctx.textAlign="right";ctx.textBaseline="middle";for(let p=0;p<=100;p+=25){const y=pad.t+ch*(1-p/100);ctx.strokeStyle=line;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillStyle=muted;ctx.fillText(`${p}%`,pad.l-7,y)}
-    const hist=MON.history.length?MON.history:[{t:Date.now(),p:MON.progress}];const t0=hist[0].t,t1=Math.max(t0+1,hist[hist.length-1].t);ctx.strokeStyle=accent;ctx.lineWidth=3;ctx.lineJoin="round";ctx.lineCap="round";ctx.beginPath();hist.forEach((d,i)=>{const x=pad.l+cw*((d.t-t0)/(t1-t0)),y=pad.t+ch*(1-clamp(d.p,0,100)/100);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();
-    const last=hist[hist.length-1],lx=pad.l+cw*((last.t-t0)/(t1-t0)),ly=pad.t+ch*(1-clamp(last.p,0,100)/100);ctx.fillStyle=good;ctx.beginPath();ctx.arc(lx,ly,4.5,0,Math.PI*2);ctx.fill();ctx.fillStyle=muted;ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillText(hist.length>1?`更新 ${hist.length}点`:`待機中`,pad.l,h-8);ctx.textAlign="right";ctx.fillText(`${MON.progress.toFixed(1)}%`,w-pad.r,h-8);
+    const hist=MON.history.length?MON.history:[{t:Date.now(),p:MON.progress,dayP:MON.raceTotal?MON.raceNow/MON.raceTotal*100:0}],t0=hist[0].t,t1=Math.max(t0+1,hist[hist.length-1].t),point=(d,key)=>({x:pad.l+cw*((d.t-t0)/(t1-t0)),y:pad.t+ch*(1-clamp(d[key]||0,0,100)/100)});
+    function lineFor(key,color,width){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineJoin="round";ctx.lineCap="round";ctx.beginPath();hist.forEach((d,i)=>{const p=point(d,key);if(i===0)ctx.moveTo(p.x,p.y);else ctx.lineTo(p.x,p.y)});ctx.stroke()}
+    lineFor("p",accent,3);lineFor("dayP",good,2);
+    const last=hist[hist.length-1],totalPoint=point(last,"p"),dayPoint=point(last,"dayP");for(const [p,color,r] of [[totalPoint,accent,4.5],[dayPoint,good,3.5]]){ctx.fillStyle=color;ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fill()}
+    ctx.fillStyle=muted;ctx.textAlign="left";ctx.textBaseline="alphabetic";ctx.fillText(hist.length>1?`更新 ${hist.length}点`:`待機中`,pad.l,h-8);ctx.textAlign="right";ctx.fillText(`全体 ${progressText(MON.progress)} / 当日 ${progressText(MON.raceTotal?MON.raceNow/MON.raceTotal*100:0)}`,w-pad.r,h-8);
   }
   const previousSet=typeof setSimSyncStatus==="function"?setSimSyncStatus:null;
   if(previousSet){setSimSyncStatus=function(message){previousSet(message);try{parseStatus(message)}catch(e){console.warn("同期進捗解析",e)}}}
@@ -4625,6 +4677,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
       setBadge("同期中","running");
       return previousSync(...args);
     }
+    try{window.__THEKEIBA_SET_BATCH_MONITOR_VISIBLE__?.(true,{persist:false})}catch(_){ }
     begin();
     try{
       const out=await previousSync(...args);
@@ -4635,7 +4688,16 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
       return out
     }catch(e){MON.running=false;setBadge("エラー","error");stopClock();throw e}
   }}
-  function wire(){render();setBadge("待機中","");window.addEventListener("resize",scheduleDraw,{passive:true});if(window.ResizeObserver){const c=byId("simSyncProgressChart");if(c)new ResizeObserver(scheduleDraw).observe(c)}const theme=byId("themeBtn");theme?.addEventListener("click",()=>setTimeout(scheduleDraw,80));}
+  function redrawVisible(){scheduleDraw();setTimeout(scheduleDraw,80);setTimeout(scheduleDraw,260)}
+  window.__THEKEIBA_REDRAW_SYNC_MONITOR__=redrawVisible;
+  function wire(){
+    render();setBadge("待機中","");window.addEventListener("resize",redrawVisible,{passive:true});window.addEventListener("pageshow",redrawVisible,{passive:true});
+    document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")redrawVisible()});
+    document.addEventListener("thekeiba:batch-monitor-visible",redrawVisible);
+    if(window.ResizeObserver){const c=byId("simSyncProgressChart");if(c)new ResizeObserver(redrawVisible).observe(c)}
+    if(window.MutationObserver){const observer=new MutationObserver(redrawVisible),view=byId("view-simulation"),card=byId("simSyncLiveCard");if(view)observer.observe(view,{attributes:true,attributeFilter:["class"]});if(card)observer.observe(card,{attributes:true,attributeFilter:["hidden"]})}
+    const theme=byId("themeBtn");theme?.addEventListener("click",()=>setTimeout(redrawVisible,80));
+  }
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",wire,{once:true});else wire();
 })();
 </script>
@@ -4710,7 +4772,8 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   function scheduleRedraw(){
     clearTimeout(resizeTimer);
     requestAnimationFrame(redrawResultChart);
-    resizeTimer=setTimeout(redrawResultChart,260);
+    try{window.__THEKEIBA_REDRAW_SYNC_MONITOR__?.()}catch(_){ }
+    resizeTimer=setTimeout(()=>{redrawResultChart();try{window.__THEKEIBA_REDRAW_SYNC_MONITOR__?.()}catch(_){ }},260);
   }
   function applyBatchVisibility(visible,{persist=true}={}){
     const card=byId("simSyncLiveCard"),btn=byId("simBatchToggleBtn"),view=byId("view-simulation");
@@ -4722,8 +4785,10 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     btn.setAttribute("aria-expanded",visible?"true":"false");
     btn.title=visible?"バッチグラフを含むリアルタイム同期モニターを非表示にします":"バッチグラフを含むリアルタイム同期モニターを表示します";
     if(persist){try{localStorage.setItem(KEY,visible?"1":"0")}catch(_){}}
+    if(visible)document.dispatchEvent(new CustomEvent("thekeiba:batch-monitor-visible"));
     scheduleRedraw();
   }
+  window.__THEKEIBA_SET_BATCH_MONITOR_VISIBLE__=applyBatchVisibility;
   function wire(){
     const btn=byId("simBatchToggleBtn");if(!btn)return;
     let visible=true;try{visible=localStorage.getItem(KEY)!=="0"}catch(_){}
@@ -5471,8 +5536,8 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   let history=[],previousFailed=0,pendingRecorded=0;
   function safe(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch])}
   function clean(value){return String(value??"").replace(/\r/g,"").replace(/[ \t]+/g," ").replace(/\n{3,}/g,"\n\n").replace(/(Bearer\s+)[A-Za-z0-9._~+\/-]+/gi,"$1***").replace(/([?&](?:token|api[_-]?key|key|auth|authorization)=)[^&\s]+/gi,"$1***").trim().slice(0,1200)}
-  function classify(message){const s=String(message||"");if(/IndexedDB|DB接続|database connection|InvalidStateError/i.test(s))return"端末DB";if(/HTTP\s*4\d\d|Userscript\s*HTTP\s*4\d\d/i.test(s))return"HTTP要求";if(/タイムアウト|timeout|timed out|AbortError/i.test(s))return"タイムアウト";if(/Bridge|Worker|Userscript|未接続|通信失敗|network|fetch/i.test(s))return"接続";if(/内容不正|解析|parse|HTML/i.test(s))return"解析";if(/race[_-]?id/i.test(s))return"race_id";if(/一覧/.test(s))return"開催一覧";return"データ取得"}
-  function advice(category,message){if(category==="端末DB")return"iPadのメモリ解放後も自動再接続します。繰り返す場合は一度ページを再読込してください。";if(category==="HTTP要求")return"Bridge／Userscriptの版または送信形式を確認し、設定画面の接続テストを実行してください。";if(category==="タイムアウト")return"通信を自動再試行して次の日へ進みます。回線とBridge接続を確認してください。";if(category==="接続")return"Bridge設定と接続テスト、Userscriptの有効状態を確認してください。";if(category==="解析")return"取得先ページの形式変更の可能性があります。エラー全文をコピーして確認してください。";if(category==="race_id")return"開催一覧の再取得後に再同期してください。";if(/開催一覧/.test(message))return"その日の開催一覧を再試行します。開催のない日は失敗ではなく『対象開催なし』になります。";return"同期は停止せず次の対象へ進みます。終了後に同じ期間を再同期できます。"}
+  function classify(message){const s=String(message||"");if(/IndexedDB|DB接続|database connection|InvalidStateError/i.test(s))return"端末DB";if(/HTTP\s*4\d\d|Userscript\s*HTTP\s*4\d\d/i.test(s))return"HTTP要求";if(/タイムアウト|timeout|timed out|AbortError/i.test(s))return"タイムアウト";if(/Bridge|Worker|Userscript|未接続|通信失敗|network|fetch/i.test(s))return"接続";if(/確定結果|払戻|result/i.test(s))return"結果・払戻";if(/内容不正|解析|parse|HTML/i.test(s))return"解析";if(/race[_-]?id/i.test(s))return"race_id";if(/一覧/.test(s))return"開催一覧";return"データ取得"}
+  function advice(category,message){if(category==="端末DB")return"iPadのメモリ解放後も自動再接続します。繰り返す場合は一度ページを再読込してください。";if(category==="HTTP要求")return"Bridge／Userscriptの版または送信形式を確認し、設定画面の接続テストを実行してください。";if(category==="タイムアウト")return"通信を自動再試行して次の日へ進みます。回線とBridge接続を確認してください。";if(category==="接続")return"Bridge設定と接続テスト、Userscriptの有効状態を確認してください。";if(category==="結果・払戻")return"過去レースは結果ページを最大3回再取得します。残る場合はエラー全文をコピーし、Bridge接続テスト後に同じ期間を再同期してください。";if(category==="解析")return"取得先ページの形式変更の可能性があります。エラー全文をコピーして確認してください。";if(category==="race_id")return"開催一覧の再取得後に再同期してください。";if(/開催一覧/.test(message))return"その日の開催一覧を再試行します。開催のない日は失敗ではなく『対象開催なし』になります。";return"同期は停止せず次の対象へ進みます。終了後に同じ期間を再同期できます。"}
   function load(){try{const rows=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(rows))history=rows.filter(x=>x&&x.message).slice(0,LIMIT)}catch(_){history=[]}}
   function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(history.slice(0,LIMIT)))}catch(_){}}
   function count(){return history.reduce((sum,item)=>sum+Math.max(1,Number(item.repeat||1)),0)}
@@ -5489,7 +5554,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     else history.unshift({id:`sync-error-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,at:now,category:kind,message:value,advice:advice(kind,value),repeat:1});
     history=history.slice(0,LIMIT);save();render(true);return history[0]
   }
-  function usefulDetail(line){return!!line&&!/^(?:取得成功|処理日|当日|バッチ内|全体|タイムアウトまたは通信失敗として次の日へ継続します|次のバッチまで)/.test(line)}
+  function usefulDetail(line){return!!line&&!/^(?:取得成功|完全取得|既存完全|確定結果|結果待ち・未取得|処理日|完了日|当日|バッチ内|全体|タイムアウトまたは通信失敗として次の日へ継続します|次のバッチまで)/.test(line)}
   function extractSyncErrors(message){
     const raw=String(message||"").replace(/\r/g,""),lines=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean),out=[];
     const push=value=>{value=clean(value);if(value&&!out.includes(value))out.push(value)};
@@ -5529,6 +5594,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
+<!-- v1.2.32: バッチグラフを操作部直下へ移動・iPad再描画・JRA別日race_id混入防止・過去結果の完全性検証・結果未取得の明示 -->
 <!-- v1.2.31: 同期失敗の直近エラー常時表示、分類・対処候補・履歴・コピー -->
 <!-- v1.2.30: クラス・馬齢のJRA/NAR表記統合、性齢/生年/レース年補完、既存DB修復 -->
 <!-- v1.2.29: 馬場状態4区分・元入金安全予算管理・SIM/DBフォルダJSON・各DBテキストコピペ -->
