@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.33</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.34</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -280,7 +280,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.33 EV分析エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.34 EV分析エミュレータ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -413,7 +413,7 @@ input,select,textarea{font-size:16px}
 
     <section class="view" id="view-analytics">
       <h2 class="page-title">成績・多角的分析</h2>
-      <div class="card"><div class="toolbar"><select id="analyticsSource" style="width:auto"><option value="last">最新シミュレーション</option><option value="all">全保存シミュレーション</option></select><button class="btn primary" id="analyticsRunBtn">分析更新</button><button class="btn good" id="analyticsClassAgeRepairBtn">クラス・馬齢DB修復</button><button class="btn" id="analyticsRaceIdLookupBtn">race_id完全補完</button><button class="btn" id="analyticsDiagnoseBtn">不明の内訳診断</button><span class="badge" id="analyticsLookupStatus">未照会</span></div><div class="notice">分析時は保存済み明細の race_id を主キーに、ローカルのレース・出走馬データを自動照合します。「クラス・馬齢DB修復」は表記揺れ・性齢・生年・レース年をローカルで再判定し、「race_id完全補完」は残った欠損だけを外部ページから再取得します。</div></div>
+      <div class="card"><div class="toolbar"><select id="analyticsSource" style="width:auto"><option value="last">最新シミュレーション</option><option value="all">全保存シミュレーション</option></select><button class="btn primary" id="analyticsRunBtn">分析更新</button><button class="btn good" id="analyticsClassAgeRepairBtn">不明項目DB修復</button><button class="btn" id="analyticsRaceIdLookupBtn">race_id完全補完</button><button class="btn" id="analyticsDiagnoseBtn">不明の内訳診断</button><span class="badge" id="analyticsLookupStatus">未照会</span></div><div class="notice">分析時は保存済み明細の race_id を主キーに、ローカルのレース・出走馬データを自動照合します。「不明項目DB修復」はクラス・馬場・馬場状態・馬齢・性齢・馬体重をローカル材料から再判定し、「race_id完全補完」は材料が残っていない欠損だけを外部ページから再取得します。</div></div>
       <div class="grid"><div class="stat span-3"><div class="stat-label">最大ドローダウン</div><div class="stat-value small" id="anaDrawdown">0円</div></div><div class="stat span-3"><div class="stat-label">的中率</div><div class="stat-value small" id="anaHitRate">0%</div></div><div class="stat span-3"><div class="stat-label">利益率</div><div class="stat-value small" id="anaProfitRate">0%</div></div><div class="stat span-3"><div class="stat-label">採用率</div><div class="stat-value small" id="anaAdoptionRate">0%</div></div></div>
       <div class="grid" style="margin-top:12px"><div class="card span-6"><h3>資金曲線</h3><canvas class="chart" id="analyticsBankChart" width="1000" height="250"></canvas></div><div class="card span-6"><h3>ドローダウン</h3><canvas class="chart" id="drawdownChart" width="1000" height="250"></canvas></div></div>
       <div class="card"><div class="tabs"><button class="btn tab active" data-ana="day">日別</button><button class="btn tab" data-ana="place">開催場</button><button class="btn tab" data-ana="ticket">券種</button><button class="btn tab" data-ana="class">クラス</button><button class="btn tab" data-ana="trackCondition">馬場状態</button><button class="btn tab" data-ana="surface">馬場</button><button class="btn tab" data-ana="distance">距離</button><button class="btn tab" data-ana="age">馬齢</button><button class="btn tab" data-ana="sex">性別</button><button class="btn tab" data-ana="popularity">人気帯</button><button class="btn tab" data-ana="odds">オッズ帯</button></div><div id="analyticsTable"></div></div>
@@ -1101,7 +1101,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.33-jra-result-db-source";
+const APP_VERSION="1.2.34-metadata-parser-repair";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -1192,6 +1192,48 @@ function extractSexAgeFromRow(row){
   const m=rowText.match(/(?:^|[\s（(\/])((?:牡|牝|セ|セン|騸)\s*(?:馬)?\s*\d{1,2})(?=$|[\s）)\/])/);
   return m?normalizeSexAgeField(m[1]):value||""
 }
+function normalizeHorseWeightField(value=""){
+  const raw=decodeHtmlText(String(value??"")).normalize("NFKC").replace(/\u00a0|\u3000/g," ").replace(/−|–|—|ー/g,"-").replace(/(\d),(?=\d)/g,"$1").replace(/\s+/g," ").trim();
+  if(!raw)return"";
+  if(/(?:計量不能|計不)/.test(raw))return"計不";
+  let m=raw.match(/(?:馬体重|体重|body\s*weight)\s*[:：=]?\s*([1-9]\d{2,3})\s*(?:kg)?\s*(?:[（(]\s*([+\-]?\d{1,3}|増減なし|変化なし|計不)\s*[）)])?/i);
+  if(!m)m=raw.match(/(?:^|[^\d])([1-9]\d{2,3})\s*(?:kg)?\s*[（(]\s*([+\-]?\d{1,3}|増減なし|変化なし|計不)\s*[）)](?:$|[^\d])/i);
+  if(!m&&/^\s*[1-9]\d{2,3}\s*(?:kg)?\s*$/i.test(raw))m=raw.match(/([1-9]\d{2,3})/);
+  if(!m)return"";
+  const kg=Number(m[1]);
+  // 平地・障害に加えて、ばんえい競馬の大型馬も許容する。
+  if(kg<150||kg>1500)return"";
+  let delta=String(m[2]??"").trim();
+  if(!delta)return String(kg);
+  if(/増減なし|変化なし/.test(delta))delta="0";
+  if(/計不/.test(delta))return`${kg}(計不)`;
+  if(/^\d+$/.test(delta)&&delta!=="0")delta=`+${Number(delta)}`;
+  return`${kg}(${delta})`
+}
+function extractHorseWeightFromRow(row){
+  if(!row?.querySelectorAll)return"";
+  const selectors=[
+    ".HorseWeight",".Horse_Weight",".BodyWeight",".Body_Weight",".Batai",".BataiWeight",
+    "td.HorseWeight","td.BodyWeight","[class*='HorseWeight']","[class*='Horse_Weight']",
+    "[class*='BodyWeight']","[class*='Body_Weight']","[class*='Batai']",
+    "[data-label*='馬体重']","[aria-label*='馬体重']","[title*='馬体重']","td.Weight",".Weight"
+  ];
+  for(const selector of selectors){
+    for(const el of row.querySelectorAll(selector)){
+      const value=normalizeHorseWeightField(el.textContent||el.getAttribute?.("data-value")||"");
+      if(value)return value
+    }
+  }
+  // CSS名が変わったページでも、ラベル付きセルまたは「480(+2)」形から限定的に復元する。
+  for(const el of row.querySelectorAll("th,td,span,div")){
+    const attrs=[el.getAttribute?.("data-label"),el.getAttribute?.("aria-label"),el.getAttribute?.("title"),el.className].filter(Boolean).join(" ");
+    const source=String(el.textContent||"").replace(/\u00a0|\u3000/g," ").trim();
+    if(/馬体重|Horse.?Weight|Body.?Weight|Batai/i.test(attrs+" "+source)||/[1-9]\d{2,3}\s*(?:kg)?\s*[（(]\s*(?:[+＋\-−]?\d{1,3}|増減なし|変化なし|計不)\s*[）)]/.test(source)){
+      const value=normalizeHorseWeightField(source);if(value)return value
+    }
+  }
+  return normalizeHorseWeightField(String(row.textContent||""))
+}
 function mergeEntryRecords(base={},incoming={}){
   const out={...base,...incoming};
   for(const k of ["horseId","horseName","sexAge","sex","jockeyId","jockey","jockeyName","trainerId","trainer","trainerName","horseWeight","style"]){if(!String(incoming?.[k]??"").trim()&&String(base?.[k]??"").trim())out[k]=base[k]}
@@ -1205,7 +1247,7 @@ function normalizeEntry(e,rid){
   const sexAge=normalizeSexAgeField(e?.sexAge??e?.sex_age??e?.sexage??e?.barei??e?.性齢??"",e?.sex??e?.gender??e?.性??"",e?.age??e?.horseAge??e?.horse_age??e?.齢??0),sex=normalizeSexLabel(e?.sex??e?.gender??e?.性??sexAge),age=Number(e?.age??e?.horseAge??e?.horse_age??e?.齢??String(sexAge).match(/\d{1,2}/)?.[0]??0);
   const frameNo=Number(e?.frameNo||e?.frame_no||e?.frame||e?.waku||0),horseId=String(e?.horseId||e?.horse_id||""),horseName=String(e?.horseName||e?.horse_name||e?.name||"");
   const jockey=String(e?.jockey||e?.jockeyName||e?.jockey_name||""),trainer=String(e?.trainer||e?.trainerName||e?.trainer_name||"");
-  const weight=Number(e?.weight||e?.weightCarry||e?.carriedWeight||e?.carried_weight||0),horseWeight=String(e?.horseWeight??e?.horse_weight??e?.bodyWeight??""),bodyWeight=Number(String(horseWeight).match(/\d+/)?.[0]||0);
+  const weight=Number(e?.weight||e?.weightCarry||e?.carriedWeight||e?.carried_weight||0),horseWeightRaw=e?.horseWeight??e?.horse_weight??e?.bodyWeight??e?.body_weight??e?.bataiWeight??e?.batai_weight??"",horseWeight=normalizeHorseWeightField(horseWeightRaw)||String(horseWeightRaw??"").trim(),bodyWeight=Number(String(horseWeight).match(/\d{3,4}/)?.[0]||0);
   return{id:`${rid}-${String(n).padStart(2,"0")}`,race_id:rid,frameNo,frame:frameNo,horseNo:n,horseId,horseName,sexAge,sex,age,jockeyId:String(e?.jockeyId||e?.jockey_id||""),jockey,jockeyName:jockey,trainerId:String(e?.trainerId||e?.trainer_id||""),trainer,trainerName:trainer,weight,weightCarry:weight,horseWeight,bodyWeight,popularity:Number(e?.popularity||e?.popular||e?.pop||0),odds,oddsWin:odds,probWin:prob,probPlace:Number(e?.probPlace||e?.prob_place||0),ev:Number(e?.ev||(prob&&odds?prob*odds:0)),ai,aiScore:ai,style:String(e?.style||""),memo:String(e?.memo||""),updatedAt:String(e?.updatedAt||e?.updated_at||new Date().toISOString())}
 }
 function normalizeFinishOrder(value){
@@ -1665,9 +1707,36 @@ function analyticsClassificationSource(row={}){const r=row.race||row||{};const m
   merged.meta=[r.meta,r.raceData,r.raceData01,r.raceData02,row.meta,row.raceData,row.result?.meta,row.result?.raceData].filter(Boolean).join(" ");
   merged.name=[r.name,r.raceName,r.title,row.raceName,row.result?.raceName].find(v=>!analyticsValueMissing(v))||merged.name||"";
   return merged}
-function analyticsClassLabel(r={}){const direct=String(r.className||r.class_name||r.grade||r.class||"").trim();if(direct&&!/不明|未取得/.test(direct))return direct;const text=`${r.name||""} ${r.raceName||""} ${r.title||""} ${r.meta||""}`.replace(/[Ａ-Ｚ０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0));let m=text.match(/Jpn\s*[1-3]|G\s*[1-3]|(?:[1-3]勝クラス|[1-3]勝C|未勝利|新馬|メイクデビュー|オープン特別|オープン|OP|リステッド|Listed|重賞|選抜|特別|一般|[ABCD][1-9](?:組)?|[ABCD](?![A-Za-z0-9]))(?![A-Za-z0-9])/i);if(!m)return"不明";let v=m[0].replace(/\s+/g,"").replace(/組$/,"");if(/^OP$/i.test(v)||/^オープン特別$/.test(v))v="オープン";if(/^Listed$/i.test(v))v="リステッド";if(/^[1-3]勝C$/.test(v))v=v.replace("C","クラス");if(/^メイクデビュー$/.test(v))v="新馬";return v}
-function analyticsSurfaceLabel(r={}){const direct=String(r.surface||r.trackType||r.track_type||r.courseType||"").replace(/\s+/g,"");if(/障害|^障$/.test(direct))return"障害";if(/^芝/.test(direct))return"芝";if(/ダート|^ダ$|砂/.test(direct))return"ダート";const text=`${r.meta||""} ${r.raceData||""} ${r.name||""} ${r.raceName||""}`.replace(/,/g,"");if(/(?:障害|障)\s*\d{3,4}m?/.test(text))return"障害";if(/芝\s*\d{3,4}m?/.test(text))return"芝";if(/(?:ダート|ダ)\s*\d{3,4}m?|砂/.test(text))return"ダート";return"不明"}
-function analyticsTrackConditionLabel(r={}){const direct=String(r.trackCondition||r.track_condition||r.trackCond||r.track_state||r.babaState||"").replace(/\s+/g,"");let m=direct.match(/稍重|不良|良|重|稍/);if(m)return m[0]==="稍"?"稍重":m[0];const text=`${r.meta||""} ${r.raceData||""} ${r.name||""} ${r.raceName||""}`.replace(/\s+/g," ");m=text.match(/(?:馬場(?:状態)?|芝|ダート|ダ)\s*[:：]?[\s]*(稍重|不良|良|重|稍)(?:馬場)?/);if(!m)m=text.match(/(稍重|不良|良|重|稍)\s*馬場/);if(!m)m=text.match(/[（(]\s*(稍重|不良|良|重|稍)\s*[）)]/);return m?(m[1]==="稍"?"稍重":m[1]):"不明"}
+function analyticsClassLabel(r={}){
+  const direct=String(r.className||r.class_name||r.grade||r.class||"").trim();if(direct&&!/不明|未取得/.test(direct))return direct;
+  const text=`${r.name||""} ${r.raceName||""} ${r.title||""} ${r.meta||""}`.normalize("NFKC");
+  let m=text.match(/Jpn\s*(?:III|II|I|[1-3])|G\s*(?:III|II|I|[1-3])|(?:[1-3]\s*勝\s*(?:クラス|C)|(?:500|1000|1600)\s*万下|未勝利|新馬|メイク\s*デビュー|オープン特別|オープン|(?<![A-Za-z0-9])OP|リステッド|Listed|重賞|選抜|特別|一般|(?<![A-Za-z0-9])[ABCDS]\s*[1-9](?:組)?|(?<![A-Za-z0-9])[ABCDS](?![A-Za-z0-9]))(?![A-Za-z0-9])/i);
+  if(!m)return"不明";
+  let v=m[0].replace(/\s+/g,"").replace(/組$/,"");
+  const old=v.match(/^(500|1000|1600)万下$/);if(old)return({500:"1勝クラス",1000:"2勝クラス",1600:"3勝クラス"})[old[1]];
+  const roman=x=>({I:"1",II:"2",III:"3"})[x.toUpperCase()]||x;
+  v=v.replace(/^(Jpn|G)(III|II|I)$/i,(_,p,n)=>`${/^jpn$/i.test(p)?"Jpn":"G"}${roman(n)}`);
+  if(/^OP$/i.test(v)||/^オープン特別$/.test(v))v="オープン";if(/^Listed$/i.test(v))v="リステッド";if(/^[1-3]勝C$/i.test(v))v=v.replace(/C$/i,"クラス");if(/^メイクデビュー$/.test(v))v="新馬";return v
+}
+function analyticsSurfaceLabel(r={}){
+  const direct=String(r.surface||r.trackType||r.track_type||r.courseType||"").normalize("NFKC").replace(/\s+/g,"");
+  if(/障害|^障$/.test(direct))return"障害";if(/^芝/.test(direct))return"芝";if(/ダート|^ダ$|砂/.test(direct))return"ダート";
+  const text=`${r.meta||""} ${r.raceData||""} ${r.raceData01||""} ${r.raceData02||""} ${r.name||""} ${r.raceName||""}`.normalize("NFKC").replace(/,/g,"");
+  if(/(?:障害|障)\s*\d{3,4}\s*m?/i.test(text))return"障害";if(/芝\s*\d{3,4}\s*m?/i.test(text))return"芝";if(/(?:ダート|ダ)\s*\d{3,4}\s*m?|砂/.test(text))return"ダート";
+  const labeled=text.match(/(?:コース|馬場(?:種別)?)\s*[:：]\s*(障害|障|芝|ダート|ダ)(?=$|[\s|｜／/・,、;；])/i)||text.match(/(?:^|[\s|｜／/・,、;；])\s*(障害|障|芝|ダート|ダ)\s*[:：](?=\s*(?:不良|稍重|やや重|重|良|稍|$))/i);
+  if(labeled)return/障/.test(labeled[1])?"障害":labeled[1]==="芝"?"芝":"ダート";
+  return"不明"
+}
+function analyticsTrackConditionLabel(r={}){
+  const direct=String(r.trackCondition||r.track_condition||r.trackCond||r.track_state||r.babaState||r.condition||"").normalize("NFKC").replace(/\s+/g,"");
+  let m=direct.match(/やや重|稍重|不良|良|重|稍/);if(m)return/やや重|稍重|稍/.test(m[0])?"稍重":m[0];
+  const text=`${r.meta||""} ${r.raceData||""} ${r.raceData01||""} ${r.raceData02||""} ${r.name||""} ${r.raceName||""}`.normalize("NFKC").replace(/\u00a0|\u3000/g," ").replace(/\s+/g," ");
+  m=text.match(/(?:馬場(?:状態)?|芝|ダート|ダ|障害|障)\s*[:：]?\s*(やや重|稍重|不良|良|重|稍)(?:馬場)?/);
+  if(!m)m=text.match(/(?:芝|ダート|ダ|障害|障)\s*\d{3,4}\s*m?\s*(?:[（(][^）)]{0,32}[）)]\s*)?(?:[|｜／/・]\s*)?(やや重|稍重|不良|良|重|稍)(?=$|[\s|｜／/・,、;；）)])/);
+  if(!m)m=text.match(/(やや重|稍重|不良|良|重|稍)\s*馬場/);if(!m)m=text.match(/[（(]\s*(やや重|稍重|不良|良|重|稍)\s*[）)]/);
+  if(!m)m=text.match(/(?:^|[\s|｜／/・,、;；:：）)])(やや重|稍重|不良|良|重|稍)(?=$|[\s|｜／/・,、;；（(])/);
+  return m?(/やや重|稍重|稍/.test(m[1])?"稍重":m[1]):"不明"
+}
 function analyticsSexValue(e={}){const raw=String(e.sex||e.sexAge||e.sex_age||"").trim();if(/^牡/.test(raw))return"牡";if(/^牝/.test(raw))return"牝";if(/^(?:セ|騸)/.test(raw))return"セン";return""}
 function analyticsAgeValue(e={}){const n=Number(e.age||String(e.sexAge||e.sex_age||"").match(/(\d{1,2})/)?.[1]||0);return n>0&&n<30?n:0}
 function analyticsUniqueSelectedEntries(row={}){const entries=Array.isArray(row.entries)?row.entries:[],tickets=Array.isArray(row.purchaseTickets)?row.purchaseTickets:[],map=new Map();for(const t of tickets){for(const e of selectedEntriesForTicket(t,entries)){const key=Number(e.horseNo||0)||String(e.id||e.horseName||Math.random());if(!map.has(key))map.set(key,e)}}return[...map.values()]}
@@ -2102,8 +2171,8 @@ function parseEntriesFromHtml(raw,rid){
   for(const row of rowSet){
     const horseName=textOf(row,[".Horse_Name",".HorseInfo .Horse_Name",".HorseName","[class*='HorseName']","a[href*='/horse/']","a[href*='horse.html']","a[href*='horse_id=']"]);if(!horseName)continue;
     const horseNo=findHorseNo(row);if(!horseNo||seen.has(horseNo))continue;seen.add(horseNo);
-    const odds=numberFromText(textOf(row,[".Odds",".Popular .Odds","td.Odds","[class*='Odds']"])),pop=numberFromText(textOf(row,[".Popular","td.Popular","[class*='Popular']",".Ninki","[class*='Ninki']"])),jockey=textOf(row,[".Jockey","[class*='Jockey']","a[href*='/jockey/']"]),trainer=textOf(row,[".Trainer","[class*='Trainer']","a[href*='/trainer/']"]),sexAge=extractSexAgeFromRow(row),frameNo=numberFromText(textOf(row,[".Waku","[class*='Waku']",".Waku1",".Waku2",".Waku3",".Waku4",".Waku5",".Waku6",".Waku7",".Waku8"])),weight=numberFromText(textOf(row,[".Futan","[class*='Futan']"])),horseWeight=textOf(row,[".Weight",".HorseWeight","[class*='HorseWeight']"]),marketProb=odds>0?0.78/odds:0,ai=pop?Math.max(35,103-pop*4):50;
-    try{entries.push(normalizeEntry({frameNo,horseNo,horseName,sexAge,jockey,trainer,weight,horseWeight,popularity:pop,odds,probWin:marketProb,ai,ev:marketProb*odds},rid))}catch(e){console.warn("entry parse skip",e)}
+    const odds=numberFromText(textOf(row,[".Odds",".Popular .Odds","td.Odds","[class*='Odds']"])),pop=numberFromText(textOf(row,[".Popular","td.Popular","[class*='Popular']",".Ninki","[class*='Ninki']"])),jockey=textOf(row,[".Jockey","[class*='Jockey']","a[href*='/jockey/']"]),trainer=textOf(row,[".Trainer","[class*='Trainer']","a[href*='/trainer/']"]),rowText=String(row.textContent||"").replace(/\u00a0|\u3000/g," ").replace(/\s+/g," ").trim(),sexAge=extractSexAgeFromRow(row),frameNo=numberFromText(textOf(row,[".Waku","[class*='Waku']",".Waku1",".Waku2",".Waku3",".Waku4",".Waku5",".Waku6",".Waku7",".Waku8"])),weight=numberFromText(textOf(row,[".Futan","[class*='Futan']"])),horseWeight=extractHorseWeightFromRow(row),marketProb=odds>0?0.78/odds:0,ai=pop?Math.max(35,103-pop*4):50;
+    try{entries.push(normalizeEntry({frameNo,horseNo,horseName,sexAge,jockey,trainer,weight,horseWeight,rowText,rawText:rowText,popularity:pop,odds,probWin:marketProb,ai,ev:marketProb*odds},rid))}catch(e){console.warn("entry parse skip",e)}
   }
   return entries
 }
@@ -2122,7 +2191,7 @@ function parseEntriesFromOddsHtml(raw,rid){
   return entries
 }
 function parseShutubaHtml(raw,rid,kind,date){
-  const html=unwrapBridgeHtml(raw),doc=new DOMParser().parseFromString(html,"text/html"),allText=(doc.body?.textContent||"").replace(/\u00a0/g," ").replace(/\s+/g," "),title=textOf(doc,[".RaceName",".Race_Name","[class*='RaceName']","[class*='Race_Title']","h1","title"]),meta=textOf(doc,[".RaceData01",".RaceData02",".RaceData",".RaceInfo","[class*='RaceData']","[class*='RaceInfo']","[class*='Weather']","[class*='Track']"]),metaText=`${meta} ${allText}`.replace(/\s+/g," "),sd=metaText.match(/(芝|ダート|障害|障|ダ|直)\s*((?:[0-9]{3,4}|[0-9],[0-9]{3}))\s*m?/),entries=parseEntriesFromHtml(html,rid),raceMeta={name:title,raceName:title,meta:metaText},surfaceLabel=sd?(sd[1]==="ダ"?"ダート":sd[1]==="障"?"障害":sd[1]):analyticsSurfaceLabel(raceMeta),classLabel=analyticsClassLabel(raceMeta),condLabel=analyticsTrackConditionLabel(raceMeta),weather=metaText.match(/天候\s*[:：]?\s*(晴|曇|小雨|雨|小雪|雪)/)?.[1]||"",distance=sd?Number(String(sd[2]).replace(/,/g,"")):0,race=normalizeRace({race_id:rid,type:kind,date:compactDate(date),placeName:bridgePlaceName(rid,kind,allText),placeCode:Number(rid.slice(4,6)),raceNo:Number(rid.slice(-2)),name:sanitizeRaceName(title,Number(rid.slice(-2))),surface:surfaceLabel==="不明"?"":surfaceLabel,distance,className:classLabel==="不明"?"":classLabel,trackCondition:condLabel==="不明"?"":condLabel,weather,status:entries.length?"出馬表取得":"ページ取得"});
+  const html=unwrapBridgeHtml(raw),doc=new DOMParser().parseFromString(html,"text/html"),allText=(doc.body?.textContent||"").normalize("NFKC").replace(/\u00a0|\u3000/g," ").replace(/\s+/g," "),title=textOf(doc,[".RaceName",".Race_Name","[class*='RaceName']","[class*='Race_Title']","h1","title"]),meta=textOf(doc,[".RaceData01",".RaceData02",".RaceData",".RaceInfo","[class*='RaceData']","[class*='RaceInfo']","[class*='Weather']","[class*='Track']"]),metaText=`${meta} ${allText}`.normalize("NFKC").replace(/\s+/g," "),sd=metaText.match(/(芝|ダート|障害|障|ダ)\s*[:：]?\s*((?:[0-9]{3,4}|[0-9],[0-9]{3}))\s*m?/),entries=parseEntriesFromHtml(html,rid),raceMeta={name:title,raceName:title,meta:metaText,raceData:meta},surfaceLabel=sd?(sd[1]==="ダ"?"ダート":sd[1]==="障"?"障害":sd[1]):analyticsSurfaceLabel(raceMeta),classLabel=analyticsClassLabel(raceMeta),condLabel=analyticsTrackConditionLabel(raceMeta),weather=metaText.match(/天候\s*[:：]?\s*(晴|曇|小雨|雨|小雪|雪)/)?.[1]||"",distance=sd?Number(String(sd[2]).replace(/,/g,"")):0,race=normalizeRace({race_id:rid,type:kind,date:compactDate(date),placeName:bridgePlaceName(rid,kind,allText),placeCode:Number(rid.slice(4,6)),raceNo:Number(rid.slice(-2)),name:sanitizeRaceName(title,Number(rid.slice(-2))),surface:surfaceLabel==="不明"?"":surfaceLabel,distance,className:classLabel==="不明"?"":classLabel,trackCondition:condLabel==="不明"?"":condLabel,weather,status:entries.length?"出馬表取得":"ページ取得"});
   race.meta=metaText;return{race,entries}
 }
 function parseOddsHtml(raw){const html=unwrapBridgeHtml(raw),doc=new DOMParser().parseFromString(html,"text/html"),out=new Map(),rows=[...doc.querySelectorAll("tr")];for(const row of rows){const no=findHorseNo(row);if(!no)continue;let odds=numberFromText(textOf(row,[".Odds","td.Odds","[class*='Odds']"])),pop=numberFromText(textOf(row,[".Popular","td.Popular","[class*='Popular']",".Ninki","[class*='Ninki']"]));if(!odds){const vals=[...row.querySelectorAll("td")].map(x=>x.textContent.replace(/,/g,"").trim()).filter(x=>/^\d+\.\d+$/.test(x));if(vals.length)odds=Number(vals[0])}if(odds)out.set(no,{odds,popularity:pop})}return out}
@@ -4822,14 +4891,16 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   function percentText(value){return finite(value).toLocaleString("ja-JP",{minimumFractionDigits:1,maximumFractionDigits:1})+"%"}
   function safeJsonClone(value){try{return structuredClone(value)}catch(_){return JSON.parse(JSON.stringify(value))}}
   function canonicalTrackCondition(value,source=""){
-    const direct=String(value??"").replace(/\u3000/g," ").replace(/\s+/g,"").trim();
+    const direct=String(value??"").normalize("NFKC").replace(/\u3000/g," ").replace(/\s+/g,"").trim();
     if(/不良/.test(direct))return"不良";
     if(/稍重|やや重|稍/.test(direct))return"稍重";
     if(/(?:^|馬場|芝|ダート|ダ)重(?:$|馬場)/.test(direct)||direct==="重")return"重";
     if(/(?:^|馬場|芝|ダート|ダ)良(?:$|馬場)/.test(direct)||direct==="良")return"良";
-    const text=String(source||"").replace(/\u3000/g," ").replace(/\s+/g," ");
-    let m=text.match(/(?:馬場(?:状態)?|芝|ダート|ダ)\s*[:：]?\s*(不良|稍重|やや重|重|良|稍)(?:馬場)?/);
+    const text=String(source||"").normalize("NFKC").replace(/\u00a0|\u3000/g," ").replace(/\s+/g," ");
+    let m=text.match(/(?:馬場(?:状態)?|芝|ダート|ダ|障害|障)\s*[:：]?\s*(不良|稍重|やや重|重|良|稍)(?:馬場)?/);
+    if(!m)m=text.match(/(?:芝|ダート|ダ|障害|障)\s*\d{3,4}\s*m?\s*(?:[（(][^）)]{0,32}[）)]\s*)?(?:[|｜／/・]\s*)?(不良|稍重|やや重|重|良|稍)(?=$|[\s|｜／/・,、;；）)])/);
     if(!m)m=text.match(/(?:^|[\s（(])(?:馬場)?\s*(不良|稍重|やや重|重|良|稍)\s*馬場?(?:$|[\s）)])/);
+    if(!m)m=text.match(/(?:^|[\s|｜／/・,、;；:：）)])(不良|稍重|やや重|重|良|稍)(?=$|[\s|｜／/・,、;；（(])/);
     if(!m)return"";
     return/稍|やや/.test(m[1])?"稍重":m[1];
   }
@@ -5311,7 +5382,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 </script>
 
 <script id="classAgeRepairPatch">
-/* v1.2.30 クラス・馬齢の表記統合、既存DB修復、検索・分析への反映 */
+/* v1.2.34 クラス・馬場・馬場状態・馬齢・馬体重の統合、既存DB修復、検索・分析への反映 */
 (function(){
   "use strict";
   const byId=id=>document.getElementById(id);
@@ -5417,13 +5488,22 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     return{sex,age,sexAge:sex&&age?sex+age:sex||""}
   }
   function augmentRace(record={}){
-    const cls=classForRace(record);if(!cls)return record;
-    return{...record,className:cls,grade:cls}
+    const out={...record},cls=classForRace(record),surface=analyticsSurfaceLabel(record),cond=analyticsTrackConditionLabel(record);
+    if(cls){out.className=cls;out.grade=cls}
+    if(surface&&surface!=="不明")out.surface=surface;
+    if(cond&&cond!=="不明"){out.trackCondition=cond;out.trackCond=cond}
+    return out
+  }
+  function horseWeightProfile(record={},fallback={}){
+    const values=[record.horseWeight,record.horse_weight,record.bodyWeight,record.body_weight,record.bataiWeight,record.batai_weight,fallback.horseWeight,fallback.horse_weight,fallback.bodyWeight,fallback.body_weight];
+    for(const value of values){const normalized=normalizeHorseWeightField(value);if(normalized)return{horseWeight:normalized,bodyWeight:Number(normalized.match(/\d{3,4}/)?.[0]||0)}}
+    const source=[record.rawText,record.rowText,record.text,record.memo,record.note,record.description,fallback.rawText,fallback.rowText,fallback.text,fallback.memo,fallback.note,fallback.description].filter(meaningful).join(" "),normalized=normalizeHorseWeightField(source);
+    return normalized?{horseWeight:normalized,bodyWeight:Number(normalized.match(/\d{3,4}/)?.[0]||0)}:{horseWeight:"",bodyWeight:0}
   }
   function augmentEntry(record={},fallback={},race={}){
-    const profile=canonicalHorseProfile(record,fallback,race);
-    if(!profile.sex&&!profile.age)return record;
-    const out={...record};if(profile.sex)out.sex=profile.sex;if(profile.age)out.age=profile.age;if(profile.sexAge)out.sexAge=profile.sexAge;
+    const profile=canonicalHorseProfile(record,fallback,race),weightProfile=horseWeightProfile(record,fallback),out={...record};
+    if(profile.sex)out.sex=profile.sex;if(profile.age)out.age=profile.age;if(profile.sexAge)out.sexAge=profile.sexAge;
+    if(weightProfile.horseWeight)out.horseWeight=weightProfile.horseWeight;if(weightProfile.bodyWeight)out.bodyWeight=weightProfile.bodyWeight;
     return out
   }
 
@@ -5459,6 +5539,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   analyticsClassLabel=function(record={}){return classForRace(record)||baseAnalyticsClassLabel(record)};
   analyticsAgeValue=function(entry={}){return canonicalHorseProfile(entry).age};
   analyticsSexValue=function(entry={}){const sex=canonicalHorseProfile(entry).sex;return sex==="セ"?"セン":sex};
+  function analyticsHorseWeightValue(entry={}){return horseWeightProfile(entry).bodyWeight}
   const baseAnalyticsUniqueSelectedEntries=analyticsUniqueSelectedEntries;
   function entryKey(entry={}){return Number(entry.horseNo||entry.horse_no||0)||String(entry.id||entry.horseId||entry.horseName||"")}
   function mergeEntry(a={},b={}){const out={...a};for(const [key,value] of Object.entries(b||{}))if(meaningful(value)||Number(value)>0)out[key]=value;return augmentEntry(out,a)}
@@ -5479,6 +5560,12 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     }
     if(!selected.size&&Number(row.invest||0)>0){const age=exactRaceAge(race);if(age)selected.set("race-age",{age,sexAge:String(age)})}
     return[...selected.values()]
+  };
+  const baseAnalyticsMissingFields=analyticsMissingFields;
+  analyticsMissingFields=function(row={}){
+    const fields=baseAnalyticsMissingFields(row),picked=analyticsUniqueSelectedEntries(row),raceDate=compactDate(row.race?.date||row.date||"");
+    if(Number(row.invest||0)>0&&picked.length&&raceDate&&raceDate<compactDate(isoToday())&&picked.some(entry=>!analyticsHorseWeightValue(entry)))fields.push("馬体重");
+    return[...new Set(fields)]
   };
   const baseAnalyticsMergeEntryRows=analyticsMergeEntryRows;
   analyticsMergeEntryRows=function(current=[],stored=[]){return baseAnalyticsMergeEntryRows(current,stored).map(entry=>augmentEntry(entry))};
@@ -5507,24 +5594,32 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     if(!state.db)throw new Error("データベース未接続です");
     const races=state.db.objectStoreNames.contains("races")?await getAll("races"):[],entries=state.db.objectStoreNames.contains("entries")?await getAll("entries"):[],horses=state.db.objectStoreNames.contains("horses")?await getAll("horses"):[],raceMap=new Map(races.map(r=>[String(r.race_id||""),r])),horseMap=new Map();
     for(const horse of horses){if(meaningful(horse.horseId))horseMap.set("id:"+horse.horseId,horse);if(meaningful(horse.horseName||horse.name))horseMap.set("name:"+(horse.horseName||horse.name),horse)}
-    const changedRaces=[],changedEntries=[],now=new Date().toISOString();let remainingClass=0,remainingAge=0;
-    for(const race of races){const next=augmentRace(race),cls=classForRace(next);if(!cls){remainingClass++;continue}if(race.className!==cls||race.grade!==cls)changedRaces.push({...next,updatedAt:now})}
-    for(const entry of entries){const horse=horseMap.get("id:"+entry.horseId)||horseMap.get("name:"+entry.horseName)||{},race=raceMap.get(String(entry.race_id||""))||{},profile=canonicalHorseProfile(entry,horse,race),next=augmentEntry(entry,horse,race);if(!profile.age)remainingAge++;if((profile.sex&&entry.sex!==profile.sex)||(profile.age&&Number(entry.age||0)!==profile.age)||(profile.sexAge&&entry.sexAge!==profile.sexAge))changedEntries.push({...next,updatedAt:now})}
+    const changedRaces=[],changedEntries=[],now=new Date().toISOString();let remainingClass=0,remainingSurface=0,remainingTrack=0,remainingAge=0,remainingWeight=0;
+    for(const race of races){
+      const next=augmentRace(race),cls=classForRace(next),surface=analyticsSurfaceLabel(next),cond=analyticsTrackConditionLabel(next);
+      if(!cls)remainingClass++;if(!surface||surface==="不明")remainingSurface++;if(!cond||cond==="不明")remainingTrack++;
+      if(race.className!==next.className||race.grade!==next.grade||race.surface!==next.surface||race.trackCondition!==next.trackCondition||race.trackCond!==next.trackCond)changedRaces.push({...next,updatedAt:now})
+    }
+    for(const entry of entries){
+      const horse=horseMap.get("id:"+entry.horseId)||horseMap.get("name:"+entry.horseName)||{},race=raceMap.get(String(entry.race_id||""))||{},profile=canonicalHorseProfile(entry,horse,race),weightProfile=horseWeightProfile(entry,horse),next=augmentEntry(entry,horse,race);
+      if(!profile.age)remainingAge++;if(!weightProfile.bodyWeight)remainingWeight++;
+      if((profile.sex&&entry.sex!==profile.sex)||(profile.age&&Number(entry.age||0)!==profile.age)||(profile.sexAge&&entry.sexAge!==profile.sexAge)||(weightProfile.horseWeight&&entry.horseWeight!==weightProfile.horseWeight)||(weightProfile.bodyWeight&&Number(entry.bodyWeight||0)!==weightProfile.bodyWeight))changedEntries.push({...next,updatedAt:now})
+    }
     if(changedRaces.length)await putMany("races",changedRaces);if(changedEntries.length)await putMany("entries",changedEntries);
     if(Array.isArray(state.simResult))state.simResult=state.simResult.map(row=>{const race=augmentRace(row.race||{}),fix=list=>(Array.isArray(list)?list.map(entry=>augmentEntry(entry,{},race)):list);return{...row,race,entries:fix(row.entries),candidateEntries:fix(row.candidateEntries),selectedEntries:fix(row.selectedEntries),purchaseEntries:fix(row.purchaseEntries)}});
-    return{races:changedRaces.length,entries:changedEntries.length,remainingClass,remainingAge,totalRaces:races.length,totalEntries:entries.length}
+    return{races:changedRaces.length,entries:changedEntries.length,remainingClass,remainingSurface,remainingTrack,remainingAge,remainingWeight,totalRaces:races.length,totalEntries:entries.length}
   }
   async function runClassAgeRepair(){
-    const btn=byId("analyticsClassAgeRepairBtn");if(btn)btn.disabled=true;setAnalyticsLookupStatus("クラス・馬齢を修復中…");
-    try{const result=await repairClassAgeData();await refreshAll();const rows=await analyticsSourceRows();if(rows.length)await runAnalytics(rows);const remain=result.remainingClass+result.remainingAge,setText=`修復 クラス${result.races}R / 馬齢${result.entries}頭`+(remain?`　残り ${result.remainingClass}R・${result.remainingAge}頭`:"　不明なし");setAnalyticsLookupStatus(setText,remain?"bad":"ok");alert(`クラス・馬齢DB修復が完了しました。\nクラス修復: ${result.races}R\n馬齢・性齢修復: ${result.entries}頭\n未判定: クラス ${result.remainingClass}R / 馬齢 ${result.remainingAge}頭${remain?"\n\n材料が無い残りは「race_id完全補完」で取得できます。":""}`)}catch(e){setAnalyticsLookupStatus("修復失敗","bad");alert("クラス・馬齢DB修復失敗: "+e.message)}finally{if(btn)btn.disabled=false}
+    const btn=byId("analyticsClassAgeRepairBtn");if(btn)btn.disabled=true;setAnalyticsLookupStatus("不明項目を修復中…");
+    try{const result=await repairClassAgeData();await refreshAll();const rows=await analyticsSourceRows();if(rows.length)await runAnalytics(rows);const remain=result.remainingClass+result.remainingSurface+result.remainingTrack+result.remainingAge+result.remainingWeight,setText=`修復 レース${result.races}R / 馬${result.entries}頭`+(remain?`　残り ${remain}件`:"　不明なし");setAnalyticsLookupStatus(setText,remain?"bad":"ok");alert(`不明項目DB修復が完了しました。\nレース情報修復: ${result.races}R\n出走馬情報修復: ${result.entries}頭\n未判定: クラス ${result.remainingClass}R / 馬場 ${result.remainingSurface}R / 馬場状態 ${result.remainingTrack}R / 馬齢 ${result.remainingAge}頭 / 馬体重 ${result.remainingWeight}頭${remain?"\n\n保存データ内に材料がない残りは「race_id完全補完」で再取得できます。":""}`)}catch(e){setAnalyticsLookupStatus("修復失敗","bad");alert("不明項目DB修復失敗: "+e.message)}finally{if(btn)btn.disabled=false}
   }
   function wire(attempt=0){
     if(!state.db||!byId("analyticsClassAgeRepairBtn")){if(attempt<80)setTimeout(()=>wire(attempt+1),250);return}
     const btn=byId("analyticsClassAgeRepairBtn");if(!btn.dataset.wired){btn.dataset.wired="1";btn.onclick=runClassAgeRepair}
-    const marker="TheKeibaClassAgeRepairV130";let done=false;try{done=localStorage.getItem(marker)==="1"}catch(_){}
-    if(!done)repairClassAgeData().then(result=>{try{localStorage.setItem(marker,"1")}catch(_){}if(result.races||result.entries){renderDbCounts();if(byId("analyticsLookupStatus")?.textContent==="未照会")setAnalyticsLookupStatus(`自動修復 クラス${result.races}R / 馬齢${result.entries}頭`,result.remainingClass+result.remainingAge?"bad":"ok")}}).catch(console.warn)
+    const marker="TheKeibaUnknownRepairV134";let done=false;try{done=localStorage.getItem(marker)==="1"}catch(_){}
+    if(!done)repairClassAgeData().then(result=>{try{localStorage.setItem(marker,"1")}catch(_){}if(result.races||result.entries){renderDbCounts();if(byId("analyticsLookupStatus")?.textContent==="未照会"){const remain=result.remainingClass+result.remainingSurface+result.remainingTrack+result.remainingAge+result.remainingWeight;setAnalyticsLookupStatus(`自動修復 レース${result.races}R / 馬${result.entries}頭`,remain?"bad":"ok")}}}).catch(console.warn)
   }
-  window.__THEKEIBA_V130__={canonicalRaceClass,classForRace,canonicalHorseProfile,exactRaceAge,augmentRace,augmentEntry,repairClassAgeData};
+  window.__THEKEIBA_V134__={canonicalRaceClass,classForRace,canonicalHorseProfile,horseWeightProfile,exactRaceAge,augmentRace,augmentEntry,repairClassAgeData};
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,1300),{once:true});else setTimeout(wire,500);
 })();
 </script>
@@ -5595,6 +5690,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
+<!-- v1.2.34: 馬場状態・馬齢・馬場・クラス・馬体重のHTML取得強化、旧JRAクラス変換、既存DB一括修復 -->
 <!-- v1.2.32: バッチグラフを操作部直下へ移動・iPad再描画・JRA別日race_id混入防止・過去結果の完全性検証・結果未取得の明示 -->
 <!-- v1.2.31: 同期失敗の直近エラー常時表示、分類・対処候補・履歴・コピー -->
 <!-- v1.2.30: クラス・馬齢のJRA/NAR表記統合、性齢/生年/レース年補完、既存DB修復 -->
