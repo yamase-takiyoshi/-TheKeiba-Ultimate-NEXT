@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.30</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.31</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -260,8 +260,9 @@ input,select,textarea{font-size:16px}
 .sync-live-current{padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--bg);font-size:13px;font-weight:850;line-height:1.55;min-height:44px;margin-bottom:11px;white-space:pre-wrap}
 .sync-live-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:11px}.sync-live-kpi{padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0}.sync-live-kpi small{display:block;color:var(--muted);font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sync-live-kpi strong{display:block;margin-top:4px;font-size:17px;font-weight:950;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sync-live-chart{height:210px}.sync-live-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:11px;line-height:1.5}
+.sync-error-panel{margin:11px 0;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden}.sync-error-panel.has-error{border-color:color-mix(in srgb,var(--bad) 60%,var(--line));box-shadow:inset 3px 0 0 var(--bad)}.sync-error-panel summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;cursor:pointer;font-weight:900;list-style:none}.sync-error-panel summary::-webkit-details-marker{display:none}.sync-error-panel summary::before{content:"▶";font-size:10px;color:var(--muted);transition:transform .16s ease}.sync-error-panel[open] summary::before{transform:rotate(90deg)}.sync-error-summary-title{margin-right:auto}.sync-error-body{border-top:1px solid var(--line);padding:11px 13px}.sync-error-latest{white-space:pre-wrap;overflow-wrap:anywhere;padding:10px 11px;border-radius:9px;background:color-mix(in srgb,var(--bad) 9%,var(--panel2));font-size:12px;line-height:1.55}.sync-error-actions{display:flex;gap:8px;flex-wrap:wrap;margin:9px 0}.sync-error-list{display:grid;gap:7px;max-height:260px;overflow:auto}.sync-error-item{padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);font-size:11px;line-height:1.55;overflow-wrap:anywhere}.sync-error-item-head{display:flex;justify-content:space-between;gap:8px;color:var(--muted);margin-bottom:3px}.sync-error-item strong{color:var(--bad)}.sync-error-advice{color:var(--muted);margin-top:3px}
 @media(max-width:900px){.sync-live-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:560px){.sync-live-progress-row{grid-template-columns:1fr}.sync-live-percent{text-align:left}.sync-live-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.sync-live-chart{height:190px}.sync-live-status{width:100%;justify-content:center}}
+@media(max-width:560px){.sync-live-progress-row{grid-template-columns:1fr}.sync-live-percent{text-align:left}.sync-live-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.sync-live-chart{height:190px}.sync-live-status{width:100%;justify-content:center}.sync-error-item-head{display:block}}
 </style>
 
 <style id="capitalFileDatabaseStyles">
@@ -279,7 +280,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.30 EV分析エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.31 EV分析エミュレータ</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -399,6 +400,7 @@ input,select,textarea{font-size:16px}
           <div class="sync-live-kpi"><small>確定結果</small><strong id="simSyncConfirmed">0R</strong></div>
           <div class="sync-live-kpi"><small>失敗</small><strong id="simSyncFailed">0件</strong></div>
         </div>
+        <details class="sync-error-panel" id="simSyncErrorPanel"><summary><span class="sync-error-summary-title">⚠ 同期エラー詳細</span><span class="badge" id="simSyncErrorCount">0件</span></summary><div class="sync-error-body"><div class="sync-error-latest" id="simSyncErrorLatest">エラーは記録されていません。</div><div class="sync-error-actions"><button class="btn small" type="button" id="simSyncErrorCopyBtn">エラーをコピー</button><button class="btn small" type="button" id="simSyncErrorClearBtn">履歴を消去</button></div><div class="sync-error-list" id="simSyncErrorList"><div class="muted">同期エラーが発生すると、日付・対象・原因・対処候補をここへ残します。</div></div></div></details>
         <canvas class="chart sync-live-chart" id="simSyncProgressChart" width="1200" height="210"></canvas>
         <div class="sync-live-foot"><span id="simSyncElapsed">経過 0秒</span><span id="simSyncEta">残り時間 推定待ち</span><span id="simSyncGraphLegend">進捗率の推移 0～100%</span></div>
       </div>
@@ -1098,7 +1100,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.30-class-age-repair";
+const APP_VERSION="1.2.31-sync-error-details";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -5461,6 +5463,73 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
+<script id="syncErrorDetailsPatch">
+/* v1.2.31 同期エラーの直近表示・分類・履歴保持・コピー */
+(function(){
+  "use strict";
+  const byId=id=>document.getElementById(id),STORAGE_KEY="TheKeibaSyncErrorHistoryV131",LIMIT=50;
+  let history=[],previousFailed=0,pendingRecorded=0;
+  function safe(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch])}
+  function clean(value){return String(value??"").replace(/\r/g,"").replace(/[ \t]+/g," ").replace(/\n{3,}/g,"\n\n").replace(/(Bearer\s+)[A-Za-z0-9._~+\/-]+/gi,"$1***").replace(/([?&](?:token|api[_-]?key|key|auth|authorization)=)[^&\s]+/gi,"$1***").trim().slice(0,1200)}
+  function classify(message){const s=String(message||"");if(/IndexedDB|DB接続|database connection|InvalidStateError/i.test(s))return"端末DB";if(/HTTP\s*4\d\d|Userscript\s*HTTP\s*4\d\d/i.test(s))return"HTTP要求";if(/タイムアウト|timeout|timed out|AbortError/i.test(s))return"タイムアウト";if(/Bridge|Worker|Userscript|未接続|通信失敗|network|fetch/i.test(s))return"接続";if(/内容不正|解析|parse|HTML/i.test(s))return"解析";if(/race[_-]?id/i.test(s))return"race_id";if(/一覧/.test(s))return"開催一覧";return"データ取得"}
+  function advice(category,message){if(category==="端末DB")return"iPadのメモリ解放後も自動再接続します。繰り返す場合は一度ページを再読込してください。";if(category==="HTTP要求")return"Bridge／Userscriptの版または送信形式を確認し、設定画面の接続テストを実行してください。";if(category==="タイムアウト")return"通信を自動再試行して次の日へ進みます。回線とBridge接続を確認してください。";if(category==="接続")return"Bridge設定と接続テスト、Userscriptの有効状態を確認してください。";if(category==="解析")return"取得先ページの形式変更の可能性があります。エラー全文をコピーして確認してください。";if(category==="race_id")return"開催一覧の再取得後に再同期してください。";if(/開催一覧/.test(message))return"その日の開催一覧を再試行します。開催のない日は失敗ではなく『対象開催なし』になります。";return"同期は停止せず次の対象へ進みます。終了後に同じ期間を再同期できます。"}
+  function load(){try{const rows=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(rows))history=rows.filter(x=>x&&x.message).slice(0,LIMIT)}catch(_){history=[]}}
+  function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(history.slice(0,LIMIT)))}catch(_){}}
+  function count(){return history.reduce((sum,item)=>sum+Math.max(1,Number(item.repeat||1)),0)}
+  function formatAt(value){const d=new Date(value);return Number.isFinite(d.getTime())?d.toLocaleString("ja-JP",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"}):"時刻不明"}
+  function render(openOnError=false){
+    const panel=byId("simSyncErrorPanel"),badge=byId("simSyncErrorCount"),latest=byId("simSyncErrorLatest"),list=byId("simSyncErrorList"),total=count();
+    if(badge)badge.textContent=total+"件";if(panel){panel.classList.toggle("has-error",total>0);if(openOnError&&total)panel.open=true}
+    if(latest)latest.textContent=history.length?`直近 ${formatAt(history[0].at)}　${history[0].category}\n${history[0].message}\n対処候補: ${history[0].advice}`:"エラーは記録されていません。";
+    if(list)list.innerHTML=history.length?history.map(item=>`<div class="sync-error-item"><div class="sync-error-item-head"><strong>${safe(item.category)}</strong><span>${safe(formatAt(item.at))}${Number(item.repeat||1)>1?`　同内容 ${Number(item.repeat)}回`:""}</span></div><div>${safe(item.message)}</div><div class="sync-error-advice">対処候補: ${safe(item.advice)}</div></div>`).join(""):`<div class="muted">同期エラーが発生すると、日付・対象・原因・対処候補をここへ残します。</div>`
+  }
+  function record(message,category=""){
+    const value=clean(message);if(!value)return null;const kind=category||classify(value),now=new Date().toISOString(),last=history[0];
+    if(last&&last.message===value&&Date.now()-Date.parse(last.at||0)<90000){last.at=now;last.category=kind;last.advice=advice(kind,value)}
+    else history.unshift({id:`sync-error-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,at:now,category:kind,message:value,advice:advice(kind,value),repeat:1});
+    history=history.slice(0,LIMIT);save();render(true);return history[0]
+  }
+  function usefulDetail(line){return!!line&&!/^(?:取得成功|処理日|当日|バッチ内|全体|タイムアウトまたは通信失敗として次の日へ継続します|次のバッチまで)/.test(line)}
+  function extractSyncErrors(message){
+    const raw=String(message||"").replace(/\r/g,""),lines=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean),out=[];
+    const push=value=>{value=clean(value);if(value&&!out.includes(value))out.push(value)};
+    for(let i=0;i<lines.length;i++){
+      const line=lines[i],marked=line.match(/(?:直近失敗|直近エラー|最後の失敗)\s*[:：]?\s*(.+)$/);if(marked){push(marked[1]);continue}
+      if(/一覧取得失敗/.test(line)){const next=lines[i+1];push(usefulDetail(next)?next:line);continue}
+      if(/バッチ同期エラー/.test(line)){const next=lines[i+1];push(usefulDetail(next)?`${line}\n${next}`:line);continue}
+      if(/ローカルDB自動復旧失敗|DB復旧失敗/.test(line)){const next=lines[i+1];push(usefulDetail(next)?`${line}\n${next}`:line);continue}
+      if(/race_id不正/.test(line)){push(line);continue}
+      if(/^(?:19|20)\d{2}[-/]\d{2}[-/]\d{2}.*(?:一覧|R)\s*[:：]/.test(line)&&/(?:失敗|HTTP|timeout|タイムアウト|取得でき|エラー|不正|接続)/i.test(line)){push(line);continue}
+      if(/(?:接続|通信|取得|解析|更新)失敗\s*[:：]/.test(line)){push(line)}
+    }
+    return out
+  }
+  function diagnosticsFallback(){return clean(window.__LAST_LIST_ERROR__||window.__LAST_BUNDLE_ERROR__||window.__THEKEIBA_BRIDGE_DIAG__?.lastError||"")}
+  function resetForNewSync(){history=[];previousFailed=0;pendingRecorded=0;save();render(false);const panel=byId("simSyncErrorPanel");if(panel)panel.open=false}
+  function decorateStatus(message){
+    let raw=String(message??"");if(/バッチ\s*1\/\d+\s*開始/.test(raw)&&/失敗\s*0件/.test(raw))resetForNewSync();
+    const found=extractSyncErrors(raw);for(const item of found){record(item);pendingRecorded++}
+    const match=raw.match(/失敗\s*(\d+)件/),failed=match?Number(match[1]):previousFailed;
+    if(failed>previousFailed){let delta=failed-previousFailed;if(pendingRecorded){const used=Math.min(delta,pendingRecorded);pendingRecorded-=used;delta-=used}if(delta>0){const fallback=diagnosticsFallback();if(fallback)record(fallback);else record(`失敗件数が ${failed}件へ増加しました。詳細メッセージを取得できませんでした。`,"詳細未取得")}}
+    if(match)previousFailed=failed;
+    if(failed>0&&history.length&&!/(?:直近失敗|直近エラー|最後の失敗)/.test(raw))raw+=`\n直近エラー ${history[0].message}`;
+    return raw
+  }
+  async function copyErrors(){
+    const btn=byId("simSyncErrorCopyBtn"),body=history.length?history.map(item=>`[${formatAt(item.at)}] ${item.category}\n${item.message}\n対処候補: ${item.advice}`).join("\n\n"):"同期エラーは記録されていません。";
+    try{if(navigator.clipboard?.writeText&&window.isSecureContext)await navigator.clipboard.writeText(body);else{const area=document.createElement("textarea");area.value=body;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();if(!document.execCommand("copy"))throw new Error("copy未対応");area.remove()}if(btn){const old=btn.textContent;btn.textContent="コピーしました";setTimeout(()=>btn.textContent=old,1400)}}catch(_){if(btn)btn.textContent="長押しで選択してください";const latest=byId("simSyncErrorLatest");if(latest){latest.focus?.();const selection=window.getSelection?.(),range=document.createRange?.();if(selection&&range){range.selectNodeContents(latest);selection.removeAllRanges();selection.addRange(range)}}}
+  }
+  function clearErrors(){if(history.length&&!confirm("同期エラー履歴を消去しますか？"))return;history=[];previousFailed=0;pendingRecorded=0;save();render(false);const panel=byId("simSyncErrorPanel");if(panel)panel.open=false}
+  function wire(){byId("simSyncErrorCopyBtn")?.addEventListener("click",copyErrors);byId("simSyncErrorClearBtn")?.addEventListener("click",clearErrors);render(history.length>0)}
+  load();
+  const previousSet=typeof setSimSyncStatus==="function"?setSimSyncStatus:null;
+  if(previousSet)setSimSyncStatus=function(message){return previousSet(decorateStatus(message))};
+  window.__THEKEIBA_V131__={extractSyncErrors,classifyError:classify,decorateStatus,getHistory:()=>history.map(x=>({...x})),clearErrors};
+  if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",wire,{once:true});else setTimeout(wire,120);
+})();
+</script>
+
+<!-- v1.2.31: 同期失敗の直近エラー常時表示、分類・対処候補・履歴・コピー -->
 <!-- v1.2.30: クラス・馬齢のJRA/NAR表記統合、性齢/生年/レース年補完、既存DB修復 -->
 <!-- v1.2.29: 馬場状態4区分・元入金安全予算管理・SIM/DBフォルダJSON・各DBテキストコピペ -->
 <!-- v1.2.28: 分析の不明究明。race_id再構築+緩い照合で照合率向上、分類材料をrow/result/entriesへ拡張、不明の内訳診断ボタン追加 -->
