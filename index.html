@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.39</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.40</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -280,7 +280,7 @@ input,select,textarea{font-size:16px}
 
 
 <style id="fullSiteEmulatorStyles">
-/* v1.2.39 公開サイト丸ごと本体エミュレータ + SIMリアルタイム転送 */
+/* v1.2.40 公開サイト丸ごと本体エミュレータ + SIMリアルタイム転送 + NAR typed Bridge */
 .full-emu-hero{border-color:color-mix(in srgb,var(--purple) 45%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--panel) 92%,var(--purple) 8%),var(--panel))}
 .full-emu-toolbar{display:flex;align-items:end;gap:9px;flex-wrap:wrap}.full-emu-url{flex:1 1 430px;min-width:260px}.full-emu-controls{display:flex;gap:8px;flex-wrap:wrap}
 .full-emu-status{white-space:pre-wrap;line-height:1.55;margin-top:10px}.full-emu-status.ok{color:var(--good)}.full-emu-status.warn{color:var(--warn)}.full-emu-status.bad{color:var(--bad)}
@@ -311,7 +311,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.39 本体エミュ・SIMリアルタイム連携</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.40 本体エミュ・SIMリアルタイム連携</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -1217,7 +1217,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.37-fullsite-live-sim";
+const APP_VERSION="1.2.40-fullsite-live-sim-nar-typed";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["emulator","🧪","エミュ"],["site-emulator","🖥","本体エミュ"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -2174,7 +2174,8 @@ function racePageCalendarDate(raw){
 async function bridgeLoadHtmlPage(type,rid,kind,mode,{required=false}={}){
   const errors=[];
   const accept=(html,url)=>bridgePageLooksUseful(type,html)?{html,url}:null;
-  if(mode==="legacy"){
+  const typedWorkerReady=!!String($("bridgeUrl")?.value||state.settings.bridgeUrl||"").trim();
+  if(mode==="legacy"||(kind==="NAR"&&typedWorkerReady)){
     try{
       const raw=await bridgeLegacyType(type,rid,kind),html=unwrapBridgeHtml(raw),hit=accept(html,`type:${type}`);
       if(hit)return hit;
@@ -5807,6 +5808,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
+<!-- v1.2.40: 期間横断SIMを親SIMへレース単位で強制転送・NAR type/race_id API優先・旧url方式自動変換 -->
 <!-- v1.2.39: 本体エミュ実行中のSIMリアルタイム閲覧・分析連動・本体追従ダーク/ライト強制同期 -->
 <!-- v1.2.34: 馬場状態・馬齢・馬場・クラス・馬体重のHTML取得強化、旧JRAクラス変換、既存DB一括修復 -->
 <!-- v1.2.32: バッチグラフを操作部直下へ移動・iPad再描画・JRA別日race_id混入防止・過去結果の完全性検証・結果未取得の明示 -->
@@ -5973,7 +5975,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 
 
 <script>
-/* v1.2.39 Full Site Live Emulator / realtime SIM mirror / shared theme */
+/* v1.2.40 Full Site Live Emulator / realtime SIM mirror / NAR typed Bridge / shared theme */
 (function(){
   "use strict";
   const DEFAULT_URL="https://yamase-takiyoshi.github.io/takuya/";
@@ -6104,12 +6106,14 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     let lastSignature="",timer=null;
 
     function rowsNow(){
+      try{if(typeof state!=="undefined"&&Array.isArray(state.simResult)&&state.simResult.length)return state.simResult}catch(_){}
+      try{if(Array.isArray(window.simResult)&&window.simResult.length)return window.simResult}catch(_){}
+      try{if(Array.isArray(window.__THEKEIBA_PERIOD_SIM_ROWS__)&&window.__THEKEIBA_PERIOD_SIM_ROWS__.length)return window.__THEKEIBA_PERIOD_SIM_ROWS__}catch(_){}
       try{
-        if(typeof state!=="undefined"&&Array.isArray(state.simResult))return state.simResult;
+        const raw=localStorage.getItem("keibaProfitGraphBridge_v1");
+        if(raw){const box=JSON.parse(raw),rows=box?.data?.収支明細;if(Array.isArray(rows))return rows}
       }catch(_){}
-      try{
-        if(Array.isArray(window.simResult))return window.simResult;
-      }catch(_){}
+      try{if(typeof state!=="undefined"&&Array.isArray(state.simResult))return state.simResult}catch(_){}
       return[]
     }
     function configNow(){
@@ -6205,6 +6209,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     window.__keibaApplySharedTheme=applyTheme;
     window.__THEKEIBA_PARENT_LIVE_HOOK_V1__={emit,applyTheme,rowsNow,summaryNow,version:2};
     wrap("renderSimulation");wrap("runSimulation");wrap("runSimulationCore");wrap("syncSimulationToAnalysis");
+    wrap("bridgeLoadBundle");wrap("refreshLiveGraph");wrap("syncBacktestPeriod");
     try{
       const themeChannel=new BroadcastChannel("TheKeibaThemeSyncV1");
       themeChannel.addEventListener("message",ev=>{const d=ev?.data;if(d?.type==="TheKeibaThemeSyncV1")applyTheme(d.theme)});
@@ -6222,6 +6227,83 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     setTimeout(()=>emit("hook-ready",true),80)
   }
 
+  function fullEmuBridgeDescriptor(raw){
+    const source=String(raw?.url||raw||"").trim();
+    let outer=null,target=source;
+    try{
+      outer=new URL(source,location.href);
+      const inner=outer.searchParams.get("url");
+      if(inner)target=inner
+    }catch(_){}
+    let targetUrl=null;
+    try{targetUrl=new URL(target,location.href)}catch(_){}
+    const host=String(targetUrl?.hostname||"").toLowerCase(),path=String(targetUrl?.pathname||"");
+    const queryRace=targetUrl?.searchParams?.get("race_id")||targetUrl?.searchParams?.get("raceId")||"";
+    const pathRace=path.match(/\/race\/((?:19|20)\d{10,12})(?:\/|$)/)?.[1]||"";
+    const raceId=String(queryRace||pathRace||"").replace(/\D/g,"").slice(0,14);
+    let kind=/^(?:nar|nar\.sp)\.netkeiba\.com$/i.test(host)?"NAR":/^(?:race|race\.sp|db|db\.sp)\.netkeiba\.com$/i.test(host)?"JRA":"";
+    if(raceId&&typeof raceKindFromId==="function")try{
+      const inferred=raceKindFromId(raceId);
+      if(!kind||/^(?:db|db\.sp)\.netkeiba\.com$/i.test(host))kind=inferred
+    }catch(_){}
+    let type="";
+    if(/(?:^|\/)odds(?:\/|$)|odds\/index\.html/i.test(path))type="odds";
+    else if(/result|race_result|db\.netkeiba|db\.sp\.netkeiba/i.test(path+" "+host))type="result";
+    else if(/shutuba|entry/i.test(path))type="shutuba";
+    const isList=/race[_-]?list|TodayRaceInfo\/RaceList/i.test(path);
+    return{source,outer,target,targetUrl,host,path,raceId,kind,type,isList}
+  }
+  function fullEmuBridgeTextOk(desc,text){
+    const html=typeof unwrapBridgeHtml==="function"?unwrapBridgeHtml(text):String(text||"");
+    if(!html||html.length<40)return false;
+    if(desc.type&&typeof bridgePageLooksUseful==="function")return bridgePageLooksUseful(desc.type,html);
+    return !/(?:upstream returned HTTP 400|race_id\/type or url required|access denied|forbidden)/i.test(html)
+  }
+  async function fullEmuModernBridgeRequest(raw,options={}){
+    const desc=fullEmuBridgeDescriptor(raw),timeout=Math.max(3000,Number(options?.timeout||22000)),errors=[];
+    const workerReady=!!String(document.getElementById("bridgeUrl")?.value||state?.settings?.bridgeUrl||"").trim();
+    if(desc.raceId&&desc.type&&desc.kind&&workerReady&&typeof bridgeLegacyType==="function"){
+      try{
+        const text=await bridgeLegacyType(desc.type,desc.raceId,desc.kind,{timeout});
+        if(fullEmuBridgeTextOk(desc,text))return{status:200,text:String(text||""),error:"",route:`typed:${desc.kind}:${desc.type}`};
+        errors.push(`type/race_id ${desc.type} 内容不正`)
+      }catch(e){errors.push(`type/race_id ${e.message}`)}
+    }
+    let target=desc.target;
+    try{
+      const u=new URL(target,location.href);
+      if(desc.kind==="NAR"&&desc.isList&&u.hostname==="nar.netkeiba.com"){
+        u.hostname="nar.sp.netkeiba.com";target=u.href
+      }
+    }catch(_){}
+    try{
+      let text="";
+      if(typeof residentialBridgeText==="function"&&hasResidentialBridge())text=await residentialBridgeText(target,{timeout});
+      else if(typeof bridgeLegacyUrl==="function")text=await bridgeLegacyUrl(target,{timeout});
+      else throw new Error("親Bridge取得関数がありません");
+      if(fullEmuBridgeTextOk({...desc,target},text)||(!desc.type&&String(text||"").length>40))return{status:200,text:String(text||""),error:"",route:"direct-url"};
+      errors.push("URL取得 内容不正")
+    }catch(e){errors.push(`URL取得 ${e.message}`)}
+    return{status:502,text:JSON.stringify({ok:false,error:errors.join(" / "),target:desc.target}),error:errors.join(" / ")||"Bridge取得失敗",route:"failed"}
+  }
+  function installChildFetchUpgrade(child){
+    if(!child||child.__THEKEIBA_FETCH_TYPED_UPGRADE_V140__)return;
+    const original=typeof child.fetch==="function"?child.fetch.bind(child):null;if(!original)return;
+    child.fetch=async function(input,init){
+      let requestUrl="";
+      try{requestUrl=typeof input==="string"?input:(input?.url||String(input||""))}catch(_){}
+      let outer=null,inner="";
+      try{outer=new URL(requestUrl,child.location.href);inner=outer.searchParams.get("url")||""}catch(_){}
+      if(inner&&/(?:netkeiba\.com|keiba\.go\.jp)/i.test(inner)){
+        const result=await fullEmuModernBridgeRequest(inner,{timeout:22000});
+        const ResponseCtor=child.Response||Response;
+        return new ResponseCtor(result.text,{status:result.status||200,statusText:result.status>=400?"Bridge Error":"OK",headers:{"content-type":/^\s*[\[{]/.test(result.text)?"application/json;charset=utf-8":"text/html;charset=utf-8","x-thekeiba-bridge-route":result.route||"parent"}})
+      }
+      return original(input,init)
+    };
+    child.__THEKEIBA_FETCH_TYPED_UPGRADE_V140__=true
+  }
+
   function installBridgeAdapter(){
     const frame=byId("fullEmuFrame");
     if(!frame||!loadedUrl||!sameOrigin(loadedUrl)){setBadge("fullEmuBridgeBadge","Bridge：別オリジンのため独立","cross");return false}
@@ -6229,17 +6311,19 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
       const child=frame.contentWindow;if(!child)throw new Error("本体画面へ接続できません");
       const direct=typeof window.__narBridgeDirect==="function"?window.__narBridgeDirect:null;
       const fetcher=typeof window.__narBridgeFetch==="function"?window.__narBridgeFetch:direct;
-      if(direct){child.__narBridgeDirect=(url,options={})=>direct(url,options);child.__narBridgeHasDirect=true}
-      if(fetcher)child.__narBridgeFetch=(url,options={})=>fetcher(url,options);
-      if(window.__narBridgeVersion)child.__narBridgeVersion=window.__narBridgeVersion;
-      if(window.__NAR_BRIDGE_READY__||direct){
+      const workerConfigured=!!String(document.getElementById("bridgeUrl")?.value||state?.settings?.bridgeUrl||"").trim();
+      const upgraded=(url,options={})=>fullEmuModernBridgeRequest(url,options);
+      child.__narBridgeDirect=upgraded;child.__narBridgeFetch=upgraded;child.__narBridgeHasDirect=true;
+      child.__narBridgeVersion=`${window.__narBridgeVersion||"parent"}+typed-v1.2.40`;
+      installChildFetchUpgrade(child);
+      if(window.__NAR_BRIDGE_READY__||direct||workerConfigured){
         child.__NAR_BRIDGE_READY__=true;
         child.document?.documentElement?.setAttribute("data-nar-bridge-ready",String(window.__narBridgeVersion||"parent-adapter"))
       }
       try{child.__theKeibaBridgeHandshake?.()}catch(_){}
       try{child.dispatchEvent(new Event("online"));child.dispatchEvent(new Event("focus"))}catch(_){}
-      bridgeInjected=!!(direct||fetcher);
-      setBadge("fullEmuBridgeBadge",bridgeInjected?"Bridge：親画面から継承":"Bridge：親画面で未接続",bridgeInjected?"same":"cross");
+      bridgeInjected=!!(direct||fetcher||workerConfigured);
+      setBadge("fullEmuBridgeBadge",bridgeInjected?"Bridge：type/race_id優先・旧url自動変換":"Bridge：親画面で未接続",bridgeInjected?"same":"cross");
       return bridgeInjected
     }catch(e){
       bridgeInjected=false;setBadge("fullEmuBridgeBadge","Bridge接続失敗","cross");
@@ -6301,10 +6385,24 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     const frame=byId("fullEmuFrame");
     try{
       if(!frame?.contentWindow?.__THEKEIBA_PARENT_LIVE_HOOK_V1__)installLiveHook();
-      frame?.contentWindow?.__THEKEIBA_PARENT_LIVE_HOOK_V1__?.emit("manual",true);
+      const hook=frame?.contentWindow?.__THEKEIBA_PARENT_LIVE_HOOK_V1__;
+      hook?.emit("manual",true);
       frame?.contentWindow?.postMessage({type:"TheKeibaFullEmuRequestLiveV1"},"*");
+      let accepted=false;
+      try{
+        const rows=hook?.rowsNow?.();
+        if(Array.isArray(rows)&&rows.length)accepted=acceptLiveRows(rows,{at:new Date().toISOString(),running:true,reason:"manual-direct",progress:{current:`今すぐ転送 ${rows.length}R`}},"今すぐ転送")||accepted
+      }catch(_){}
+      try{
+        const raw=frame?.contentWindow?.localStorage?.getItem(PROFIT_GRAPH_BRIDGE_KEY);
+        if(!accepted&&raw)accepted=acceptBridgeBox(JSON.parse(raw),"今すぐ転送 bridge")||accepted
+      }catch(_){}
+      setBadge("fullEmuLiveBadge",accepted?"LIVE：今すぐ反映済":"LIVE：転送要求済",accepted?"same":"cross");
+      if(accepted)status(`本体エミュの期間横断結果をSIMへ即時反映しました。
+${lastRowsSignature||"受信済み"}`,"ok");
       return true
-    }catch(_){return false}
+    }catch(e){status(`今すぐ転送失敗
+${e.message}`,"bad");return false}
   }
   function onFrameLoad(){
     if(!loadedUrl)return;loading=false;
@@ -6313,7 +6411,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     const emulatorView=byId("view-site-emulator");
     if(emulatorView)emulatorView.classList.toggle("full-emu-background-running",liveEnabled()&&!emulatorView.classList.contains("active"));
     const detail=same
-      ?`同一オリジンで起動しました。localStorage・IndexedDBは本体と共有されます。${bridged?" 親画面の住宅IP Bridgeも継承しました。":" Bridgeは親画面側の接続待ちです。"}${live?" SIMリアルタイム転送を接続しました。":" LIVE転送は接続待ちです。"}`
+      ?`同一オリジンで起動しました。localStorage・IndexedDBは本体と共有されます。${bridged?" 親画面Bridgeを継承し、NARはtype/race_id APIを優先します。":" Bridgeは親画面側の接続待ちです。"}${live?" SIMリアルタイム転送を接続しました。":" LIVE転送は接続待ちです。"}`
       :"別オリジンで起動しました。全画面操作はできますが、親SIMへの直接転送・DB共有・テーマ直結は制限されます。";
     status(`${frameInfo()}\n${detail}\n本体エミュでSIMを開始後、左メニューの「SIM」へ移動しても計算は継続します。`,same?"ok":"warn")
   }
