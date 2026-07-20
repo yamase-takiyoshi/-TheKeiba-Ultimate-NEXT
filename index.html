@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.38</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.39</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -280,7 +280,7 @@ input,select,textarea{font-size:16px}
 
 
 <style id="fullSiteEmulatorStyles">
-/* v1.2.38 公開サイト丸ごと本体エミュレータ + SIMリアルタイム転送 */
+/* v1.2.39 公開サイト丸ごと本体エミュレータ + SIMリアルタイム転送 */
 .full-emu-hero{border-color:color-mix(in srgb,var(--purple) 45%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--panel) 92%,var(--purple) 8%),var(--panel))}
 .full-emu-toolbar{display:flex;align-items:end;gap:9px;flex-wrap:wrap}.full-emu-url{flex:1 1 430px;min-width:260px}.full-emu-controls{display:flex;gap:8px;flex-wrap:wrap}
 .full-emu-status{white-space:pre-wrap;line-height:1.55;margin-top:10px}.full-emu-status.ok{color:var(--good)}.full-emu-status.warn{color:var(--warn)}.full-emu-status.bad{color:var(--bad)}
@@ -311,7 +311,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.38 本体エミュ・SIMリアルタイム連携</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.39 本体エミュ・SIMリアルタイム連携</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -5807,7 +5807,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
-<!-- v1.2.38: 本体エミュ実行中のSIMリアルタイム閲覧・分析連動・本体追従ダーク/ライト強制同期 -->
+<!-- v1.2.39: 本体エミュ実行中のSIMリアルタイム閲覧・分析連動・本体追従ダーク/ライト強制同期 -->
 <!-- v1.2.34: 馬場状態・馬齢・馬場・クラス・馬体重のHTML取得強化、旧JRAクラス変換、既存DB一括修復 -->
 <!-- v1.2.32: バッチグラフを操作部直下へ移動・iPad再描画・JRA別日race_id混入防止・過去結果の完全性検証・結果未取得の明示 -->
 <!-- v1.2.31: 同期失敗の直近エラー常時表示、分類・対処候補・履歴・コピー -->
@@ -5973,7 +5973,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 
 
 <script>
-/* v1.2.38 Full Site Live Emulator / realtime SIM mirror / shared theme */
+/* v1.2.39 Full Site Live Emulator / realtime SIM mirror / shared theme */
 (function(){
   "use strict";
   const DEFAULT_URL="https://yamase-takiyoshi.github.io/takuya/";
@@ -6088,7 +6088,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
       }catch(_){}
     }
     try{themeChannelInstance()?.postMessage(payload)}catch(_){}
-    setBadge("fullEmuThemeBadge",theme==="light"?"本体連動：ライトモード":"本体連動：ダークモード","same");
+    setBadge("fullEmuThemeBadge",theme==="light"?"本体エミュ自体：ライト":"本体エミュ自体：ダーク","same");
   }
 
   function childHookBootstrap(){
@@ -6508,6 +6508,17 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
       const d=ev?.data;if(!d||typeof d!=="object")return;
       const frame=byId("fullEmuFrame");
       if(d.type===LIVE_MESSAGE&&(!frame||ev.source===frame.contentWindow))acceptLiveRows(d.rows,d,"postMessage");
+      if(d.type==="TheKeibaThemeRequestV1"&&frame&&ev.source===frame.contentWindow){
+        const requested=normalizeTheme(d.theme);
+        try{
+          if(typeof state!=="undefined"&&state?.settings){
+            state.settings.theme=requested;
+            if(typeof putOne==="function")Promise.resolve(putOne("settings",{key:"app",value:state.settings})).catch(()=>{});
+          }
+          if(typeof applySettings==="function")applySettings(false);else document.documentElement.dataset.theme=requested;
+        }catch(_){document.documentElement.dataset.theme=requested}
+        syncThemeToFrames(requested,"本体エミュから切替");
+      }
       if(d.type==="TheKeibaThemeHelloV1"||d.type==="TheKeibaThemeHello")syncThemeToFrames(currentTheme(),"hello");
       if(d.type==="keibaProfitGraphLive"&&d.box&&frame&&ev.source===frame.contentWindow)acceptBridgeBox(d.box,"postMessage bridge")
     });
