@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.36</title>
+<title>The競馬 Ultimate NEXT Professional TARGET RDBMS Edition v1.2.37</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -280,7 +280,7 @@ input,select,textarea{font-size:16px}
 
 
 <style id="fullSiteEmulatorStyles">
-/* v1.2.36 公開サイト丸ごと本体エミュレータ */
+/* v1.2.37 公開サイト丸ごと本体エミュレータ + SIMリアルタイム転送 */
 .full-emu-hero{border-color:color-mix(in srgb,var(--purple) 45%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--panel) 92%,var(--purple) 8%),var(--panel))}
 .full-emu-toolbar{display:flex;align-items:end;gap:9px;flex-wrap:wrap}.full-emu-url{flex:1 1 430px;min-width:260px}.full-emu-controls{display:flex;gap:8px;flex-wrap:wrap}
 .full-emu-status{white-space:pre-wrap;line-height:1.55;margin-top:10px}.full-emu-status.ok{color:var(--good)}.full-emu-status.warn{color:var(--warn)}.full-emu-status.bad{color:var(--bad)}
@@ -290,13 +290,28 @@ input,select,textarea{font-size:16px}
 .full-emu-cover{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;background:var(--bg);color:var(--muted);z-index:2}.full-emu-cover[hidden]{display:none!important}
 .full-emu-badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.full-emu-badge.same{color:var(--good);border-color:color-mix(in srgb,var(--good) 48%,var(--line))}.full-emu-badge.cross{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 48%,var(--line))}
 .full-emu-auto{display:flex;align-items:center;gap:7px;margin:0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-size:13px;font-weight:850}.full-emu-auto input{width:auto;margin:0}
-@media(max-width:760px){.full-emu-frame-shell{height:calc(100svh - 185px);min-height:520px;border-radius:10px}.full-emu-controls .btn{flex:1 1 calc(50% - 8px)}.full-emu-controls select{flex:1 1 100%}.full-emu-url{min-width:100%}}
+.full-emu-frame-shell,.full-emu-frame-shell iframe,.split-pane iframe{background:var(--bg)}
+.full-emu-live-toggle{display:flex;align-items:center;gap:7px;margin:0;padding:9px 11px;border:1px solid color-mix(in srgb,var(--good) 45%,var(--line));border-radius:10px;background:color-mix(in srgb,var(--panel2) 88%,var(--good) 12%);color:var(--text);font-size:13px;font-weight:900}
+.full-emu-live-toggle input{width:auto;margin:0;accent-color:var(--good)}
+.full-emu-live-monitor{border-color:color-mix(in srgb,var(--good) 45%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 94%,var(--good) 6%),var(--panel))}
+.full-emu-live-monitor[hidden]{display:none!important}
+.full-emu-live-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:11px}
+.full-emu-live-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin:10px 0}
+.full-emu-live-kpi{padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0}
+.full-emu-live-kpi small{display:block;color:var(--muted);font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.full-emu-live-kpi strong{display:block;margin-top:4px;font-size:18px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.full-emu-live-task{white-space:pre-wrap;line-height:1.55}
+#view-site-emulator.full-emu-background-running:not(.active){display:block!important;position:fixed;left:0;top:0;width:1024px;height:768px;opacity:.001;transform:translate3d(-220vw,0,0);pointer-events:none;z-index:-1;overflow:hidden;contain:layout paint size}
+#view-site-emulator.full-emu-background-running:not(.active) .full-emu-hero{display:none}
+#view-site-emulator.full-emu-background-running:not(.active)>.card{margin:0;padding:0;border:0;box-shadow:none}
+#view-site-emulator.full-emu-background-running:not(.active) .full-emu-frame-shell{width:1024px;height:768px;min-height:768px;margin:0;border:0;border-radius:0}
+@media(max-width:760px){.full-emu-frame-shell{height:calc(100svh - 185px);min-height:520px;border-radius:10px}.full-emu-controls .btn{flex:1 1 calc(50% - 8px)}.full-emu-controls select{flex:1 1 100%}.full-emu-url{min-width:100%}.full-emu-live-toggle{width:100%;justify-content:center}.full-emu-live-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.full-emu-live-kpi:last-child{grid-column:1/-1}}
 </style>
 
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.36 丸ごと本体エミュレータ</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>TARGET RDBMS Edition v1.2.37 本体エミュ・SIMリアルタイム連携</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -360,6 +375,21 @@ input,select,textarea{font-size:16px}
 
     <section class="view" id="view-simulation">
       <h2 class="page-title">期間横断シミュレーション</h2>
+      <div class="card full-emu-live-monitor" id="fullEmuSimLiveCard" hidden>
+        <div class="full-emu-live-head">
+          <div><strong>🖥 本体エミュ → SIM リアルタイム表示</strong><div class="muted" id="fullEmuSimLiveSub">本体エミュの計算を止めず、結果をこのSIMへ反映します。</div></div>
+          <span class="badge" id="fullEmuSimLiveState"><span class="status-dot"></span>接続待ち</span>
+        </div>
+        <div class="full-emu-live-kpis">
+          <div class="full-emu-live-kpi"><small>受信R</small><strong id="fullEmuSimLiveRows">0R</strong></div>
+          <div class="full-emu-live-kpi"><small>購入R</small><strong id="fullEmuSimLiveBought">0R</strong></div>
+          <div class="full-emu-live-kpi"><small>投資</small><strong id="fullEmuSimLiveBet">0円</strong></div>
+          <div class="full-emu-live-kpi"><small>収支</small><strong id="fullEmuSimLiveProfit">0円</strong></div>
+          <div class="full-emu-live-kpi"><small>最終受信</small><strong id="fullEmuSimLiveAt">未受信</strong></div>
+        </div>
+        <div class="code-box full-emu-live-task" id="fullEmuSimLiveTask">本体エミュからの開始通知を待っています。</div>
+        <div class="toolbar" style="margin-top:10px"><button class="btn" id="fullEmuBackBtn" type="button">🖥 本体エミュへ戻る</button><button class="btn good" id="fullEmuLiveSyncNowBtn" type="button">↔ 今すぐ再取得</button></div>
+      </div>
       <div class="card">
         <div class="notice sim-authority-card" id="simAuthorityCard"><div class="sim-authority-copy"><strong id="simAuthorityTitle">設定モード完全権限</strong><div id="simAuthoritySummary" class="sim-authority-summary">設定を読み込んでいます。</div><small id="simAuthorityHelp">SIM画面では期間と開催場だけを指定します。券種・予算・点数・EV・AI・オッズ・優先順位・同意・予算配分は「設定」の保存値を直接読み、画面値はアルゴリズムに使用しません。</small></div><button type="button" class="btn good" id="simAuthorityToggleBtn">🔓 SIM設定を解除</button><button type="button" class="btn warn" id="simAuthoritySettingsBtn">⚙ 設定を開く</button></div>
         <div class="form-grid">
@@ -470,20 +500,23 @@ input,select,textarea{font-size:16px}
       <h2 class="page-title">🖥 公開サイト丸ごと本体エミュレータ</h2>
       <div class="card full-emu-hero">
         <div class="toolbar"><h3 style="margin:0 auto 0 0">The競馬 EV分析 v5.18.297 ライブ同期型</h3><span class="badge" id="fullEmuStateBadge"><span class="status-dot"></span>未読込</span></div>
-        <div class="notice">公開サイトを別物として作り直すのではなく、全タブ・全画面・設定・期間横断SIM・予想・ライブ・保存機能を専用フレーム内へそのまま導入します。公開側が更新されると、このエミュレータにも次回読込時に反映されます。同じ <code>yamase-takiyoshi.github.io</code> 上へ配置した場合は、localStorage・IndexedDB・Bridgeを同一オリジンで共有できます。</div>
+        <div class="notice">公開サイトを専用フレーム内へそのまま導入します。本体エミュで期間横断SIMを開始した後に左メニューの「SIM」へ切り替えても、フレームは破棄・再読込されず処理を継続します。結果はレース単位で親SIMと分析画面へ自動転送されます。同一オリジン時はlocalStorage・IndexedDB・Bridgeと表示テーマも共有します。</div>
         <div class="full-emu-toolbar" style="margin-top:12px">
           <div class="full-emu-url"><label>本体サイトURL</label><input id="fullEmuUrl" type="url" value="https://yamase-takiyoshi.github.io/takuya/" inputmode="url"></div>
           <label class="full-emu-auto" title="本体エミュレータ画面を開いた時に自動読込"><input id="fullEmuAuto" type="checkbox" checked>画面表示時に自動読込</label>
+          <label class="full-emu-live-toggle" title="本体エミュのSIM結果を親SIMへリアルタイム転送"><input id="fullEmuLiveSync" type="checkbox" checked>SIMへリアルタイム転送</label>
         </div>
         <div class="full-emu-controls" style="margin-top:10px">
           <button class="btn primary" id="fullEmuLoadBtn">▶ 丸ごと読込</button>
           <button class="btn" id="fullEmuReloadBtn">↻ 再読込</button>
           <button class="btn" id="fullEmuHomeBtn">⌂ 本体ホーム</button>
           <button class="btn good" id="fullEmuBridgeBtn">🔗 Bridge再接続</button>
+          <button class="btn good" id="fullEmuShowSimBtn">📊 SIMを表示</button>
+          <button class="btn" id="fullEmuSyncNowBtn">↔ 今すぐ転送</button>
           <button class="btn" id="fullEmuOpenBtn">↗ 別タブ</button>
           <select id="fullEmuViewport" style="width:auto" title="表示幅"><option value="full">全幅</option><option value="tablet">iPad幅</option><option value="mobile">スマホ幅</option></select>
         </div>
-        <div class="full-emu-badges"><span class="badge" id="fullEmuOriginBadge">接続方式を確認中</span><span class="badge" id="fullEmuBridgeBadge">Bridge未確認</span><span class="badge" id="fullEmuVersionBadge">公開版 v5.18.297</span></div>
+        <div class="full-emu-badges"><span class="badge" id="fullEmuOriginBadge">接続方式を確認中</span><span class="badge" id="fullEmuBridgeBadge">Bridge未確認</span><span class="badge" id="fullEmuLiveBadge">LIVE接続待ち</span><span class="badge" id="fullEmuLiveCountBadge">0R</span><span class="badge" id="fullEmuThemeBadge">テーマ連動待ち</span><span class="badge" id="fullEmuVersionBadge">公開版 v5.18.297</span></div>
         <div class="code-box full-emu-status" id="fullEmuStatus">「丸ごと読込」を押すと、公開サイト本体をこの画面内で起動します。</div>
       </div>
       <div class="card" style="padding:10px">
@@ -1184,7 +1217,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.2.36-fullsite-emulator";
+const APP_VERSION="1.2.37-fullsite-live-sim";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["emulator","🧪","エミュ"],["site-emulator","🖥","本体エミュ"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待払戻重視",balanced:"総合バランス",agreement:"全て同意",clone:"完全クローン EV分析互換"};
@@ -5774,6 +5807,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 })();
 </script>
 
+<!-- v1.2.37: 本体エミュ実行中のSIMリアルタイム閲覧・分析連動・ダーク/ライト/ホワイト背景自動同期 -->
 <!-- v1.2.34: 馬場状態・馬齢・馬場・クラス・馬体重のHTML取得強化、旧JRAクラス変換、既存DB一括修復 -->
 <!-- v1.2.32: バッチグラフを操作部直下へ移動・iPad再描画・JRA別日race_id混入防止・過去結果の完全性検証・結果未取得の明示 -->
 <!-- v1.2.31: 同期失敗の直近エラー常時表示、分類・対処候補・履歴・コピー -->
@@ -5939,13 +5973,20 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
 
 
 <script>
-/* v1.2.36 Full Site Live Emulator */
+/* v1.2.37 Full Site Live Emulator / realtime SIM mirror / shared theme */
 (function(){
   "use strict";
   const DEFAULT_URL="https://yamase-takiyoshi.github.io/takuya/";
   const KEY_URL="TheKeibaFullEmulatorUrlV1",KEY_AUTO="TheKeibaFullEmulatorAutoV1",KEY_VIEW="TheKeibaFullEmulatorViewportV1";
+  const KEY_LIVE="TheKeibaFullEmulatorLiveSyncV1";
+  const SHARED_THEME_KEY="TheKeibaSharedThemeV2",LEGACY_THEME_KEY="TheKeibaTheme",THEME_CHANNEL_NAME="TheKeibaThemeSyncV1";
+  const LIVE_MESSAGE="TheKeibaFullEmuSimLiveV1";
   const byId=id=>document.getElementById(id);
-  let loadedUrl="",loading=false,bridgeInjected=false;
+  const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+  const clone=v=>{try{return structuredClone(v)}catch(_){try{return JSON.parse(JSON.stringify(v))}catch(__){return v}}};
+  let loadedUrl="",loading=false,bridgeInjected=false,liveHookInjected=false;
+  let liveTimer=null,lastLiveSignature="",lastRowsSignature="",lastLivePacketAt=0,analysisTimer=null;
+  let themeChannel=null,profitChannelListenerInstalled=false;
 
   function cleanUrl(raw){
     const value=String(raw||"").trim()||DEFAULT_URL;
@@ -5954,24 +5995,161 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     return u.href;
   }
   function sameOrigin(url){try{return new URL(url,location.href).origin===location.origin}catch(_){return false}}
+  function normalizeTheme(v){return /^(?:light|white|ライト|ホワイト)$/i.test(String(v||""))?"light":"dark"}
+  function currentTheme(){
+    let v=document.documentElement.dataset.theme||"";
+    try{v=v||localStorage.getItem(SHARED_THEME_KEY)||localStorage.getItem(LEGACY_THEME_KEY)||""}catch(_){}
+    return normalizeTheme(v)
+  }
   function setBadge(id,text,kind=""){
-    const el=byId(id);if(!el)return;el.textContent=text;el.classList.toggle("same",kind==="same");el.classList.toggle("cross",kind==="cross");
+    const el=byId(id);if(!el)return;el.textContent=text;
+    el.classList.toggle("same",kind==="same");el.classList.toggle("cross",kind==="cross");
+    el.classList.toggle("good",kind==="good");el.classList.toggle("bad",kind==="bad");
   }
   function setState(text,on=false){const el=byId("fullEmuStateBadge");if(!el)return;el.innerHTML=`<span class="status-dot ${on?"on":""}"></span>${text}`}
   function status(text,kind=""){
-    const el=byId("fullEmuStatus");if(!el)return;el.textContent=String(text||"");el.classList.toggle("ok",kind==="ok");el.classList.toggle("warn",kind==="warn");el.classList.toggle("bad",kind==="bad");
+    const el=byId("fullEmuStatus");if(!el)return;el.textContent=String(text||"");
+    el.classList.toggle("ok",kind==="ok");el.classList.toggle("warn",kind==="warn");el.classList.toggle("bad",kind==="bad");
   }
   function persist(){
-    try{localStorage.setItem(KEY_URL,byId("fullEmuUrl")?.value||DEFAULT_URL);localStorage.setItem(KEY_AUTO,byId("fullEmuAuto")?.checked?"1":"0");localStorage.setItem(KEY_VIEW,byId("fullEmuViewport")?.value||"full")}catch(_){ }
+    try{
+      localStorage.setItem(KEY_URL,byId("fullEmuUrl")?.value||DEFAULT_URL);
+      localStorage.setItem(KEY_AUTO,byId("fullEmuAuto")?.checked?"1":"0");
+      localStorage.setItem(KEY_VIEW,byId("fullEmuViewport")?.value||"full");
+      localStorage.setItem(KEY_LIVE,byId("fullEmuLiveSync")?.checked?"1":"0");
+    }catch(_){}
   }
+  function liveEnabled(){return byId("fullEmuLiveSync")?.checked!==false}
   function applyViewport(){
-    const shell=byId("fullEmuFrameShell"),mode=byId("fullEmuViewport")?.value||"full";if(!shell)return;shell.classList.toggle("tablet",mode==="tablet");shell.classList.toggle("mobile",mode==="mobile");persist();
+    const shell=byId("fullEmuFrameShell"),mode=byId("fullEmuViewport")?.value||"full";if(!shell)return;
+    shell.classList.toggle("tablet",mode==="tablet");shell.classList.toggle("mobile",mode==="mobile");persist();
   }
   function updateOrigin(url){
-    const same=sameOrigin(url);setBadge("fullEmuOriginBadge",same?"同一オリジン：DB・保存値共有":"別オリジン：表示のみ共有",same?"same":"cross");return same;
+    const same=sameOrigin(url);
+    setBadge("fullEmuOriginBadge",same?"同一オリジン：DB・保存値共有":"別オリジン：表示のみ共有",same?"same":"cross");
+    return same;
   }
+
+  function themeChannelInstance(){
+    if(themeChannel)return themeChannel;
+    try{themeChannel=new BroadcastChannel(THEME_CHANNEL_NAME)}catch(_){themeChannel=null}
+    return themeChannel
+  }
+  function syncThemeToFrames(theme=currentTheme(),reason="theme"){
+    theme=normalizeTheme(theme);
+    try{localStorage.setItem(SHARED_THEME_KEY,theme);localStorage.setItem(LEGACY_THEME_KEY,theme)}catch(_){}
+    const payload={type:"TheKeibaThemeSyncV1",theme,reason,at:new Date().toISOString()};
+    for(const id of ["fullEmuFrame","splitFrame"]){
+      const frame=byId(id);
+      try{frame?.contentWindow?.postMessage(payload,"*")}catch(_){}
+      try{
+        const direct=frame?.contentWindow?.__keibaApplySharedTheme;
+        if(typeof direct==="function")direct(theme)
+      }catch(_){}
+    }
+    try{themeChannelInstance()?.postMessage(payload)}catch(_){}
+    setBadge("fullEmuThemeBadge",theme==="light"?"背景：ライト／ホワイト連動":"背景：ダーク連動","same");
+  }
+
+  function childHookBootstrap(){
+    "use strict";
+    if(window.__THEKEIBA_PARENT_LIVE_HOOK_V1__){
+      try{window.__THEKEIBA_PARENT_LIVE_HOOK_V1__.emit("reconnect",true)}catch(_){}
+      return
+    }
+    const MESSAGE="TheKeibaFullEmuSimLiveV1";
+    const clone=v=>{try{return structuredClone(v)}catch(_){try{return JSON.parse(JSON.stringify(v))}catch(__){return v}}};
+    const num=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+    const normalizeTheme=v=>/^(?:light|white|ライト|ホワイト)$/i.test(String(v||""))?"light":"dark";
+    let lastSignature="",timer=null;
+
+    function rowsNow(){
+      try{
+        if(typeof state!=="undefined"&&Array.isArray(state.simResult))return state.simResult;
+      }catch(_){}
+      try{
+        if(Array.isArray(window.simResult))return window.simResult;
+      }catch(_){}
+      return[]
+    }
+    function configNow(){
+      try{if(typeof readSimConfig==="function")return readSimConfig()}catch(_){}
+      return{}
+    }
+    function summaryNow(rows){
+      let totalBet=0,totalPay=0,candidateHits=0,purchaseHits=0,missHits=0,boughtCount=0;
+      for(const row of rows||[]){
+        const bet=num(row?.invest??row?.bet??row?.投資),pay=num(row?.pay??row?.payout??row?.払戻);
+        totalBet+=bet;totalPay+=pay;if(bet>0)boughtCount++;
+        if(row?.candidateHit||row?.候補的中)candidateHits++;
+        if(row?.purchaseHit||row?.購入的中)purchaseHits++;
+        if(row?.miss)missHits++
+      }
+      return{raceCount:(rows||[]).length,boughtCount,candidateHits,purchaseHits,missHits,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0}
+    }
+    function runningNow(){
+      try{if(typeof BACKTEST_SYNC!=="undefined"&&BACKTEST_SYNC?.running)return true}catch(_){}
+      const stop=document.getElementById("simStopSyncBtn"),run=document.getElementById("simRunBtn"),sync=document.getElementById("simSyncBtn");
+      return !!((stop&&!stop.disabled)||(run&&run.disabled)||(sync&&sync.disabled))
+    }
+    function progressNow(){
+      const text=id=>String(document.getElementById(id)?.textContent||"").trim();
+      return{
+        percent:text("simSyncProgressPercent"),days:text("simSyncDays"),race:text("simSyncRace"),
+        current:text("simSyncCurrentTask")||text("simSyncStatus")||"処理状況を確認中",
+        status:text("simSyncLiveStatus")
+      }
+    }
+    function signature(rows,progress,running){
+      let bet=0,pay=0,last="";
+      for(const row of rows||[]){bet+=num(row?.invest??row?.bet??row?.投資);pay+=num(row?.pay??row?.payout??row?.払戻)}
+      const tail=(rows||[]).at?.(-1)||(rows||[])[(rows||[]).length-1]||{};
+      const race=tail.race||tail;
+      last=[race?.race_id||tail?.race_id||"",race?.date||tail?.date||"",race?.placeName||tail?.place||tail?.場||"",race?.raceNo||tail?.raceNo||tail?.R||"",num(tail?.profit??tail?.収支)].join(":");
+      return[(rows||[]).length,Math.round(bet),Math.round(pay),last,progress?.percent||"",progress?.current||"",running?1:0].join("|")
+    }
+    function applyTheme(theme){
+      theme=normalizeTheme(theme);
+      document.documentElement.dataset.theme=theme;if(document.body)document.body.dataset.theme=theme;
+      try{localStorage.setItem("TheKeibaSharedThemeV2",theme);localStorage.setItem("TheKeibaTheme",theme)}catch(_){}
+      try{
+        if(typeof state!=="undefined"&&state?.settings)state.settings.theme=theme;
+        if(typeof applySettings==="function")applySettings(false)
+      }catch(_){}
+      const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=theme==="light"?"#eef3f8":"#07111f";
+      return theme
+    }
+    function emit(reason="poll",force=false){
+      const rows=rowsNow(),progress=progressNow(),running=runningNow(),sig=signature(rows,progress,running);
+      if(!force&&sig===lastSignature)return false;lastSignature=sig;
+      const packet={type:MESSAGE,version:1,reason,running,signature:sig,rows:clone(rows),summary:summaryNow(rows),config:clone(configNow()),progress,source:location.href,title:document.title,at:new Date().toISOString()};
+      try{window.parent?.postMessage(packet,"*")}catch(_){}
+      try{window.opener&&!window.opener.closed&&window.opener.postMessage(packet,"*")}catch(_){}
+      return true
+    }
+    function wrap(name){
+      try{
+        const fn=window[name];if(typeof fn!=="function"||fn.__theKeibaLiveWrapped)return;
+        const wrapped=function(){const out=fn.apply(this,arguments);Promise.resolve(out).finally(()=>setTimeout(()=>emit(name,true),0));return out};
+        wrapped.__theKeibaLiveWrapped=true;window[name]=wrapped
+      }catch(_){}
+    }
+    window.addEventListener("message",ev=>{
+      const d=ev?.data;if(!d||typeof d!=="object")return;
+      if(d.type==="TheKeibaThemeSyncV1")applyTheme(d.theme);
+      if(d.type==="TheKeibaFullEmuRequestLiveV1")emit("parent-request",true)
+    });
+    window.__THEKEIBA_PARENT_LIVE_HOOK_V1__={emit,applyTheme,rowsNow,summaryNow,version:1};
+    wrap("renderSimulation");wrap("runSimulation");wrap("runSimulationCore");wrap("syncSimulationToAnalysis");
+    timer=setInterval(()=>emit("interval",false),650);
+    window.addEventListener("pagehide",()=>{try{clearInterval(timer)}catch(_){}},{once:true});
+    try{applyTheme(localStorage.getItem("TheKeibaSharedThemeV2")||localStorage.getItem("TheKeibaTheme")||document.documentElement.dataset.theme)}catch(_){}
+    setTimeout(()=>emit("hook-ready",true),80)
+  }
+
   function installBridgeAdapter(){
-    const frame=byId("fullEmuFrame");if(!frame||!loadedUrl||!sameOrigin(loadedUrl)){setBadge("fullEmuBridgeBadge","Bridge：別オリジンのため独立","cross");return false}
+    const frame=byId("fullEmuFrame");
+    if(!frame||!loadedUrl||!sameOrigin(loadedUrl)){setBadge("fullEmuBridgeBadge","Bridge：別オリジンのため独立","cross");return false}
     try{
       const child=frame.contentWindow;if(!child)throw new Error("本体画面へ接続できません");
       const direct=typeof window.__narBridgeDirect==="function"?window.__narBridgeDirect:null;
@@ -5979,14 +6157,50 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
       if(direct){child.__narBridgeDirect=(url,options={})=>direct(url,options);child.__narBridgeHasDirect=true}
       if(fetcher)child.__narBridgeFetch=(url,options={})=>fetcher(url,options);
       if(window.__narBridgeVersion)child.__narBridgeVersion=window.__narBridgeVersion;
-      if(window.__NAR_BRIDGE_READY__||direct){child.__NAR_BRIDGE_READY__=true;child.document?.documentElement?.setAttribute("data-nar-bridge-ready",String(window.__narBridgeVersion||"parent-adapter"))}
-      try{child.__theKeibaBridgeHandshake?.()}catch(_){ }
-      try{child.dispatchEvent(new Event("online"));child.dispatchEvent(new Event("focus"))}catch(_){ }
+      if(window.__NAR_BRIDGE_READY__||direct){
+        child.__NAR_BRIDGE_READY__=true;
+        child.document?.documentElement?.setAttribute("data-nar-bridge-ready",String(window.__narBridgeVersion||"parent-adapter"))
+      }
+      try{child.__theKeibaBridgeHandshake?.()}catch(_){}
+      try{child.dispatchEvent(new Event("online"));child.dispatchEvent(new Event("focus"))}catch(_){}
       bridgeInjected=!!(direct||fetcher);
       setBadge("fullEmuBridgeBadge",bridgeInjected?"Bridge：親画面から継承":"Bridge：親画面で未接続",bridgeInjected?"same":"cross");
-      return bridgeInjected;
-    }catch(e){bridgeInjected=false;setBadge("fullEmuBridgeBadge","Bridge接続失敗","cross");status(`本体画面は読み込めましたが、Bridgeアダプタを接続できませんでした。\n${e.message}`,"warn");return false}
+      return bridgeInjected
+    }catch(e){
+      bridgeInjected=false;setBadge("fullEmuBridgeBadge","Bridge接続失敗","cross");
+      status(`本体画面は読み込めましたが、Bridgeアダプタを接続できませんでした。\n${e.message}`,"warn");return false
+    }
   }
+
+  function installLiveHook(){
+    const frame=byId("fullEmuFrame");
+    if(!frame||!loadedUrl||!sameOrigin(loadedUrl)){
+      liveHookInjected=false;setBadge("fullEmuLiveBadge","LIVE：同一オリジンが必要","cross");return false
+    }
+    try{
+      const child=frame.contentWindow,doc=frame.contentDocument;if(!child||!doc)throw new Error("本体フレームへ接続できません");
+      if(child.__THEKEIBA_PARENT_LIVE_HOOK_V1__){
+        liveHookInjected=true;
+        try{child.__THEKEIBA_PARENT_LIVE_HOOK_V1__.applyTheme(currentTheme())}catch(_){}
+        try{child.__THEKEIBA_PARENT_LIVE_HOOK_V1__.emit("reconnect",true)}catch(_){}
+      }else{
+        const script=doc.createElement("script");
+        script.id="theKeibaParentLiveHookV1";
+        script.textContent=`(${childHookBootstrap.toString()})();`;
+        (doc.head||doc.documentElement).appendChild(script);
+        script.remove();
+        liveHookInjected=!!child.__THEKEIBA_PARENT_LIVE_HOOK_V1__
+      }
+      setBadge("fullEmuLiveBadge",liveHookInjected?(liveEnabled()?"LIVE：SIMへ自動転送":"LIVE：転送OFF"):"LIVE：接続待ち",liveHookInjected?"same":"cross");
+      syncThemeToFrames(currentTheme(),"hook-installed");
+      ensureMonitor();
+      return liveHookInjected
+    }catch(e){
+      liveHookInjected=false;setBadge("fullEmuLiveBadge","LIVE接続失敗","cross");
+      status(`本体画面は動作しますが、SIMリアルタイム転送を接続できませんでした。\n${e.message}`,"warn");return false
+    }
+  }
+
   function frameInfo(){
     const frame=byId("fullEmuFrame");if(!frame)return"";
     try{return frame.contentDocument?.title||"The競馬 EV分析"}catch(_){return"The競馬 EV分析"}
@@ -5994,42 +6208,260 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
   function load(force=false){
     const frame=byId("fullEmuFrame"),cover=byId("fullEmuCover");if(!frame||loading)return;
     let url;try{url=cleanUrl(byId("fullEmuUrl")?.value)}catch(e){status(e.message,"bad");return}
-    byId("fullEmuUrl").value=url;persist();updateOrigin(url);loading=true;bridgeInjected=false;setState("読込中");status(`公開サイトを丸ごと読み込んでいます。\n${url}`);
+    byId("fullEmuUrl").value=url;persist();updateOrigin(url);loading=true;bridgeInjected=false;liveHookInjected=false;
+    setState("読込中");status(`公開サイトを丸ごと読み込んでいます。\n${url}`);
     if(cover)cover.hidden=true;
     const target=force?`${url}${url.includes("?")?"&":"?"}_emu_reload=${Date.now()}`:url;
-    frame.src=target;loadedUrl=url;
+    frame.src=target;loadedUrl=url
   }
   function reload(){
     const frame=byId("fullEmuFrame");if(!frame||!loadedUrl)return load(true);
-    loading=true;bridgeInjected=false;setState("再読込中");status("公開サイトの最新版を再読込しています。");
+    loading=true;bridgeInjected=false;liveHookInjected=false;setState("再読込中");status("公開サイトの最新版を再読込しています。");
     try{if(sameOrigin(loadedUrl)&&frame.contentWindow){frame.contentWindow.location.reload()}else load(true)}catch(_){load(true)}
   }
   function home(){byId("fullEmuUrl").value=DEFAULT_URL;load(false)}
   function openTab(){let url;try{url=cleanUrl(byId("fullEmuUrl")?.value)}catch(e){return status(e.message,"bad")}window.open(url,"_blank","noopener")}
+  function requestLiveNow(){
+    if(!liveEnabled()){setBadge("fullEmuLiveBadge","LIVE：転送OFF","cross");return false}
+    const frame=byId("fullEmuFrame");
+    try{
+      if(!frame?.contentWindow?.__THEKEIBA_PARENT_LIVE_HOOK_V1__)installLiveHook();
+      frame?.contentWindow?.__THEKEIBA_PARENT_LIVE_HOOK_V1__?.emit("manual",true);
+      frame?.contentWindow?.postMessage({type:"TheKeibaFullEmuRequestLiveV1"},"*");
+      return true
+    }catch(_){return false}
+  }
   function onFrameLoad(){
-    if(!loadedUrl)return;loading=false;const same=updateOrigin(loadedUrl);const bridged=installBridgeAdapter();setState("起動中",true);
-    const detail=same?`同一オリジンで起動しました。localStorage・IndexedDBは本体と共有されます。${bridged?" 親画面の住宅IP Bridgeも継承しました。":" Bridgeは親画面側の接続待ちです。"}`:"別オリジンで起動しました。全画面操作はできますが、親画面とのDB・Bridge直接共有は制限されます。";
-    status(`${frameInfo()}\n${detail}\n公開側を更新した後は「再読込」で最新版を反映できます。`,same?"ok":"warn");
+    if(!loadedUrl)return;loading=false;
+    const same=updateOrigin(loadedUrl),bridged=installBridgeAdapter(),live=same?installLiveHook():false;
+    setState("起動中",true);syncThemeToFrames(currentTheme(),"frame-load");
+    const emulatorView=byId("view-site-emulator");
+    if(emulatorView)emulatorView.classList.toggle("full-emu-background-running",liveEnabled()&&!emulatorView.classList.contains("active"));
+    const detail=same
+      ?`同一オリジンで起動しました。localStorage・IndexedDBは本体と共有されます。${bridged?" 親画面の住宅IP Bridgeも継承しました。":" Bridgeは親画面側の接続待ちです。"}${live?" SIMリアルタイム転送を接続しました。":" LIVE転送は接続待ちです。"}`
+      :"別オリジンで起動しました。全画面操作はできますが、親SIMへの直接転送・DB共有・テーマ直結は制限されます。";
+    status(`${frameInfo()}\n${detail}\n本体エミュでSIMを開始後、左メニューの「SIM」へ移動しても計算は継続します。`,same?"ok":"warn")
   }
   function bridgeReconnect(){
-    try{window.__theKeibaInstallDomBridge?.();window.__theKeibaBridgeHandshake?.()}catch(_){ }
-    setTimeout(()=>{const ok=installBridgeAdapter();status(ok?"親画面のBridgeを本体エミュレータへ再接続しました。":"親画面側でBridgeを検出できません。UserscriptまたはWorker設定を確認してください。",ok?"ok":"warn")},250)
+    try{window.__theKeibaInstallDomBridge?.();window.__theKeibaBridgeHandshake?.()}catch(_){}
+    setTimeout(()=>{
+      const ok=installBridgeAdapter(),live=installLiveHook();
+      status(ok||live?`再接続しました。Bridge=${ok?"接続":"待機"} / SIM LIVE=${live?"接続":"待機"}`:"親画面側でBridgeまたはLIVE接続を検出できません。Userscriptと同一オリジン配置を確認してください。",ok||live?"ok":"warn")
+    },250)
   }
+
+  function ticketKey(value){
+    const raw=String(value||"all").trim(),low=raw.toLowerCase();
+    const aliases={
+      "単勝":"win","win":"win","複勝":"place","place":"place","枠連":"bracketQuinella","bracketquinella":"bracketQuinella",
+      "ワイド":"wide","wide":"wide","馬連":"quinella","quinella":"quinella","馬単":"exacta","exacta":"exacta",
+      "3連複":"trio","三連複":"trio","trio":"trio","3連単":"trifecta","三連単":"trifecta","trifecta":"trifecta",
+      "全券種":"all","all":"all"
+    };
+    if(aliases[raw])return aliases[raw];if(aliases[low])return aliases[low];
+    try{for(const [key,label] of Object.entries(TICKET_LABELS||{}))if(String(label)===raw)return key}catch(_){}
+    return raw||"all"
+  }
+  function dateValue(value){
+    const s=String(value||"").trim();const d=s.replace(/\D/g,"");
+    if(d.length>=8)return`${d.slice(0,4)}-${d.slice(4,6)}-${d.slice(6,8)}`;
+    return s
+  }
+  function placeholderTickets(count,type,breakdown=[]){
+    const list=[];
+    for(const b of Array.isArray(breakdown)?breakdown:[]){
+      list.push({ticketType:ticketKey(b?.券種名||b?.券種||type),key:String(b?.買い目||b?.買目||b?.組番||"")})
+    }
+    while(list.length<Math.max(0,Math.round(n(count))))list.push({ticketType:type,key:""});
+    return list
+  }
+  function normalizeRows(rawRows){
+    const rows=[];let bank=0;
+    for(const source of Array.isArray(rawRows)?rawRows:[]){
+      const raw=clone(source)||{},rr=raw.race||{};
+      const raceId=String(rr.race_id??raw.race_id??raw.raceId??"");
+      const raceNo=n(rr.raceNo??raw.raceNo??raw.race??raw.R??String(raw.R||"").match(/\d+/)?.[0]);
+      const ticket=ticketKey(raw.ticketType??raw.ticket??raw.券種??raw.typeTicket??"all");
+      const breakdown=raw.内訳??raw.breakdown??[];
+      const candidateCount=n(raw.candidate_count??raw.candidateCount??raw.候補点??raw.candidate??raw.candidateTickets?.length);
+      const purchaseCount=n(raw.purchase_count??raw.purchaseCount??raw.購入点??raw.purchase??raw.purchaseTickets?.length??breakdown?.length);
+      const candidateTickets=Array.isArray(raw.candidateTickets)?raw.candidateTickets:placeholderTickets(candidateCount,ticket,[]);
+      const purchaseTickets=Array.isArray(raw.purchaseTickets)?raw.purchaseTickets:placeholderTickets(purchaseCount,ticket,breakdown);
+      const invest=n(raw.invest??raw.bet??raw.stake??raw.投資??raw.購入額);
+      const pay=n(raw.pay??raw.payout??raw.return??raw.ret??raw.払戻??raw.払戻額);
+      const profit=Number.isFinite(Number(raw.profit??raw.net??raw.収支))?n(raw.profit??raw.net??raw.収支):pay-invest;
+      bank+=profit;
+      const candidateHit=!!(raw.candidateHit??raw.candidate_hit??raw.候補的中);
+      const purchaseHit=!!(raw.purchaseHit??raw.purchase_hit??raw.購入的中??raw.的中??(pay>0));
+      const race={
+        ...rr,race_id:raceId,date:dateValue(rr.date??raw.date??raw.日付),
+        type:String(rr.type??raw.category??raw.区分??raw.raceType??""),
+        placeName:String(rr.placeName??raw.placeName??raw.place??raw.venue??raw.場??raw.開催場??""),
+        raceNo:raceNo||0,name:String(rr.name??raw.raceName??raw.レース名??""),
+        className:String(rr.className??raw.className??raw.クラス??""),
+        distance:n(rr.distance??raw.distance??raw.距離),surface:String(rr.surface??raw.surface??raw.馬場??""),
+        trackCondition:String(rr.trackCondition??raw.trackCondition??raw.馬場状態??"")
+      };
+      rows.push({
+        ...raw,race,ticketType:ticket,candidateTickets,purchaseTickets,
+        candidateHit,purchaseHit,miss:raw.miss??(candidateHit&&!purchaseHit),
+        invest,pay,profit,roi:invest?pay/invest*100:n(raw.roi??raw.ROI),bank,
+        entries:Array.isArray(raw.entries)?raw.entries:[],result:raw.result||null
+      })
+    }
+    return rows
+  }
+  function summaryFor(rows){
+    const totalBet=rows.reduce((s,x)=>s+n(x.invest),0),totalPay=rows.reduce((s,x)=>s+n(x.pay),0);
+    return{
+      raceCount:rows.length,boughtCount:rows.filter(x=>n(x.invest)>0).length,
+      candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,
+      missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0
+    }
+  }
+  function rowsSignature(rows){
+    const s=summaryFor(rows),tail=rows.at(-1)||{},r=tail.race||{};
+    return[rows.length,Math.round(s.totalBet),Math.round(s.totalPay),r.race_id||"",r.date||"",r.raceNo||"",Math.round(n(tail.profit))].join("|")
+  }
+  function liveState(text,on=true){
+    const el=byId("fullEmuSimLiveState");if(el)el.innerHTML=`<span class="status-dot ${on?"on":""}"></span>${text}`;
+  }
+  function renderLiveMonitor(rows,summary,packet={}){
+    const card=byId("fullEmuSimLiveCard");if(card)card.hidden=false;
+    if(byId("fullEmuSimLiveRows"))byId("fullEmuSimLiveRows").textContent=`${summary.raceCount}R`;
+    if(byId("fullEmuSimLiveBought"))byId("fullEmuSimLiveBought").textContent=`${summary.boughtCount}R`;
+    if(byId("fullEmuSimLiveBet"))byId("fullEmuSimLiveBet").textContent=Math.round(summary.totalBet).toLocaleString()+"円";
+    if(byId("fullEmuSimLiveProfit")){
+      const el=byId("fullEmuSimLiveProfit");el.textContent=(summary.profit>=0?"+":"")+Math.round(summary.profit).toLocaleString()+"円";el.className=summary.profit>=0?"good":"bad"
+    }
+    const now=packet.at?new Date(packet.at):new Date();
+    if(byId("fullEmuSimLiveAt"))byId("fullEmuSimLiveAt").textContent=isNaN(now)?"受信済":now.toLocaleTimeString("ja-JP");
+    const p=packet.progress||{},task=[p.current,p.percent?`進捗 ${p.percent}`:"",p.days?`日程 ${p.days}`:"",p.race?`当日 ${p.race}`:""].filter(Boolean).join("\n");
+    if(byId("fullEmuSimLiveTask"))byId("fullEmuSimLiveTask").textContent=task||`${summary.raceCount}Rを受信しました。`;
+    liveState(packet.running===false&&rows.length?"完了・表示継続":packet.running?"本体処理中":"リアルタイム受信",true);
+    setBadge("fullEmuLiveCountBadge",`${summary.raceCount}R / ROI ${summary.roi.toFixed(1)}%`,"same");
+    setBadge("fullEmuLiveBadge",packet.running?"LIVE：本体処理中":"LIVE：SIM反映済","same")
+  }
+  function scheduleAnalysisSync(){
+    if(analysisTimer)clearTimeout(analysisTimer);
+    analysisTimer=setTimeout(async()=>{
+      analysisTimer=null;
+      try{if(typeof syncSimulationToAnalysis==="function")await syncSimulationToAnalysis({force:true,reason:"本体エミュLIVE"})}catch(_){}
+    },900)
+  }
+  function acceptLiveRows(rawRows,packet={},source="frame"){
+    lastLivePacketAt=Date.now();
+    if(!liveEnabled()){setBadge("fullEmuLiveBadge","LIVE：転送OFF","cross");return false}
+    const rows=normalizeRows(rawRows),summary=summaryFor(rows),sig=rowsSignature(rows);
+    renderLiveMonitor(rows,summary,packet);
+    if(sig===lastRowsSignature)return true;
+    lastRowsSignature=sig;lastLiveSignature=String(packet.signature||sig);
+    if(typeof state!=="undefined"){
+      state.simResult=rows;state.analyticsRows=rows;
+      try{renderSimulation(summary)}catch(e){console.warn("本体エミュLIVE描画",e)}
+      const graphState=byId("simLiveGraphStatus");
+      if(graphState)graphState.innerHTML=`<span class="status-dot on"></span>${packet.running?"本体エミュ処理中":"本体エミュ受信済"} ${rows.length}R`;
+      if(byId("simLiveGraphHelp"))byId("simLiveGraphHelp").textContent="本体エミュの処理を継続したまま、レース結果をリアルタイム反映しています。";
+      if(byId("simLiveGraphFoot"))byId("simLiveGraphFoot").textContent=`最終受信 ${new Date().toLocaleTimeString("ja-JP")} / 出所 ${source} / 投資 ${Math.round(summary.totalBet).toLocaleString()}円 / 払戻 ${Math.round(summary.totalPay).toLocaleString()}円`;
+      scheduleAnalysisSync()
+    }
+    return true
+  }
+  function acceptBridgeBox(box,source="bridge"){
+    const rows=box?.data?.収支明細;
+    if(!Array.isArray(rows))return false;
+    return acceptLiveRows(rows,{at:box.savedAt||new Date().toISOString(),running:true,progress:{current:`ブリッジから${rows.length}件受信`},signature:box.syncId||""},source)
+  }
+  function ensureProfitChannelListener(){
+    if(profitChannelListenerInstalled)return;profitChannelListenerInstalled=true;
+    try{
+      const ch=typeof getProfitGraphChannel==="function"?getProfitGraphChannel():null;
+      ch?.addEventListener?.("message",ev=>{
+        const d=ev?.data;if(d?.type==="data"&&d.box&&loadedUrl)acceptBridgeBox(d.box,"BroadcastChannel")
+      })
+    }catch(_){}
+  }
+  function ensureMonitor(){
+    if(liveTimer)return;
+    liveTimer=setInterval(()=>{
+      if(!liveEnabled()||!loadedUrl)return;
+      if(sameOrigin(loadedUrl)){
+        const frame=byId("fullEmuFrame");
+        try{
+          const hook=frame?.contentWindow?.__THEKEIBA_PARENT_LIVE_HOOK_V1__;
+          if(hook)hook.emit("parent-poll",false);else installLiveHook()
+        }catch(_){}
+      }
+      if(liveHookInjected&&lastLivePacketAt&&Date.now()-lastLivePacketAt>5000)setBadge("fullEmuLiveBadge","LIVE：応答待ち","cross")
+    },1000)
+  }
+  function setLiveEnabled(on){
+    if(byId("fullEmuLiveSync"))byId("fullEmuLiveSync").checked=!!on;persist();
+    setBadge("fullEmuLiveBadge",on?(liveHookInjected?"LIVE：SIMへ自動転送":"LIVE：接続待ち"):"LIVE：転送OFF",on?(liveHookInjected?"same":"cross"):"cross");
+    const emulatorView=byId("view-site-emulator");
+    if(emulatorView)emulatorView.classList.toggle("full-emu-background-running",!!on&&!!loadedUrl&&!emulatorView.classList.contains("active"));
+    if(on){ensureMonitor();installLiveHook();requestLiveNow()}
+  }
+
   function restore(){
-    try{byId("fullEmuUrl").value=localStorage.getItem(KEY_URL)||DEFAULT_URL;byId("fullEmuAuto").checked=localStorage.getItem(KEY_AUTO)!=="0";byId("fullEmuViewport").value=localStorage.getItem(KEY_VIEW)||"full"}catch(_){byId("fullEmuUrl").value=DEFAULT_URL}
-    applyViewport();updateOrigin(byId("fullEmuUrl").value||DEFAULT_URL);
+    try{
+      byId("fullEmuUrl").value=localStorage.getItem(KEY_URL)||DEFAULT_URL;
+      byId("fullEmuAuto").checked=localStorage.getItem(KEY_AUTO)!=="0";
+      byId("fullEmuViewport").value=localStorage.getItem(KEY_VIEW)||"full";
+      byId("fullEmuLiveSync").checked=localStorage.getItem(KEY_LIVE)!=="0"
+    }catch(_){byId("fullEmuUrl").value=DEFAULT_URL}
+    applyViewport();updateOrigin(byId("fullEmuUrl").value||DEFAULT_URL);syncThemeToFrames(currentTheme(),"restore")
   }
   function ensureLoaded(){if(byId("fullEmuAuto")?.checked&&!loadedUrl)load(false)}
   function wire(){
-    if(!byId("fullEmuFrame"))return;restore();byId("fullEmuLoadBtn").onclick=()=>load(false);byId("fullEmuReloadBtn").onclick=reload;byId("fullEmuHomeBtn").onclick=home;byId("fullEmuBridgeBtn").onclick=bridgeReconnect;byId("fullEmuOpenBtn").onclick=openTab;byId("fullEmuViewport").onchange=applyViewport;byId("fullEmuAuto").onchange=persist;byId("fullEmuUrl").onchange=()=>{persist();updateOrigin(byId("fullEmuUrl").value)};byId("fullEmuFrame").addEventListener("load",onFrameLoad);
+    if(!byId("fullEmuFrame"))return;
+    restore();ensureMonitor();ensureProfitChannelListener();
+    byId("fullEmuLoadBtn").onclick=()=>load(false);
+    byId("fullEmuReloadBtn").onclick=reload;byId("fullEmuHomeBtn").onclick=home;
+    byId("fullEmuBridgeBtn").onclick=bridgeReconnect;byId("fullEmuOpenBtn").onclick=openTab;
+    byId("fullEmuViewport").onchange=applyViewport;byId("fullEmuAuto").onchange=persist;
+    byId("fullEmuLiveSync").onchange=e=>setLiveEnabled(e.target.checked);
+    byId("fullEmuUrl").onchange=()=>{persist();updateOrigin(byId("fullEmuUrl").value)};
+    byId("fullEmuFrame").addEventListener("load",onFrameLoad);
+    byId("fullEmuShowSimBtn").onclick=async()=>{await showView("simulation");requestLiveNow()};
+    byId("fullEmuSyncNowBtn").onclick=requestLiveNow;
+    byId("fullEmuLiveSyncNowBtn").onclick=requestLiveNow;
+    byId("fullEmuBackBtn").onclick=()=>showView("site-emulator");
     document.querySelectorAll('[data-view="site-emulator"]').forEach(btn=>btn.addEventListener("click",()=>setTimeout(ensureLoaded,60)));
+
+    window.addEventListener("message",ev=>{
+      const d=ev?.data;if(!d||typeof d!=="object")return;
+      const frame=byId("fullEmuFrame");
+      if(d.type===LIVE_MESSAGE&&(!frame||ev.source===frame.contentWindow))acceptLiveRows(d.rows,d,"postMessage");
+      if(d.type==="TheKeibaThemeHelloV1"||d.type==="TheKeibaThemeHello")syncThemeToFrames(currentTheme(),"hello");
+      if(d.type==="keibaProfitGraphLive"&&d.box&&frame&&ev.source===frame.contentWindow)acceptBridgeBox(d.box,"postMessage bridge")
+    });
+    window.addEventListener("storage",ev=>{
+      if(ev.key===PROFIT_GRAPH_BRIDGE_KEY&&ev.newValue&&loadedUrl){
+        try{acceptBridgeBox(JSON.parse(ev.newValue),"localStorage") }catch(_){}
+      }
+      if(ev.key===SHARED_THEME_KEY||ev.key===LEGACY_THEME_KEY)syncThemeToFrames(ev.newValue||currentTheme(),"storage")
+    });
+    const observer=new MutationObserver(list=>{
+      if(list.some(x=>x.attributeName==="data-theme"))syncThemeToFrames(currentTheme(),"parent-theme-change")
+    });
+    observer.observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+    themeChannelInstance();
+    syncThemeToFrames(currentTheme(),"wire")
   }
   if(typeof showView==="function"){
     const previousShowView=showView;
-    showView=async function(id){const result=await previousShowView(id);if(id==="site-emulator")setTimeout(ensureLoaded,60);return result};
+    showView=async function(id){
+      const result=await previousShowView(id);
+      const emulatorView=byId("view-site-emulator");
+      if(emulatorView)emulatorView.classList.toggle("full-emu-background-running",id!=="site-emulator"&&liveEnabled()&&!!loadedUrl);
+      if(id==="site-emulator")setTimeout(ensureLoaded,60);
+      if(id==="simulation"&&loadedUrl)setTimeout(requestLiveNow,80);
+      return result
+    }
   }
-  window.FullSiteEmulator={load,reload,installBridgeAdapter,ensureLoaded};
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",wire,{once:true});else wire();
+  window.FullSiteEmulator={load,reload,installBridgeAdapter,installLiveHook,ensureLoaded,requestLiveNow,setLiveEnabled,syncThemeToFrames};
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",wire,{once:true});else wire()
 })();
 </script>
 

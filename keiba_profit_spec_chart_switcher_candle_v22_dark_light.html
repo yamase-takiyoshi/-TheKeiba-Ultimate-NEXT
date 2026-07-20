@@ -76,33 +76,61 @@
 <script>
 (function(){
   try{
-    var saved=localStorage.getItem('keibaMultiAnalysisTheme');
-    document.documentElement.dataset.theme=(saved==='light'||saved==='dark')?saved:'dark';
+    var shared=localStorage.getItem('TheKeibaSharedThemeV2')||localStorage.getItem('TheKeibaTheme');
+    var own=localStorage.getItem('keibaMultiAnalysisTheme');
+    var saved=shared||own||'dark';
+    document.documentElement.dataset.theme=/^(?:light|white|ライト|ホワイト)$/i.test(String(saved))?'light':'dark';
   }catch(e){document.documentElement.dataset.theme='dark'}
 })();
 </script>
 </head>
 <body>
-<div class="hero"><div class="hero-inner"><div class="brand"><div class="logo">♞</div><div><h1>競馬アプリ 多角収支分析</h1><div class="sub">クラス・馬場状態・馬場・距離・馬齢・性別・人気帯・オッズ帯を開催場/券種と組み合わせ、ROI・的中率・収支を多角比較。複数JSON、券種分解、買い目別、ローソク足、明細編集、直リンク受信に対応</div></div></div><div class="hero-tools"><div class="theme-switch" role="group" aria-label="表示テーマ"><button type="button" class="theme-btn" id="themeDarkBtn" onclick="setTheme('dark')">🌙 ダーク</button><button type="button" class="theme-btn" id="themeLightBtn" onclick="setTheme('light')">☀️ ライト</button></div><div class="ver">v2.14 Metadata Repair</div></div></div></div>
+<div class="hero"><div class="hero-inner"><div class="brand"><div class="logo">♞</div><div><h1>競馬アプリ 多角収支分析</h1><div class="sub">クラス・馬場状態・馬場・距離・馬齢・性別・人気帯・オッズ帯を開催場/券種と組み合わせ、ROI・的中率・収支を多角比較。複数JSON、券種分解、買い目別、ローソク足、明細編集、直リンク受信に対応</div></div></div><div class="hero-tools"><div class="theme-switch" role="group" aria-label="表示テーマ"><button type="button" class="theme-btn" id="themeAutoBtn" onclick="setThemeAuto()">🔗 本体連動</button><button type="button" class="theme-btn" id="themeDarkBtn" onclick="setTheme('dark')">🌙 ダーク</button><button type="button" class="theme-btn" id="themeLightBtn" onclick="setTheme('light')">☀️ ライト</button></div><div class="ver">v2.15 LIVE Theme Sync</div></div></div></div>
 <div class="app"><div class="grid"><aside class="panel"><h2>JSONファイル読込</h2><label class="drop" id="drop"><input type="file" id="fileInput" accept="application/json,.json" multiple><b>📂 複数JSONを開く</b><span>収支JSON / 予想精算JSON / 統合JSONをまとめて選択</span></label><div class="btns"><button class="btn primary" id="bridgeBtn">🔗 直リンク読込</button><button class="btn" id="sampleBtn">サンプル読込</button><button class="btn" id="exportBtn">集計JSON保存</button><button class="btn warn" id="clearBtn">クリア</button></div><div class="status" id="leftStatus"></div><div class="file-list" id="fileList"></div><div class="card" style="margin-top:12px"><h3>読取対応フィールド</h3><div class="note">日付: date / 日付<br>開催場: venue / place / 場 / 競馬場 / racecourse<br>券種: ticketType / type / 券種 / 賭式<br>クラス: class / クラス / 条件（レース名から自動推定: C1, B2, 未勝利, オープン等）<br>馬場状態: 馬場状態 / trackCondition / trackCond<br>馬場: 馬場 / surface / trackType<br>馬齢: 馬齢 / age / sexAge / 性齢<br>性別: 性別 / sex / sexAge / 性齢<br>組: kumi / 組（「C1一組」等から自動推定）<br>グレード: grade / グレード / 格付（G1〜G3 / Jpn1〜Jpn3 / 重賞を自動推定）<br>投資: bet / stake / 投資<br>払戻: return / payout / 払戻<br>収支: profit / net / 収支<br>開始元金: 設定.initialCapital / 開始元金<br>残高: balance / 残高<br>内訳: 内訳[] の 券種名/購入額/払戻額 を券種ごとに集約（券種分解モード時。合計が親明細と不一致の場合は分解せず親を採用）<br>買い目: 内訳[] の 買い目 / 買目 / 組番 / 馬番 / 組合せ（買い目別グラフで使用。欠損時は「買い目不明」）</div></div></aside><main class="panel"><div class="tabs"><button class="tab active" data-tab="charts">📊 グラフ</button><button class="tab" data-tab="records">📋 明細</button><button class="tab" data-tab="spec">🧩 仕様</button><button class="tab" data-tab="raw">{} Raw</button></div><div id="v22BackupBar" style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 12px;padding:8px 10px;border:1px solid rgba(245,158,11,.35);border-radius:12px;background:rgba(245,158,11,.08)"><b style="font-size:11px;color:#fbbf24;white-space:nowrap">🗂 転送データ 退避／復元</b><button class="btn" style="flex:0 0 auto;padding:7px 10px" onclick="v22Backup('手動')">💾 退避</button><button class="btn primary" style="flex:0 0 auto;padding:7px 10px" onclick="v22RestoreLatest()">♻️ 最新に復元</button><select id="v22BackupSel" style="padding:7px 8px;border-radius:10px;background:rgba(15,23,42,.6);color:#e2e8f0;border:1px solid rgba(148,163,184,.3);font-size:12px;max-width:210px"></select><button class="btn" style="flex:0 0 auto;padding:7px 10px" onclick="v22RestorePick()">選択を復元</button><button class="btn" style="flex:0 0 auto;padding:7px 10px;color:#fecaca" onclick="v22DeleteBackup()" title="選択中の退避を削除">🗑</button><span id="v22BackupStatus" class="mini" style="color:#94a3b8"></span></div><section id="view"></section></main></div></div>
 <script>
 'use strict';
 const $=s=>document.querySelector(s);const $$=s=>Array.from(document.querySelectorAll(s));
 const cssVar=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-function setTheme(theme){
-  const next=theme==='light'?'light':'dark';
+const SHARED_THEME_KEY='TheKeibaSharedThemeV2',LEGACY_THEME_KEY='TheKeibaTheme',THEME_MODE_KEY='keibaMultiAnalysisThemeMode',THEME_CHANNEL_NAME='TheKeibaThemeSyncV1';
+let themeMode=(()=>{try{return window.parent!==window?'auto':(localStorage.getItem(THEME_MODE_KEY)||'auto')}catch(e){return'auto'}})();
+const normalizeTheme=t=>/^(?:light|white|ライト|ホワイト)$/i.test(String(t||''))?'light':'dark';
+function applyTheme(theme,{persistOwn=true}={}){
+  const next=normalizeTheme(theme);
   document.documentElement.dataset.theme=next;
-  try{localStorage.setItem('keibaMultiAnalysisTheme',next)}catch(e){}
+  try{if(persistOwn)localStorage.setItem('keibaMultiAnalysisTheme',next)}catch(e){}
   updateThemeButtons();
   setTimeout(()=>{if(activeTab==='charts')renderView()},0);
+  return next;
+}
+function setTheme(theme){
+  if(window.parent!==window){themeMode='auto';requestParentTheme();return}
+  themeMode='manual';try{localStorage.setItem(THEME_MODE_KEY,themeMode)}catch(e){}
+  applyTheme(theme);
+}
+function setThemeAuto(){
+  themeMode='auto';try{localStorage.setItem(THEME_MODE_KEY,themeMode)}catch(e){}
+  let shared='';try{shared=localStorage.getItem(SHARED_THEME_KEY)||localStorage.getItem(LEGACY_THEME_KEY)||''}catch(e){}
+  if(shared)applyTheme(shared,{persistOwn:true});
+  requestParentTheme();updateThemeButtons();
+}
+function applySharedTheme(theme){
+  if(window.parent!==window||themeMode==='auto')return applyTheme(theme,{persistOwn:true});
+  return document.documentElement.dataset.theme
 }
 function updateThemeButtons(){
   const current=document.documentElement.dataset.theme==='light'?'light':'dark';
-  const dark=document.getElementById('themeDarkBtn'),light=document.getElementById('themeLightBtn');
-  if(dark)dark.classList.toggle('active',current==='dark');
-  if(light)light.classList.toggle('active',current==='light');
+  const auto=document.getElementById('themeAutoBtn'),dark=document.getElementById('themeDarkBtn'),light=document.getElementById('themeLightBtn');
+  const autoOn=window.parent!==window||themeMode==='auto';
+  if(auto)auto.classList.toggle('active',autoOn);
+  if(dark)dark.classList.toggle('active',!autoOn&&current==='dark');
+  if(light)light.classList.toggle('active',!autoOn&&current==='light');
 }
-window.setTheme=setTheme;
+function requestParentTheme(){
+  try{if(window.parent&&window.parent!==window)window.parent.postMessage({type:'TheKeibaThemeHelloV1'},'*')}catch(e){}
+  try{if(window.opener&&!window.opener.closed)window.opener.postMessage({type:'TheKeibaThemeHelloV1'},'*')}catch(e){}
+  try{window.__keibaThemeChannel?.postMessage({type:'hello'})}catch(e){}
+}
+window.setTheme=setTheme;window.setThemeAuto=setThemeAuto;window.__keibaApplySharedTheme=applySharedTheme;
 
 let docs=[],records=[],activeTab='charts',chartMode='bar',groupMode='venue',candleFrame='day',rawText='';let disabledVenues=new Set(),disabledTickets=new Set(),undoStack=[],redoStack=[],selRows=new Set(),recSeq=1,recQuery='',recSort='date_desc';let splitTicket=true;let trendUnit='date';const disabledFacets={cls:new Set(),trackCond:new Set(),surface:new Set(),distance:new Set(),ageBand:new Set(),sex:new Set(),popBand:new Set(),oddsBand:new Set()};
 const yen=n=>(Number(n)||0).toLocaleString('ja-JP')+'円';
@@ -527,6 +555,35 @@ window.v22Backup=v22Backup;window.v22RestoreLatest=v22RestoreLatest;window.v22Re
     // 接続前のちらつき対策：ライブ未受信ならlocalStorageのseedを暫定表示
     setTimeout(function(){if(!docs.some(function(d){return d.live}))loadBridgeData(true)},450);
   }
+})();
+
+(function setupSharedThemeSync(){
+  let ch=null;
+  try{
+    ch=new BroadcastChannel(THEME_CHANNEL_NAME);window.__keibaThemeChannel=ch;
+    ch.addEventListener('message',function(ev){
+      const d=ev&&ev.data;if(!d||typeof d!=='object')return;
+      if(d.type==='TheKeibaThemeSyncV1'&&d.theme)applySharedTheme(d.theme);
+      else if(d.type==='hello')requestParentTheme();
+    })
+  }catch(e){}
+  window.addEventListener('message',function(ev){
+    const d=ev&&ev.data;if(!d||typeof d!=='object')return;
+    if(d.type==='TheKeibaThemeSyncV1'&&d.theme)applySharedTheme(d.theme)
+  });
+  window.addEventListener('storage',function(ev){
+    if((ev.key===SHARED_THEME_KEY||ev.key===LEGACY_THEME_KEY)&&ev.newValue)applySharedTheme(ev.newValue);
+    if(ev.key===THEME_MODE_KEY&&window.parent===window){themeMode=ev.newValue||'auto';updateThemeButtons()}
+  });
+  function refreshShared(){
+    if(!(window.parent!==window||themeMode==='auto'))return;
+    let shared='';try{shared=localStorage.getItem(SHARED_THEME_KEY)||localStorage.getItem(LEGACY_THEME_KEY)||''}catch(e){}
+    if(shared)applySharedTheme(shared,{persistOwn:true});
+    requestParentTheme()
+  }
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)refreshShared()});
+  window.addEventListener('focus',refreshShared);
+  refreshShared()
 })();
 
 updateThemeButtons();
