@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional Thinking Engine v1.4.4</title>
+<title>The競馬 Ultimate NEXT Professional Thinking Engine v1.4.5</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Thinking Engine v1.4.4</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Thinking Engine v1.4.5</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -1055,7 +1055,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.4.4-thinking-engine";
+const APP_VERSION="1.4.5-thinking-engine";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待利益重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -1657,14 +1657,17 @@ async function loadSelectedVenueScheduleProbe(date,requestedTypes,guard={},{plac
     24000,`${displayDate(date)} 軽量日程確認`
   );
   const html=unwrapBridgeHtml(raw),signals=raceListHtmlSignals(html),explicitEmpty=explicitNetkeibaNoRacePage(html),
-        hasDbRacePath=/\/race\/(?:19|20)\d{10}(?:\/|[?#"' ])/i.test(html);
+        hasDbRacePath=/\/race\/(?:19|20)\d{10}(?:\/|[?#"' ])/i.test(html),
+        hasDateMatchedDbRacePath=(html.match(/(?:19|20)\d{10}/g)||[]).some(rid=>raceIdMatchesBridgeDate(rid,"JRA",date));
   if(!html.trim())throw new Error(`${displayDate(date)} netkeiba軽量日程の応答が空です`);
   if(signals.blocked&&!explicitEmpty)throw new Error(`${displayDate(date)} netkeiba軽量日程がアクセス制限ページです`);
   if(!looksLikeNetkeibaResponse(html)&&!explicitEmpty&&!hasDbRacePath)throw new Error(`${displayDate(date)} netkeiba軽量日程の応答形式を確認できません`);
   const parsed=parseRaceListHtml(html,"JRA",date);
   if(parsed.length>36)throw new Error(`${displayDate(date)} netkeiba軽量日程に${parsed.length}Rあり、別日混在の可能性があります`);
-  if(!parsed.length&&!explicitEmpty&&(signals.hasRaceId||signals.hasRaceRows||hasDbRacePath)){
-    throw new Error(`${displayDate(date)} netkeiba軽量日程にrace_idがありますが解析結果が0Rです`)
+  // 周辺開催日のリンクや共通ナビにrace_idが含まれるだけでは、当日の開催とは判定しない。
+  // 指定日と一致するrace_idが実在するときだけ解析異常として再試行し、それ以外は正規の非開催日として扱う。
+  if(!parsed.length&&!explicitEmpty&&hasDateMatchedDbRacePath){
+    throw new Error(`${displayDate(date)} netkeiba軽量日程に指定日race_idがありますが解析結果が0Rです`)
   }
   const wantedPlaces=new Set((places||[]).map(value=>String(value||"").trim()).filter(Boolean)),
         selected=parsed.filter(r=>!wantedPlaces.size||wantedPlaces.has(String(r.placeName||"")));
@@ -1758,7 +1761,8 @@ async function loadBacktestDayRaceList(date,requestedTypes,guard={narRawEmptyStr
             nextNarEmpty=narRequested&&!narCount&&!narSourceVenueCount?Number(guard.narRawEmptyStreak||0)+1:0;
       const jraOnlyWeekday=types.length===1&&types[0]==="JRA"&&!likelyJraRaceDay(date);
       const rawTotal=Number.isFinite(Number(diagnostics.rawTotal))?Number(diagnostics.rawTotal):races.length;
-      const nextAllEmpty=!rawTotal&&!narSourceVenueCount&&!jraOnlyWeekday?Number(guard.allRawEmptyStreak||0)+1:0;
+      const confirmedNoRace=diagnostics.assumedNoRace===true||(diagnostics.pages||[]).some(page=>page?.explicitEmpty===true);
+      const nextAllEmpty=!rawTotal&&!narSourceVenueCount&&!jraOnlyWeekday&&!confirmedNoRace?Number(guard.allRawEmptyStreak||0)+1:0;
       const suspicious=parseSignal||(!scheduleProbe&&((narRequested&&nextNarEmpty>=3)||nextAllEmpty>=3));
       if(suspicious){
         const reason=parseSignal
@@ -2853,11 +2857,22 @@ async function bridgeLoadList({silent=false,deferRefresh=false,types=null,places
     if(rawJraCount>36)throw new Error(`JRA一覧の日付混在を検出しました: ${displayDate(date)} に ${rawJraCount}R（1日上限36R超）。別日race_idは登録せず再試行します`);
     if(!races.length&&!successfulPages)throw new Error(`開催一覧の通信に失敗しました${logs.length?` (${logs.slice(-6).join(" / ")})`:""}`);
     if(wanted.has("JRA")&&likelyJraRaceDay(date)&&rawJraCount===0&&!scheduleProbe){
-      const recent=logs.slice(-8),all400=recent.length&&recent.every(x=>/JRA失敗:Userscript HTTP 400/.test(x));
-      const reason=all400
-        ?"JRA側が旧BridgeヘッダーをHTTP 400で拒否しました。TampermonkeyをBridge v1.6.4へ更新してください"
-        :jraParseSignal?"JRA一覧HTMLは取得しましたがrace_id解析が0件です":"JRA開催日の一覧ページを取得できていません";
-      throw new Error(`${reason}。空の開催日として進めず再試行します (${recent.join(" / ")||"診断情報なし"})`)
+      const recent=logs.slice(-8),jraPages=(diagnostics.pages||[]).filter(page=>String(page?.type||"").toUpperCase()==="JRA"),
+            hasDateMatchedSignal=jraPages.some(page=>page?.dateMatchedRaceId===true||Number(page?.count||0)>0),
+            selectedVenueBacktest=allowEmpty&&wantedPlaces.size>0,
+            all400=recent.length&&recent.every(x=>/JRA失敗:Userscript HTTP 400/.test(x));
+      if(selectedVenueBacktest&&!hasDateMatchedSignal){
+        // 土日でも選択開催場が非開催の日は正常に存在する。周辺日リンクや共通レース行だけを
+        // 「当日の解析失敗」と誤認せず、選択開催場の非開催日として安全にスキップする。
+        diagnostics.assumedNoRace=true;
+        diagnostics.assumedNoRaceReason="指定日と一致するJRA race_idなし";
+        logs.push(`JRA非開催扱い:${date}`)
+      }else{
+        const reason=all400
+          ?"JRA側が旧BridgeヘッダーをHTTP 400で拒否しました。TampermonkeyをBridge v1.6.4へ更新してください"
+          :jraParseSignal?"JRA一覧HTMLは取得しましたが指定日race_id解析が0件です":"JRA開催日の一覧ページを取得できていません";
+        throw new Error(`${reason}。空の開催日として進めず再試行します (${recent.join(" / ")||"診断情報なし"})`)
+      }
     }
     if(!races.length&&!allowEmpty)throw new Error(`開催一覧を解析できません${logs.length?` (${logs.slice(-6).join(" / ")})`:""}`);
     if(races.length){await removeInvalidRaceRecords();await importPayload({races},{silent:true,deferRefresh})}
@@ -6732,8 +6747,8 @@ window.__THEKEIBA_V1311__={
   renderSimulation=function(summary=null){
     previousRender(summary);
     try{
-      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.4';
-      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.4';
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.5';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.5';
       const title=document.querySelector('.thinking-engine-title');if(title)title.textContent='🧠 思考エンジン v1.4.2';
       const sub=document.querySelector('.thinking-engine-sub');if(sub)sub.textContent='正規EVだけを投資判断に使用します。過去用代替順位は候補的中率の検証専用で、資金・ROIには入りません。的中は着順、払戻は正規化した払戻表で別々に照合します。';
       const t=summary?.thinking||{},status=document.getElementById('teStatus');
@@ -6759,8 +6774,8 @@ window.__THEKEIBA_V1311__={
 
   function boot(){
     try{
-      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.4';
-      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.4';
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.5';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.5';
       const ev=document.getElementById('simEvEvidence');
       if(ev){
         const labels={authentic:'正規netkeiba予想のみ（推奨）',legacyTop3:'代替順位・的中率検証（投資なし）',includeFallback:'正規優先＋代替もEV条件必須'};
@@ -6977,9 +6992,9 @@ window.__THEKEIBA_V1311__={
   renderSimulation=function(summary=null){
     const out=previousRender(summary);
     try{
-      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.4';
-      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.4';
-      const title=document.querySelector('.thinking-engine-title');if(title)title.textContent='🧠 思考エンジン v1.4.4';
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.5';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.5';
+      const title=document.querySelector('.thinking-engine-title');if(title)title.textContent='🧠 思考エンジン v1.4.5';
       const sub=document.querySelector('.thinking-engine-sub');if(sub)sub.textContent='正規予想フォワード、時系列ウォークフォワードEV、代替順位検証を完全分離しました。過去検証は各レース以前の結果だけで市場確率を較正し、未来情報を使いません。';
       ensureModeOption();modeHelp();
       const mode=summary?.thinking?.evidenceMode||document.getElementById('simEvEvidence')?.value||'authentic';
@@ -7014,7 +7029,7 @@ window.__THEKEIBA_V1311__={
     modeHelp();try{updateModeUi()}catch(_){}
   }
   function boot(){
-    document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.4';const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.4';
+    document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.5';const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.5';
     migrate();[300,1200,3000].forEach(ms=>setTimeout(migrate,ms));
     if(window.__THEKEIBA_THINKING_ENGINE__)window.__THEKEIBA_THINKING_ENGINE__.version=VERSION;
     window.__THEKEIBA_WALK_FORWARD__={version:VERSION,getState:()=>({...wf,stats:wf.stats.size}),rebuild:buildPrior,lookup};
@@ -7023,7 +7038,7 @@ window.__THEKEIBA_V1311__={
 })();
 </script>
 
-<!-- v1.4.4: iPad長時間同期のフリーズ対策、ライブ資金曲線の同期中全件再計算抑止、WatchDog、チェックポイント、続きから再開 -->
+<!-- v1.4.5: iPad長時間同期のフリーズ対策、ライブ資金曲線の同期中全件再計算抑止、WatchDog、チェックポイント、続きから再開 -->
 <style id="syncResilienceV144Styles">
 .sync-resilience-card{border-color:color-mix(in srgb,var(--accent) 44%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 94%,var(--accent) 6%),var(--panel))}
 .sync-resilience-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:11px}.sync-resilience-head h3{margin:0}.sync-resilience-badge{white-space:nowrap}
@@ -7034,7 +7049,7 @@ window.__THEKEIBA_V1311__={
 <script id="syncResilienceV144Patch">
 (function(){
   "use strict";
-  const VERSION="1.4.4",CHECKPOINT_KEY="TheKeibaSyncCheckpointV144",LOG_KEY="TheKeibaSyncFreezeLogV144";
+  const VERSION="1.4.5",CHECKPOINT_KEY="TheKeibaSyncCheckpointV144",LOG_KEY="TheKeibaSyncFreezeLogV144";
   const WARN_MS=105000,AUTO_STOP_MS=180000,MAX_AUTO_RECOVERY=2;
   const RT={lastActivity:Date.now(),lastStatus:"",stage:"待機",current:"—",checkpointAt:0,watchdogTimer:0,autoRecoveryRequested:false,autoRecoveryCount:0,wrapperBusy:false,liveDesired:true,manualRecovery:false,lastCheckpoint:null};
   const byId=id=>document.getElementById(id);
@@ -7218,6 +7233,8 @@ window.__THEKEIBA_V1311__={
   window.__THEKEIBA_SYNC_RESILIENCE__={version:VERSION,state:RT,saveCheckpoint,loadCheckpoint,resume:resumeFromCheckpoint,recover:requestSafeRecovery,copyDiagnostics};
 })();
 </script>
+
+<!-- v1.4.5: JRA選択開催場の非開催日を解析エラーと誤認する問題を修正。指定日一致race_idがない土日を正常スキップ。 -->
 
 </body>
 </html>
