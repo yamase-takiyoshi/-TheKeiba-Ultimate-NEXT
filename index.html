@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional Thinking Engine v1.4.3</title>
+<title>The競馬 Ultimate NEXT Professional Thinking Engine v1.4.4</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Thinking Engine v1.4.3</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Thinking Engine v1.4.4</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -1055,7 +1055,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.4.2-thinking-engine";
+const APP_VERSION="1.4.4-thinking-engine";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待利益重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -6732,8 +6732,8 @@ window.__THEKEIBA_V1311__={
   renderSimulation=function(summary=null){
     previousRender(summary);
     try{
-      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.3';
-      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.3';
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.4';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.4';
       const title=document.querySelector('.thinking-engine-title');if(title)title.textContent='🧠 思考エンジン v1.4.2';
       const sub=document.querySelector('.thinking-engine-sub');if(sub)sub.textContent='正規EVだけを投資判断に使用します。過去用代替順位は候補的中率の検証専用で、資金・ROIには入りません。的中は着順、払戻は正規化した払戻表で別々に照合します。';
       const t=summary?.thinking||{},status=document.getElementById('teStatus');
@@ -6759,8 +6759,8 @@ window.__THEKEIBA_V1311__={
 
   function boot(){
     try{
-      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.3';
-      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.3';
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.4';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.4';
       const ev=document.getElementById('simEvEvidence');
       if(ev){
         const labels={authentic:'正規netkeiba予想のみ（推奨）',legacyTop3:'代替順位・的中率検証（投資なし）',includeFallback:'正規優先＋代替もEV条件必須'};
@@ -6977,9 +6977,9 @@ window.__THEKEIBA_V1311__={
   renderSimulation=function(summary=null){
     const out=previousRender(summary);
     try{
-      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.3';
-      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.3';
-      const title=document.querySelector('.thinking-engine-title');if(title)title.textContent='🧠 思考エンジン v1.4.3';
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.4';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.4';
+      const title=document.querySelector('.thinking-engine-title');if(title)title.textContent='🧠 思考エンジン v1.4.4';
       const sub=document.querySelector('.thinking-engine-sub');if(sub)sub.textContent='正規予想フォワード、時系列ウォークフォワードEV、代替順位検証を完全分離しました。過去検証は各レース以前の結果だけで市場確率を較正し、未来情報を使いません。';
       ensureModeOption();modeHelp();
       const mode=summary?.thinking?.evidenceMode||document.getElementById('simEvEvidence')?.value||'authentic';
@@ -7014,12 +7014,208 @@ window.__THEKEIBA_V1311__={
     modeHelp();try{updateModeUi()}catch(_){}
   }
   function boot(){
-    document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.3';const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.3';
+    document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.4';const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.4';
     migrate();[300,1200,3000].forEach(ms=>setTimeout(migrate,ms));
     if(window.__THEKEIBA_THINKING_ENGINE__)window.__THEKEIBA_THINKING_ENGINE__.version=VERSION;
     window.__THEKEIBA_WALK_FORWARD__={version:VERSION,getState:()=>({...wf,stats:wf.stats.size}),rebuild:buildPrior,lookup};
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
+
+<!-- v1.4.4: iPad長時間同期のフリーズ対策、ライブ資金曲線の同期中全件再計算抑止、WatchDog、チェックポイント、続きから再開 -->
+<style id="syncResilienceV144Styles">
+.sync-resilience-card{border-color:color-mix(in srgb,var(--accent) 44%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 94%,var(--accent) 6%),var(--panel))}
+.sync-resilience-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:11px}.sync-resilience-head h3{margin:0}.sync-resilience-badge{white-space:nowrap}
+.sync-resilience-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:10px}.sync-resilience-kpi{padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0}.sync-resilience-kpi small{display:block;color:var(--muted);font-size:10px;font-weight:850}.sync-resilience-kpi strong{display:block;margin-top:4px;font-size:15px;font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sync-resilience-actions{display:flex;flex-wrap:wrap;gap:8px}.sync-resilience-message{margin-top:10px;white-space:pre-wrap;line-height:1.55}.sync-resilience-message.warn{border-left-color:var(--warn);color:var(--text)}.sync-resilience-message.bad{border-left-color:var(--bad);color:var(--text)}.sync-resilience-message.good{border-left-color:var(--good);color:var(--text)}
+@media(max-width:760px){.sync-resilience-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sync-resilience-actions .btn{flex:1 1 calc(50% - 8px)}.sync-resilience-actions .btn.primary{flex-basis:100%}}
+</style>
+<script id="syncResilienceV144Patch">
+(function(){
+  "use strict";
+  const VERSION="1.4.4",CHECKPOINT_KEY="TheKeibaSyncCheckpointV144",LOG_KEY="TheKeibaSyncFreezeLogV144";
+  const WARN_MS=105000,AUTO_STOP_MS=180000,MAX_AUTO_RECOVERY=2;
+  const RT={lastActivity:Date.now(),lastStatus:"",stage:"待機",current:"—",checkpointAt:0,watchdogTimer:0,autoRecoveryRequested:false,autoRecoveryCount:0,wrapperBusy:false,liveDesired:true,manualRecovery:false,lastCheckpoint:null};
+  const byId=id=>document.getElementById(id);
+  const safeJsonParse=value=>{try{return JSON.parse(value)}catch(_){return null}};
+  const timeLabel=value=>{const d=new Date(value||Date.now());return Number.isFinite(d.getTime())?d.toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit",second:"2-digit"}):"—"};
+  const elapsedLabel=ms=>{const s=Math.max(0,Math.floor(Number(ms||0)/1000));return s<60?`${s}秒`:`${Math.floor(s/60)}分${String(s%60).padStart(2,"0")}秒`};
+
+  function setVersion(){
+    document.title=`The競馬 Ultimate NEXT Professional Thinking Engine v${VERSION}`;
+    const brand=document.querySelector(".brand-copy small");if(brand)brand.textContent=`Thinking Engine v${VERSION}`;
+    const title=document.querySelector(".thinking-engine-title");if(title)title.textContent=`🧠 思考エンジン v${VERSION}`;
+    if(window.__THEKEIBA_THINKING_ENGINE__)window.__THEKEIBA_THINKING_ENGINE__.version=VERSION;
+  }
+  function ensurePanel(){
+    if(byId("simResilienceCard"))return;
+    const card=document.createElement("div");card.id="simResilienceCard";card.className="card sync-resilience-card";
+    card.innerHTML=`<div class="sync-resilience-head"><div><h3>🛡️ 同期耐障害監視 v${VERSION}</h3><div class="muted" style="margin-top:4px;font-size:12px">同期中の全件資金曲線再計算を停止し、進捗監視・安全停止・既取得データからの再開を行います。</div></div><span class="badge sync-resilience-badge" id="simResilienceBadge">待機</span></div>
+      <div class="sync-resilience-grid">
+        <div class="sync-resilience-kpi"><small>現在工程</small><strong id="simResilienceStage">待機</strong></div>
+        <div class="sync-resilience-kpi"><small>最終進捗</small><strong id="simResilienceHeartbeat">—</strong></div>
+        <div class="sync-resilience-kpi"><small>停止時間</small><strong id="simResilienceStall">0秒</strong></div>
+        <div class="sync-resilience-kpi"><small>チェックポイント</small><strong id="simResilienceCheckpoint">未保存</strong></div>
+      </div>
+      <div class="sync-resilience-actions">
+        <button class="btn primary" id="simResumeSyncBtn" type="button">▶ 続きから再開</button>
+        <button class="btn warn" id="simSafeRecoveryBtn" type="button">🛠 安全復旧</button>
+        <button class="btn" id="simCopyRecoveryLogBtn" type="button">📋 診断コピー</button>
+        <button class="btn" id="simClearCheckpointBtn" type="button">チェックポイント消去</button>
+      </div>
+      <div class="notice sync-resilience-message" id="simResilienceMessage">既取得レースはIndexedDBに保存されています。停止後に再同期すると、完全取得済みレースを自動スキップして続きから進みます。</div>`;
+    const live=byId("simSyncLiveCard"),statusCard=byId("simSyncStatus")?.closest(".card");
+    if(live?.parentNode)live.parentNode.insertBefore(card,live);else if(statusCard?.parentNode)statusCard.parentNode.insertBefore(card,statusCard.nextSibling);else byId("view-simulation")?.prepend(card);
+    byId("simResumeSyncBtn")?.addEventListener("click",resumeFromCheckpoint);
+    byId("simSafeRecoveryBtn")?.addEventListener("click",requestSafeRecovery);
+    byId("simCopyRecoveryLogBtn")?.addEventListener("click",copyDiagnostics);
+    byId("simClearCheckpointBtn")?.addEventListener("click",clearCheckpoint);
+  }
+  function inferStage(text){
+    const s=String(text||"");
+    if(/日程先読み|軽量日程/.test(s))return"日程先読み";
+    if(/開催一覧/.test(s))return"開催一覧取得";
+    if(/再試行|Bridge再検出|自動復旧/.test(s))return"通信復旧";
+    if(/\d+R/.test(s)&&/当日|取得|完全性/.test(s))return"レース取得";
+    if(/画面更新|集計/.test(s))return"最終集計";
+    if(/全バッチ同期完了/.test(s))return"同期完了";
+    if(/同期停止/.test(s))return"安全停止";
+    if(/同期エラー|安全停止/.test(s))return"エラー停止";
+    return BACKTEST_SYNC?.running?"同期処理":"待機";
+  }
+  function inferCurrent(text){
+    const s=String(text||"");
+    const race=s.match(/((?:19|20)\d{2}[-/]\d{2}[-/]\d{2})\s+([^\n]+?\s+\d+R)/);
+    if(race)return`${race[1]} ${race[2]}`.replace(/\s+/g," ").trim();
+    const day=s.match(/((?:19|20)\d{2}[-/]\d{2}[-/]\d{2})/);if(day)return day[1];
+    return RT.current||"—";
+  }
+  function captureForms(){
+    const ids=["simStart","simEnd","simType","simDataMode","simEvEvidence","simStrategy","simPredictionMode","simTicket","simDailyBudget","simUnit","simTopN","simMaxTickets","simMaxRace","simMinEv","simMinAi","simMinOdds","simMaxOdds","simPriority","simAgreement","simBudgetMode","simDailyRankBasis"];
+    return Object.fromEntries(ids.map(id=>[id,byId(id)?.value]).filter(([,v])=>v!==undefined));
+  }
+  function saveCheckpoint(status=RT.lastStatus,force=false){
+    const now=Date.now();if(!force&&now-RT.checkpointAt<1200)return;
+    RT.checkpointAt=now;
+    let config=null;try{config=typeof readSimConfig==="function"?readSimConfig():null}catch(_){}
+    const point={schema:1,version:VERSION,savedAt:new Date(now).toISOString(),running:!!BACKTEST_SYNC?.running,stage:RT.stage,current:RT.current,status:String(status||"").slice(0,5000),batch:Number(BACKTEST_SYNC?.batch||0),totalBatches:Number(BACKTEST_SYNC?.totalBatches||0),forms:captureForms(),config,autoRecoveryCount:RT.autoRecoveryCount};
+    RT.lastCheckpoint=point;try{localStorage.setItem(CHECKPOINT_KEY,JSON.stringify(point))}catch(_){}
+    renderPanel();
+  }
+  function loadCheckpoint(){try{return safeJsonParse(localStorage.getItem(CHECKPOINT_KEY)||"")}catch(_){return null}}
+  function addFreezeLog(reason){
+    let rows=[];try{rows=safeJsonParse(localStorage.getItem(LOG_KEY)||"[]")||[]}catch(_){}
+    rows.unshift({at:new Date().toISOString(),reason,stage:RT.stage,current:RT.current,lastStatus:RT.lastStatus,checkpoint:RT.lastCheckpoint||loadCheckpoint(),bridge:window.__THEKEIBA_BRIDGE_DIAG__||window.BRIDGE_DIAG||null});
+    try{localStorage.setItem(LOG_KEY,JSON.stringify(rows.slice(0,20)))}catch(_){}
+  }
+  function heartbeat(message){
+    RT.lastActivity=Date.now();RT.lastStatus=String(message??"");RT.stage=inferStage(RT.lastStatus);RT.current=inferCurrent(RT.lastStatus);saveCheckpoint(RT.lastStatus);renderPanel();
+  }
+  function setMessage(text,kind=""){
+    const el=byId("simResilienceMessage");if(!el)return;el.textContent=String(text||"");el.classList.remove("warn","bad","good");if(kind)el.classList.add(kind);
+  }
+  function renderPanel(){
+    ensurePanel();const running=!!BACKTEST_SYNC?.running,delta=running?Date.now()-RT.lastActivity:0,cp=RT.lastCheckpoint||loadCheckpoint();
+    const stage=byId("simResilienceStage"),beat=byId("simResilienceHeartbeat"),stall=byId("simResilienceStall"),checkpoint=byId("simResilienceCheckpoint"),badge=byId("simResilienceBadge");
+    if(stage)stage.textContent=RT.stage||"待機";if(beat)beat.textContent=running?timeLabel(RT.lastActivity):cp?timeLabel(cp.savedAt):"—";if(stall)stall.textContent=elapsedLabel(delta);if(checkpoint)checkpoint.textContent=cp?`${timeLabel(cp.savedAt)} ${cp.current||cp.stage||""}`:"未保存";
+    if(badge){badge.classList.remove("good","warn","bad");if(running&&delta>WARN_MS){badge.textContent="停止監視中";badge.classList.add(delta>AUTO_STOP_MS?"bad":"warn")}else if(running){badge.textContent="監視正常";badge.classList.add("good")}else if(cp&&cp.stage!=="同期完了"){badge.textContent="再開可能";badge.classList.add("warn")}else{badge.textContent="待機"}}
+    const resume=byId("simResumeSyncBtn"),recover=byId("simSafeRecoveryBtn");if(resume)resume.disabled=running;if(recover)recover.disabled=!running;
+  }
+  function setLiveUi(active,suspended=false){
+    const btn=byId("simLiveGraphBtn");if(!btn)return;
+    btn.disabled=suspended;btn.classList.toggle("active",active&&!suspended);btn.textContent=suspended?"📉 結果ライブ 省メモリ中":active?"📈 結果ライブ ON":"📉 結果ライブ OFF";
+    btn.title=suspended?"長時間同期中は全件再計算を停止し、同期完了後に一度だけ更新します。":"確定結果の資金曲線表示";
+  }
+  async function restoreCheckpointConfig(cp){
+    if(!cp)return;
+    if(cp.config&&typeof textIoApplySimConfig==="function"){await textIoApplySimConfig(cp.config);return}
+    for(const [id,value] of Object.entries(cp.forms||{})){const el=byId(id);if(el&&value!==undefined)el.value=value}
+    try{await renderSimPlaceOptions(cp.config?.places||[])}catch(_){}
+  }
+  async function resumeFromCheckpoint(){
+    if(BACKTEST_SYNC?.running)return;
+    const cp=loadCheckpoint();
+    try{if(cp)await restoreCheckpointConfig(cp);BACKTEST_SYNC.stop=false;RT.autoRecoveryRequested=false;setMessage(cp?`チェックポイント ${timeLabel(cp.savedAt)} を復元しました。完全取得済みレースをスキップして再開します。`:`保存済みデータを確認し、未取得レースから同期を開始します。`,"good");await syncBacktestPeriod()}catch(error){setMessage(`再開失敗: ${error.message}`,"bad")}
+  }
+  function requestSafeRecovery(){
+    if(!BACKTEST_SYNC?.running)return;
+    RT.manualRecovery=true;RT.autoRecoveryRequested=false;BACKTEST_SYNC.stop=true;addFreezeLog("手動安全復旧");
+    const stop=byId("simStopSyncBtn");if(stop){stop.disabled=true;stop.textContent="安全停止処理中…"}
+    try{window.__theKeibaBridgeHandshake?.()}catch(_){}
+    saveCheckpoint("手動安全復旧を要求",true);setMessage("安全停止を要求しました。現在の通信がタイムアウトした後に停止します。その後「続きから再開」を押すと、既取得分を自動スキップします。","warn");renderPanel();
+  }
+  function clearCheckpoint(){
+    if(BACKTEST_SYNC?.running)return;
+    try{localStorage.removeItem(CHECKPOINT_KEY)}catch(_){}RT.lastCheckpoint=null;setMessage("チェックポイント表示を消去しました。IndexedDB内の取得済みレース・結果は削除していません。","good");renderPanel();
+  }
+  async function copyDiagnostics(){
+    const cp=RT.lastCheckpoint||loadCheckpoint();let logs=[];try{logs=safeJsonParse(localStorage.getItem(LOG_KEY)||"[]")||[]}catch(_){}
+    const text=[`The競馬 同期診断 v${VERSION}`,`時刻: ${new Date().toLocaleString("ja-JP")}`,`同期中: ${!!BACKTEST_SYNC?.running}`,`工程: ${RT.stage}`,`対象: ${RT.current}`,`最終進捗: ${timeLabel(RT.lastActivity)}`,`停止時間: ${elapsedLabel(Date.now()-RT.lastActivity)}`,`自動復旧: ${RT.autoRecoveryCount}/${MAX_AUTO_RECOVERY}`,`Bridge: ${JSON.stringify(window.__THEKEIBA_BRIDGE_DIAG__||window.BRIDGE_DIAG||{})}`,`チェックポイント: ${JSON.stringify(cp||{})}`,`直近ログ: ${JSON.stringify(logs.slice(0,3))}`,`状態:\n${RT.lastStatus}`].join("\n");
+    try{if(navigator.clipboard?.writeText&&window.isSecureContext)await navigator.clipboard.writeText(text);else{const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();document.execCommand("copy");ta.remove()}setMessage("同期診断をコピーしました。","good")}catch(_){setMessage(text,"warn")}
+  }
+  function watchdog(){
+    const running=!!BACKTEST_SYNC?.running;if(!running){renderPanel();return}
+    const delta=Date.now()-RT.lastActivity;
+    if(delta>WARN_MS&&delta<=AUTO_STOP_MS){setMessage(`進捗更新が ${elapsedLabel(delta)} ありません。通信タイムアウトを監視中です。結果ライブの全件再計算は停止済みです。`,"warn")}
+    if(delta>AUTO_STOP_MS&&!RT.autoRecoveryRequested&&RT.autoRecoveryCount<MAX_AUTO_RECOVERY){
+      RT.autoRecoveryRequested=true;RT.autoRecoveryCount++;BACKTEST_SYNC.stop=true;addFreezeLog(`WatchDog ${elapsedLabel(delta)}停止`);saveCheckpoint("WatchDog自動安全停止",true);
+      try{window.__theKeibaBridgeHandshake?.()}catch(_){}
+      setMessage(`WatchDogが ${elapsedLabel(delta)} の進捗停止を検知しました。安全停止後、自動で既取得分の次から再開します（${RT.autoRecoveryCount}/${MAX_AUTO_RECOVERY}回）。`,"bad")
+    }
+    renderPanel();
+  }
+
+  const previousSetStatus=typeof setSimSyncStatus==="function"?setSimSyncStatus:null;
+  if(previousSetStatus)setSimSyncStatus=function(message){heartbeat(message);return previousSetStatus(message)};
+
+  const previousRender=typeof renderSimulation==="function"?renderSimulation:null;
+  if(previousRender)renderSimulation=function(){const out=previousRender.apply(this,arguments);setVersion();return out};
+
+  const previousTimeout=typeof withOperationTimeout==="function"?withOperationTimeout:null;
+  if(previousTimeout)withOperationTimeout=async function(task,timeoutMs,label="処理"){
+    RT.stage=String(label||"処理");renderPanel();
+    try{return await previousTimeout(task,timeoutMs,label)}finally{if(BACKTEST_SYNC?.running){RT.lastActivity=Date.now();renderPanel()}}
+  };
+
+  const previousSync=typeof syncBacktestPeriod==="function"?syncBacktestPeriod:null;
+  if(previousSync)syncBacktestPeriod=async function(){
+    if(RT.wrapperBusy&&BACKTEST_SYNC?.running)return{busy:true};
+    RT.wrapperBusy=true;RT.manualRecovery=false;RT.autoRecoveryCount=0;RT.autoRecoveryRequested=false;RT.lastActivity=Date.now();RT.stage="同期開始";RT.current="—";
+    const args=arguments,live=window.__THEKEIBA_LIVE_SIM__,liveState=live?.state;
+    if(liveState)RT.liveDesired=liveState.enabled!==false;else{try{RT.liveDesired=localStorage.getItem("TheKeibaLiveConfirmedGraphV1")!=="0"}catch(_){RT.liveDesired=true}}
+    if(liveState)liveState.enabled=false;setLiveUi(RT.liveDesired,true);saveCheckpoint("同期開始",true);setMessage("省メモリ同期を開始します。同期中は重い資金曲線の全件再計算を止め、進捗グラフだけを更新します。","good");
+    let result=null;
+    try{
+      for(;;){
+        BACKTEST_SYNC.stop=false;RT.lastActivity=Date.now();RT.autoRecoveryRequested=false;
+        result=await previousSync.apply(this,args);
+        if(result?.stopped&&RT.autoRecoveryRequested&&RT.autoRecoveryCount<=MAX_AUTO_RECOVERY){
+          setMessage(`自動復旧 ${RT.autoRecoveryCount}/${MAX_AUTO_RECOVERY}：Bridgeを再ハンドシェイクし、既取得分をスキップして再開します。`,"warn");
+          try{window.__theKeibaBridgeHandshake?.()}catch(_){}
+          await new Promise(resolve=>setTimeout(resolve,1500));continue
+        }
+        break
+      }
+      if(result&&!result.busy){RT.stage=result.stopped?"安全停止":"同期完了";saveCheckpoint(RT.lastStatus||RT.stage,true)}
+      return result
+    }catch(error){RT.stage="同期エラー";addFreezeLog(error.message);saveCheckpoint(error.message,true);setMessage(`同期エラー: ${error.message}\n取得済みデータは保持されています。「続きから再開」で未取得分から再試行できます。`,"bad");throw error}
+    finally{
+      RT.wrapperBusy=false;if(liveState)liveState.enabled=RT.liveDesired;setLiveUi(RT.liveDesired,false);renderPanel();
+      if(RT.liveDesired&&!BACKTEST_SYNC?.running&&!result?.busy){
+        setTimeout(async()=>{if(BACKTEST_SYNC?.running)return;setMessage("同期済みデータから資金曲線を1回だけ再計算しています。","good");try{await live?.refresh?.(result?.stopped?"安全停止時点":"同期完了",true);setMessage(result?.stopped?"安全停止しました。続きから再開できます。":"同期と資金曲線の更新が完了しました。","good")}catch(error){setMessage(`資金曲線の更新だけ失敗しました: ${error.message}\n同期済みデータは保存されています。`,"warn")}},700)
+      }
+    }
+  };
+
+  function boot(){
+    setVersion();ensurePanel();RT.lastCheckpoint=loadCheckpoint();RT.lastActivity=Date.now();renderPanel();
+    clearInterval(RT.watchdogTimer);RT.watchdogTimer=setInterval(watchdog,5000);
+    const syncBtn=byId("simSyncBtn");if(syncBtn)syncBtn.onclick=()=>syncBacktestPeriod();
+    setTimeout(()=>{setVersion();ensurePanel();const btn=byId("simSyncBtn");if(btn)btn.onclick=()=>syncBacktestPeriod();renderPanel()},2500);
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+  window.__THEKEIBA_SYNC_RESILIENCE__={version:VERSION,state:RT,saveCheckpoint,loadCheckpoint,resume:resumeFromCheckpoint,recover:requestSafeRecovery,copyDiagnostics};
 })();
 </script>
 
