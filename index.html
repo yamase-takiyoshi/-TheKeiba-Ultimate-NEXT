@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.0</title>
+<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.1</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.0</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.1</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -1050,7 +1050,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.3.0-netkeiba-ev";
+const APP_VERSION="1.3.1-netkeiba-ev-place-fix";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待利益重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -5325,6 +5325,126 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
     const test=window.__THEKEIBA_NETKEIBA_EV__?.selfTest?.();if(!test?.ok)console.error("netkeiba EV self test failed",test)
   }
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",()=>setTimeout(wire,2300),{once:true});else setTimeout(wire,400);
+})();
+</script>
+
+<script id="simVenueIndividualButtonsFix">
+/* v1.3.1 開催場の個別選択をDB状態に依存せず常時表示 */
+(function(){
+  "use strict";
+  const byId=id=>document.getElementById(id);
+  const placeInputs=()=>[...document.querySelectorAll('#simPlaceOptions input[type="checkbox"][data-sim-place]')];
+  const unique=rows=>[...new Set((rows||[]).filter(Boolean))];
+
+  if(typeof state.simAllPlaces!=="boolean")state.simAllPlaces=!state.simSelectedPlaces?.length;
+
+  getSelectedSimPlaces=function(){
+    if(byId("simPlaceAll")?.checked)return[];
+    return placeInputs().filter(input=>input.checked).map(input=>input.value)
+  };
+
+  refreshSimPlaceVisuals=function(){
+    const all=byId("simPlaceAll"),allLabel=all?.closest("label.sim-place-option");
+    if(allLabel)allLabel.classList.toggle("selected",!!all.checked);
+    document.querySelectorAll("#simPlaceOptions label.sim-place-option").forEach(label=>{
+      label.classList.toggle("selected",!!label.querySelector('input[type="checkbox"]')?.checked)
+    })
+  };
+
+  updateSimPlaceSummary=function(){
+    const all=!!byId("simPlaceAll")?.checked,places=getSelectedSimPlaces();
+    state.simAllPlaces=all;
+    state.simSelectedPlaces=all?[]:places;
+    const summary=byId("simPlaceSummary");
+    if(summary)summary.textContent=all?"全開催場":places.length?`${places.length}場：${places.join("・")}`:"開催場未選択";
+    refreshSimPlaceVisuals()
+  };
+
+  function wireIndividualButtons(){
+    placeInputs().forEach(input=>input.onchange=()=>{
+      const all=byId("simPlaceAll");
+      if(all)all.checked=false;
+      state.simAllPlaces=false;
+      updateSimPlaceSummary()
+    })
+  }
+
+  function paintPlaces(places,{allMode,selected,statusText}){
+    const box=byId("simPlaceOptions");if(!box)return;
+    box.innerHTML=`<span id="simPlaceLoadStatus" class="muted" style="grid-column:1/-1">${esc(statusText)}</span>`+
+      places.map(place=>{
+        const checked=!allMode&&selected.has(place);
+        return `<label class="sim-place-option ${checked?"selected":""}" title="${esc(place)}を個別選択"><input type="checkbox" data-sim-place="1" value="${esc(place)}" ${checked?"checked":""}><span>${esc(place)}</span></label>`
+      }).join("");
+    wireIndividualButtons();
+    refreshSimPlaceVisuals()
+  }
+
+  renderSimPlaceOptions=async function(preferred=state.simSelectedPlaces){
+    const box=byId("simPlaceOptions");if(!box)return;
+    const type=byId("simType")?.value||"",types=type?[type]:["JRA","NAR"];
+    const start=compactDate(byId("simStart")?.value),end=compactDate(byId("simEnd")?.value);
+    const master=unique(types.flatMap(t=>simMasterPlaces(t)));
+    const preferredPlaces=unique(Array.isArray(preferred)?preferred:[]).filter(place=>master.includes(place));
+    if(preferredPlaces.length)state.simAllPlaces=false;
+    const allMode=!preferredPlaces.length&&state.simAllPlaces!==false;
+    const selected=new Set(preferredPlaces);
+    const all=byId("simPlaceAll");if(all)all.checked=allMode;
+    const typeLabel=types.join("・");
+
+    // DBを待たず、JRA 10場・NAR 15場の個別ボタンを先に確定表示する。
+    paintPlaces(master,{allMode,selected,statusText:`${typeLabel} 全${master.length}場 — 開催場を1場ずつ選択できます`});
+    updateSimPlaceSummary();
+
+    try{
+      const races=await getRacesInRange(start,end);
+      const registered=unique((races||[])
+        .filter(r=>types.includes(r.type)&&(!start||r.date>=start)&&(!end||r.date<=end))
+        .map(r=>r.placeName)
+        .filter(place=>place&&place!=="不明"));
+      const extras=registered.filter(place=>!master.includes(place));
+      if(extras.length){
+        const currentAll=!!byId("simPlaceAll")?.checked,currentSelected=new Set(getSelectedSimPlaces());
+        paintPlaces([...master,...extras],{allMode:currentAll,selected:currentSelected,statusText:`${typeLabel} 全${master.length}場を表示　期間内同期済み ${registered.length}場`});
+        updateSimPlaceSummary()
+      }else{
+        const status=byId("simPlaceLoadStatus");
+        if(status)status.textContent=`${typeLabel} 全${master.length}場を表示　期間内同期済み ${registered.length}場`;
+      }
+    }catch(error){
+      const status=byId("simPlaceLoadStatus");
+      if(status)status.textContent=`${typeLabel} 全${master.length}場を表示　DB再接続中でも個別選択できます`;
+      console.warn("開催場の同期済み件数を取得できません。個別選択は利用できます。",error)
+    }
+  };
+
+  const previousClosingCheck=isIndexedDbClosingError;
+  isIndexedDbClosingError=function(error){
+    return previousClosingCheck(error)||/state\.db\.transaction|null is not an object|Cannot read (?:properties|property) of null.*transaction/i.test(indexedDbErrorText(error))
+  };
+
+  function wire(){
+    const all=byId("simPlaceAll"),selectAll=byId("simPlaceSelectAllBtn"),clear=byId("simPlaceClearBtn");
+    if(all)all.onchange=()=>{
+      if(all.checked)placeInputs().forEach(input=>input.checked=false);
+      state.simAllPlaces=all.checked;
+      updateSimPlaceSummary()
+    };
+    if(selectAll)selectAll.onclick=()=>{
+      if(all)all.checked=true;
+      placeInputs().forEach(input=>input.checked=false);
+      state.simAllPlaces=true;
+      updateSimPlaceSummary()
+    };
+    if(clear)clear.onclick=()=>{
+      if(all)all.checked=false;
+      placeInputs().forEach(input=>input.checked=false);
+      state.simAllPlaces=false;
+      updateSimPlaceSummary()
+    }
+  }
+
+  if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",wire,{once:true});else wire()
 })();
 </script>
 
