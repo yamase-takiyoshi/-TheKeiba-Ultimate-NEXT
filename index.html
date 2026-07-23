@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.6</title>
+<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.7</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.6</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.7</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -1055,7 +1055,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.3.6-netkeiba-light-schedule-probe";
+const APP_VERSION="1.3.7-netkeiba-historical-ev-racename-guard";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待利益重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -1087,7 +1087,7 @@ function decodeHtmlText(value){
   if(!s)return"";
   try{return new DOMParser().parseFromString(s,"text/html").body?.textContent||s}catch{return s}
 }
-const RACE_NAME_ACTION_LABEL_RE=/^(?:持ちタイム|タイム指数|調教(?:タイム|評価)?|厩舎コメント|対戦表|血統(?:情報)?|馬柱(?:\(\d+走\))?|掲示板|メモ|パドック|コース分析|勝ち馬サーチ|レース攻略|ウマい馬券|競馬専門紙|専門紙|AI予想|予想印|レース映像|映像|動画|オッズ|出馬表|結果|払戻|レース情報|データ分析|お気に入り)(?:を見る|へ)?$/i;
+const RACE_NAME_ACTION_LABEL_RE=/^(?:持ちタイム|タイム指数|調教(?:タイム|評価)?|厩舎コメント|対戦表|血統(?:情報)?|馬柱(?:\(\d+走\))?|掲示板|メモ|パドック|コース分析|勝ち馬サーチ|レース攻略|ウマい馬券|競馬専門紙|専門紙|AI予想|予想印|レース映像|映像|動画|オッズ|出馬表|結果|払戻|レース情報|データ分析|お気に入り|馬券投票|ネット投票|投票)(?:を見る|へ|する)?$/i;
 function isRaceNameActionLabel(value){
   const s=decodeHtmlText(value).normalize("NFKC").replace(/[\s　]+/g,"").trim();
   return RACE_NAME_ACTION_LABEL_RE.test(s)
@@ -1103,7 +1103,7 @@ function sanitizeRaceName(value,raceNo=0){
     .replace(/Icon_Sprite[^\s>]*/gi," ")
     .replace(/RaceInfo_New_?\d*/gi," ")
     .replace(/[<>"']/g," ")
-    .replace(/(?:持ちタイム|タイム指数|調教タイム|調教評価|厩舎コメント|対戦表|血統情報|馬柱(?:\s*\(\d+走\))?|掲示板|パドック|コース分析|勝ち馬サーチ|レース攻略|ウマい馬券|競馬専門紙|AI予想|予想印|レース映像|映像|動画|オッズ|出馬表|結果|払戻|レース情報|データ分析|お気に入り)/g," ")
+    .replace(/(?:持ちタイム|タイム指数|調教タイム|調教評価|厩舎コメント|対戦表|血統情報|馬柱(?:\s*\(\d+走\))?|掲示板|パドック|コース分析|勝ち馬サーチ|レース攻略|ウマい馬券|競馬専門紙|AI予想|予想印|レース映像|映像|動画|オッズ|出馬表|結果|払戻|レース情報|データ分析|お気に入り|馬券投票|ネット投票)/g," ")
     .replace(/\b(?:[1-9]|1[0-2])R\b/gi," ")
     .replace(/\b(?:[01]?\d|2[0-3]):[0-5]\d\b/g," ")
     .replace(/(?:芝|ダート|ダ|障害)\s*\d{3,4}m?.*$/," ")
@@ -2099,7 +2099,7 @@ function analyticsRaceId(row={}){const candidates=[row?.race?.race_id,row?.race?
 function analyticsValueMissing(v){if(v===undefined||v===null)return true;if(typeof v==="number")return!Number.isFinite(v)||v===0;const s=String(v).trim();return!s||/^(?:不明|未取得|取得失敗|取得不能|unknown|null|undefined|なし|[-－―])$/i.test(s)}
 function analyticsMergeDefined(base={},extra={}){const out={...(base||{})};for(const [k,v] of Object.entries(extra||{})){if(analyticsValueMissing(v))continue;if(typeof v==="number"&&v===0&&Number(out[k]||0)>0)continue;out[k]=v}return out}
 function analyticsCanonicalRace(r={}){const out={...(r||{})},rid=normalizeAnalyticsRaceIdValue(r.race_id||r.raceId||r.id);if(rid)out.race_id=rid;const cls=[r.className,r.class_name,r.grade,r.class].find(v=>!analyticsValueMissing(v));if(cls){out.className=String(cls);out.grade=String(cls)}const surface=[r.surface,r.trackType,r.track_type,r.courseType].find(v=>!analyticsValueMissing(v));if(surface)out.surface=String(surface);const cond=[r.trackCondition,r.track_condition,r.trackCond,r.track_state,r.babaState,r.condition].find(v=>!analyticsValueMissing(v));if(cond){out.trackCondition=String(cond);out.trackCond=String(cond)}const place=[r.placeName,r.place_name,r.venueName,r.venue,r.place].find(v=>!analyticsValueMissing(v));if(place){out.placeName=String(place);out.venueName=String(place)}const name=[r.name,r.raceName,r.race_name,r.title].find(v=>!analyticsValueMissing(v));if(name){out.name=String(name);out.raceName=String(name)}out.distance=Number(r.distance||out.distance||0);return out}
-function analyticsRaceNameUseful(v){const s=String(v||"").replace(/\s+/g," ").trim();return!!s&&!/^(?:\d{1,2}R|レース名未取得|レース結果|結果|出馬表|オッズ|競馬情報)$/i.test(s)&&s.length<=80}
+function analyticsRaceNameUseful(v){const s=String(v||"").replace(/\s+/g," ").trim();return!!s&&!isMalformedRaceName(s)&&!/^(?:\d{1,2}R|レース名未取得|レース結果|結果|出馬表|オッズ|競馬情報)$/i.test(s)&&s.length<=80}
 function mergeRaceMetadata(...sources){let out={};for(const raw of sources){if(!raw)continue;const src=analyticsCanonicalRace(raw);for(const [k,v] of Object.entries(src)){if(analyticsValueMissing(v))continue;if((k==="name"||k==="raceName")&&!analyticsRaceNameUseful(v))continue;out[k]=v}}const rid=normalizeAnalyticsRaceIdValue(out.race_id||out.raceId||out.id);if(rid)out.race_id=rid;const cond=analyticsTrackConditionLabel(out);if(cond!=="不明"){out.trackCondition=cond;out.trackCond=cond}const surface=analyticsSurfaceLabel(out);if(surface!=="不明")out.surface=surface;const cls=analyticsClassLabel(out);if(cls!=="不明"){out.className=cls;out.grade=cls}return normalizeRace(out)}
 function analyticsMergeEntryRows(current=[],stored=[]){const map=new Map();for(const e of stored||[]){const n=Number(e.horseNo||e.horse_no||0);if(n)map.set(n,e)}for(const e of current||[]){const n=Number(e.horseNo||e.horse_no||0);if(!n)continue;const s=map.get(n)||{};map.set(n,{...s,...e,sex:e.sex||s.sex||"",age:Number(e.age||s.age||0),sexAge:e.sexAge||e.sex_age||s.sexAge||s.sex_age||`${e.sex||s.sex||""}${e.age||s.age||""}`})}return[...map.values()]}
 function analyticsRaceNeedsLookup(r={}){return analyticsClassLabel(r)==="不明"||analyticsSurfaceLabel(r)==="不明"||analyticsTrackConditionLabel(r)==="不明"||!Number(r.distance||0)}
@@ -2489,7 +2489,7 @@ function parseRaceListHtml(raw,kind,date){
     if(!m)continue;
     const row=node.closest("li,tr,article,section,[class*='RaceList'],[class*='RaceItem'],[class*='RaceCard'],[class*='Race_Card']")||node.parentElement||node;
     const nameNode=row.querySelector?.(".RaceName,.Race_Name,[class*='RaceName'],[class*='Race_Name'],[class*='RaceTitle'],[class*='Race_Title'],.race_name,.raceName");
-    const actionHref=/(?:holding[_-]?time|time[_-]?index|training|comment|match|blood|newspaper|column|odds|result|movie|video|memo|paddock)/i.test(href);
+    const actionHref=/(?:holding[_-]?time|time[_-]?index|training|comment|match|blood|newspaper|column|odds|result|movie|video|memo|paddock|bet|vote|ticket|ipat)/i.test(href);
     const raceNo=Number(normalizeAnalyticsRaceIdValue(m[1]).slice(-2)),candidates=[
       nameNode?.textContent,
       node.getAttribute("data-race-name"),
@@ -4161,8 +4161,10 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
       const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));
       rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,remaining:item.remaining,rankScore:item.rankScore,liveConfirmed:true});
     }
-    const totalBet=rows.reduce((s,x)=>s+x.invest,0),totalPay=rows.reduce((s,x)=>s+x.pay,0);
-    return{c,targetCount:target.length,confirmedCount:confirmed.length,rows,summary:{raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0}};
+    const totalBet=rows.reduce((s,x)=>s+x.invest,0),totalPay=rows.reduce((s,x)=>s+x.pay,0),
+          probabilityReadyCount=rows.filter(row=>row.entries.some(entry=>n(entry.netkeibaWinProb)>0)).length,
+          historicalPriorCount=rows.filter(row=>row.entries.some(entry=>entry.historicalProbabilityFallback===true)).length;
+    return{c,targetCount:target.length,confirmedCount:confirmed.length,probabilityReadyCount,historicalPriorCount,rows,summary:{raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0}};
   }
   async function refreshLiveGraph(reason="確定結果更新",force=false){
     if(!LIVE.enabled)return false;
@@ -4175,7 +4177,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
       state.simResult=data.rows;
       renderSimulation(data.summary);
       const countLabel=byId("simRaceCount")?.previousElementSibling;if(countLabel)countLabel.textContent="確定集計R";
-      const foot=byId("simLiveGraphFoot");if(foot)foot.textContent=`${reason}　対象 ${data.targetCount}R / 確定 ${data.confirmedCount}R / 購入 ${data.summary.boughtCount}R / 投資 ${yen(data.summary.totalBet)} / 払戻 ${yen(data.summary.totalPay)} / 収支 ${yen(data.summary.profit)} / ROI ${pct(data.summary.roi)}　※暫定表示`;
+      const foot=byId("simLiveGraphFoot");if(foot)foot.textContent=`${reason}　対象 ${data.targetCount}R / 確定 ${data.confirmedCount}R / EV確率 ${data.probabilityReadyCount}R（過去用 ${data.historicalPriorCount}R） / 購入 ${data.summary.boughtCount}R / 投資 ${yen(data.summary.totalBet)} / 払戻 ${yen(data.summary.totalPay)} / 収支 ${yen(data.summary.profit)} / ROI ${pct(data.summary.roi)}　※暫定表示`;
       setStatus(`確定 ${data.confirmedCount}R・${pct(data.summary.roi)}`,"ok");
       try{await syncSimulationToAnalysis({reason:"確定結果ライブ"})}catch(_){ }
       return true;
@@ -5271,7 +5273,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 })();
 </script>
 
-<!-- v1.3.6: netkeiba DB軽量日程プローブ、JRA候補日最適化、先読み進捗表示 -->
+<!-- v1.3.7: 「馬券投票」レース名混入防止、過去レースのnetkeiba人気順位EV復元 -->
 <!-- v1.3.4: 全開催場/未選択を分離、一覧検出・条件除外・HTTP再試行KPI、0R空回り安全停止 -->
 <!-- v1.3.0: netkeiba予想オッズの固定確率と市場実オッズを分離したEV中枢 -->
 <!-- v1.2.34: 馬場状態・馬齢・馬場・クラス・馬体重のHTML取得強化、旧JRAクラス変換、既存DB一括修復 -->
@@ -5294,10 +5296,10 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 
 
 <script id="netkeibaEvCore">
-// v1.3.0 netkeiba予想オッズを唯一の勝率源にするEV中枢
+// v1.3.7 netkeiba予想オッズ優先。過去レースは結果を使わず、netkeiba最終人気順位の固定事前モデルで勝率を復元する。
 (function(){
   "use strict";
-  const VERSION="1.3.0";
+  const VERSION="1.3.7";
   const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
   const stamp=()=>new Date().toISOString();
   const typeCodes={win:"1",place:"2",bracketQuinella:"3",quinella:"4",wide:"5",exacta:"6",trio:"7",trifecta:"8"};
@@ -5431,9 +5433,11 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
     if(prob>0)out.netkeibaWinProb=prob;
     if(market>0)out.marketWinOdds=market;
     out.odds=market;out.oddsWin=market;out.probWin=prob;out.ev=prob>0&&market>0?Number((prob*market).toFixed(4)):0;
-    for(const key of ["oddsStatus","probabilitySource","probabilityCapturedAt","marketOddsCapturedAt","evCalcVersion","evReason"]){
+    for(const key of ["oddsStatus","probabilitySource","probabilityCapturedAt","probabilityModelVersion","marketOddsCapturedAt","evCalcVersion","evReason"]){
       if(entry?.[key]!=null&&String(entry[key])!=="")out[key]=entry[key]
     }
+    if(entry?.historicalProbabilityFallback===true)out.historicalProbabilityFallback=true;
+    if(n(entry?.netkeibaRank)>0)out.netkeibaRank=n(entry.netkeibaRank);
     if(entry?.ticketOddsBook&&typeof entry.ticketOddsBook==="object")out.ticketOddsBook=normalizeTicketOdds(entry.ticketOddsBook);
     if(entry?.netkeibaProbabilityBook&&typeof entry.netkeibaProbabilityBook==="object")out.netkeibaProbabilityBook=entry.netkeibaProbabilityBook;
     return out
@@ -5482,6 +5486,37 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
     }
     return true
   }
+  const HISTORICAL_RANK_PRIOR={
+    JRA:[.33,.19,.135,.10,.075,.055,.04,.028,.019,.012,.0075,.0045,.0025,.0015,.001,.0007,.0004,.0002],
+    NAR:[.43,.22,.12,.075,.05,.035,.024,.016,.011,.007,.0045,.003,.002,.001,.0007,.0004,.0002,.0001]
+  };
+  function captureHistoricalNetkeibaPrior(entries,race={},capturedAt=stamp()){
+    if(!Array.isArray(entries)||entries.some(e=>n(e.netkeibaWinProb)>0))return false;
+    const date=compactDate(race?.date||""),today=compactDate(isoToday()),
+          confirmed=date&&date<today||/(?:確定|結果)/.test(String(race?.status||""));
+    if(!confirmed)return false;
+    const marketEntries=entries.filter(e=>(n(e.marketWinOdds)||(e.oddsStatus==="yoso"?0:n(e.odds)))>0);
+    if(marketEntries.length<2)return false;
+    const marketOrder=[...marketEntries].sort((a,b)=>
+      (n(a.marketWinOdds)||(a.oddsStatus==="yoso"?Infinity:n(a.odds,Infinity)))
+      -(n(b.marketWinOdds)||(b.oddsStatus==="yoso"?Infinity:n(b.odds,Infinity)))
+      ||n(a.horseNo)-n(b.horseNo)
+    ),marketRank=new Map(marketOrder.map((entry,index)=>[n(entry.horseNo),index+1])),
+          table=HISTORICAL_RANK_PRIOR[String(race?.type||"JRA").toUpperCase()]||HISTORICAL_RANK_PRIOR.JRA,
+          rows=marketEntries.map(entry=>{
+            const published=n(entry.popularity),rank=published>=1&&published<=table.length?published:marketRank.get(n(entry.horseNo))||table.length;
+            return{entry,rank,weight:n(table[Math.min(table.length,Math.max(1,rank))-1],table.at(-1))}
+          }),sum=rows.reduce((total,row)=>total+row.weight,0);
+    if(!(sum>0))return false;
+    for(const {entry,rank,weight} of rows){
+      const prob=weight/sum;
+      entry.netkeibaRank=rank;entry.netkeibaWinProb=prob;entry.probWin=prob;
+      entry.netkeibaExpectedOdds=1/prob;entry.probabilitySource="netkeiba:historical-rank-prior";
+      entry.probabilityModelVersion="rank-prior-v1";entry.historicalProbabilityFallback=true;
+      entry.probabilityCapturedAt=entry.probabilityCapturedAt||capturedAt
+    }
+    return true
+  }
   function applyExpectedMarket(entries,map,source,capturedAt=stamp()){
     if(entries.some(e=>n(e.netkeibaWinProb)>0))return false;
     for(const entry of entries){const odds=n(map?.[String(entry.horseNo)]);if(odds>0)entry.netkeibaExpectedOdds=odds}
@@ -5509,12 +5544,13 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
   }
   recalcEntryScores=function(entries,race={}){
     captureExpectedSnapshot(entries,entries.find(e=>e.probabilitySource)?.probabilitySource||"netkeiba:yoso-normalized");
+    captureHistoricalNetkeibaPrior(entries,race);
     for(const entry of entries){
       const prob=n(entry.netkeibaWinProb),market=n(entry.marketWinOdds)||(entry.oddsStatus==="yoso"?0:n(entry.odds)),available=prob>0&&market>0;
       entry.marketWinOdds=market;entry.odds=market;entry.oddsWin=market;entry.probWin=prob;
       entry.rawEv=available?prob*market:0;entry.adjustedEv=entry.rawEv;entry.ev=Number(entry.rawEv.toFixed(4));
       entry.evCalcVersion=VERSION;entry.evAvailable=available;
-      entry.evReason=!prob?"netkeiba予想勝率未取得":!market?"市場オッズ未取得":"netkeiba勝率×市場オッズ"
+      entry.evReason=!prob?"netkeiba予想勝率未取得":!market?"市場オッズ未取得":entry.historicalProbabilityFallback?"過去用netkeiba人気順位勝率×市場オッズ":"netkeiba予想勝率×市場オッズ"
     }
     attachBook(entries,race);return entries
   };
@@ -5657,7 +5693,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
     }
     if(best)return best;throw lastError||new Error("netkeiba JRAオッズAPIを取得できません")
   }
-  const frozenFields=["netkeibaExpectedOdds","netkeibaWinProb","probabilitySource","probabilityCapturedAt"];
+  const frozenFields=["netkeibaExpectedOdds","netkeibaWinProb","probabilitySource","probabilityCapturedAt","probabilityModelVersion","historicalProbabilityFallback","netkeibaRank"];
   const baseBridgeLoadBundle=bridgeLoadBundle;
   bridgeLoadBundle=async function(...args){
     const rawRid=args[0]??document.getElementById("bridgeRaceId")?.value??"",rid=normalizeAnalyticsRaceIdValue(rawRid),before=rid&&state.db?await getByIndex("entries","race_id",rid):[];
@@ -5665,7 +5701,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
     try{
       const [race,loaded]=await Promise.all([getOne("races",rid),getByIndex("entries","race_id",rid)]),previous=new Map(before.map(e=>[n(e.horseNo),e]));
       for(const entry of loaded){
-        const old=previous.get(n(entry.horseNo));if(!old||!(n(old.netkeibaWinProb)>0))continue;
+        const old=previous.get(n(entry.horseNo));if(!old||old.historicalProbabilityFallback===true||!(n(old.netkeibaWinProb)>0))continue;
         for(const key of frozenFields)if(old[key]!=null&&old[key]!=="")entry[key]=old[key]
       }
       let ticketOdds=normalizeTicketOdds(race?.ticketOdds||{}),apiStatus="";
@@ -5681,7 +5717,10 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
       }
       captureExpectedSnapshot(loaded,race?.type==="NAR"?"netkeiba:nar-yoso-html":"netkeiba:jra-yoso-api");
       const updatedRace={...race,ticketOdds,netkeibaOddsStatus:apiStatus||race?.netkeibaOddsStatus||"",evCalcVersion:VERSION,updatedAt:stamp()};
-      recalcEntryScores(loaded,updatedRace);await Promise.all([putMany("entries",loaded),putOne("races",updatedRace)]);
+      recalcEntryScores(loaded,updatedRace);
+      updatedRace.probabilitySource=loaded.find(entry=>n(entry.netkeibaWinProb)>0)?.probabilitySource||"";
+      updatedRace.historicalProbabilityFallback=loaded.some(entry=>entry.historicalProbabilityFallback===true);
+      await Promise.all([putMany("entries",loaded),putOne("races",updatedRace)]);
       return true
     }catch(error){window.__LAST_EV_ERROR__=error.message;console.error("netkeiba EV snapshot",error);return true}
   };
@@ -5692,8 +5731,9 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
     document.getElementById("raceIdDirect").value=id;
     if(!race){document.getElementById("raceInfoCard").innerHTML=`<div class="empty">race_id ${esc(id)} は未登録です</div>`;document.getElementById("entryRows").innerHTML="";return}
     recalcEntryScores(entries,race);entries.sort((a,b)=>n(a.horseNo)-n(b.horseNo));
-    const pCount=entries.filter(e=>n(e.netkeibaWinProb)>0).length,mCount=entries.filter(e=>n(e.marketWinOdds)>0).length,evCount=entries.filter(e=>e.evAvailable).length;
-    document.getElementById("raceInfoCard").innerHTML=`<div class="toolbar"><span class="badge">${esc(race.type)}</span><span class="badge">${esc(race.status||"状態不明")}</span><span class="badge good">NK確率 ${pCount}/${entries.length}</span><span class="badge">市場単勝 ${mCount}/${entries.length}</span><span class="badge">EV算出 ${evCount}/${entries.length}</span></div><h2>${esc(race.placeName)} ${n(race.raceNo)}R　${esc(raceNameForDisplay(race))}</h2><div class="muted">${displayDate(race.date)} ${esc(race.startTime||"")}　${esc(race.surface)} ${race.distance||"-"}m　${esc(race.className)}</div><div class="code-box" style="margin-top:12px">race_id: ${esc(race.race_id)}\n確率源: netkeiba予想オッズの正規化スナップショットのみ\nEV: netkeiba勝率 × 購入時点の市場オッズ\n未取得: ${pCount?"市場オッズ待ちはEV 0":"netkeiba予想勝率がないため全て見送り"}</div>`;
+    const pCount=entries.filter(e=>n(e.netkeibaWinProb)>0).length,mCount=entries.filter(e=>n(e.marketWinOdds)>0).length,evCount=entries.filter(e=>e.evAvailable).length,historicalCount=entries.filter(e=>e.historicalProbabilityFallback===true).length,
+          probabilityLabel=historicalCount?`過去用NK人気順位モデル ${historicalCount}/${entries.length}頭`:`netkeiba予想オッズ ${pCount}/${entries.length}頭`;
+    document.getElementById("raceInfoCard").innerHTML=`<div class="toolbar"><span class="badge">${esc(race.type)}</span><span class="badge">${esc(race.status||"状態不明")}</span><span class="badge good">NK確率 ${pCount}/${entries.length}</span><span class="badge">市場単勝 ${mCount}/${entries.length}</span><span class="badge">EV算出 ${evCount}/${entries.length}</span></div><h2>${esc(race.placeName)} ${n(race.raceNo)}R　${esc(raceNameForDisplay(race))}</h2><div class="muted">${displayDate(race.date)} ${esc(race.startTime||"")}　${esc(race.surface)} ${race.distance||"-"}m　${esc(race.className)}</div><div class="code-box" style="margin-top:12px">race_id: ${esc(race.race_id)}\n確率源: ${probabilityLabel}\nEV: netkeiba勝率 × 購入時点の市場オッズ\n過去用モデルは着順・払戻を参照せず、確定前に公開された人気順位と単勝オッズだけで復元します。\n未取得: ${pCount?"市場オッズ待ちはEV 0":"確率・人気順位がないため見送り"}</div>`;
     document.getElementById("entryRows").innerHTML=entries.map(e=>{
       const prob=n(e.netkeibaWinProb),market=n(e.marketWinOdds),expected=n(e.netkeibaExpectedOdds),verdict=!prob?"NK確率なし":!market?"市場待ち":e.ev>=1.08?"強候補":e.ev>=1?"候補":"見送り";
       return`<tr><td><span class="frame-chip">${n(e.frameNo)||"-"}</span></td><td>${n(e.horseNo)}</td><td class="entry-main">${esc(e.horseName)}<div class="horse-sub">${esc(e.style||"")}</div></td><td>${esc(normalizeSexAgeField(e.sexAge,e.sex,e.age)||"-")}</td><td>${esc(e.jockey||"")}</td><td>${esc(e.trainer||"")}</td><td>${n(e.weight)||"-"}</td><td>${esc(e.horseWeight||"-")}</td><td>${n(e.popularity)||"-"}</td><td>${expected?expected.toFixed(1):"-"}</td><td>${market?market.toFixed(1):"-"}</td><td>${prob?(prob*100).toFixed(2)+"%":"-"}</td><td class="${e.evAvailable?(e.ev>=1?"good":"bad"):"muted"}">${e.evAvailable?n(e.ev).toFixed(3):"-"}</td><td>${n(e.ai).toFixed(1)}</td><td><span class="badge ${e.ev>=1&&e.evAvailable?"good":""}">${verdict}</span></td><td>${esc(e.probabilitySource||"-")}</td></tr>`
@@ -5710,10 +5750,17 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
     captureExpectedSnapshot(entries,"test");recalcEntryScores(entries,{race_id:"test"});
     const book=probabilityBook(entries),sum=entries.reduce((s,e)=>s+n(e.netkeibaWinProb),0),exacta=permutations([1,2,3],2).reduce((s,x)=>s+ticketProbability("exacta",x.join(">"),book),0);
     const pairs=combinations([1,2,3],2),quinella=pairs.reduce((s,x)=>s+ticketProbability("quinella",x.join("-"),book),0),trifecta=permutations([1,2,3],3).reduce((s,x)=>s+ticketProbability("trifecta",x.join(">"),book),0),trio=ticketProbability("trio","1-2-3",book),placeTotal=[1,2,3].reduce((s,x)=>s+ticketProbability("place",String(x),book),0),api=parseNetkeibaOddsPayload(JSON.stringify({status:"yoso",data:{odds:{1:{1:["2.0","1"],2:["3.0","2"],3:["6.0","3"]},4:{"1-2":"5.5"},8:{"1-2-3":"21.0"}}}}));
-    const checks={probabilitySum:Math.abs(sum-1)<1e-9,evFormula:Math.abs(entries[0].ev-1.2)<1e-9,orderedTop2Sum:Math.abs(exacta-1)<1e-9,unorderedTop2Sum:Math.abs(quinella-1)<1e-9,orderedTop3Sum:Math.abs(trifecta-1)<1e-9,unorderedTop3Sum:Math.abs(trio-1)<1e-9,placeProbabilityTotal:Math.abs(placeTotal-2)<1e-9,apiYosoStatus:api.isYoso,apiWinOdds:api.markets.win["1"]===2,apiQuinellaOdds:api.markets.quinella["1-2"]===5.5,apiTrifectaOdds:api.markets.trifecta["1>2>3"]===21,missingMarketIsZero:(()=>{const copy={...entries[0],marketWinOdds:0,odds:0};recalcEntryScores([copy]);return copy.ev===0})()};
+    const historical=[
+      {race_id:"past",horseNo:1,popularity:1,marketWinOdds:4,odds:4,oddsStatus:"market",ai:90},
+      {race_id:"past",horseNo:2,popularity:2,marketWinOdds:5,odds:5,oddsStatus:"market",ai:80},
+      {race_id:"past",horseNo:3,popularity:3,marketWinOdds:8,odds:8,oddsStatus:"market",ai:70}
+    ];
+    recalcEntryScores(historical,{race_id:"past",type:"JRA",date:"20250101",status:"確定"});
+    const historicalSum=historical.reduce((total,entry)=>total+n(entry.netkeibaWinProb),0);
+    const checks={probabilitySum:Math.abs(sum-1)<1e-9,evFormula:Math.abs(entries[0].ev-1.2)<1e-9,orderedTop2Sum:Math.abs(exacta-1)<1e-9,unorderedTop2Sum:Math.abs(quinella-1)<1e-9,orderedTop3Sum:Math.abs(trifecta-1)<1e-9,unorderedTop3Sum:Math.abs(trio-1)<1e-9,placeProbabilityTotal:Math.abs(placeTotal-2)<1e-9,apiYosoStatus:api.isYoso,apiWinOdds:api.markets.win["1"]===2,apiQuinellaOdds:api.markets.quinella["1-2"]===5.5,apiTrifectaOdds:api.markets.trifecta["1>2>3"]===21,missingMarketIsZero:(()=>{const copy={...entries[0],marketWinOdds:0,odds:0};recalcEntryScores([copy]);return copy.ev===0})(),historicalProbabilitySum:Math.abs(historicalSum-1)<1e-9,historicalEvAvailable:historical.some(entry=>entry.evAvailable&&entry.ev>0),historicalSource:historical.every(entry=>entry.probabilitySource==="netkeiba:historical-rank-prior")};
     return{ok:Object.values(checks).every(Boolean),checks}
   }
-  window.__THEKEIBA_NETKEIBA_EV__={version:VERSION,parseOddsPayload:parseNetkeibaOddsPayload,normalizeMarketMap,ticketProbability,recalculate:recalcEntryScores,selfTest};
+  window.__THEKEIBA_NETKEIBA_EV__={version:VERSION,parseOddsPayload:parseNetkeibaOddsPayload,normalizeMarketMap,ticketProbability,recalculate:recalcEntryScores,historicalPrior:captureHistoricalNetkeibaPrior,selfTest};
 })();
 </script>
 
@@ -5908,8 +5955,8 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 })();
 </script>
 
-<script id="selectedVenueScheduleAndRaceNameGuardV136">
-/* v1.3.6 回帰テスト・診断用の公開API */
+<script id="selectedVenueScheduleAndRaceNameGuardV137">
+/* v1.3.7 回帰テスト・診断用の公開API */
 window.__THEKEIBA_V135__={
   isRaceNameActionLabel,
   sanitizeRaceName,
@@ -5924,6 +5971,10 @@ window.__THEKEIBA_V136__={
   isJapanesePublicHolidayDate,
   explicitNetkeibaNoRacePage,
   loadSelectedVenueScheduleProbe
+};
+window.__THEKEIBA_V137__={
+  ...window.__THEKEIBA_V136__,
+  netkeibaEv:window.__THEKEIBA_NETKEIBA_EV__
 };
 </script>
 
