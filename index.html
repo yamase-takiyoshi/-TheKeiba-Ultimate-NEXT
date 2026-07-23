@@ -1986,7 +1986,7 @@ ${lastError}
                 resultReady=hasUsableConfirmedResult(savedResult);
                 if(!savedEntries.length){ok=false;window.__LAST_BUNDLE_ERROR__="出走馬を保存・確認できません"}
                 else if(resultRequired&&!resultReady){ok=false;missingResultAfterFetch=true;window.__LAST_BUNDLE_ERROR__="過去レースの確定結果・払戻を取得または解析できません"}
-                else if(resultRequired&&!hasBacktestEvMarketCoverage(savedEntries)){ok=false;missingResultAfterFetch=true;window.__LAST_BUNDLE_ERROR__="過去EV用の単勝オッズ・人気を結果表から取得または解析できません"}
+                else if(resultRequired&&!hasBacktestEvMarketCoverage(savedEntries)){ok=false;missingResultAfterFetch=true;window.__LAST_BUNDLE_ERROR__=window.__THEKEIBA_TICKET_ODDS_REPAIR__?.coverageMessage?.(savedEntries)||"過去EV用の選択券種オッズを取得または解析できません"}
               }catch(verifyError){ok=false;window.__LAST_BUNDLE_ERROR__=`取得後のDB確認失敗: ${indexedDbErrorText(verifyError)}`}
             }
             if(ok)break;
@@ -7498,6 +7498,202 @@ window.__THEKEIBA_V1311__={
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
   window.__THEKEIBA_CHECKBOX_FIX__={version:'1.4.5-checkbox-fix',refresh:bind};
+})();
+</script>
+
+
+
+<!-- v1.4.5 selected ticket odds repair: JRA API per market + HTML fallback + exact completeness diagnostics -->
+<script id="ticketOddsRepairV145">
+(function(){
+  "use strict";
+  const VERSION="v1.4.5 TicketOddsRepair r1";
+  const TYPES=["win","place","bracketQuinella","quinella","wide","exacta","trio","trifecta"];
+  const API_CODE={win:"1",place:"2",bracketQuinella:"3",quinella:"4",wide:"5",exacta:"6",trio:"7",trifecta:"8"};
+  const PAGE_CODE={win:"b1",place:"b1",bracketQuinella:"b2",quinella:"b3",wide:"b4",exacta:"b5",trio:"b6",trifecta:"b7"};
+  const LABEL={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
+  const ORDERED=new Set(["exacta","trifecta"]),TRIPLE=new Set(["trio","trifecta"]);
+  const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+  const clone=v=>{try{return structuredClone(v)}catch(_){return JSON.parse(JSON.stringify(v??null))}};
+  function emptyBook(){return{win:{},place:{},bracketQuinella:{},quinella:{},wide:{},exacta:{},trio:{},trifecta:{}}}
+  function cleanBook(raw={}){
+    const out=emptyBook();
+    for(const type of TYPES){
+      const src=raw?.[type];if(!src||typeof src!=="object")continue;
+      for(const [key,value] of Object.entries(src)){const odds=n(value?.odds??value?.odds_min??value?.min??value);if(odds>0)out[type][String(key)]=odds}
+    }
+    return out
+  }
+  function mergeBook(base={},addition={}){
+    const out=cleanBook(base),more=cleanBook(addition);
+    for(const type of TYPES)Object.assign(out[type],more[type]);
+    return out
+  }
+  function selectedTypes(c){
+    const type=String(c?.ticketType||document.getElementById("simTicket")?.value||"win");
+    return type==="all"?[...TYPES]:TYPES.includes(type)?[type]:["win"]
+  }
+  function comboKey(type,nums){
+    nums=nums.map(Number).filter(x=>x>0);
+    if(type==="win"||type==="place")return nums.length?String(nums[0]):"";
+    const arity=TRIPLE.has(type)?3:2;if(nums.length<arity)return"";nums=nums.slice(0,arity);
+    return ORDERED.has(type)?nums.join(">"):nums.sort((a,b)=>a-b).join("-")
+  }
+  function oddsValue(text){
+    const values=(String(text||"").normalize("NFKC").replace(/,/g,"").match(/\d+(?:\.\d+)?/g)||[]).map(Number).filter(x=>x>0);
+    return values.length?values[0]:0
+  }
+  function validNumber(type,x){return Number.isInteger(x)&&x>=1&&x<=(type==="bracketQuinella"?8:18)}
+  function parseRows(doc,type,root=doc){
+    const out={},arity=type==="win"||type==="place"?1:TRIPLE.has(type)?3:2;
+    const nodes=[...root.querySelectorAll("tr")];
+    for(const row of nodes){
+      const cells=[...row.querySelectorAll("th,td")];if(cells.length<2)continue;
+      const oddsCell=cells[cells.length-1],odds=oddsValue(oddsCell.textContent);if(!(odds>0))continue;
+      const comboCells=cells.length>=3?cells.slice(1,-1):cells.slice(0,-1);
+      let nums=(comboCells.map(x=>x.textContent||"").join(" ").normalize("NFKC").match(/(?:^|\D)(1[0-8]|[1-9])(?=\D|$)/g)||[])
+        .map(x=>Number(String(x).replace(/\D/g,""))).filter(x=>validNumber(type,x));
+      if(nums.length<arity){
+        const attrs=[];for(const el of row.querySelectorAll("[data-umaban],[data-horse-no],[data-number],[data-num],[value]"))for(const a of ["data-umaban","data-horse-no","data-number","data-num","value"]){const v=Number(el.getAttribute(a));if(validNumber(type,v))attrs.push(v)}
+        if(attrs.length>=arity)nums=attrs
+      }
+      if(nums.length<arity)continue;nums=nums.slice(-arity);
+      const key=comboKey(type,nums);if(key)out[key]=odds
+    }
+    return out
+  }
+  function headingPattern(type){
+    return{win:/^単勝$/,place:/^複勝$/,bracketQuinella:/^枠連$/,quinella:/^馬連$/,wide:/^ワイド$/,exacta:/^馬単$/,trio:/^(?:3|３)連複$/,trifecta:/^(?:3|３)連単$/}[type]
+  }
+  function parseHtmlMarket(raw,type){
+    const html=typeof unwrapBridgeHtml==="function"?unwrapBridgeHtml(raw):String(raw||"");if(!html.trim())return{};
+    const doc=new DOMParser().parseFromString(html,"text/html"),parser=window.__THEKEIBA_NETKEIBA_EV__?.parseOddsPayload;
+    // Some pages embed a JSON/JSONP payload. Prefer it when available.
+    if(typeof parser==="function"){
+      for(const script of doc.querySelectorAll("script")){
+        const text=String(script.textContent||"").trim();if(text.length<20||text.length>400000||!/odds|オッズ|race_odds/i.test(text))continue;
+        const candidates=[text];
+        const assign=text.match(/(?:odds|race_odds|odds_data)\s*[:=]\s*([\[{][\s\S]*[\]}])\s*;?$/i);if(assign)candidates.push(assign[1]);
+        for(const candidate of candidates){try{const parsed=parser(candidate),map=cleanBook(parsed?.markets||{})[type];if(Object.keys(map).length)return map}catch(_){}}
+      }
+    }
+    const pattern=headingPattern(type),heads=[...doc.querySelectorAll("h1,h2,h3,h4,dt,caption,.Title,.title,[class*='Title']")];
+    for(const head of heads){
+      const text=String(head.textContent||"").normalize("NFKC").replace(/\s+/g,"").trim();if(!pattern?.test(text))continue;
+      let node=head.nextElementSibling;
+      for(let step=0;node&&step<8;step++,node=node.nextElementSibling){
+        const map=parseRows(doc,type,node);if(Object.keys(map).length)return map;
+        if(/^H[1-4]$/.test(node.tagName))break
+      }
+    }
+    return parseRows(doc,type,doc)
+  }
+  function pageUrls(rid,kind,type){
+    const q=`race_id=${encodeURIComponent(rid)}&type=${PAGE_CODE[type]}`;
+    return String(kind).toUpperCase()==="JRA"
+      ?[`https://race.netkeiba.com/odds/index.html?${q}`,`https://race.sp.netkeiba.com/odds/index.html?${q}`]
+      :[`https://nar.netkeiba.com/odds/index.html?${q}`,`https://nar.sp.netkeiba.com/odds/index.html?${q}`]
+  }
+  async function fetchApiBook(rid,wanted){
+    const parser=window.__THEKEIBA_NETKEIBA_EV__?.parseOddsPayload;if(typeof parser!=="function")return{book:emptyBook(),status:"",errors:["API parser unavailable"]};
+    let book=emptyBook(),status="",isYoso=false;const errors=[];
+    const queue=["all",...wanted.map(t=>API_CODE[t])].filter((v,i,a)=>a.indexOf(v)===i);
+    for(const apiType of queue){
+      const missing=wanted.filter(t=>!Object.keys(book[t]||{}).length);if(apiType!=="all"&&!missing.some(t=>API_CODE[t]===apiType))continue;
+      const url=`https://race.netkeiba.com/api/api_get_jra_odds.html?pid=api_get_jra_odds&input=UTF-8&output=json&race_id=${encodeURIComponent(rid)}&type=${apiType}&action=init&sort=odds&compress=0`;
+      try{const raw=await bridgeLegacyUrl(url,{timeout:26000}),parsed=parser(raw);book=mergeBook(book,parsed?.markets||{});status=parsed?.status||status;isYoso=isYoso||!!parsed?.isYoso}
+      catch(error){errors.push(`API type=${apiType}: ${error?.message||error}`)}
+    }
+    return{book,status,isYoso,errors}
+  }
+  async function fetchHtmlType(rid,kind,type){
+    const errors=[];
+    for(const url of pageUrls(rid,kind,type)){
+      try{const raw=await bridgeLegacyUrl(url,{timeout:26000}),map=parseHtmlMarket(raw,type);if(Object.keys(map).length)return{map,url,errors}}
+      catch(error){errors.push(`${new URL(url).host}: ${error?.message||error}`)}
+    }
+    return{map:{},url:"",errors}
+  }
+  function bookFrom(race,entries){return cleanBook(race?.ticketOdds||entries?.find(e=>e?.ticketOddsBook)?.ticketOddsBook||{})}
+  function attachBook(entries,book){
+    const clean=cleanBook(book);
+    for(const entry of entries||[])entry.ticketOddsBook=clone(clean);
+  }
+  function applyWin(entries,book){for(const e of entries||[]){const o=n(book?.win?.[String(n(e.horseNo))]);if(o>0){e.marketWinOdds=o;e.odds=o;e.oddsWin=o;e.oddsStatus="market";e.marketOddsCapturedAt=new Date().toISOString()}}}
+  function candidateEntries(entries,c){
+    const single=String(c?.ticketType||"win")==="win",legacy=c?.evEvidenceMode==="legacyTop3",minAi=n(c?.minAi),minEv=n(c?.minEv),minOdds=n(c?.minOdds),maxOdds=n(c?.maxOdds,999);
+    const rows=(entries||[]).filter(e=>n(e.horseNo)>0&&n(e.netkeibaWinProb)>0&&n(e.ai)>=minAi&&(!single||(n(e.marketWinOdds)>0&&(legacy||n(e.ev)>=minEv)&&n(e.marketWinOdds)>=minOdds&&n(e.marketWinOdds)<=maxOdds)));
+    try{const sorters=simulationEntrySorters(),sorter=sorters?.[c?.priority]||sorters?.ev;if(sorter)rows.sort(sorter)}catch(_){rows.sort((a,b)=>n(b.ev)-n(a.ev)||n(b.ai)-n(a.ai))}
+    return rows.slice(0,Math.max(1,n(c?.topN,3)))
+  }
+  function expectedKeys(type,entries){
+    const nums=entries.map(e=>n(e.horseNo)).filter(Boolean),out=[];
+    if(type==="win"||type==="place")return nums.map(x=>String(x));
+    let sets=[];
+    if(type==="bracketQuinella")sets=typeof bracketPairs==="function"?bracketPairs(entries):[];
+    else if(type==="quinella"||type==="wide")sets=typeof combinations==="function"?combinations(nums,2):[];
+    else if(type==="exacta")sets=typeof permutations==="function"?permutations(nums,2):[];
+    else if(type==="trio")sets=typeof combinations==="function"?combinations(nums,3):[];
+    else if(type==="trifecta")sets=typeof permutations==="function"?permutations(nums,3):[];
+    for(const set of sets){const key=comboKey(type,set);if(key)out.push(key)}return[...new Set(out)]
+  }
+  function coverage(entries,c=(()=>{try{return readSimConfig()}catch(_){return{ticketType:"win",topN:3,priority:"ev"}}})()){
+    const rows=(entries||[]).filter(e=>n(e.horseNo)>0),top=candidateEntries(rows,c),book=bookFrom(null,rows),details=[];
+    const winHave=rows.filter(e=>n(e.marketWinOdds)>0||(e.oddsStatus!=="yoso"&&n(e.odds||e.oddsWin)>0)).length,winNeed=Math.min(rows.length,Math.max(2,Math.ceil(rows.length*.6)));
+    details.push({type:"win",label:LABEL.win,have:winHave,need:winNeed,missing:Math.max(0,winNeed-winHave),complete:winHave>=winNeed});
+    for(const type of selectedTypes(c)){
+      if(type==="win")continue;const keys=expectedKeys(type,top),map=book[type]||{},have=keys.filter(k=>n(map[k])>0).length,need=keys.length;
+      details.push({type,label:LABEL[type],have,need,missing:Math.max(0,need-have),complete:need===0||have>=need})
+    }
+    return{complete:details.every(x=>x.complete),details,book,topCount:top.length,ticketType:String(c?.ticketType||"win")}
+  }
+  function coverageMessage(entries){
+    const d=coverage(entries),bad=d.details.filter(x=>!x.complete);if(!bad.length)return"";
+    return`選択券種オッズ不足：${bad.map(x=>`${x.label} ${x.have}/${x.need}`).join("、")}。専用オッズページを再取得します`;
+  }
+
+  const previousBundle=window.bridgeLoadBundle;
+  window.bridgeLoadBundle=async function(...args){
+    const ok=await previousBundle.apply(this,args);if(!ok)return ok;
+    const rawRid=args[0]??document.getElementById("bridgeRaceId")?.value??"",rid=typeof normalizeAnalyticsRaceIdValue==="function"?normalizeAnalyticsRaceIdValue(rawRid):String(rawRid||"");if(!rid||!state?.db)return ok;
+    try{
+      const [race,entries]=await Promise.all([getOne("races",rid),getByIndex("entries","race_id",rid)]);if(!race||!entries.length)return ok;
+      const c=readSimConfig(),wanted=[...new Set(["win",...selectedTypes(c)])],kind=String(race.type||"").toUpperCase();let book=bookFrom(race,entries),status=String(race.netkeibaOddsStatus||""),errors=[];
+      if(kind==="JRA"){
+        const api=await fetchApiBook(rid,wanted);book=mergeBook(book,api.book);status=api.status||status;errors.push(...api.errors)
+      }
+      for(const type of wanted){
+        if(Object.keys(book[type]||{}).length)continue;
+        const html=await fetchHtmlType(rid,kind,type);if(Object.keys(html.map).length)book[type]=html.map;errors.push(...html.errors)
+      }
+      applyWin(entries,book);attachBook(entries,book);
+      const updated={...race,ticketOdds:cleanBook(book),netkeibaOddsStatus:status,ticketOddsUpdatedAt:new Date().toISOString(),ticketOddsErrors:errors.slice(-8)};
+      try{if(typeof recalcEntryScores==="function")recalcEntryScores(entries,updated)}catch(error){errors.push(`EV再計算: ${error?.message||error}`)}
+      await Promise.all([putMany("entries",entries),putOne("races",updated)]);
+      const d=coverage(entries,c);updated.ticketOddsCoverage={ticketType:d.ticketType,topCount:d.topCount,details:d.details,complete:d.complete,checkedAt:new Date().toISOString()};await putOne("races",updated);
+      window.__LAST_TICKET_ODDS_COVERAGE__=updated.ticketOddsCoverage;
+      if(!d.complete)window.__LAST_EV_ERROR__=coverageMessage(entries);
+      return ok
+    }catch(error){window.__LAST_EV_ERROR__=`券種別オッズ修復: ${error?.message||error}`;console.error("ticket odds repair",error);return ok}
+  };
+
+  // A race is only "existing complete" when the selected market combinations for the configured Top N are present.
+  window.hasBacktestEvMarketCoverage=function(entries=[]){return coverage(entries).complete};
+
+  // Replace the misleading "absolute value shortage" message when the real cause is missing market odds.
+  const previousCandidate=window.buildSimulationCandidate;
+  if(typeof previousCandidate==="function")window.buildSimulationCandidate=async function(...args){
+    const item=await previousCandidate.apply(this,args),c=args[2]||readSimConfig(),d=coverage(item?.entries||[],c),bad=d.details.filter(x=>!x.complete);
+    if(bad.length&&(!item?.candidateTickets?.length||item?.thinkingBeforeCount===0)){
+      item.candidateTickets=[];item.purchaseTickets=[];item.rankScore=-1;item.marketOddsMissing=true;item.thinkingDecision="見送り";
+      item.thinkingSkipReason=`市場オッズ未取得：${bad.map(x=>`${x.label} ${x.have}/${x.need}`).join("、")}（Top${d.topCount}対象）。自動分割バッチ同期で再取得してください`;
+    }
+    return item
+  };
+
+  window.__THEKEIBA_TICKET_ODDS_REPAIR__={version:VERSION,coverage,coverageMessage,parseHtmlMarket,fetchHtmlType,selectedTypes};
+  try{document.documentElement.dataset.ticketOddsRepair="1"}catch(_){ }
+  console.log(`[${VERSION}] selected ticket odds repair ready`);
 })();
 </script>
 
