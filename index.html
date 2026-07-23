@@ -7697,5 +7697,260 @@ window.__THEKEIBA_V1311__={
 })();
 </script>
 
+
+
+<!-- v1.4.5 TicketOddsRepair r2: NAR full-market, WF-aware coverage, Safari IndexedDB lean storage -->
+<script id="ticketOddsRepairV145R2">
+(function(){
+  "use strict";
+  const VERSION="v1.4.5 TicketOddsRepair r2";
+  const TYPES=["win","place","bracketQuinella","quinella","wide","exacta","trio","trifecta"];
+  const LABEL={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
+  const ORDERED=new Set(["exacta","trifecta"]),TRIPLE=new Set(["trio","trifecta"]);
+  const num=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+  const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  function emptyBook(){return{win:{},place:{},bracketQuinella:{},quinella:{},wide:{},exacta:{},trio:{},trifecta:{}}}
+  function cleanBook(raw={}){
+    const out=emptyBook();
+    for(const type of TYPES){
+      const src=raw?.[type];if(!src||typeof src!=="object")continue;
+      for(const [key,value] of Object.entries(src)){
+        const odds=num(value?.odds??value?.odds_min??value?.min??value);
+        if(odds>0)out[type][String(key)]=odds;
+      }
+    }
+    return out;
+  }
+  function mergeBook(base={},addition={}){
+    const out=cleanBook(base),more=cleanBook(addition);
+    for(const type of TYPES)Object.assign(out[type],more[type]);
+    return out;
+  }
+  function hasBook(book={}){return TYPES.some(type=>Object.keys(book?.[type]||{}).length>0)}
+  function clone(value){try{return structuredClone(value)}catch(_){return JSON.parse(JSON.stringify(value??null))}}
+  function config(){try{return readSimConfig()}catch(_){return{ticketType:document.getElementById("simTicket")?.value||"win",topN:3,priority:"ev",minAi:0}}}
+  function selectedTypes(c=config()){
+    const type=String(c?.ticketType||"win");
+    return type==="all"?[...TYPES]:TYPES.includes(type)?[type]:["win"];
+  }
+  function bookFromEntriesSafe(entries=[]){
+    let book=emptyBook();
+    for(const entry of entries||[])if(entry?.ticketOddsBook&&typeof entry.ticketOddsBook==="object")book=mergeBook(book,entry.ticketOddsBook);
+    return book;
+  }
+  function probabilityCarrier(entries=[]){return(entries||[]).find(e=>e?.netkeibaProbabilityBook&&typeof e.netkeibaProbabilityBook==="object")?.netkeibaProbabilityBook||{}}
+  function comboKey(type,nums){
+    const values=(nums||[]).map(Number).filter(x=>x>0);
+    if(type==="win"||type==="place")return values.length?String(values[0]):"";
+    const arity=TRIPLE.has(type)?3:2;if(values.length<arity)return"";
+    const picked=values.slice(0,arity);
+    return ORDERED.has(type)?picked.join(">"):[...picked].sort((a,b)=>a-b).join("-");
+  }
+  function combinationsLocal(values,k){
+    const out=[];
+    function walk(start,row){if(row.length===k){out.push([...row]);return}for(let i=start;i<values.length;i++){row.push(values[i]);walk(i+1,row);row.pop()}}
+    walk(0,[]);return out;
+  }
+  function permutationsLocal(values,k){
+    const out=[];
+    function walk(row,used){if(row.length===k){out.push([...row]);return}for(const value of values){if(used.has(value))continue;used.add(value);row.push(value);walk(row,used);row.pop();used.delete(value)}}
+    walk([],new Set());return out;
+  }
+  function expectedKeys(type,entries=[]){
+    const nums=(entries||[]).map(e=>num(e?.horseNo)).filter(x=>x>0);let sets=[];
+    if(type==="win"||type==="place")return nums.map(String);
+    if(type==="bracketQuinella"){
+      const frames=[...new Set((entries||[]).map(e=>num(e?.frameNo||e?.frame)).filter(x=>x>0))];sets=combinationsLocal(frames,2);
+      for(const f of frames)if((entries||[]).filter(e=>num(e?.frameNo||e?.frame)===f).length>=2)sets.push([f,f]);
+    }else if(type==="quinella"||type==="wide")sets=combinationsLocal(nums,2);
+    else if(type==="exacta")sets=permutationsLocal(nums,2);
+    else if(type==="trio")sets=combinationsLocal(nums,3);
+    else if(type==="trifecta")sets=permutationsLocal(nums,3);
+    return[...new Set(sets.map(set=>comboKey(type,set)).filter(Boolean))];
+  }
+  function marketWin(entry){return num(entry?.marketWinOdds||entry?.oddsWin||(entry?.oddsStatus==="yoso"?0:entry?.odds))}
+  function popularity(entry){const p=num(entry?.popularity,999);return p>0?p:999}
+  function topForCoverage(entries=[],c=config()){
+    let rows=(entries||[]).filter(e=>num(e?.horseNo)>0&&marketWin(e)>0);
+    const aiFiltered=rows.filter(e=>num(e?.ai)>=num(c?.minAi));
+    if(aiFiltered.length>=Math.min(rows.length,Math.max(3,num(c?.topN,3))))rows=aiFiltered;
+    const priority=String(c?.priority||"ev");
+    rows.sort((a,b)=>{
+      if(priority==="ai")return num(b.ai)-num(a.ai)||popularity(a)-popularity(b)||marketWin(a)-marketWin(b);
+      if(priority==="expected")return num(b.ev)-num(a.ev)||num(b.netkeibaWinProb)-num(a.netkeibaWinProb)||num(b.ai)-num(a.ai)||marketWin(a)-marketWin(b);
+      if(priority==="balanced")return(num(b.ev)*100+num(b.ai)*.1)-(num(a.ev)*100+num(a.ai)*.1)||popularity(a)-popularity(b);
+      return num(b.ev)-num(a.ev)||num(b.netkeibaWinProb)-num(a.netkeibaWinProb)||num(b.ai)-num(a.ai)||popularity(a)-popularity(b)||marketWin(a)-marketWin(b);
+    });
+    return rows.slice(0,Math.max(1,num(c?.topN,3)));
+  }
+  function coverage(entries=[],c=config(),candidateEntries=null){
+    const runners=(entries||[]).filter(e=>num(e?.horseNo)>0),book=bookFromEntriesSafe(runners),top=Array.isArray(candidateEntries)?candidateEntries:topForCoverage(runners,c),details=[];
+    const winHave=runners.filter(e=>marketWin(e)>0).length,winNeed=Math.min(runners.length,Math.max(2,Math.ceil(runners.length*.6)));
+    details.push({type:"win",label:LABEL.win,have:winHave,need:winNeed,complete:winHave>=winNeed});
+    for(const type of selectedTypes(c)){
+      if(type==="win")continue;
+      const arity=TRIPLE.has(type)?3:type==="place"?1:2;
+      const keys=top.length>=arity?expectedKeys(type,top):[],map=book[type]||{},have=keys.filter(key=>num(map[key])>0).length,need=keys.length;
+      details.push({type,label:LABEL[type],have,need,topCount:top.length,complete:top.length>=arity&&need>0&&have>=need,materialMissing:top.length<arity});
+    }
+    return{complete:details.every(d=>d.complete),details,book,top,ticketType:String(c?.ticketType||"win")};
+  }
+  function coverageMessage(entries=[],c=config(),candidateEntries=null){
+    const d=coverage(entries,c,candidateEntries),bad=d.details.filter(x=>!x.complete);
+    if(!bad.length)return"";
+    return bad.map(x=>x.materialMissing?`${x.label} 候補馬不足 ${x.topCount}/${TRIPLE.has(x.type)?3:2}`:`${x.label}市場オッズ ${x.have}/${x.need}`).join("、");
+  }
+
+  // Safari IndexedDB対策: 大きな券種別オッズ表と確率表を全出走馬へ複製せず、1レース1頭の搬送レコードだけに保持する。
+  function compactEntryRows(rows=[]){
+    const list=(Array.isArray(rows)?rows:[]).filter(Boolean).map(row=>({...row})),groups=new Map();
+    for(const row of list){const rid=String(row.race_id||"");const group=groups.get(rid)||[];group.push(row);groups.set(rid,group)}
+    for(const group of groups.values()){
+      group.sort((a,b)=>num(a.horseNo)-num(b.horseNo)||String(a.id||"").localeCompare(String(b.id||"")));
+      let merged=emptyBook(),probBook=null;
+      for(const row of group){if(row.ticketOddsBook)merged=mergeBook(merged,row.ticketOddsBook);if(!probBook&&row.netkeibaProbabilityBook)probBook=clone(row.netkeibaProbabilityBook)}
+      const carrier=group[0];
+      for(const row of group){delete row.ticketOddsBook;delete row.netkeibaProbabilityBook}
+      if(carrier&&hasBook(merged))carrier.ticketOddsBook=merged;
+      if(carrier&&probBook)carrier.netkeibaProbabilityBook=probBook;
+    }
+    return list;
+  }
+  if(typeof putMany==="function"){
+    const basePutMany=putMany;
+    const replacement=async function(store,rows){
+      const prepared=store==="entries"?compactEntryRows(rows):(Array.isArray(rows)?rows:[]).filter(Boolean),chunkSize=store==="entries"?80:200;
+      for(let i=0;i<prepared.length;i+=chunkSize){
+        const chunk=prepared.slice(i,i+chunkSize),write=()=>basePutMany(store,chunk);
+        if(typeof withIndexedDbRecovery==="function")await withIndexedDbRecovery(write,`${store}軽量保存 ${i+1}-${i+chunk.length}`,3);else await write();
+        if(prepared.length>chunkSize)await sleep(0);
+      }
+    };
+    try{putMany=replacement;window.putMany=replacement}catch(_){window.putMany=replacement}
+  }
+
+  // ticket/probability bookは配列先頭固定ではなく搬送レコードを探索する。
+  try{
+    const replacement=function(entries=[]){
+      const saved=probabilityCarrier(entries),probabilities=saved.probabilities||Object.fromEntries((entries||[]).map(e=>[String(e.horseNo),num(e.netkeibaWinProb)])),frames=saved.frames||Object.fromEntries((entries||[]).map(e=>[String(e.horseNo),num(e.frameNo||e.frame)]));
+      return{probabilities,frames,fieldSize:num(saved.fieldSize,Object.keys(probabilities).length),ticketOdds:bookFromEntriesSafe(entries),race_id:saved.race_id||(entries||[])[0]?.race_id||""};
+    };
+    bookFromEntries=replacement;window.bookFromEntries=replacement;
+  }catch(error){console.warn("book carrier patch",error)}
+
+  // 同期の既存完全判定を、WF確率生成前でも選択券種の実オッズ有無を検査できる方式へ置換する。
+  try{
+    const replacement=function(entries=[]){return coverage(entries,config()).complete};
+    hasBacktestEvMarketCoverage=replacement;window.hasBacktestEvMarketCoverage=replacement;
+  }catch(error){console.warn("coverage patch",error)}
+
+  async function fetchNarFullMarket(rid,type){
+    const parser=window.__THEKEIBA_TICKET_ODDS_REPAIR__?.parseHtmlMarket;if(typeof parser!=="function")return{map:{},errors:["HTML parser unavailable"]};
+    const urls=[
+      `https://nar.sp.netkeiba.com/odds/index.html?race_id=${encodeURIComponent(rid)}`,
+      `https://nar.netkeiba.com/odds/index.html?race_id=${encodeURIComponent(rid)}&type=b0`,
+      `https://nar.netkeiba.com/odds/index.html?race_id=${encodeURIComponent(rid)}`
+    ],errors=[];
+    for(const url of urls){
+      try{const raw=await bridgeLegacyUrl(url,{timeout:30000}),map=parser(raw,type);if(Object.keys(map||{}).length)return{map,url,errors}}
+      catch(error){errors.push(`${new URL(url).host}: ${error?.message||error}`)}
+    }
+    return{map:{},url:"",errors};
+  }
+  if(typeof bridgeLoadBundle==="function"){
+    const baseBridge=bridgeLoadBundle;
+    const replacement=async function(...args){
+      const ok=await baseBridge.apply(this,args);if(!ok)return ok;
+      const rawRid=args[0]??document.getElementById("bridgeRaceId")?.value??"",rid=typeof normalizeAnalyticsRaceIdValue==="function"?normalizeAnalyticsRaceIdValue(rawRid):String(rawRid||"");
+      if(!rid||!state?.db)return ok;
+      try{
+        const [race,entries]=await Promise.all([getOne("races",rid),getByIndex("entries","race_id",rid)]);if(!race||!entries.length)return ok;
+        const c=config(),kind=String(race.type||"").toUpperCase();let d=coverage(entries,c),book=mergeBook(race.ticketOdds||{},bookFromEntriesSafe(entries)),errors=[];
+        if(!d.complete&&kind==="NAR"){
+          for(const type of selectedTypes(c)){
+            if(type==="win")continue;
+            const bad=d.details.find(x=>x.type===type&&!x.complete);if(!bad)continue;
+            const fetched=await fetchNarFullMarket(rid,type);errors.push(...fetched.errors);if(Object.keys(fetched.map||{}).length)book[type]={...(book[type]||{}),...fetched.map};
+          }
+          const compact=compactEntryRows(entries.map(e=>({...e,ticketOddsBook:book}))),updatedRace={...race,ticketOdds:cleanBook(book),ticketOddsUpdatedAt:new Date().toISOString(),ticketOddsErrors:[...(race.ticketOddsErrors||[]),...errors].slice(-12)};
+          const save=()=>Promise.all([putMany("entries",compact),putOne("races",updatedRace)]);
+          if(typeof withIndexedDbRecovery==="function")await withIndexedDbRecovery(save,`${rid} NAR券種別オッズ保存`,3);else await save();
+          d=coverage(compact,c);updatedRace.ticketOddsCoverage={ticketType:d.ticketType,topCount:d.top.length,details:d.details,complete:d.complete,checkedAt:new Date().toISOString()};await putOne("races",updatedRace);
+        }
+        window.__LAST_TICKET_ODDS_COVERAGE__={ticketType:d.ticketType,topCount:d.top.length,details:d.details,complete:d.complete};
+        if(!d.complete)window.__LAST_EV_ERROR__=`選択券種オッズ不足：${coverageMessage(entries,c)}。同じレースから再試行します`;
+      }catch(error){window.__LAST_EV_ERROR__=`券種別オッズ再修復: ${error?.message||error}`;console.error("ticket odds r2",error)}
+      return ok;
+    };
+    try{bridgeLoadBundle=replacement;window.bridgeLoadBundle=replacement}catch(_){window.bridgeLoadBundle=replacement}
+  }
+
+  // 最終判定では実際に選ばれた候補馬の組合せでオッズ充足を診断し、誤った「絶対旨み不足」を出さない。
+  if(typeof buildSimulationCandidate==="function"){
+    const baseCandidate=buildSimulationCandidate;
+    const replacement=async function(...args){
+      const item=await baseCandidate.apply(this,args),c=args[2]||config(),candidates=Array.isArray(item?.candidateEntries)?item.candidateEntries:[],type=String(c?.ticketType||"win"),arity=TRIPLE.has(type)?3:type==="win"||type==="place"?1:2;
+      if(!item?.validationExcluded&&(!item?.candidateTickets?.length)){
+        if(candidates.length<arity){item.thinkingSkipReason=`候補馬不足：${arity}頭必要、条件通過${candidates.length}頭（最低AI・TopN・取得材料を確認）`;item.thinkingDecision="見送り"}
+        else{
+          const d=coverage(item.entries||[],c,candidates),bad=d.details.filter(x=>x.type!=="win"&&!x.complete);
+          if(bad.length){item.marketOddsMissing=true;item.thinkingRejectedMissing=bad.reduce((s,x)=>s+Math.max(0,x.need-x.have),0);item.thinkingSkipReason=`市場オッズ未取得：${bad.map(x=>`${x.label} ${x.have}/${x.need}`).join("、")}（実候補${candidates.length}頭）。自動分割バッチ同期で不足分だけ再取得してください`;item.thinkingDecision="見送り"}
+        }
+      }
+      return item;
+    };
+    try{buildSimulationCandidate=replacement;window.buildSimulationCandidate=replacement}catch(_){window.buildSimulationCandidate=replacement}
+  }
+
+  // 旧r1で全出走馬へ複製された巨大Bookを一度だけ軽量化する。
+  async function compactExistingDatabase(){
+    if(!state?.db||localStorage.getItem("TheKeibaTicketOddsCompactR2")==="1")return;
+    await new Promise((resolve,reject)=>{
+      let tx;
+      try{tx=state.db.transaction("entries","readwrite")}catch(error){reject(error);return}
+      const store=tx.objectStore("entries"),request=store.openCursor();let currentRace="",bookCarrier=false,probCarrier=false,changed=0;
+      request.onsuccess=event=>{
+        const cursor=event.target.result;if(!cursor)return;
+        const row={...cursor.value},rid=String(row.race_id||"");if(rid!==currentRace){currentRace=rid;bookCarrier=false;probCarrier=false}
+        let dirty=false;
+        if(row.ticketOddsBook&&typeof row.ticketOddsBook==="object"){
+          if(!bookCarrier){row.ticketOddsBook=cleanBook(row.ticketOddsBook);bookCarrier=true}else{delete row.ticketOddsBook;dirty=true}
+        }
+        if(row.netkeibaProbabilityBook&&typeof row.netkeibaProbabilityBook==="object"){
+          if(!probCarrier){probCarrier=true}else{delete row.netkeibaProbabilityBook;dirty=true}
+        }
+        if(dirty){changed++;cursor.update(row)}
+        cursor.continue();
+      };
+      request.onerror=()=>reject(request.error||new Error("entries cursor error"));tx.oncomplete=()=>resolve(changed);tx.onerror=()=>reject(tx.error||new Error("entries compact error"));tx.onabort=()=>reject(tx.error||new Error("entries compact aborted"));
+    });
+    localStorage.setItem("TheKeibaTicketOddsCompactR2","1");
+  }
+  function scheduleCompaction(){
+    const run=async()=>{try{await compactExistingDatabase();document.documentElement.dataset.ticketOddsCompact="done"}catch(error){console.warn("ticket odds DB compact",error);document.documentElement.dataset.ticketOddsCompact="retry"}};
+    setTimeout(run,2500);
+  }
+
+  // WFモードでは0と誤解されないよう、KPIへ実際のWF学習サンプルを表示する。
+  if(typeof renderSimulation==="function"){
+    const baseRender=renderSimulation;
+    const replacement=function(summary=null){
+      const out=baseRender.apply(this,arguments);
+      try{
+        const w=summary?.thinking?.walkForward,mode=summary?.thinking?.evidenceMode||document.getElementById("simEvEvidence")?.value;
+        if(mode==="walkForward"&&w){const el=document.getElementById("teSampleCount"),label=el?.previousElementSibling;if(el)el.textContent=num(w.samples).toLocaleString();if(label)label.textContent="WF学習サンプル"}
+      }catch(_){ }
+      return out;
+    };
+    try{renderSimulation=replacement;window.renderSimulation=replacement}catch(_){window.renderSimulation=replacement}
+  }
+
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",scheduleCompaction,{once:true});else scheduleCompaction();
+  window.__THEKEIBA_TICKET_ODDS_REPAIR_R2__={version:VERSION,coverage,coverageMessage,compactEntryRows,fetchNarFullMarket};
+  try{document.documentElement.dataset.ticketOddsRepair="2"}catch(_){ }
+  console.log(`[${VERSION}] lean storage + NAR full-market coverage ready`);
+})();
+
+</script>
 </body>
 </html>
