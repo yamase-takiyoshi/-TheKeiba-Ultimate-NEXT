@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.7</title>
+<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.8</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.7</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.8</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -360,7 +360,7 @@ input,select,textarea{font-size:16px}
           <div class="field"><label>予算の使い方</label><select id="simBudgetMode"><option value="sequential">レース順に購入</option><option value="dailyRank">全日ランキング</option></select></div><div class="field"><label>全日ランキング基準</label><select id="simDailyRankBasis"><option value="ev">EVの高い順</option><option value="adjusted">AI補正EVの高い順</option><option value="expected">期待払戻の高い順</option><option value="learned">過去学習後の期待利益順</option></select></div>
         </div>
         <div class="toolbar" style="margin-top:13px"><button class="btn primary" id="simSyncBtn">自動分割バッチ同期</button><button class="btn warn" id="simStopSyncBtn" type="button" aria-label="同期停止" disabled>⏹ 同期停止</button><button class="btn batch-view-toggle" id="simBatchToggleBtn" type="button" aria-controls="simSyncLiveCard" aria-expanded="true">📊 バッチグラフを隠す</button><button class="btn live-result-btn active" id="simLiveGraphBtn" type="button" aria-pressed="true">📈 結果ライブ ON</button><button class="btn good" id="simRunBtn">バックテスト開始</button><button class="btn" id="simCsvBtn">明細CSV</button><button class="btn danger" id="simDataResetBtn" type="button">🧹 SIMデータリセット</button><button class="btn" id="simSaveStrategyBtn">設定を戦略保存</button></div>
-        <div class="notice" id="simModeNotice">「実データ同期」は個別開催場の開催日を先に確認し、非開催日を飛ばしてから最大92日単位へ自動分割します。過去レースの確定結果まで検証し、結果なしは成功扱いせず再試行します。「同期なし・保存済みのみ」は通信しません。</div>
+        <div class="notice" id="simModeNotice">「実データ同期」は個別開催場の開催日を先に確認し、非開催日を飛ばしてから最大92日単位へ自動分割します。過去レースの確定結果・単勝オッズ・人気まで検証し、EV材料不足は完全取得扱いせず再取得します。「同期なし・保存済みのみ」は通信しません。</div>
         <div class="code-box" id="simDataResetStatus" style="margin-top:8px">SIMデータリセットは、SIM実行履歴・現在の集計・右側グラフ連動データだけを消去します。レース・馬柱・オッズ・確定結果・設定・戦略・予想履歴・フォワードテスト・バックアップは残ります。</div>
         <div class="code-box" id="simSyncStatus" style="margin-top:12px">未同期。現在の登録結果件数を確認中です。</div>
       </div>
@@ -382,7 +382,7 @@ input,select,textarea{font-size:16px}
           <div class="sync-live-kpi"><small>完全取得</small><strong id="simSyncLoaded">0R</strong></div>
           <div class="sync-live-kpi"><small>既存完全</small><strong id="simSyncSkipped">0R</strong></div>
           <div class="sync-live-kpi"><small>確定結果</small><strong id="simSyncConfirmed">0R</strong></div>
-          <div class="sync-live-kpi"><small>結果待ち・未取得</small><strong id="simSyncResultMissing">0R</strong></div>
+          <div class="sync-live-kpi"><small>結果・EV材料未取得</small><strong id="simSyncResultMissing">0R</strong></div>
           <div class="sync-live-kpi"><small>HTTP再試行</small><strong id="simSyncHttpFailures">0件</strong></div>
           <div class="sync-live-kpi"><small>失敗</small><strong id="simSyncFailed">0件</strong></div>
         </div>
@@ -1055,7 +1055,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.3.7-netkeiba-historical-ev-racename-guard";
+const APP_VERSION="1.3.8-netkeiba-result-odds-ev-repair";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待利益重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -1201,7 +1201,8 @@ function extractHorseWeightFromRow(row){
 function mergeEntryRecords(base={},incoming={}){
   const out={...base,...incoming};
   for(const k of ["horseId","horseName","sexAge","sex","jockeyId","jockey","jockeyName","trainerId","trainer","trainerName","horseWeight","style"]){if(!String(incoming?.[k]??"").trim()&&String(base?.[k]??"").trim())out[k]=base[k]}
-  for(const k of ["age","frameNo","frame","weight","weightCarry","bodyWeight"]){if(!(Number(incoming?.[k])>0)&&Number(base?.[k])>0)out[k]=base[k]}
+  for(const k of ["age","frameNo","frame","weight","weightCarry","bodyWeight","popularity","odds","oddsWin","marketWinOdds","ai","aiScore","netkeibaExpectedOdds","netkeibaWinProb","probWin"]){if(!(Number(incoming?.[k])>0)&&Number(base?.[k])>0)out[k]=base[k]}
+  if(!(Number(incoming?.popularity)>0)&&Number(base?.popularity)>0&&Number(base?.ai)>0){out.ai=base.ai;out.aiScore=Number(base.aiScore||base.ai)}
   out.sexAge=normalizeSexAgeField(out.sexAge,out.sex,out.age);out.sex=normalizeSexLabel(out.sex||out.sexAge);out.age=Number(out.age||String(out.sexAge).match(/\d{1,2}/)?.[0]||0);
   return out
 }
@@ -1783,6 +1784,13 @@ async function backtestCoverage(c=readSimConfig()){
   const [races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&simConfigRaceMatches(c,r)),ids=new Set(filtered.map(r=>r.race_id)),confirmed=results.filter(r=>ids.has(r.race_id)&&hasUsableConfirmedResult(r));
   return{races:filtered.length,results:confirmed.length,dates:new Set(filtered.map(r=>r.date)).size};
 }
+function hasBacktestEvMarketCoverage(entries=[]){
+  const runners=(Array.isArray(entries)?entries:[]).filter(entry=>Number(entry?.horseNo)>0);
+  if(runners.length<2)return false;
+  const ready=runners.filter(entry=>Number(entry?.marketWinOdds)>0||(entry?.oddsStatus!=="yoso"&&Number(entry?.odds||entry?.oddsWin)>0)).length,
+        required=Math.min(runners.length,Math.max(2,Math.ceil(runners.length*.6)));
+  return ready>=required
+}
 async function syncBacktestPeriod(){
   if(BACKTEST_SYNC.running){
     setSimSyncStatus("実データ同期はすでに進行中です。現在の同期を継続します。バックテストは同期完了後に実行してください。");
@@ -1942,7 +1950,7 @@ ${lastError}
           const [existingResult,existingEntries]=await withIndexedDbRecovery(
             ()=>Promise.all([getOne("results",rid),getByIndex("entries","race_id",rid)]),`${rid} 既存データ確認`,3
           );
-          if(hasUsableConfirmedResult(existingResult)&&existingEntries.length){skipped++;confirmed++;continue}
+          if(hasUsableConfirmedResult(existingResult)&&existingEntries.length&&hasBacktestEvMarketCoverage(existingEntries)){skipped++;confirmed++;continue}
           setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　${displayDate(date)} ${race.placeName||""} ${race.raceNo||race.race||""}R
 当日 ${raceIndex+1}/${races.length}R　全体日程 ${processedDays+1}/${dates.length}日（完了 ${processedDays}日）　累計検出 ${totalRaces}R
 完全取得 ${loaded}R　既存完全 ${skipped}R　確定結果 ${confirmed}R　結果待ち・未取得 ${resultMissing}R　失敗 ${failed}件${lastError?`
@@ -1960,6 +1968,7 @@ ${lastError}
                 resultReady=hasUsableConfirmedResult(savedResult);
                 if(!savedEntries.length){ok=false;window.__LAST_BUNDLE_ERROR__="出走馬を保存・確認できません"}
                 else if(resultRequired&&!resultReady){ok=false;missingResultAfterFetch=true;window.__LAST_BUNDLE_ERROR__="過去レースの確定結果・払戻を取得または解析できません"}
+                else if(resultRequired&&!hasBacktestEvMarketCoverage(savedEntries)){ok=false;missingResultAfterFetch=true;window.__LAST_BUNDLE_ERROR__="過去EV用の単勝オッズ・人気を結果表から取得または解析できません"}
               }catch(verifyError){ok=false;window.__LAST_BUNDLE_ERROR__=`取得後のDB確認失敗: ${indexedDbErrorText(verifyError)}`}
             }
             if(ok)break;
@@ -2535,12 +2544,43 @@ function findHorseNo(row){
   }
   const vals=cells.map(x=>x.textContent.trim());for(const c of vals.slice(0,5)){const n=Number(c);if(Number.isInteger(n)&&n>=1&&n<=18)return n}return 0
 }
+const ENTRY_TABLE_COLUMN_CACHE=new WeakMap();
+function entryTableColumnMap(row){
+  const table=row?.closest?.("table");if(!table)return{};
+  if(ENTRY_TABLE_COLUMN_CACHE.has(table))return ENTRY_TABLE_COLUMN_CACHE.get(table);
+  const header=[...table.querySelectorAll("tr")].find(tr=>tr.querySelectorAll("th").length>=3),
+        labels=header?[...header.querySelectorAll("th")].map(th=>String(th.textContent||"").normalize("NFKC").replace(/\s+/g,"").trim()):[],
+        aliases={
+          rank:["着順"],frameNo:["枠番"],horseNo:["馬番"],horseName:["馬名"],sexAge:["性齢"],
+          weight:["斤量"],jockey:["騎手"],odds:["単勝","単勝オッズ"],popularity:["人気"],
+          horseWeight:["馬体重"],trainer:["調教師"]
+        },map={};
+  for(const [key,names] of Object.entries(aliases)){
+    const index=labels.findIndex(label=>names.some(name=>label===name||label.startsWith(name)));
+    if(index>=0)map[key]=index
+  }
+  ENTRY_TABLE_COLUMN_CACHE.set(table,map);return map
+}
+function entryTableCellText(row,key){
+  const index=entryTableColumnMap(row)[key];if(!Number.isInteger(index))return"";
+  const cells=[...row.querySelectorAll("th,td")];
+  return String(cells[index]?.textContent||"").replace(/\u00a0|\u3000/g," ").replace(/\s+/g," ").trim()
+}
 function parseEntriesFromHtml(raw,rid){
   const html=unwrapBridgeHtml(raw),doc=new DOMParser().parseFromString(html,"text/html"),selectors="tr.HorseList,tr[class*='HorseList'],table.Shutuba_Table tbody tr,table.RaceTable01 tbody tr,table.ResultTable tbody tr,table.race_table_01 tbody tr,li.HorseList,[class*='RaceTable'] tbody tr",rowSet=new Set([...doc.querySelectorAll(selectors),...[...doc.querySelectorAll("tr,li")].filter(row=>row.querySelector('a[href*="/horse/"],a[href*="horse.html"],a[href*="horse_id="]'))]),entries=[],seen=new Set();
   for(const row of rowSet){
-    const horseName=textOf(row,[".Horse_Name",".HorseInfo .Horse_Name",".HorseName","[class*='HorseName']","a[href*='/horse/']","a[href*='horse.html']","a[href*='horse_id=']"]);if(!horseName)continue;
-    const horseNo=findHorseNo(row);if(!horseNo||seen.has(horseNo))continue;seen.add(horseNo);
-    const odds=numberFromText(textOf(row,[".Odds",".Popular .Odds","td.Odds","[class*='Odds']"])),pop=numberFromText(textOf(row,[".Popular","td.Popular","[class*='Popular']",".Ninki","[class*='Ninki']"])),jockey=textOf(row,[".Jockey","[class*='Jockey']","a[href*='/jockey/']"]),trainer=textOf(row,[".Trainer","[class*='Trainer']","a[href*='/trainer/']"]),rowText=String(row.textContent||"").replace(/\u00a0|\u3000/g," ").replace(/\s+/g," ").trim(),sexAge=extractSexAgeFromRow(row),frameNo=numberFromText(textOf(row,[".Waku","[class*='Waku']",".Waku1",".Waku2",".Waku3",".Waku4",".Waku5",".Waku6",".Waku7",".Waku8"])),weight=numberFromText(textOf(row,[".Futan","[class*='Futan']"])),horseWeight=extractHorseWeightFromRow(row),marketProb=0,ai=pop?Math.max(35,103-pop*4):50;
+    const horseName=textOf(row,[".Horse_Name",".HorseInfo .Horse_Name",".HorseName","[class*='HorseName']","a[href*='/horse/']","a[href*='horse.html']","a[href*='horse_id=']"])||entryTableCellText(row,"horseName");if(!horseName)continue;
+    const horseNo=findHorseNo(row)||numberFromText(entryTableCellText(row,"horseNo"));if(!horseNo||seen.has(horseNo))continue;seen.add(horseNo);
+    const odds=numberFromText(textOf(row,[".Odds",".Popular .Odds","td.Odds","[class*='Odds']"]))||numberFromText(entryTableCellText(row,"odds")),
+          pop=numberFromText(textOf(row,[".Popular","td.Popular","[class*='Popular']",".Ninki","[class*='Ninki']"]))||numberFromText(entryTableCellText(row,"popularity")),
+          jockey=textOf(row,[".Jockey","[class*='Jockey']","a[href*='/jockey/']"])||entryTableCellText(row,"jockey"),
+          trainer=textOf(row,[".Trainer","[class*='Trainer']","a[href*='/trainer/']"])||entryTableCellText(row,"trainer"),
+          rowText=String(row.textContent||"").replace(/\u00a0|\u3000/g," ").replace(/\s+/g," ").trim(),
+          sexAge=extractSexAgeFromRow(row)||normalizeSexAgeField(entryTableCellText(row,"sexAge")),
+          frameNo=numberFromText(textOf(row,[".Waku","[class*='Waku']",".Waku1",".Waku2",".Waku3",".Waku4",".Waku5",".Waku6",".Waku7",".Waku8"]))||numberFromText(entryTableCellText(row,"frameNo")),
+          weight=numberFromText(textOf(row,[".Futan","[class*='Futan']"]))||numberFromText(entryTableCellText(row,"weight")),
+          horseWeight=extractHorseWeightFromRow(row)||normalizeHorseWeightField(entryTableCellText(row,"horseWeight")),
+          marketProb=0,ai=pop?Math.max(35,103-pop*4):50;
     try{entries.push(normalizeEntry({frameNo,horseNo,horseName,sexAge,jockey,trainer,weight,horseWeight,rowText,rawText:rowText,popularity:pop,odds,probWin:marketProb,ai,ev:marketProb*odds},rid))}catch(e){console.warn("entry parse skip",e)}
   }
   return entries
@@ -4162,9 +4202,12 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
       rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,remaining:item.remaining,rankScore:item.rankScore,liveConfirmed:true});
     }
     const totalBet=rows.reduce((s,x)=>s+x.invest,0),totalPay=rows.reduce((s,x)=>s+x.pay,0),
+          marketReadyCount=rows.filter(row=>hasBacktestEvMarketCoverage(row.entries)).length,
           probabilityReadyCount=rows.filter(row=>row.entries.some(entry=>n(entry.netkeibaWinProb)>0)).length,
-          historicalPriorCount=rows.filter(row=>row.entries.some(entry=>entry.historicalProbabilityFallback===true)).length;
-    return{c,targetCount:target.length,confirmedCount:confirmed.length,probabilityReadyCount,historicalPriorCount,rows,summary:{raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0}};
+          historicalPriorCount=rows.filter(row=>row.entries.some(entry=>entry.historicalProbabilityFallback===true)).length,
+          candidateReadyCount=rows.filter(row=>row.candidateTickets.length>0).length,
+          missingEvInputCount=Math.max(0,confirmed.length-marketReadyCount);
+    return{c,targetCount:target.length,confirmedCount:confirmed.length,marketReadyCount,probabilityReadyCount,historicalPriorCount,candidateReadyCount,missingEvInputCount,rows,summary:{raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0}};
   }
   async function refreshLiveGraph(reason="確定結果更新",force=false){
     if(!LIVE.enabled)return false;
@@ -4177,8 +4220,8 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
       state.simResult=data.rows;
       renderSimulation(data.summary);
       const countLabel=byId("simRaceCount")?.previousElementSibling;if(countLabel)countLabel.textContent="確定集計R";
-      const foot=byId("simLiveGraphFoot");if(foot)foot.textContent=`${reason}　対象 ${data.targetCount}R / 確定 ${data.confirmedCount}R / EV確率 ${data.probabilityReadyCount}R（過去用 ${data.historicalPriorCount}R） / 購入 ${data.summary.boughtCount}R / 投資 ${yen(data.summary.totalBet)} / 払戻 ${yen(data.summary.totalPay)} / 収支 ${yen(data.summary.profit)} / ROI ${pct(data.summary.roi)}　※暫定表示`;
-      setStatus(`確定 ${data.confirmedCount}R・${pct(data.summary.roi)}`,"ok");
+      const foot=byId("simLiveGraphFoot");if(foot)foot.textContent=`${reason}　対象 ${data.targetCount}R / 確定 ${data.confirmedCount}R / 市場単勝 ${data.marketReadyCount}R / EV確率 ${data.probabilityReadyCount}R（過去用 ${data.historicalPriorCount}R） / 候補 ${data.candidateReadyCount}R / 購入 ${data.summary.boughtCount}R / 投資 ${yen(data.summary.totalBet)} / 払戻 ${yen(data.summary.totalPay)} / 収支 ${yen(data.summary.profit)} / ROI ${pct(data.summary.roi)}${data.missingEvInputCount?`　※EV材料不足 ${data.missingEvInputCount}Rは同じ期間の再同期で自動修復`:"　※暫定表示"}`;
+      setStatus(data.missingEvInputCount?`EV材料再取得待ち ${data.missingEvInputCount}R`:`確定 ${data.confirmedCount}R・${pct(data.summary.roi)}`,data.missingEvInputCount?"busy":"ok");
       try{await syncSimulationToAnalysis({reason:"確定結果ライブ"})}catch(_){ }
       return true;
     }catch(e){LIVE.lastError=e.message;setStatus("更新失敗","bad");const foot=byId("simLiveGraphFoot");if(foot)foot.textContent=`ライブ集計失敗: ${e.message}`;console.error("live confirmed graph",e);return false}
@@ -5273,7 +5316,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 })();
 </script>
 
-<!-- v1.3.7: 「馬券投票」レース名混入防止、過去レースのnetkeiba人気順位EV復元 -->
+<!-- v1.3.8: netkeiba DB結果表の見出し列から単勝・人気を復元し、候補0固定を修正 -->
 <!-- v1.3.4: 全開催場/未選択を分離、一覧検出・条件除外・HTTP再試行KPI、0R空回り安全停止 -->
 <!-- v1.3.0: netkeiba予想オッズの固定確率と市場実オッズを分離したEV中枢 -->
 <!-- v1.2.34: 馬場状態・馬齢・馬場・クラス・馬体重のHTML取得強化、旧JRAクラス変換、既存DB一括修復 -->
@@ -5296,10 +5339,10 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 
 
 <script id="netkeibaEvCore">
-// v1.3.7 netkeiba予想オッズ優先。過去レースは結果を使わず、netkeiba最終人気順位の固定事前モデルで勝率を復元する。
+// v1.3.8 netkeiba予想オッズ優先。過去レースは結果表の最終人気・単勝列を確実に読み、固定事前モデルで勝率を復元する。
 (function(){
   "use strict";
-  const VERSION="1.3.7";
+  const VERSION="1.3.8";
   const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
   const stamp=()=>new Date().toISOString();
   const typeCodes={win:"1",place:"2",bracketQuinella:"3",quinella:"4",wide:"5",exacta:"6",trio:"7",trifecta:"8"};
@@ -5955,8 +5998,8 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 })();
 </script>
 
-<script id="selectedVenueScheduleAndRaceNameGuardV137">
-/* v1.3.7 回帰テスト・診断用の公開API */
+<script id="selectedVenueScheduleAndRaceNameGuardV138">
+/* v1.3.8 回帰テスト・診断用の公開API */
 window.__THEKEIBA_V135__={
   isRaceNameActionLabel,
   sanitizeRaceName,
@@ -5975,6 +6018,11 @@ window.__THEKEIBA_V136__={
 window.__THEKEIBA_V137__={
   ...window.__THEKEIBA_V136__,
   netkeibaEv:window.__THEKEIBA_NETKEIBA_EV__
+};
+window.__THEKEIBA_V138__={
+  ...window.__THEKEIBA_V137__,
+  entryTableColumnMap,
+  hasBacktestEvMarketCoverage
 };
 </script>
 
