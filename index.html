@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.1</title>
+<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.2</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.1</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.2</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -1050,7 +1050,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.3.1-netkeiba-ev-place-fix";
+const APP_VERSION="1.3.2-netkeiba-ev-racename-fix";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待利益重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -1083,8 +1083,8 @@ function decodeHtmlText(value){
   try{return new DOMParser().parseFromString(s,"text/html").body?.textContent||s}catch{return s}
 }
 function isMalformedRaceName(value){
-  const s=String(value||"");
-  return !s.trim()||/Icon_Sprite|RaceInfo_New|(?:^|\s)s\s*=\s*["']|class\s*=|src\s*=|<[^>]+>|ウマい馬券/.test(s);
+  const s=String(value||"").normalize("NFKC").replace(/\s+/g," ").trim();
+  return !s||/Icon_Sprite|RaceInfo_New|(?:^|\s)s\s*=\s*["']|class\s*=|src\s*=|<[^>]+>|ウマい馬券|(?:^|\s)競馬専門紙(?:\s|$)/.test(s);
 }
 function sanitizeRaceName(value,raceNo=0){
   let s=decodeHtmlText(value)
@@ -1093,13 +1093,18 @@ function sanitizeRaceName(value,raceNo=0){
     .replace(/Icon_Sprite[^\s>]*/gi," ")
     .replace(/RaceInfo_New_?\d*/gi," ")
     .replace(/[<>"']/g," ")
-    .replace(/(?:ウマい馬券|AI予想|予想印|レース映像|映像|動画|オッズ|出馬表|結果|払戻|レース情報|データ分析|お気に入り)/g," ")
+    .replace(/(?:ウマい馬券|競馬専門紙|AI予想|予想印|レース映像|映像|動画|オッズ|出馬表|結果|払戻|レース情報|データ分析|お気に入り)/g," ")
     .replace(/\b(?:[1-9]|1[0-2])R\b/gi," ")
     .replace(/\b(?:[01]?\d|2[0-3]):[0-5]\d\b/g," ")
     .replace(/(?:芝|ダート|ダ|障害)\s*\d{3,4}m?.*$/," ")
     .replace(/\s+/g," ").trim();
   if(!s||s.length>70||isMalformedRaceName(s)||/^[-_\d\s]+$/.test(s))return raceNo?`${raceNo}R`:"レース名未取得";
   return s;
+}
+function raceNameQuality(value,raceNo=0){
+  const name=sanitizeRaceName(value,raceNo);
+  if(!name||name==="レース名未取得"||name===`${Number(raceNo)||0}R`)return 0;
+  return 100+Math.min(70,name.length)
 }
 function raceNameForDisplay(r){return sanitizeRaceName(r?.name||r?.raceName||"",Number(r?.raceNo||r?.race||0))}
 function normalizeRace(r){
@@ -2073,7 +2078,11 @@ function parseRaceListHtml(raw,kind,date){
     let name=String(context||"").replace(/\s+/g," ").trim();
     const timeMatch=name.match(/\b([01]?\d|2[0-3]):[0-5]\d\b/);
     name=sanitizeRaceName(name,raceNo);
-    map.set(rid,normalizeRace({race_id:rid,type:kind,date,placeName:placeMap[placeCode],placeCode:Number(placeCode),raceNo,name,startTime:timeMatch?timeMatch[0]:"",status:"一覧取得",sourceUrl:href}))
+    const next=normalizeRace({race_id:rid,type:kind,date,placeName:placeMap[placeCode],placeCode:Number(placeCode),raceNo,name,startTime:timeMatch?timeMatch[0]:"",status:"一覧取得",sourceUrl:href}),previous=map.get(rid);
+    // 同じrace_idには「出馬表」「競馬専門紙」等の操作リンクもある。
+    // 実レース名を取得済みなら、品質0の操作ラベルで上書きしない。
+    if(!previous||raceNameQuality(next.name,raceNo)>raceNameQuality(previous.name,raceNo))map.set(rid,next);
+    else if(!previous.startTime&&next.startTime)map.set(rid,{...previous,startTime:next.startTime})
   }
   for(const node of doc.querySelectorAll('a[href*="race_id"],a[href*="race-id"],a[data-race_id],a[data-race-id],[data-race_id],[data-race-id]')){
     if(node.closest?.('template,[hidden],[aria-hidden="true"],[style*="display:none"],[style*="display: none"],.is-hide,.is-hidden,.hidden,.d-none,.Hide,[class*="DisplayNone"]'))continue;
@@ -2083,7 +2092,15 @@ function parseRaceListHtml(raw,kind,date){
     if(!m)continue;
     const row=node.closest("li,tr,article,section,[class*='RaceList'],[class*='RaceItem'],div")||node.parentElement||node;
     const nameNode=row.querySelector?.(".RaceName,.Race_Name,[class*='RaceName'],[class*='Race_Name'],[class*='RaceTitle'],[class*='Race_Title'],.race_name,.raceName");
-    const context=(nameNode?.textContent||node.textContent||row.textContent||"").replace(/\s+/g," ").trim();
+    const raceNo=Number(normalizeAnalyticsRaceIdValue(m[1]).slice(-2)),candidates=[
+      nameNode?.textContent,
+      node.getAttribute("data-race-name"),
+      node.getAttribute("aria-label"),
+      node.getAttribute("title"),
+      node.textContent,
+      row.textContent
+    ].map(value=>String(value||"").replace(/\s+/g," ").trim()).filter(Boolean);
+    const context=candidates.find(value=>raceNameQuality(value,raceNo)>0)||candidates.at(-1)||"";
     add(m[1],context,href)
   }
   const patterns=[
@@ -2562,9 +2579,13 @@ function refreshSplit(){const f=$("splitFrame");if(f){f.src="about:blank";setTim
 async function repairMalformedRaceNames(){
   const races=await getAll("races");let fixed=0;
   for(const r of races){
-    if(!isMalformedRaceName(r.name))continue;
-    const clean=sanitizeRaceName(r.name,r.raceNo);
-    if(clean!==r.name){r.name=clean;await putOne("races",r);fixed++}
+    const current=r.name||r.raceName||"";
+    if(!isMalformedRaceName(current))continue;
+    const clean=sanitizeRaceName(current,r.raceNo);
+    if(clean!==r.name||clean!==r.raceName){
+      r.name=clean;r.raceName=clean;r.updatedAt=new Date().toISOString();
+      await putOne("races",r);fixed++
+    }
   }
   return fixed;
 }
