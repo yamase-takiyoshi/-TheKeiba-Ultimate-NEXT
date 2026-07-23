@@ -7382,5 +7382,124 @@ window.__THEKEIBA_V1311__={
 })();
 </script>
 
+
+
+<!-- v1.4.5 iPad Thinking Engine checkbox visibility / operability fix -->
+<style id="thinkingEngineCheckboxFixV145">
+#thinkingEngineCard .thinking-engine-switch{
+  cursor:pointer!important;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:manipulation;
+  pointer-events:auto!important;
+  transition:border-color .15s ease,background .15s ease,box-shadow .15s ease;
+}
+#thinkingEngineCard .thinking-engine-switch input[type="checkbox"]{
+  -webkit-appearance:none!important;
+  appearance:none!important;
+  display:inline-block!important;
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+  min-height:22px!important;
+  padding:0!important;
+  margin:0!important;
+  border:2px solid var(--muted)!important;
+  border-radius:50%!important;
+  background:var(--panel2)!important;
+  box-shadow:inset 0 0 0 4px var(--bg)!important;
+  cursor:pointer!important;
+  pointer-events:auto!important;
+  opacity:1!important;
+  -webkit-text-fill-color:initial!important;
+}
+#thinkingEngineCard .thinking-engine-switch input[type="checkbox"]:checked{
+  border-color:var(--good)!important;
+  background:var(--good)!important;
+  box-shadow:inset 0 0 0 4px var(--bg),0 0 0 3px color-mix(in srgb,var(--good) 20%,transparent)!important;
+}
+#thinkingEngineCard .thinking-engine-switch input[type="checkbox"]:focus-visible{
+  outline:2px solid var(--accent)!important;
+  outline-offset:3px!important;
+}
+#thinkingEngineCard .thinking-engine-switch.is-on{
+  border-color:color-mix(in srgb,var(--good) 72%,var(--line))!important;
+  background:color-mix(in srgb,var(--panel2) 86%,var(--good) 14%)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--good) 12%,transparent)!important;
+}
+#thinkingEngineCard .thinking-switch-state{
+  margin-left:auto;
+  min-width:38px;
+  padding:3px 7px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:var(--panel2);
+  color:var(--muted);
+  font-size:10px;
+  font-weight:950;
+  line-height:1.2;
+  text-align:center;
+}
+#thinkingEngineCard .thinking-engine-switch.is-on .thinking-switch-state{
+  border-color:var(--good);
+  background:color-mix(in srgb,var(--good) 22%,var(--panel2));
+  color:var(--good);
+}
+</style>
+<script id="thinkingEngineCheckboxFixScriptV145">
+(function(){
+  'use strict';
+  const IDS=['teEnabled','teRelativeGuard','teProfitGuard'];
+  function refreshOne(input){
+    if(!input)return false;
+    // These three controls are Thinking Engine-local settings and must remain operable
+    // even when the main SIM parameter authority is locked to the Settings screen.
+    input.disabled=false;
+    input.removeAttribute('aria-disabled');
+    input.setAttribute('aria-checked',String(!!input.checked));
+    const label=input.closest('.thinking-engine-switch');
+    if(!label)return true;
+    label.classList.toggle('is-on',!!input.checked);
+    let badge=label.querySelector('.thinking-switch-state');
+    if(!badge){
+      badge=document.createElement('b');
+      badge.className='thinking-switch-state';
+      label.appendChild(badge);
+    }
+    const next=input.checked?'ON':'OFF';
+    if(badge.textContent!==next)badge.textContent=next;
+    return true;
+  }
+  function bind(){
+    let found=0;
+    for(const id of IDS){
+      const input=document.getElementById(id);
+      if(!input)continue;
+      found++;
+      if(!input.dataset.v145CheckboxBound){
+        input.dataset.v145CheckboxBound='1';
+        input.addEventListener('change',()=>refreshOne(input));
+        const label=input.closest('.thinking-engine-switch');
+        if(label)label.addEventListener('click',()=>setTimeout(()=>refreshOne(input),0));
+      }
+      refreshOne(input);
+    }
+    return found===IDS.length;
+  }
+  function boot(){
+    bind();
+    let attempts=0;
+    const timer=setInterval(()=>{
+      attempts++;
+      if(bind()||attempts>=50)clearInterval(timer);
+    },200);
+    [500,1200,3000,6000].forEach(ms=>setTimeout(bind,ms));
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
+  window.__THEKEIBA_CHECKBOX_FIX__={version:'1.4.5-checkbox-fix',refresh:bind};
+})();
+</script>
+
 </body>
 </html>
