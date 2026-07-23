@@ -1079,7 +1079,37 @@ const state={db:null,currentRaceId:"",searchResult:[],simResult:[],analyticsRows
 const $=id=>document.getElementById(id);const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const yen=v=>Math.round(Number(v||0)).toLocaleString("ja-JP")+"円";const pct=v=>Number(v||0).toFixed(1)+"%";const compactDate=v=>String(v||"").replaceAll("-","");const displayDate=v=>{const s=String(v||"");return s.length===8?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`:s};const isoToday=()=>new Date().toISOString().slice(0,10);const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 function requestPromise(req){return new Promise((ok,ng)=>{req.onsuccess=()=>ok(req.result);req.onerror=()=>ng(req.error)})}function txDone(tx){return new Promise((ok,ng)=>{tx.oncomplete=ok;tx.onerror=()=>ng(tx.error);tx.onabort=()=>ng(tx.error||new Error("Transaction aborted"))})}
 async function openDB(){return new Promise((ok,ng)=>{const req=indexedDB.open("TheKeibaUltimateNEXTComplete");req.onupgradeneeded=e=>{const db=e.target.result;for(const [name,cfg] of Object.entries(DB_STORES)){let store;if(!db.objectStoreNames.contains(name))store=db.createObjectStore(name,{keyPath:cfg.keyPath,autoIncrement:cfg.autoIncrement||false});else store=e.target.transaction.objectStore(name);for(const idx of cfg.indexes||[])if(!store.indexNames.contains(idx[0]))store.createIndex(idx[0],idx[1],{unique:false})}};req.onsuccess=()=>{state.db=req.result;state.db.onversionchange=()=>{state.db.close();console.warn("DB version changed. Reload this page.")};ok(state.db)};req.onblocked=()=>console.warn("IndexedDB upgrade blocked. Close older app tabs and reload.");req.onerror=()=>ng(req.error)})}
-async function getAll(store){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).getAll())}async function getOne(store,key){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).get(key))}async function countStore(store){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).count())}async function putOne(store,row){const tx=state.db.transaction(store,"readwrite");tx.objectStore(store).put(row);await txDone(tx);if(window.d1RecordMaterializeStore)await window.d1RecordMaterializeStore(store,[row])}async function addOne(store,row){const tx=state.db.transaction(store,"readwrite");const req=tx.objectStore(store).add(row);const id=await requestPromise(req);await txDone(tx);const saved={...row,id:row.id??id};if(window.d1RecordMaterializeStore)await window.d1RecordMaterializeStore(store,[saved]);return id}async function putMany(store,rows){const list=(Array.isArray(rows)?rows:[]).filter(Boolean),tx=state.db.transaction(store,"readwrite"),s=tx.objectStore(store);for(const row of list)s.put(row);await txDone(tx);if(window.d1RecordMaterializeStore)await window.d1RecordMaterializeStore(store,list)}async function deleteOne(store,key){const tx=state.db.transaction(store,"readwrite");tx.objectStore(store).delete(key);await txDone(tx)}async function clearStore(store){const tx=state.db.transaction(store,"readwrite");tx.objectStore(store).clear();await txDone(tx)}async function getByIndex(store,index,key){const tx=state.db.transaction(store,"readonly");return requestPromise(tx.objectStore(store).index(index).getAll(key))}
+const IDB_READ_CHUNK=400;
+function idbReadChunk(store,lowerKey,limit){
+  return new Promise((ok,ng)=>{
+    let tx;
+    try{tx=state.db.transaction(store,"readonly")}catch(e){return ng(e)}
+    const s=tx.objectStore(store),range=lowerKey===undefined?null:IDBKeyRange.lowerBound(lowerKey,true);
+    let rows=null,keys=null,done=false;
+    const finish=()=>{if(!done&&rows&&keys){done=true;ok({rows,keys})}},
+          fail=err=>{if(!done){done=true;ng(err||new Error("IndexedDB読込に失敗しました"))}};
+    let rq,kq;
+    try{rq=s.getAll(range,limit);kq=s.getAllKeys(range,limit)}catch(e){return fail(e)}
+    rq.onsuccess=()=>{rows=rq.result||[];finish()};
+    kq.onsuccess=()=>{keys=kq.result||[];finish()};
+    rq.onerror=()=>fail(rq.error);
+    kq.onerror=()=>fail(kq.error);
+    tx.onabort=()=>fail(tx.error||new Error("Transaction aborted"));
+  })
+}
+async function getAllChunked(store,limit=IDB_READ_CHUNK){
+  const out=[];let lower;
+  for(let guard=0;guard<100000;guard++){
+    const {rows,keys}=await idbReadChunk(store,lower,limit);
+    if(!rows.length)break;
+    for(const row of rows)out.push(row);
+    if(rows.length<limit||!keys.length)break;
+    lower=keys[keys.length-1];
+    await new Promise(resolve=>setTimeout(resolve,0));
+  }
+  return out
+}
+async function getAll(store){return withIndexedDbRecovery(()=>getAllChunked(store),`${store} 全件読込`,4)}async function getOne(store,key){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).get(key))}async function countStore(store){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).count())}async function putOne(store,row){const tx=state.db.transaction(store,"readwrite");tx.objectStore(store).put(row);await txDone(tx);if(window.d1RecordMaterializeStore)await window.d1RecordMaterializeStore(store,[row])}async function addOne(store,row){const tx=state.db.transaction(store,"readwrite");const req=tx.objectStore(store).add(row);const id=await requestPromise(req);await txDone(tx);const saved={...row,id:row.id??id};if(window.d1RecordMaterializeStore)await window.d1RecordMaterializeStore(store,[saved]);return id}async function putMany(store,rows){const list=(Array.isArray(rows)?rows:[]).filter(Boolean),tx=state.db.transaction(store,"readwrite"),s=tx.objectStore(store);for(const row of list)s.put(row);await txDone(tx);if(window.d1RecordMaterializeStore)await window.d1RecordMaterializeStore(store,list)}async function deleteOne(store,key){const tx=state.db.transaction(store,"readwrite");tx.objectStore(store).delete(key);await txDone(tx)}async function clearStore(store){const tx=state.db.transaction(store,"readwrite");tx.objectStore(store).clear();await txDone(tx)}async function getByIndex(store,index,key){const tx=state.db.transaction(store,"readonly");return requestPromise(tx.objectStore(store).index(index).getAll(key))}
 function downloadText(name,text,type){const b=new Blob([text],{type}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 function canonicalPair(a,b){return [Number(a),Number(b)].sort((x,y)=>x-y).join("-")}function canonicalTrio(a,b,c){return [Number(a),Number(b),Number(c)].sort((x,y)=>x-y).join("-")}function normalizePayouts(p={}){const out={win:{},place:{},bracketQuinella:{},quinella:{},wide:{},exacta:{},trio:{},trifecta:{}};for(const k of Object.keys(out)){const src=p[k]||{};for(const [key,val] of Object.entries(src))out[k][String(key)]=Number(val||0)}return out}
 function decodeHtmlText(value){
@@ -1486,8 +1516,9 @@ function indexedDbErrorText(error){
 }
 function isIndexedDbClosingError(error){
   const name=String(error?.name||""),message=indexedDbErrorText(error);
-  return name==="InvalidStateError"||
-    /database connection is closing|connection is closing|database is closed|connection is closed|IDBDatabase.*closing|InvalidStateError/i.test(message);
+  if(name==="QuotaExceededError"||/quota|storage is full|容量/i.test(message))return false;
+  return name==="InvalidStateError"||name==="UnknownError"||name==="AbortError"||name==="TransactionInactiveError"||name==="TimeoutError"||
+    /database connection is closing|connection is closing|database is closed|connection is closed|IDBDatabase.*closing|InvalidStateError|UnknownError|internal error was encountered in the indexed database server|an internal error was encountered|unknown error|transaction aborted|the transaction was aborted|connection to indexed database server lost/i.test(message);
 }
 async function recoverIndexedDbConnection(reason=""){
   if(INDEXED_DB_RECOVERY_PROMISE)return INDEXED_DB_RECOVERY_PROMISE;
@@ -1499,14 +1530,14 @@ async function recoverIndexedDbConnection(reason=""){
         state.db=null;
         try{old?.close()}catch(_){}
         setSimSyncStatus(`ローカルDB接続を自動復旧中 ${attempt}/5${reason?`\n${reason}`:""}`);
-        await new Promise(resolve=>setTimeout(resolve,250*attempt));
+        await new Promise(resolve=>setTimeout(resolve,600*attempt));
         const db=await openDB();
         if(!db)throw new Error("IndexedDB再接続結果が空です");
         setSimSyncStatus(`ローカルDB接続を復旧しました${reason?`\n${reason}`:""}\n同期処理を同じ位置から再試行します。`);
         return db;
       }catch(e){
         lastError=e;
-        await new Promise(resolve=>setTimeout(resolve,500*attempt));
+        await new Promise(resolve=>setTimeout(resolve,900*attempt));
       }
     }
     throw lastError||new Error("IndexedDBの自動復旧に失敗しました");
@@ -2022,12 +2053,23 @@ ${bundleError}
         await new Promise(resolve=>setTimeout(resolve,2000))
       }
     }
-    await withIndexedDbRecovery(()=>refreshAll(),"同期完了後の画面更新",3);await renderSimPlaceOptions(c.places);
-    const cov=await withIndexedDbRecovery(()=>backtestCoverage(c),"同期完了後の集計",3),elapsedSec=Math.max(1,Math.round((Date.now()-startedAt)/1000)),elapsedLabel=elapsedSec>=60?`${Math.floor(elapsedSec/60)}分${elapsedSec%60}秒`:`${elapsedSec}秒`,httpFailures=updateBacktestSyncMetrics({detected:detectedRaces,filtered:filteredOutRaces}).httpFailures;
+    let coverageWarning="";
+    try{await withIndexedDbRecovery(()=>refreshAll(),"同期完了後の画面更新",4)}
+    catch(refreshError){coverageWarning=`画面更新スキップ: ${indexedDbErrorText(refreshError)}`;console.warn("refreshAll after sync",refreshError)}
+    try{await renderSimPlaceOptions(c.places)}catch(_){}
+    let cov;
+    try{cov=await withIndexedDbRecovery(()=>backtestCoverage(c),"同期完了後の集計",4)}
+    catch(coverageError){
+      cov={races:0,results:0,dates:0};
+      coverageWarning=`${coverageWarning?coverageWarning+" / ":""}集計スキップ: ${indexedDbErrorText(coverageError)}　取得済みデータは保存されています。「バックテスト開始」で再集計してください。`;
+      console.warn("backtestCoverage after sync",coverageError)
+    }
+    const elapsedSec=Math.max(1,Math.round((Date.now()-startedAt)/1000)),elapsedLabel=elapsedSec>=60?`${Math.floor(elapsedSec/60)}分${elapsedSec%60}秒`:`${elapsedSec}秒`,httpFailures=updateBacktestSyncMetrics({detected:detectedRaces,filtered:filteredOutRaces}).httpFailures;
     setSimSyncStatus(`${BACKTEST_SYNC.stop?"バッチ同期停止":"全バッチ同期完了"}　${BACKTEST_SYNC.batch}/${batches.length}バッチ　完了日 ${processedDays}/${dates.length}日　開催なし ${noRaceDays}日　事前スキップ ${scheduleInfo.skipped}日
 一覧検出 ${detectedRaces}R　選択除外 ${filteredOutRaces}R　登録対象 ${cov.races}R　確定結果 ${cov.results}R　完全取得 ${loaded}R　既存完全 ${skipped}R　結果待ち・未取得 ${resultMissing}R　再試行 ${retried}回　失敗 ${failed}件
 HTTP再試行 ${httpFailures}件　所要時間 ${elapsedLabel}${lastError?`
-最後の失敗 ${lastError}`:""}`);
+最後の失敗 ${lastError}`:""}${coverageWarning?`
+${coverageWarning}`:""}`);
     return{...cov,batches:batches.length,processedDays,noRaceDays,calendarSkipped:scheduleInfo.skipped,scheduleScanned:scheduleInfo.scanned,detectedRaces,filteredOutRaces,httpFailures,loaded,skipped,confirmed,resultMissing,failed,retried,stopped:BACKTEST_SYNC.stop}
   }catch(e){
     if(BACKTEST_SYNC.stop||String(e?.message||e)==="同期停止"){
@@ -3326,7 +3368,7 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     return state.db
   };
 
-  getAll=async function(store){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).getAll())};
+  getAll=async function(store){return withIndexedDbRecovery(()=>getAllChunked(store),`${store} 全件読込`,4)};
   getOne=async function(store,key){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).get(key))};
   countStore=async function(store){return requestPromise(state.db.transaction(store,"readonly").objectStore(store).count())};
   getByIndex=async function(store,index,key){
@@ -3335,13 +3377,15 @@ window.addEventListener("DOMContentLoaded",()=>{installTextIoViewButtons();wireT
     return requestPromise(s.index(index).getAll(key))
   };
   window.getByIndexRange=async function(store,index,lower,upper){
-    const s=state.db.transaction(store,"readonly").objectStore(store);
-    if(!s.indexNames.contains(index)){
-      const rows=await requestPromise(s.getAll());
-      return rows.filter(x=>(!lower||String(x?.[index]||"")>=lower)&&(!upper||String(x?.[index]||"")<=upper))
-    }
-    const range=lower&&upper?IDBKeyRange.bound(lower,upper):lower?IDBKeyRange.lowerBound(lower):upper?IDBKeyRange.upperBound(upper):null;
-    return requestPromise(s.index(index).getAll(range))
+    return withIndexedDbRecovery(async()=>{
+      const s=state.db.transaction(store,"readonly").objectStore(store);
+      if(!s.indexNames.contains(index)){
+        const rows=await getAllChunked(store);
+        return rows.filter(x=>(!lower||String(x?.[index]||"")>=lower)&&(!upper||String(x?.[index]||"")<=upper))
+      }
+      const range=lower&&upper?IDBKeyRange.bound(lower,upper):lower?IDBKeyRange.lowerBound(lower):upper?IDBKeyRange.upperBound(upper):null;
+      return requestPromise(s.index(index).getAll(range))
+    },`${store}.${index} 範囲読込`,4)
   };
   window.getRacesInRange=async function(start,end){
     const lo=String(start||"00000000"),hi=String(end||"99999999");
@@ -4247,7 +4291,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
   async function refreshLiveGraph(reason="確定結果更新",force=false){
     if(!LIVE.enabled)return false;
     if(LIVE.busy){LIVE.pending=true;return false}
-    LIVE.busy=true;LIVE.pending=false;setStatus("再計算中","busy");
+    LIVE.busy=true;LIVE.pending=false;LIVE.lastBuiltAt=Date.now();setStatus("再計算中","busy");
     try{
       const data=await buildLiveRows();
       const signature=[
@@ -4281,10 +4325,14 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
       if(LIVE.pending){LIVE.pending=false;scheduleLiveGraph("追加入力",true)}
     }
   }
+  const LIVE_SYNC_MIN_INTERVAL=12000;
   function scheduleLiveGraph(reason="確定結果更新",force=false){
     if(!LIVE.enabled)return;
     clearTimeout(LIVE.timer);
-    LIVE.timer=setTimeout(()=>refreshLiveGraph(reason,force),220);
+    const syncing=typeof BACKTEST_SYNC!=="undefined"&&BACKTEST_SYNC.running,
+          since=Date.now()-Math.max(LIVE.lastRenderedAt||0,LIVE.lastBuiltAt||0),
+          wait=syncing?Math.max(220,LIVE_SYNC_MIN_INTERVAL-since):220;
+    LIVE.timer=setTimeout(()=>refreshLiveGraph(reason,force),wait);
   }
 
   if(typeof bridgeLoadBundle==="function"){
