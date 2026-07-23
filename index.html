@@ -7952,5 +7952,412 @@ window.__THEKEIBA_V1311__={
 })();
 
 </script>
+
+
+<!-- ============================================================
+     The競馬 Ultimate NEXT Professional v1.5.1
+     EV分析モードグリッド完全移植
+     index(390) のモード選択UI・券種別EV下限・開催場別調整を
+     NEXTの実データ/WF確率/払戻/資金管理へ接続する。
+     ============================================================ -->
+<style id="evModeGridStylesV151">
+.ev-mode-card{border-color:color-mix(in srgb,var(--good) 42%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--panel) 94%,var(--good) 6%),var(--panel))}
+.ev-mode-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.ev-mode-title{font-size:18px;font-weight:950}.ev-mode-sub{font-size:12px;color:var(--muted);line-height:1.7;margin-top:4px;max-width:920px}
+.ev-mode-master{display:flex;align-items:center;gap:9px;padding:10px 12px;margin-bottom:11px;border:1px solid var(--line);border-radius:11px;background:var(--bg);font-weight:900;cursor:pointer}
+.ev-mode-master input{width:20px;height:20px;accent-color:var(--good)}.ev-mode-master.on{border-color:var(--good);background:color-mix(in srgb,var(--panel2) 88%,var(--good) 12%)}
+.ev-mode-grid-v151{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.ev-mode-btn-v151{appearance:none;border:1px solid var(--line);border-radius:10px;padding:10px 8px;background:var(--panel2);color:var(--text);font:800 12px/1.35 inherit;cursor:pointer;text-align:center;min-height:42px}
+.ev-mode-btn-v151.active{border-color:var(--good);background:linear-gradient(180deg,color-mix(in srgb,var(--good) 22%,var(--panel2)),color-mix(in srgb,var(--good) 10%,var(--panel2)));box-shadow:0 0 0 2px color-mix(in srgb,var(--good) 16%,transparent)}
+.ev-mode-btn-v151.learning{border-color:color-mix(in srgb,var(--purple) 42%,var(--line))}
+.ev-mode-btn-v151.all-agree{grid-column:1/-1;border-color:color-mix(in srgb,var(--warn) 48%,var(--line))}
+.ev-mode-btn-v151.all-agree.active{border-color:var(--warn);background:linear-gradient(180deg,color-mix(in srgb,var(--warn) 22%,var(--panel2)),color-mix(in srgb,var(--warn) 9%,var(--panel2)));box-shadow:0 0 0 2px color-mix(in srgb,var(--warn) 15%,transparent)}
+.ev-mode-allagree{margin-top:12px;padding:12px;border:1px solid color-mix(in srgb,var(--good) 38%,var(--line));border-radius:12px;background:color-mix(in srgb,var(--panel2) 92%,var(--good) 8%)}
+.ev-mode-allagree h4{margin:0 0 5px}.ev-mode-allagree p{margin:0 0 10px;color:var(--muted);font-size:12px;line-height:1.65}
+.ev-mode-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.ev-mode-field label{display:block;color:var(--muted);font-size:12px;font-weight:850;margin-bottom:6px}.ev-mode-field input,.ev-mode-field select{width:100%}
+.ev-mode-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:11px}
+.ev-mode-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:11px}
+.ev-mode-kpi{padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2)}.ev-mode-kpi small{display:block;color:var(--muted);font-weight:800}.ev-mode-kpi strong{display:block;font-size:18px;margin-top:4px}
+.ev-mode-status{white-space:pre-wrap;line-height:1.65;margin-top:11px}.ev-mode-help{margin-top:9px;color:var(--muted);font-size:12px;line-height:1.65}
+.ev-mode-compare{display:none;margin-top:11px;overflow:auto;border:1px solid var(--line);border-radius:11px}.ev-mode-compare.show{display:block}
+.ev-mode-compare table{width:100%;min-width:760px;border-collapse:collapse}.ev-mode-compare th,.ev-mode-compare td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}.ev-mode-compare th:first-child,.ev-mode-compare td:first-child{text-align:left}.ev-mode-compare tr.best{background:color-mix(in srgb,var(--panel2) 84%,var(--good) 16%)}
+@media(max-width:900px){.ev-mode-controls{grid-template-columns:repeat(2,minmax(0,1fr))}.ev-mode-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.ev-mode-kpis .ev-mode-kpi:last-child{grid-column:span 2}}
+@media(max-width:560px){.ev-mode-head{flex-direction:column}.ev-mode-grid-v151{grid-template-columns:1fr}.ev-mode-btn-v151.all-agree{grid-column:auto}.ev-mode-controls{grid-template-columns:1fr}.ev-mode-actions .btn{flex:1 1 100%}}
+</style>
+<script id="evModeGridV151">
+(function(){
+  'use strict';
+  const VERSION='v1.5.1 EV Mode Grid';
+  const STORAGE_KEY='TheKeibaEvModeGridV151';
+  const MODE_OPTIONS=[
+    ['roi100','回収率100%超（開催場別）'],
+    ['roi120','回収率120%超'],
+    ['roi150','回収率150%超'],
+    ['roi200','回収率200%超'],
+    ['roi_max','回収率最大（開催場別）'],
+    ['payout_max','期待払戻最大（確率×オッズ）'],
+    ['hitroi','的中率最高&回収率100%超'],
+    ['multi100','多点トータル回収率100%超（開催場別）'],
+    ['hitrate100','的中率100%（開催場別）'],
+    ['hitrate80','的中率80%'],
+    ['hitrate60','的中率60%'],
+    ['hitrate33','的中率1/3'],
+    ['balance','バランス'],
+    ['evpro','EV Pro'],
+    ['ev_roi','EV回収率'],
+    ['roi_plus','回収率＋'],
+    ['trigami','トリガミ回避'],
+    ['auto','自動'],
+    ['learn','🧠 学習（精算結果から補正）'],
+    ['learn_hitroi','🎯 高的中×回収底上げ（学習）'],
+    ['all_agree','🤝 全て同意（ユーザー強制優先）']
+  ];
+  const MODE_LABELS=Object.fromEntries(MODE_OPTIONS);
+  const TYPE_JP={win:'単勝',place:'複勝',bracketQuinella:'枠連',wide:'ワイド',quinella:'馬連',exacta:'馬単',trio:'3連複',trifecta:'3連単'};
+  const MODE_EV={
+    roi100:{'単勝':1.05,'複勝':1.05,'枠連':1.10,'ワイド':1.05,'馬連':1.10,'馬単':1.15,'3連複':1.20,'3連単':1.30},
+    roi120:{'単勝':1.20,'複勝':1.20,'枠連':9.99,'ワイド':1.20,'馬連':1.22,'馬単':9.99,'3連複':1.40,'3連単':9.99},
+    roi150:{'単勝':1.35,'複勝':9.99,'枠連':9.99,'ワイド':1.30,'馬連':1.40,'馬単':9.99,'3連複':1.55,'3連単':9.99},
+    roi200:{'単勝':2.00,'複勝':9.99,'枠連':9.99,'ワイド':2.00,'馬連':2.00,'馬単':2.00,'3連複':2.00,'3連単':2.00},
+    roi_max:{'単勝':1.50,'複勝':9.99,'枠連':9.99,'ワイド':9.99,'馬連':1.60,'馬単':1.80,'3連複':1.80,'3連単':2.20},
+    payout_max:{'単勝':1.00,'複勝':1.00,'枠連':1.00,'ワイド':1.00,'馬連':1.00,'馬単':1.00,'3連複':1.00,'3連単':1.00},
+    hitroi:{'単勝':9.99,'複勝':1.00,'枠連':9.99,'ワイド':1.00,'馬連':1.00,'馬単':9.99,'3連複':9.99,'3連単':9.99},
+    multi100:{'単勝':1.08,'複勝':1.05,'枠連':9.99,'ワイド':1.05,'馬連':1.10,'馬単':9.99,'3連複':1.20,'3連単':9.99},
+    hitrate100:{'単勝':9.99,'複勝':0.72,'枠連':9.99,'ワイド':0.72,'馬連':9.99,'馬単':9.99,'3連複':9.99,'3連単':9.99},
+    hitrate80:{'単勝':0.95,'複勝':0.95,'枠連':1.00,'ワイド':0.98,'馬連':1.05,'馬単':1.10,'3連複':1.15,'3連単':1.25},
+    hitrate60:{'単勝':1.00,'複勝':1.00,'枠連':1.05,'ワイド':1.02,'馬連':1.08,'馬単':1.13,'3連複':1.18,'3連単':1.28},
+    hitrate33:{'単勝':1.05,'複勝':1.05,'枠連':1.10,'ワイド':1.08,'馬連':1.15,'馬単':1.22,'3連複':1.30,'3連単':1.45},
+    auto:{'単勝':1.05,'複勝':1.05,'枠連':1.10,'ワイド':1.05,'馬連':1.10,'馬単':1.15,'3連複':1.20,'3連単':1.30},
+    trigami:{'単勝':1.10,'複勝':1.08,'枠連':1.15,'ワイド':1.12,'馬連':1.18,'馬単':1.25,'3連複':1.30,'3連単':1.45},
+    balance:{'単勝':1.05,'複勝':1.05,'枠連':1.10,'ワイド':1.05,'馬連':1.10,'馬単':1.15,'3連複':1.20,'3連単':1.30},
+    evpro:{'単勝':1.08,'複勝':1.05,'枠連':1.12,'ワイド':1.08,'馬連':1.12,'馬単':1.18,'3連複':1.25,'3連単':1.40},
+    ev_roi:{'単勝':1.12,'複勝':1.08,'枠連':1.18,'ワイド':1.12,'馬連':1.20,'馬単':1.30,'3連複':1.40,'3連単':1.60},
+    roi_plus:{'単勝':1.00,'複勝':1.00,'枠連':1.10,'ワイド':1.00,'馬連':1.10,'馬単':9.99,'3連複':1.00,'3連単':9.99}
+  };
+  const PRESETS={
+    roi100:[5,1],roi120:[3,1],roi150:[2,1],roi200:[2,1],roi_max:[2,1],payout_max:[3,1],
+    hitroi:[5,1],multi100:[8,1],hitrate100:[5,1],hitrate80:[6,1],hitrate60:[5,1],hitrate33:[3,1],
+    balance:[5,1],evpro:[4,1],ev_roi:[3,1],roi_plus:[5,1],trigami:[5,1],auto:[5,1],
+    learn:[4,1],learn_hitroi:[5,1],all_agree:[3,3]
+  };
+  const TIER_BY_PLACE={
+    '東京':'jra_major','中山':'jra_major','京都':'jra_major','阪神':'jra_major','中京':'jra_major',
+    '札幌':'jra_minor','函館':'jra_minor','福島':'jra_minor','新潟':'jra_minor','小倉':'jra_minor',
+    '浦和':'nar_nankan','船橋':'nar_nankan','川崎':'nar_nankan','大井':'nar_ooi','帯広(ば)':'nar_ban','帯広':'nar_ban'
+  };
+  const TIER_BY_CODE={
+    '05':'jra_major','06':'jra_major','07':'jra_major','08':'jra_major','09':'jra_major',
+    '01':'jra_minor','02':'jra_minor','03':'jra_minor','04':'jra_minor','10':'jra_minor',
+    '42':'nar_nankan','43':'nar_nankan','44':'nar_ooi','45':'nar_nankan','65':'nar_ban',
+    '30':'nar_local','35':'nar_local','36':'nar_local','46':'nar_local','47':'nar_local','48':'nar_local','50':'nar_local','51':'nar_local','54':'nar_local','55':'nar_local'
+  };
+  const ROI100_BIAS={'複勝':1.45,'ワイド':1.42,'馬連':1.28,'単勝':1.12,'枠連':1.05,'馬単':0,'3連複':.65,'3連単':0};
+  const ROI100={
+    jra_major:{evFloor:1.15,pMin:{'複勝':.30,'ワイド':.32,'馬連':.12,'単勝':.20,'3連複':.06},sanfukuEv:1.25,bands:[1.5,2,8,18,35,60],w:[.30,.80,1.35,1.22,.88,.50,.15],typeMul:{}},
+    jra_minor:{evFloor:1.15,pMin:{'複勝':.30,'ワイド':.32,'馬連':.12,'単勝':.20,'3連複':.06},sanfukuEv:1.25,bands:[1.5,2,7,16,30,55],w:[.30,.82,1.38,1.20,.82,.45,.12],typeMul:{}},
+    nar_nankan:{evFloor:1.16,pMin:{'複勝':.31,'ワイド':.33,'馬連':.12,'単勝':.20,'3連複':.06},sanfukuEv:1.26,bands:[1.5,2,7,16,32,55],w:[.25,.78,1.38,1.20,.80,.42,.12],typeMul:{}},
+    nar_local:{evFloor:1.15,pMin:{'複勝':.33,'ワイド':.34,'馬連':.13,'単勝':.21,'3連複':.07},sanfukuEv:1.27,bands:[1.4,1.8,6,14,26,45],w:[.20,.75,1.42,1.10,.55,.25,.06],typeMul:{'3連複':.90}},
+    nar_ban:{evFloor:1.15,pMin:{'複勝':.34,'ワイド':.35,'馬連':.14,'単勝':.22,'3連複':.08},sanfukuEv:1.28,bands:[1.4,1.8,5,12,22,40],w:[.18,.72,1.45,1,.45,.18,.05],typeMul:{'3連複':.80}},
+    nar_ooi:{evFloor:1.20,pMin:{'複勝':.40,'ワイド':.40,'馬連':.18,'単勝':.28,'3連複':.10},sanfukuEv:1.35,bands:[1.4,1.8,5,10,18,30],w:[.30,.85,1.45,.95,.40,.15,.04],typeMul:{'3連複':.70}}
+  };
+  const ROIMAX={
+    jra_major:{evFloor:1.50,tanOddsMin:5,evAdd:{'単勝':.05,'馬連':.15,'馬単':.35,'3連複':.35,'3連単':.80},bands:[5,25,80,200],w:[.05,1.50,1.60,1.10,.40],typeMul:{}},
+    jra_minor:{evFloor:1.50,tanOddsMin:4,evAdd:{'単勝':.05,'馬連':.15,'馬単':.35,'3連複':.35,'3連単':.80},bands:[4,20,60,150],w:[.06,1.55,1.55,1,.30],typeMul:{'3連単':.90}},
+    nar_nankan:{evFloor:1.52,tanOddsMin:4.5,evAdd:{'単勝':.06,'馬連':.16,'馬単':.36,'3連複':.36,'3連単':.82},bands:[4,22,70,180],w:[.05,1.50,1.58,1.05,.35],typeMul:{}},
+    nar_local:{evFloor:1.55,tanOddsMin:3.5,evAdd:{'単勝':.05,'馬連':.14,'馬単':.32,'3連複':.34,'3連単':.78},bands:[3.5,18,55,140],w:[.08,1.55,1.45,.80,.20],typeMul:{'馬単':.95,'3連単':.70}},
+    nar_ban:{evFloor:1.55,tanOddsMin:3,evAdd:{'単勝':.05,'馬連':.12,'馬単':.30,'3連複':.32,'3連単':.75},bands:[3,15,45,120],w:[.10,1.60,1.35,.65,.15],typeMul:{'3連複':.80,'3連単':.55}},
+    nar_ooi:{evFloor:1.58,tanOddsMin:4,evAdd:{'単勝':.07,'馬連':.18,'馬単':.40,'3連複':.40,'3連単':.90},bands:[4,18,50,120],w:[.06,1.55,1.40,.65,.15],typeMul:{'馬単':.85,'3連複':.80,'3連単':.60}}
+  };
+  const HITMAX={
+    jra_major:{fukuPmin:.68,widePmin:.52,evMin:.72,bias:{'複勝':2.50,'ワイド':1.55}},
+    jra_minor:{fukuPmin:.70,widePmin:.54,evMin:.73,bias:{'複勝':2.50,'ワイド':1.55}},
+    nar_nankan:{fukuPmin:.72,widePmin:.55,evMin:.72,bias:{'複勝':2.55,'ワイド':1.55}},
+    nar_local:{fukuPmin:.74,widePmin:.58,evMin:.68,bias:{'複勝':2.65,'ワイド':1.50}},
+    nar_ban:{fukuPmin:.76,widePmin:.60,evMin:.65,bias:{'複勝':2.75,'ワイド':1.40}},
+    nar_ooi:{fukuPmin:.75,widePmin:.60,evMin:.70,bias:{'複勝':2.80,'ワイド':1.35}}
+  };
+  const MULTI100={
+    jra_major:{pMin:{'複勝':.35,'ワイド':.25,'単勝':.15,'馬連':.10,'3連複':.05},evMin:{'複勝':1.05,'ワイド':1.05,'単勝':1.08,'馬連':1.10,'3連複':1.20},typeMul:{}},
+    jra_minor:{pMin:{'複勝':.36,'ワイド':.26,'単勝':.15,'馬連':.10,'3連複':.05},evMin:{'複勝':1.05,'ワイド':1.05,'単勝':1.08,'馬連':1.10,'3連複':1.20},typeMul:{}},
+    nar_nankan:{pMin:{'複勝':.38,'ワイド':.27,'単勝':.16,'馬連':.11,'3連複':.05},evMin:{'複勝':1.04,'ワイド':1.04,'単勝':1.07,'馬連':1.09,'3連複':1.22},typeMul:{'複勝':1.03}},
+    nar_local:{pMin:{'複勝':.42,'ワイド':.30,'単勝':.18,'馬連':.12,'3連複':.06},evMin:{'複勝':1.03,'ワイド':1.03,'単勝':1.05,'馬連':1.07,'3連複':1.18},typeMul:{'複勝':1.06,'3連複':.90}},
+    nar_ban:{pMin:{'複勝':.45,'ワイド':.32,'単勝':.20,'馬連':.13,'3連複':.07},evMin:{'複勝':1.02,'ワイド':1.02,'単勝':1.04,'馬連':1.06,'3連複':1.16},typeMul:{'複勝':1.10,'3連複':.80}},
+    nar_ooi:{pMin:{'複勝':.48,'ワイド':.36,'単勝':.24,'馬連':.15,'3連複':.08},evMin:{'複勝':1.07,'ワイド':1.07,'単勝':1.10,'馬連':1.13,'3連複':1.30},typeMul:{'複勝':1.12,'3連複':.70}}
+  };
+  const TYPE_QUOTA={
+    roi100:{'単勝':1,'複勝':2,'枠連':0,'ワイド':2,'馬連':1,'馬単':0,'3連複':1,'3連単':0},
+    roi120:{'単勝':2,'複勝':1,'枠連':0,'ワイド':1,'馬連':2,'馬単':0,'3連複':1,'3連単':0},
+    roi150:{'単勝':2,'複勝':0,'枠連':0,'ワイド':1,'馬連':2,'馬単':0,'3連複':1,'3連単':0},
+    roi200:{'単勝':2,'複勝':0,'枠連':0,'ワイド':1,'馬連':2,'馬単':1,'3連複':2,'3連単':1},
+    roi_max:{'単勝':2,'複勝':0,'枠連':0,'ワイド':0,'馬連':1,'馬単':1,'3連複':1,'3連単':1},
+    hitroi:{'単勝':0,'複勝':5,'枠連':0,'ワイド':3,'馬連':1,'馬単':0,'3連複':0,'3連単':0},
+    multi100:{'単勝':1,'複勝':5,'枠連':0,'ワイド':4,'馬連':1,'馬単':0,'3連複':1,'3連単':0},
+    hitrate100:{'単勝':0,'複勝':5,'枠連':0,'ワイド':3,'馬連':0,'馬単':0,'3連複':0,'3連単':0},
+    hitrate60:{'単勝':0,'複勝':3,'枠連':0,'ワイド':4,'馬連':0,'馬単':0,'3連複':0,'3連単':0},
+    hitrate80:{'単勝':0,'複勝':4,'枠連':0,'ワイド':6,'馬連':0,'馬単':0,'3連複':0,'3連単':0},
+    hitrate33:{'単勝':2,'複勝':1,'枠連':1,'ワイド':3,'馬連':3,'馬単':1,'3連複':2,'3連単':0},
+    ev_roi:{'単勝':2,'複勝':1,'枠連':1,'ワイド':2,'馬連':2,'馬単':0,'3連複':2,'3連単':0},
+    roi_plus:{'単勝':1,'複勝':2,'枠連':0,'ワイド':2,'馬連':1,'馬単':0,'3連複':1,'3連単':0},
+    trigami:{'単勝':0,'複勝':4,'枠連':2,'ワイド':4,'馬連':1,'馬単':0,'3連複':0,'3連単':0},
+    balance:{'単勝':2,'複勝':3,'枠連':2,'ワイド':3,'馬連':2,'馬単':2,'3連複':1,'3連単':1}
+  };
+  const num=(v,d=0)=>{const x=Number(v);return Number.isFinite(x)?x:d};
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  let lastSummary=null,lastComparison=[];
+  function load(){
+    let s={enabled:true,mode:'roi100',baseMode:'roi_max',maxPoints:5,minPoints:1};
+    try{s={...s,...JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}}catch(_){}
+    if(!MODE_LABELS[s.mode])s.mode='roi100';if(!MODE_LABELS[s.baseMode]||s.baseMode==='all_agree')s.baseMode='roi_max';
+    const p=PRESETS[s.mode]||[5,1];s.maxPoints=clamp(Math.round(num(s.maxPoints,p[0])),1,10);s.minPoints=clamp(Math.round(num(s.minPoints,p[1])),1,s.maxPoints);return s
+  }
+  let settings=load();
+  function modeLabel(k){return MODE_LABELS[k]||k||'未設定'}
+  function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(settings))}catch(_){}}
+  function status(text,kind=''){const el=document.getElementById('evModeStatus');if(!el)return;el.textContent=String(text||'');el.className='notice ev-mode-status'+(kind==='good'?' good':kind==='bad'?' bad':'')}
+  function raceTier(race){
+    const rid=String(race?.race_id||race?.raceId||''),code=rid.length>=6?rid.slice(4,6):'',place=String(race?.placeName||race?.place||'');
+    return TIER_BY_CODE[code]||TIER_BY_PLACE[place]||(String(race?.type||'').toUpperCase()==='NAR'?'nar_local':'jra_major')
+  }
+  function oddsWeight7(odds,B,W){if(odds<B[0])return W[0];if(odds<B[1])return W[1];if(odds<=B[2])return W[2];if(odds<=B[3])return W[3];if(odds<=B[4])return W[4];if(odds<=B[5])return W[5];return W[6]}
+  function oddsWeight5(odds,B,W){if(odds<B[0])return W[0];if(odds<=B[1])return W[1];if(odds<=B[2])return W[2];if(odds<=B[3])return W[3];return W[4]}
+  function kelly(p,o){return o>1?Math.max(0,(p*o-1)/(o-1)):0}
+  function learningMultiplier(t){
+    const raw=num(t.rawEv,t.ev),adj=num(t.adjustedEv,t.ev),learned=num(t.learnedExpectedProfitPer100,NaN);
+    if(Number.isFinite(learned))return clamp(1+learned/500,.55,1.80);
+    if(raw>0&&adj>0)return clamp(adj/raw,.55,1.80);
+    return 1
+  }
+  function resolvedMode(mode,race,type){
+    if(mode==='all_agree')return settings.baseMode;
+    if(mode==='auto'){
+      const kind=String(race?.type||'').toUpperCase();
+      if(kind==='NAR'&&type==='3連複')return'roi100';
+      if(kind==='NAR')return'multi100';
+      return'roi100'
+    }
+    return mode
+  }
+  function scoreTicket(ticket,requestedMode,race){
+    const type=TYPE_JP[ticket.ticketType]||ticket.ticketType,p=num(ticket.probability),ev=num(ticket.ev),odds=num(ticket.marketOdds),k=kelly(p,odds),tier=raceTier(race);
+    const mode=resolvedMode(requestedMode,race,type),learnMode=mode==='learn'||mode==='learn_hitroi',baseMode=mode==='learn'?'evpro':mode==='learn_hitroi'?'hitroi':mode;
+    if(!(p>0&&ev>0&&odds>0))return{pass:false,score:-Infinity,reason:'確率または市場オッズなし',resolved:mode};
+    const minMap=MODE_EV[baseMode]||MODE_EV.balance,minEv=num(minMap?.[type],1.05);
+    if(ev<minEv)return{pass:false,score:-Infinity,reason:`券種EV下限 ${ev.toFixed(2)} < ${minEv.toFixed(2)}`,resolved:mode};
+    let score=-Infinity,reason='';
+    if(baseMode==='roi100'){
+      const T=ROI100[tier]||ROI100.jra_major,bias=num(ROI100_BIAS[type],1)*num(T.typeMul?.[type],1),pm=T.pMin||{};
+      if(['馬単','3連単'].includes(type)||bias<=0||ev<T.evFloor)return{pass:false,score:-Infinity,reason:`開催場別EV下限 ${T.evFloor.toFixed(2)}`,resolved:mode};
+      if(pm[type]!=null&&p<pm[type])return{pass:false,score:-Infinity,reason:`確率 ${(p*100).toFixed(1)}% < ${(pm[type]*100).toFixed(1)}%`,resolved:mode};
+      if(type==='3連複'&&ev<T.sanfukuEv)return{pass:false,score:-Infinity,reason:`3連複EV < ${T.sanfukuEv.toFixed(2)}`,resolved:mode};
+      score=(Math.max(ev-1.05,0)*5.5+Math.sqrt(p)*3.5+Math.sqrt(k)*1.8)*oddsWeight7(odds,T.bands,T.w)*bias;reason=`ROI100 ${tier}`;
+    }else if(baseMode==='multi100'){
+      const T=MULTI100[tier]||MULTI100.jra_major,bias=num({'複勝':1.80,'ワイド':1.55,'単勝':1.15,'馬連':1.10,'3連複':.70}[type],0)*num(T.typeMul?.[type],1);
+      if(!bias||ev<1)return{pass:false,score:-Infinity,reason:'多点100%条件外',resolved:mode};
+      if(p<num(T.pMin?.[type],1)||ev<num(T.evMin?.[type],9.99))return{pass:false,score:-Infinity,reason:'開催場別確率/EV条件未達',resolved:mode};
+      score=(Math.max(ev-1,0)*4+Math.sqrt(p)*4+Math.sqrt(k))*bias;reason=`多点100 ${tier}`;
+    }else if(baseMode==='roi120'){
+      const bias=num({'単勝':1.50,'馬連':1.35,'ワイド':1.20,'複勝':.80,'3連複':.85}[type],0);
+      if(!bias||ev<1.20)return{pass:false,score:-Infinity,reason:'ROI120条件外',resolved:mode};
+      if(type==='複勝'&&(p<.35||ev<1.20))return{pass:false,score:-Infinity,reason:'複勝条件未達',resolved:mode};
+      if(type==='ワイド'&&(p<.25||ev<1.20))return{pass:false,score:-Infinity,reason:'ワイド条件未達',resolved:mode};
+      if(type==='馬連'&&(p<.08||ev<1.25))return{pass:false,score:-Infinity,reason:'馬連条件未達',resolved:mode};
+      if(type==='単勝'&&(p<.12||odds<2.5||ev<1.22))return{pass:false,score:-Infinity,reason:'単勝条件未達',resolved:mode};
+      if(type==='3連複'&&(p<.04||ev<1.45))return{pass:false,score:-Infinity,reason:'3連複条件未達',resolved:mode};
+      const band=odds<2.5?.10:odds<=12?1.50:odds<=25?1.20:odds<=45?.60:.05;score=(Math.max(ev-1.12,0)*9+Math.sqrt(p)*1.5+Math.sqrt(k)*2.5)*band*bias;reason='ROI120';
+    }else if(baseMode==='roi150'){
+      const bias=num({'単勝':1.45,'馬連':1.35,'3連複':1.10,'ワイド':.90}[type],0);
+      if(!bias||ev<1.30)return{pass:false,score:-Infinity,reason:'ROI150条件外',resolved:mode};
+      if(type==='単勝'&&(p<.10||odds<4||ev<1.35))return{pass:false,score:-Infinity,reason:'単勝条件未達',resolved:mode};
+      if(type==='ワイド'&&(p<.22||ev<1.30))return{pass:false,score:-Infinity,reason:'ワイド条件未達',resolved:mode};
+      if(type==='馬連'&&(p<.07||ev<1.40))return{pass:false,score:-Infinity,reason:'馬連条件未達',resolved:mode};
+      if(type==='3連複'&&(p<.04||ev<1.55))return{pass:false,score:-Infinity,reason:'3連複条件未達',resolved:mode};
+      const band=odds<4?.15:odds<=12?1.45:odds<=25?1.30:odds<=50?.65:.08;score=(Math.max(ev-1.25,0)*8+Math.sqrt(p)*2+Math.sqrt(k)*2.2)*band*bias;reason='ROI150';
+    }else if(baseMode==='roi200'){
+      const bias=num({'単勝':1.40,'馬連':1.30,'3連複':1.20,'3連単':1.15,'馬単':1.10,'ワイド':1}[type],0);
+      const pmin=num({'単勝':.06,'ワイド':.15,'馬連':.05,'馬単':.04,'3連複':.03,'3連単':.015}[type],1);
+      if(!bias||ev<2||p<pmin||(type==='単勝'&&odds<6))return{pass:false,score:-Infinity,reason:'ROI200条件外',resolved:mode};
+      const band=odds<6?.10:odds<=20?1.40:odds<=50?1.20:odds<=120?.55:.10;score=(Math.max(ev-1.80,0)*7+Math.sqrt(p)*1.5+Math.sqrt(k)*2)*band*bias;reason='ROI200';
+    }else if(baseMode==='roi_max'){
+      const T=ROIMAX[tier]||ROIMAX.jra_major,bias=num({'単勝':1.60,'馬連':1.45,'馬単':1.30,'3連複':1.40,'3連単':1.25}[type],0)*num(T.typeMul?.[type],1),add=T.evAdd||{};
+      if(!bias||ev<T.evFloor)return{pass:false,score:-Infinity,reason:`回収率最大 EV<${T.evFloor}`,resolved:mode};
+      if(type==='単勝'&&(odds<T.tanOddsMin||ev<T.evFloor+num(add[type],.05)))return{pass:false,score:-Infinity,reason:'単勝条件未達',resolved:mode};
+      if(type==='馬連'&&(p<.03||ev<T.evFloor+num(add[type],.15)))return{pass:false,score:-Infinity,reason:'馬連条件未達',resolved:mode};
+      if(type==='馬単'&&(p<.02||ev<T.evFloor+num(add[type],.35)))return{pass:false,score:-Infinity,reason:'馬単条件未達',resolved:mode};
+      if(type==='3連複'&&(p<.015||ev<T.evFloor+num(add[type],.35)))return{pass:false,score:-Infinity,reason:'3連複条件未達',resolved:mode};
+      if(type==='3連単'&&(p<.005||ev<T.evFloor+num(add[type],.80)))return{pass:false,score:-Infinity,reason:'3連単条件未達',resolved:mode};
+      score=(Math.max(ev-1.45,0)*18+Math.sqrt(p)*.2+Math.sqrt(k)*2)*oddsWeight5(odds,T.bands,T.w)*bias;reason=`回収率最大 ${tier}`;
+    }else if(baseMode==='payout_max'){
+      score=ev*10+p*.5;reason='期待払戻最大';
+    }else if(baseMode==='hitroi'){
+      const bias=num({'複勝':2.60,'ワイド':1.70,'馬連':.85}[type],0),pmin=num({'複勝':.45,'ワイド':.32,'馬連':.20}[type],1);
+      if(!bias||ev<1||p<pmin)return{pass:false,score:-Infinity,reason:'的中率×EV条件外',resolved:mode};
+      score=(p*16+Math.max(ev-1,0)*2.5+Math.sqrt(k)*.5)*bias;reason='的中率最高&EV維持';
+    }else if(baseMode==='hitrate100'){
+      const T=HITMAX[tier]||HITMAX.jra_major,bias=num(T.bias?.[type],0);
+      if(!bias||ev<T.evMin||(type==='複勝'&&p<T.fukuPmin)||(type==='ワイド'&&p<T.widePmin))return{pass:false,score:-Infinity,reason:'最高的中条件外',resolved:mode};
+      score=(p*14+Math.max(ev-.70,0)*.6)*bias;reason=`的中率最大 ${tier}`;
+    }else if(baseMode==='hitrate80'){
+      const bias=type==='複勝'?2.20:type==='ワイド'?1.85:0;
+      if(!bias||ev<.80||(type==='複勝'&&p<.45)||(type==='ワイド'&&p<.35))return{pass:false,score:-Infinity,reason:'的中率80条件外',resolved:mode};
+      score=(p*11+Math.max(ev-.75,0)*.8)*bias;reason='的中率80';
+    }else if(baseMode==='hitrate60'){
+      const bias=num({'複勝':2,'ワイド':1.55}[type],0);
+      if(!bias||ev<.85||(type==='複勝'&&p<.60)||(type==='ワイド'&&p<.45))return{pass:false,score:-Infinity,reason:'的中率60条件外',resolved:mode};
+      score=(p*9+Math.max(ev-.80,0)+Math.sqrt(k)*.4)*bias;reason='的中率60';
+    }else if(baseMode==='hitrate33'){
+      const bias=num({'馬連':1.55,'ワイド':1.40,'3連複':1.25,'単勝':1.20,'馬単':.95,'複勝':.55,'枠連':1.05,'3連単':.40}[type],.8);
+      if(type==='3連単'||odds<2||odds>40||ev<1)return{pass:false,score:-Infinity,reason:'的中率1/3条件外',resolved:mode};
+      score=(Math.max(ev-.95,0)*3.5+p*5+Math.sqrt(k)*1.2)*bias;reason='的中率1/3';
+    }else if(baseMode==='roi_plus'){
+      if(['馬単','3連単'].includes(type)||ev<1||odds<1.3||odds>100)return{pass:false,score:-Infinity,reason:'回収率＋条件外',resolved:mode};
+      const pm={'複勝':.45,'ワイド':.25,'馬連':.10,'単勝':.15};if(pm[type]!=null&&p<pm[type])return{pass:false,score:-Infinity,reason:'確率条件未達',resolved:mode};
+      score=ev*10+p*5;reason='回収率＋';
+    }else if(baseMode==='ev_roi'){
+      if(ev<1.20||type==='3連単'||p<.015)return{pass:false,score:-Infinity,reason:'EV回収率条件外',resolved:mode};
+      const bias=num({'単勝':1.22,'馬連':1.18,'ワイド':1.08,'3連複':1.12,'枠連':.95,'複勝':.78,'馬単':.75}[type],1);
+      score=(Math.max(ev-1.05,0)*4.5+Math.sqrt(k)*2.2)*bias;reason='EV回収率';
+    }else if(baseMode==='trigami'){
+      const bias=num({'複勝':1.55,'ワイド':1.35,'枠連':1.10,'馬連':.85,'単勝':.75,'3連複':.35}[type],0);
+      if(!bias||ev<minEv)return{pass:false,score:-Infinity,reason:'トリガミ回避条件外',resolved:mode};
+      const returnSafety=Math.min(2,odds/Math.max(1,settings.maxPoints));score=(p*10+Math.max(ev-1,0)*3+returnSafety)*bias;reason='トリガミ回避';
+    }else{
+      const bias=num({'単勝':1.30,'複勝':.92,'ワイド':1.08,'枠連':.92,'馬連':1.12,'馬単':.95,'3連複':.82,'3連単':.45}[type],1);
+      if(baseMode==='evpro')score=(Math.max(ev-.90,0)*4+Math.sqrt(p)*1.5+Math.sqrt(k)*2.2)*bias;
+      else score=(Math.max(ev-.80,0)*2.35+Math.sqrt(p)*2.15+Math.sqrt(k)*1.35)*bias;
+      reason=baseMode==='evpro'?'EV Pro':baseMode==='balance'?'バランス':'自動';
+    }
+    if(learnMode){const m=learningMultiplier(ticket);score*=m;reason+=`・学習×${m.toFixed(2)}`}
+    return{pass:Number.isFinite(score)&&score>-100,score,reason,resolved:mode}
+  }
+  function scaledQuota(mode,max){
+    if(mode==='payout_max')return null;
+    const table=TYPE_QUOTA[mode]||TYPE_QUOTA.balance,total=Object.values(table).reduce((a,b)=>a+b,0)||1,scale=max/total,out={};
+    Object.entries(table).forEach(([k,v])=>out[k]=Math.max(0,Math.round(v*scale)));return out
+  }
+  function selectTickets(evaluated,mode,max,isAllType){
+    if(!isAllType)return evaluated.slice(0,max);
+    const resolved=mode==='all_agree'?settings.baseMode:mode,quota=scaledQuota(resolved,max);
+    if(!quota)return evaluated.slice(0,max);
+    const picked=[],count={};
+    for(const t of evaluated){const jp=TYPE_JP[t.ticketType]||t.ticketType;count[jp]=count[jp]||0;if(count[jp]>=num(quota[jp],0))continue;picked.push(t);count[jp]++;if(picked.length>=max)break}
+    for(const t of evaluated){if(picked.length>=max)break;if(picked.includes(t))continue;picked.push(t)}
+    return picked.slice(0,max)
+  }
+  function candidateEntries(entries,c){
+    const rows=(entries||[]).filter(e=>num(e.horseNo)>0&&num(e.netkeibaWinProb)>0&&num(e.ai)>=num(c.minAi));
+    try{const sorters=typeof simulationEntrySorters==='function'?simulationEntrySorters():{},sorter=sorters?.[c.priority]||sorters?.ev;if(sorter)rows.sort(sorter)}catch(_){rows.sort((a,b)=>num(b.ev)-num(a.ev)||num(b.ai)-num(a.ai))}
+    return rows.slice(0,Math.max(1,num(c.topN,3)))
+  }
+  function currentUi(){
+    const max=clamp(Math.round(num(document.getElementById('evModeMaxPoints')?.value,settings.maxPoints)),1,10);
+    return{enabled:document.getElementById('evModeEnabled')?.checked??settings.enabled,mode:settings.mode,baseMode:document.getElementById('evModeBase')?.value||settings.baseMode,maxPoints:max,minPoints:clamp(Math.round(num(document.getElementById('evModeMinPoints')?.value,settings.minPoints)),1,max)}
+  }
+  function save(message='EV分析モード設定を保存しました。次のバックテストから適用します。'){
+    settings={...settings,...currentUi()};persist();updateUi();status(message,'good')
+  }
+  function installUi(){
+    if(document.getElementById('evModeGridCard'))return true;
+    const anchor=document.getElementById('thinkingEngineCard')||document.getElementById('simModeNotice');if(!anchor)return false;
+    const card=document.createElement('div');card.className='card ev-mode-card';card.id='evModeGridCard';
+    const baseOptions=MODE_OPTIONS.filter(x=>x[0]!=='all_agree').map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+    card.innerHTML=`<div class="ev-mode-head"><div><div class="ev-mode-title">🎛️ EV分析 モード切替 ${VERSION}</div><div class="ev-mode-sub">画像の「モード選択」をNEXTへそのまま移植しました。実データ、時系列ウォークフォワード確率、券種別市場オッズ、払戻照合、元金・予算・DDは共通のまま、購入買い目の選出ロジックだけを切り替えます。</div></div><button type="button" class="btn primary" id="evModeSaveBtn">設定保存</button></div>
+      <label class="ev-mode-master" id="evModeMasterLabel"><input type="checkbox" id="evModeEnabled"><span>EV分析モードを使用（OFF＝NEXT標準思考エンジン）</span></label>
+      <div class="ev-mode-grid-v151" id="evModeGrid">${MODE_OPTIONS.map(([k,v])=>`<button type="button" class="ev-mode-btn-v151 ${k==='learn'||k==='learn_hitroi'?'learning ':''}${k==='all_agree'?'all-agree':''}" data-mode="${k}">${v}</button>`).join('')}</div>
+      <div class="ev-mode-allagree" id="evModeAllAgree"><h4>🤝 全て同意モードの上書き設定</h4><p>選んだ設定モードで通常のEV選別を通過した買い目だけをユーザー指定として順位上で強制優先します。低評価候補で3点を補完せず、3点未満は見送ります。</p><div class="ev-mode-field"><label>上書き対象の設定モード</label><select id="evModeBase">${baseOptions}</select></div></div>
+      <div class="ev-mode-controls"><div class="ev-mode-field"><label>1R上限点数</label><input id="evModeMaxPoints" type="number" min="1" max="10" step="1"></div><div class="ev-mode-field"><label>最低成立点数</label><input id="evModeMinPoints" type="number" min="1" max="10" step="1"></div><div class="ev-mode-field"><label>現在の選択</label><input id="evModeCurrentLabel" readonly></div></div>
+      <div class="ev-mode-actions"><button type="button" class="btn good" id="evModeRerunBtn">保存済みDBで再計算</button><button type="button" class="btn" id="evModeCompareBtn">主要モードを比較</button><button type="button" class="btn" id="evModePresetBtn">推奨点数へ戻す</button></div>
+      <div class="ev-mode-kpis"><div class="ev-mode-kpi"><small>使用モード</small><strong id="evModeKpiMode">—</strong></div><div class="ev-mode-kpi"><small>評価可能R</small><strong id="evModeKpiRaces">0R</strong></div><div class="ev-mode-kpi"><small>購入R</small><strong id="evModeKpiBought">0R</strong></div><div class="ev-mode-kpi"><small>購入的中R</small><strong id="evModeKpiHits">0R</strong></div><div class="ev-mode-kpi"><small>ROI</small><strong id="evModeKpiRoi">—</strong></div></div>
+      <div class="notice ev-mode-status" id="evModeStatus">EV分析モードを準備しています。</div>
+      <div class="ev-mode-help" id="evModeHelp"></div>
+      <div class="ev-mode-compare" id="evModeCompare"><table><thead><tr><th>モード</th><th>購入R</th><th>的中R</th><th>投資</th><th>払戻</th><th>収支</th><th>ROI</th><th>最大DD</th></tr></thead><tbody id="evModeCompareBody"></tbody></table></div>`;
+    if(anchor.id==='thinkingEngineCard')anchor.parentNode.insertBefore(card,anchor);else anchor.insertAdjacentElement('afterend',card);
+    document.getElementById('evModeSaveBtn').onclick=()=>save();
+    document.getElementById('evModeEnabled').onchange=()=>save('EV分析モードのON/OFFを保存しました。');
+    document.getElementById('evModeBase').onchange=()=>save('全て同意の上書き対象を保存しました。');
+    document.querySelectorAll('#evModeGrid [data-mode]').forEach(btn=>btn.onclick=()=>{
+      settings.mode=btn.dataset.mode;const p=PRESETS[settings.mode]||[5,1];settings.maxPoints=p[0];settings.minPoints=p[1];persist();updateUi();status(`「${modeLabel(settings.mode)}」へ切り替えました。`,'good')
+    });
+    document.getElementById('evModePresetBtn').onclick=()=>{const p=PRESETS[settings.mode]||[5,1];settings.maxPoints=p[0];settings.minPoints=p[1];persist();updateUi();status('推奨点数へ戻しました。','good')};
+    document.getElementById('evModeRerunBtn').onclick=rerun;
+    document.getElementById('evModeCompareBtn').onclick=compare;
+    updateUi();return true
+  }
+  function helpText(mode){
+    const map={
+      roi100:'開催場別にEV下限、確率条件、オッズ帯を切り替えます。JRA主場の既存挙動を基準に、NAR・大井・ばんえいは大穴と3連系を抑制します。',
+      roi_max:'EV超過分を最優先する高分散モードです。的中率より市場の歪みを重視します。',
+      hitroi:'EV 1.00以上を維持した範囲で複勝・ワイド中心に的中確率を最大化します。',
+      multi100:'全買い目EV 1.00以上を厳守し、複勝・ワイドを中心に多点で合成期待回収率100%超を狙います。',
+      payout_max:'券種比重を付けず、確率×市場オッズのEVが高い順に採用します。',
+      learn:'WF補正済み確率に加え、候補が保持する学習補正値を選出順位へ反映します。',
+      learn_hitroi:'学習補正を使いながら、的中率とEV 1.00維持を優先します。',
+      all_agree:`上書き対象「${modeLabel(settings.baseMode)}」をユーザー指定として強制優先します。3点未満は補完せず見送ります。`
+    };return map[mode]||'券種別EV下限と確率・オッズ条件を使って買い目を選出します。'
+  }
+  function updateUi(){
+    if(!installUi())return;
+    const enabled=document.getElementById('evModeEnabled');enabled.checked=!!settings.enabled;document.getElementById('evModeMasterLabel').classList.toggle('on',!!settings.enabled);
+    document.querySelectorAll('#evModeGrid [data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===settings.mode));
+    document.getElementById('evModeBase').value=settings.baseMode;document.getElementById('evModeMaxPoints').value=settings.maxPoints;document.getElementById('evModeMinPoints').value=settings.minPoints;
+    document.getElementById('evModeCurrentLabel').value=modeLabel(settings.mode);document.getElementById('evModeAllAgree').style.display=settings.mode==='all_agree'?'block':'none';
+    document.getElementById('evModeHelp').textContent=helpText(settings.mode);
+    if(lastSummary)renderKpi(lastSummary);else document.getElementById('evModeKpiMode').textContent=settings.enabled?modeLabel(settings.mode):'NEXT標準'
+  }
+  function logicConfig(c){
+    return{enabled:c?.evModeEnabled!=null?!!c.evModeEnabled:!!settings.enabled,mode:c?.evModeKey||settings.mode,baseMode:c?.evModeBase||settings.baseMode,maxPoints:clamp(Math.round(num(c?.evModeMaxPoints,settings.maxPoints)),1,10),minPoints:clamp(Math.round(num(c?.evModeMinPoints,settings.minPoints)),1,10)}
+  }
+  function installEngine(){
+    if(typeof readSimConfig==='function'&&!readSimConfig.__evModeGridV151){
+      const baseRead=readSimConfig;const wrapped=function(){const c=baseRead.apply(this,arguments),s=currentUi();c.evModeEnabled=!!s.enabled;c.evModeKey=s.mode;c.evModeBase=s.baseMode;c.evModeMaxPoints=s.maxPoints;c.evModeMinPoints=s.mode==='all_agree'?3:s.minPoints;if(s.enabled){c.thinkingEnabled=false;c.thinkingRelativeGuard=false;c.thinkingProfitGuard=false;c.maxTickets=s.maxPoints}return c};wrapped.__evModeGridV151=true;try{readSimConfig=wrapped;window.readSimConfig=wrapped}catch(_){window.readSimConfig=wrapped}
+    }
+    if(typeof buildSimulationCandidate==='function'&&!buildSimulationCandidate.__evModeGridV151){
+      const baseCandidate=buildSimulationCandidate;const wrapped=async function(race,result,c){
+        const item=await baseCandidate.apply(this,arguments),s=logicConfig(c);if(!s.enabled||item?.validationExcluded)return item;
+        const ticketType=String(c?.ticketType||'win'),ranked=candidateEntries(item?.entries||[],c||{}),minOdds=num(c?.minOdds,0),maxOdds=num(c?.maxOdds,999);
+        let generated=[];try{generated=generateTickets(ticketType,ranked,Number.MAX_SAFE_INTEGER)||[]}catch(error){item.candidateTickets=[];item.rankScore=-1;item.thinkingDecision=`EV分析：${modeLabel(s.mode)}`;item.thinkingSkipReason=`買い目生成失敗：${error?.message||error}`;return item}
+        const evaluated=generated.filter(t=>num(t.marketOdds)>=minOdds&&num(t.marketOdds)<=maxOdds).map(t=>{
+          const d=scoreTicket(t,s.mode,race);return{...t,evModeKey:s.mode,evModeResolved:d.resolved,evModeScore:d.score,evModeReason:d.reason,adjustedEv:num(t.ev),thought:`${modeLabel(s.mode)}｜p ${(num(t.probability)*100).toFixed(2)}% × odds ${num(t.marketOdds).toFixed(1)} = EV ${num(t.ev).toFixed(3)}｜${d.reason}`,__evModePass:d.pass}
+        }).filter(t=>t.__evModePass).sort((a,b)=>num(b.evModeScore)-num(a.evModeScore)||num(b.ev)-num(a.ev)||num(b.probability)-num(a.probability));
+        const selected=selectTickets(evaluated,s.mode,s.maxPoints,ticketType==='all'),need=s.mode==='all_agree'?3:s.minPoints;
+        item.candidateEntries=ranked;item.purchaseTickets=[];item.evModeKey=s.mode;item.evModeLabel=modeLabel(s.mode);item.evModeGenerated=generated.length;item.evModePassed=evaluated.length;
+        if(selected.length<need){item.candidateTickets=[];item.rankScore=-1;item.thinkingDecision=`EV分析：${modeLabel(s.mode)}・見送り`;item.thinkingSkipReason=`モード条件通過 ${selected.length}/${need}点（生成${generated.length}・通過${evaluated.length}）。低評価候補で補完しません`;return item}
+        item.candidateTickets=selected;item.rankScore=Math.max(...selected.map(t=>num(t.evModeScore)));item.thinkingDecision=`EV分析：${modeLabel(s.mode)}・${selected.length}点通過`;item.thinkingSkipReason='';item.thinkingMinEv=Math.min(...selected.map(t=>num(t.ev)));item.thinkingAvgEv=selected.reduce((z,t)=>z+num(t.ev),0)/selected.length;item.thinkingRaceScore=item.rankScore;return item
+      };wrapped.__evModeGridV151=true;try{buildSimulationCandidate=wrapped;window.buildSimulationCandidate=wrapped}catch(_){window.buildSimulationCandidate=wrapped}
+    }
+    if(typeof computeSimulationRows==='function'&&!computeSimulationRows.__evModeGridV151){
+      const baseCompute=computeSimulationRows;const wrapped=async function(c){const result=await baseCompute.apply(this,arguments),rows=result?.rows||[],s=logicConfig(c);result.summary=result.summary||{};result.summary.evMode={enabled:s.enabled,mode:s.mode,label:s.enabled?modeLabel(s.mode):'NEXT標準',maxPoints:s.maxPoints,minPoints:s.mode==='all_agree'?3:s.minPoints,races:rows.filter(r=>!r.validationExcluded).length,bought:rows.filter(r=>num(r.invest)>0).length,hits:rows.filter(r=>r.purchaseHit).length};return result};wrapped.__evModeGridV151=true;try{computeSimulationRows=wrapped;window.computeSimulationRows=wrapped}catch(_){window.computeSimulationRows=wrapped}
+    }
+    if(typeof renderSimulation==='function'&&!renderSimulation.__evModeGridV151){const baseRender=renderSimulation;const wrapped=function(summary=null){const out=baseRender.apply(this,arguments);lastSummary=summary||lastSummary;renderKpi(summary);return out};wrapped.__evModeGridV151=true;try{renderSimulation=wrapped;window.renderSimulation=wrapped}catch(_){window.renderSimulation=wrapped}}
+  }
+  function renderKpi(summary){
+    if(!installUi())return;const s=summary?.evMode||{},rows=Array.isArray(window.state?.simResult)?window.state.simResult:[],by=id=>document.getElementById(id),totalBet=num(summary?.totalBet,rows.reduce((z,r)=>z+num(r.invest),0)),totalPay=num(summary?.totalPay,rows.reduce((z,r)=>z+num(r.pay),0)),roi=totalBet?totalPay/totalBet*100:NaN;
+    by('evModeKpiMode').textContent=s.label||(settings.enabled?modeLabel(settings.mode):'NEXT標準');by('evModeKpiRaces').textContent=`${num(s.races,rows.filter(r=>!r.validationExcluded).length)}R`;by('evModeKpiBought').textContent=`${num(s.bought,rows.filter(r=>num(r.invest)>0).length)}R`;by('evModeKpiHits').textContent=`${num(s.hits,rows.filter(r=>r.purchaseHit).length)}R`;by('evModeKpiRoi').textContent=Number.isFinite(roi)?`${roi.toFixed(1)}%`:'—';by('evModeKpiRoi').className=Number.isFinite(roi)?(roi>=100?'good':'bad'):'';
+    if(summary&&!summary.liveProvisional)status(`${s.enabled?'EV分析モード':'NEXT標準'}で判定完了。${s.label||modeLabel(settings.mode)}／上限${s.maxPoints||settings.maxPoints}点／最低${s.minPoints||settings.minPoints}点。取得・WF確率・払戻・資金管理は共通です。`,s.enabled?'good':'')
+  }
+  async function rerun(){
+    save('設定を保存しました。保存済みDBから再計算します。');const btn=document.getElementById('evModeRerunBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='再計算中…';
+    try{if(typeof runSimulationCore==='function')await runSimulationCore();else document.getElementById('simRunBtn')?.click()}catch(error){status(`再計算失敗：${error?.message||error}`,'bad')}finally{btn.disabled=false;btn.textContent=old}
+  }
+  function compareHtml(list){
+    const body=document.getElementById('evModeCompareBody'),wrap=document.getElementById('evModeCompare');if(!body||!wrap)return;const best=[...list].filter(x=>x.totalBet>0).sort((a,b)=>b.roi-a.roi||b.profit-a.profit)[0];
+    body.innerHTML=list.map(x=>`<tr class="${best&&best.mode===x.mode?'best':''}"><td>${modeLabel(x.mode)}${best&&best.mode===x.mode?' ★':''}</td><td>${x.bought}R</td><td>${x.hits}R</td><td>${x.totalBet.toLocaleString()}円</td><td>${x.totalPay.toLocaleString()}円</td><td class="${x.profit>=0?'good':'bad'}">${x.profit.toLocaleString()}円</td><td class="${x.roi>=100?'good':'bad'}">${x.totalBet?x.roi.toFixed(1)+'%':'—'}</td><td>${x.maxDd.toLocaleString()}円</td></tr>`).join('');wrap.classList.add('show')
+  }
+  async function compare(){
+    if(typeof computeSimulationRows!=='function'||typeof readSimConfig!=='function'){status('比較機能を利用できません。','bad');return}
+    const modes=['roi100','roi_max','payout_max','hitroi','multi100','evpro','learn_hitroi'],btn=document.getElementById('evModeCompareBtn'),old=btn.textContent;btn.disabled=true;btn.textContent='比較中…';lastComparison=[];
+    try{
+      const base={...readSimConfig(),evModeEnabled:true,thinkingEnabled:false,thinkingRelativeGuard:false,thinkingProfitGuard:false};
+      for(let i=0;i<modes.length;i++){const mode=modes[i],p=PRESETS[mode]||[5,1];status(`主要モード比較 ${i+1}/${modes.length}：${modeLabel(mode)} を計算しています。`);const c={...base,evModeKey:mode,evModeMaxPoints:p[0],evModeMinPoints:p[1],maxTickets:p[0]};const result=await computeSimulationRows(c),s=result.summary||{};lastComparison.push({mode,bought:num(s.boughtCount),hits:num(s.purchaseHits),totalBet:num(s.totalBet),totalPay:num(s.totalPay),profit:num(s.profit),roi:num(s.roi),maxDd:num(s.maxDrawdown)});compareHtml(lastComparison);await sleep(30)}
+      const best=[...lastComparison].filter(x=>x.totalBet>0).sort((a,b)=>b.roi-a.roi||b.profit-a.profit)[0];status(best?`比較完了。検証期間内の最高ROIは「${modeLabel(best.mode)}」${best.roi.toFixed(1)}%です。同じ期間への最適化なので、自動採用せず別期間で確認してください。`:'比較完了。購入条件を通過したモードがありません。',best?'good':'')
+    }catch(error){status(`モード比較失敗：${error?.message||error}`,'bad')}finally{btn.disabled=false;btn.textContent=old}
+  }
+  function setVersion(){try{document.title='The競馬 Ultimate NEXT Professional '+VERSION;const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.5.1 EV Mode Grid'}catch(_){}}
+  function boot(){settings=load();installUi();installEngine();updateUi();setVersion();[250,800,1800,3500].forEach(ms=>setTimeout(()=>{installUi();installEngine();updateUi();setVersion()},ms));window.__THEKEIBA_EV_MODE_GRID__={version:VERSION,getSettings:()=>({...settings}),modes:{...MODE_LABELS},scoreTicket,compare}}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
+
 </body>
 </html>
