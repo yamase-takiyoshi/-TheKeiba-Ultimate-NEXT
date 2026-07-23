@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.10</title>
+<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.11</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.10</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.11</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -352,7 +352,7 @@ input,select,textarea{font-size:16px}
       <div class="card">
         <div class="notice sim-authority-card" id="simAuthorityCard"><div class="sim-authority-copy"><strong id="simAuthorityTitle">設定モード完全権限</strong><div id="simAuthoritySummary" class="sim-authority-summary">設定を読み込んでいます。</div><small id="simAuthorityHelp">SIM画面では期間と開催場だけを指定します。券種・予算・点数・EV・AI・オッズ・優先順位・同意・予算配分は「設定」の保存値を直接読み、画面値はアルゴリズムに使用しません。</small></div><button type="button" class="btn good" id="simAuthorityToggleBtn">🔓 SIM設定を解除</button><button type="button" class="btn warn" id="simAuthoritySettingsBtn">⚙ 設定を開く</button></div>
         <div class="form-grid">
-          <div class="field"><label>戦略</label><select id="simStrategy"></select></div><div class="field"><label>設定モード</label><select id="simPredictionMode"><option value="custom">戦略・個別設定</option><option value="ai">AI重視</option><option value="ev" selected>EV重視</option><option value="expected">期待利益重視</option><option value="balanced">総合バランス</option><option value="agreement">全て同意</option></select></div><div class="field"><label>開始日</label><input id="simStart" type="date"></div><div class="field"><label>終了日</label><input id="simEnd" type="date"></div><div class="field"><label>区分</label><select id="simType"><option value="">JRA・NAR</option><option>JRA</option><option>NAR</option></select></div><div class="field"><label>データ準備</label><select id="simDataMode"><option value="sync">実データ同期</option><option value="stored">同期なし・保存済みのみ</option></select></div>
+          <div class="field"><label>戦略</label><select id="simStrategy"></select></div><div class="field"><label>設定モード</label><select id="simPredictionMode"><option value="custom">戦略・個別設定</option><option value="ai">AI重視</option><option value="ev" selected>EV重視</option><option value="expected">期待利益重視</option><option value="balanced">総合バランス</option><option value="agreement">全て同意</option></select></div><div class="field"><label>開始日</label><input id="simStart" type="date"></div><div class="field"><label>終了日</label><input id="simEnd" type="date"></div><div class="field"><label>区分</label><select id="simType"><option value="">JRA・NAR</option><option>JRA</option><option>NAR</option></select></div><div class="field"><label>データ準備</label><select id="simDataMode"><option value="sync">実データ同期</option><option value="stored">同期なし・保存済みのみ</option></select></div><div class="field"><label>EV検証区分</label><select id="simEvEvidence"><option value="authentic" selected>正規netkeiba予想のみ</option><option value="includeFallback">過去用代替も参考</option></select></div>
           <div class="field full"><label>開催場（単数・複数選択）</label><div class="sim-place-picker"><div class="sim-place-actions"><label class="sim-place-option all"><input type="checkbox" id="simPlaceAll" checked>全開催場</label><button class="btn small" type="button" id="simPlaceSelectAllBtn">全場選択</button><button class="btn small" type="button" id="simPlaceClearBtn">選択解除</button><span class="sim-place-summary" id="simPlaceSummary">全開催場</span></div><div class="sim-place-options" id="simPlaceOptions"><span class="muted">登録開催場を読込中です</span></div></div></div>
           <div class="field"><label>券種</label><select id="simTicket"><option value="win">単勝</option><option value="place">複勝</option><option value="bracketQuinella">枠連</option><option value="quinella">馬連</option><option value="wide">ワイド</option><option value="exacta">馬単</option><option value="trio">3連複</option><option value="trifecta">3連単</option><option value="all">全券種</option></select></div><div class="field"><label>1日予算</label><input id="simDailyBudget" type="number" value="2000"></div><div class="field"><label>1点金額</label><input id="simUnit" type="number" value="100"></div><div class="field"><label>候補上位頭数</label><input id="simTopN" type="number" value="3"></div>
           <div class="field"><label>1R最大点数</label><input id="simMaxTickets" type="number" value="6"></div><div class="field"><label>1日最大購入R</label><input id="simMaxRace" type="number" value="6"></div><div class="field"><label>最低EV</label><input id="simMinEv" type="number" step="0.01" value="1.00"></div><div class="field"><label>最低AI（補助条件）</label><input id="simMinAi" type="number" value="0"></div>
@@ -1055,7 +1055,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.3.10-circular-ev-repair";
+const APP_VERSION="1.3.11-all-venues-authentic-ev";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待利益重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -1410,7 +1410,7 @@ function readSimConfig(){
   const allPlaces=!!$("simPlaceAll")?.checked,places=allPlaces?[]:getSelectedSimPlaces();
   return{
     strategyId:$("simStrategy").value,predictionMode,start:compactDate($("simStart").value),end:compactDate($("simEnd").value),
-    type:$("simType").value,dataMode:$("simDataMode")?.value||"sync",allPlaces,places,placeSelectionValid:allPlaces||places.length>0,
+    type:$("simType").value,dataMode:$("simDataMode")?.value||"sync",evEvidenceMode:$("simEvEvidence")?.value||"authentic",allPlaces,places,placeSelectionValid:allPlaces||places.length>0,
     ticketType:$("simTicket").value,dailyBudget:Number($("simDailyBudget").value||0),unit:Number($("simUnit").value||100),
     topN:Number($("simTopN").value||3),maxTickets:Number($("simMaxTickets").value||6),maxRaces:Number($("simMaxRace").value||6),
     minEv:Number($("simMinEv").value||0),minAi:Number($("simMinAi").value||0),minOdds:Number($("simMinOdds").value||0),
@@ -1460,7 +1460,7 @@ function simulationDailyRankScore(entries,basis){if(!entries.length)return-1;con
 async function buildSimulationCandidate(race,result,c){let entries=await getByIndex("entries","race_id",race.race_id);recalcEntryScores(entries);const qualifies=e=>e.ev>=c.minEv&&e.ai>=c.minAi&&e.odds>=c.minOdds&&e.odds<=c.maxOdds;let candidateEntries=entries.filter(qualifies);const sorters=simulationEntrySorters();candidateEntries.sort(sorters[c.priority]||sorters.ai);candidateEntries=candidateEntries.slice(0,c.topN);const candidateTickets=generateTickets(c.ticketType,candidateEntries,c.maxTickets);return{race,result,entries,candidateEntries,candidateTickets,purchaseTickets:[],rankScore:simulationDailyRankScore(candidateEntries,c.dailyRankBasis)}}
 function allocateSequentialCandidates(items,c){const days=new Map();for(const item of items){const day=days.get(item.race.date)||{remaining:c.dailyBudget,boughtRaces:0};if(day.boughtRaces<c.maxRaces&&item.candidateTickets.length){const affordable=Math.floor(day.remaining/c.unit);item.purchaseTickets=item.candidateTickets.slice(0,affordable)}const invest=item.purchaseTickets.length*c.unit;if(invest>0){day.remaining-=invest;day.boughtRaces++}item.remaining=day.remaining;days.set(item.race.date,day)}}
 function allocateDailyRankCandidates(items,c){const groups=new Map();for(const item of items){const list=groups.get(item.race.date)||[];list.push(item);groups.set(item.race.date,list)}for(const list of groups.values()){let remaining=c.dailyBudget,boughtRaces=0;const ranked=[...list].sort((a,b)=>b.rankScore-a.rankScore||a.race.placeName.localeCompare(b.race.placeName)||a.race.raceNo-b.race.raceNo);for(const item of ranked){if(boughtRaces>=c.maxRaces||!item.candidateTickets.length){item.remaining=remaining;continue}const affordable=Math.floor(remaining/c.unit);item.purchaseTickets=item.candidateTickets.slice(0,affordable);const invest=item.purchaseTickets.length*c.unit;if(invest>0){remaining-=invest;boughtRaces++}item.remaining=remaining}for(const item of list)if(item.remaining===undefined)item.remaining=remaining}}
-async function computeSimulationRows(c){const [races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),resMap=new Map(results.filter(hasUsableConfirmedResult).map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&simConfigRaceMatches(c,r)&&(!c.skipDebutRaces||!/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(String(b.placeName||""))||a.raceNo-b.raceNo),items=[];for(const race of filtered){const result=resMap.get(race.race_id);if(result)items.push(await buildSimulationCandidate(race,result,c))}if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);const rows=[];let bank=0;for(const item of items){const{race,result,entries,candidateTickets,purchaseTickets}=item,candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,capitalBefore:Number(item.capitalBefore??c.initialCapital??0),capitalAfter:Number(item.capitalAfter??((c.initialCapital||0)+bank)),effectiveDailyBudget:Number(item.effectiveDailyBudget??c.dailyBudget??0),capitalDrawdown:Number(item.capitalDrawdown||0),capitalDrawdownPercent:Number(item.capitalDrawdownPercent||0),budgetBlocked:String(item.budgetBlocked||""),remaining:item.remaining,rankScore:item.rankScore})}const totalBet=rows.reduce((sum,x)=>sum+x.invest,0),totalPay=rows.reduce((sum,x)=>sum+x.pay,0),summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0,initialCapital:Number(c.initialCapital||0),finalCapital:Number(rows.at(-1)?.capitalAfter??c.initialCapital??0),capitalReturn:Number(c.initialCapital?((rows.at(-1)?.capitalAfter??c.initialCapital)-c.initialCapital)/c.initialCapital*100:0),maxDrawdown:Math.max(0,...rows.map(x=>Number(x.capitalDrawdown||0))),maxDrawdownPercent:Math.max(0,...rows.map(x=>Number(x.capitalDrawdownPercent||0)))};return{rows,summary}}
+async function computeSimulationRows(c){const [races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),resMap=new Map(results.filter(hasUsableConfirmedResult).map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&simConfigRaceMatches(c,r)&&(!c.skipDebutRaces||!/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(String(b.placeName||""))||a.raceNo-b.raceNo),items=[];for(const race of filtered){const result=resMap.get(race.race_id);if(result)items.push(await buildSimulationCandidate(race,result,c))}if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);const rows=[];let bank=0;for(const item of items){const{race,result,entries,candidateTickets,purchaseTickets,evEvidence,validationExcluded}=item,candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,capitalBefore:Number(item.capitalBefore??c.initialCapital??0),capitalAfter:Number(item.capitalAfter??((c.initialCapital||0)+bank)),effectiveDailyBudget:Number(item.effectiveDailyBudget??c.dailyBudget??0),capitalDrawdown:Number(item.capitalDrawdown||0),capitalDrawdownPercent:Number(item.capitalDrawdownPercent||0),budgetBlocked:String(item.budgetBlocked||""),remaining:item.remaining,rankScore:item.rankScore,evEvidence,validationExcluded})}const validRows=rows.filter(x=>!x.validationExcluded),totalBet=validRows.reduce((sum,x)=>sum+x.invest,0),totalPay=validRows.reduce((sum,x)=>sum+x.pay,0),summary={raceCount:validRows.length,boughtCount:validRows.filter(x=>x.invest>0).length,candidateHits:validRows.filter(x=>x.candidateHit).length,purchaseHits:validRows.filter(x=>x.purchaseHit).length,missHits:validRows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0,initialCapital:Number(c.initialCapital||0),finalCapital:Number(validRows.at(-1)?.capitalAfter??c.initialCapital??0),capitalReturn:Number(c.initialCapital?((validRows.at(-1)?.capitalAfter??c.initialCapital)-c.initialCapital)/c.initialCapital*100:0),maxDrawdown:Math.max(0,...validRows.map(x=>Number(x.capitalDrawdown||0))),maxDrawdownPercent:Math.max(0,...validRows.map(x=>Number(x.capitalDrawdownPercent||0)))};return{rows,summary}}
 async function runSimulationCore(){const c=readSimConfig();const {rows,summary}=await computeSimulationRows(c);state.simResult=rows;const id=await addOne("simulations",{createdAt:new Date().toISOString(),config:c,summary,rows:rows.map(x=>({...x,race:x.race,result:undefined}))});renderSimulation(summary);await renderDashboard();await syncSimulationToAnalysis({force:true,reason:"バックテスト完了"});return id}
 
 const BACKTEST_BATCH_DAYS=92;
@@ -2051,7 +2051,7 @@ async function runSimulation(){
   if(cov.results<cov.races)setSimSyncStatus(`${storedOnly?"同期なし・一部実行":"一部実行"}：登録対象 ${cov.races}Rのうち保存済み確定結果 ${cov.results}R。未取得・未確定 ${missing}Rは集計しません。`);
   return runSimulationCore();
 }
-function renderSimulation(summary=null){const rows=state.simResult;if(!summary){const totalBet=rows.reduce((s,x)=>s+x.invest,0),totalPay=rows.reduce((s,x)=>s+x.pay,0);summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0}}$("simRaceCount").textContent=summary.raceCount;$("simBoughtCount").textContent=summary.boughtCount;$("simCandidateHits").textContent=summary.candidateHits;$("simPurchaseHits").textContent=summary.purchaseHits;$("simMissHits").textContent=summary.missHits;$("simRoi").textContent=pct(summary.roi);$("simRoi").className="stat-value "+(summary.roi>=100?"good":"bad");$("simRows").innerHTML=rows.map(x=>`<tr><td>${displayDate(x.race.date)}</td><td>${x.race.type}</td><td>${esc(x.race.placeName)}</td><td>${x.race.raceNo}R</td><td>${TICKET_LABELS[x.ticketType]}</td><td>${x.candidateTickets.length}</td><td>${x.purchaseTickets.length}</td><td>${x.candidateHit?"○":"-"}</td><td>${x.purchaseHit?"◎":"-"}</td><td>${yen(x.invest)}</td><td>${yen(x.pay)}</td><td class="${x.profit>=0?"good":"bad"}">${yen(x.profit)}</td><td>${pct(x.roi)}</td></tr>`).join("")||`<tr><td colspan="13" class="empty">対象レースなし</td></tr>`;$("simFoot").innerHTML=`<tr><th colspan="9">合計</th><th>${yen(summary.totalBet)}</th><th>${yen(summary.totalPay)}</th><th class="${summary.profit>=0?"good":"bad"}">${yen(summary.profit)}</th><th>${pct(summary.roi)}</th></tr>`;drawLineChart($("bankChart"),rows.map(x=>x.bank),"--accent")}
+function renderSimulation(summary=null){const rows=state.simResult;if(!summary){const validRows=rows.filter(x=>!x.validationExcluded),totalBet=validRows.reduce((s,x)=>s+x.invest,0),totalPay=validRows.reduce((s,x)=>s+x.pay,0);summary={raceCount:validRows.length,boughtCount:validRows.filter(x=>x.invest>0).length,candidateHits:validRows.filter(x=>x.candidateHit).length,purchaseHits:validRows.filter(x=>x.purchaseHit).length,missHits:validRows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0}}$("simRaceCount").textContent=summary.raceCount;$("simBoughtCount").textContent=summary.boughtCount;$("simCandidateHits").textContent=summary.candidateHits;$("simPurchaseHits").textContent=summary.purchaseHits;$("simMissHits").textContent=summary.missHits;$("simRoi").textContent=pct(summary.roi);$("simRoi").className="stat-value "+(summary.roi>=100?"good":"bad");$("simRows").innerHTML=rows.map(x=>`<tr><td>${displayDate(x.race.date)}</td><td>${x.race.type}</td><td>${esc(x.race.placeName)}</td><td>${x.race.raceNo}R</td><td>${TICKET_LABELS[x.ticketType]}</td><td>${x.validationExcluded?`<span class="badge warn" title="${esc(x.evEvidence?.label||"予想値なし")}">対象外</span>`:x.candidateTickets.length}</td><td>${x.validationExcluded?"-":x.purchaseTickets.length}</td><td>${x.validationExcluded?"-":x.candidateHit?"○":"-"}</td><td>${x.validationExcluded?"-":x.purchaseHit?"◎":"-"}</td><td>${yen(x.invest)}</td><td>${yen(x.pay)}</td><td class="${x.profit>=0?"good":"bad"}">${yen(x.profit)}</td><td>${x.validationExcluded?"-":pct(x.roi)}</td></tr>`).join("")||`<tr><td colspan="13" class="empty">対象レースなし</td></tr>`;$("simFoot").innerHTML=`<tr><th colspan="9">合計</th><th>${yen(summary.totalBet)}</th><th>${yen(summary.totalPay)}</th><th class="${summary.profit>=0?"good":"bad"}">${yen(summary.profit)}</th><th>${pct(summary.roi)}</th></tr>`;drawLineChart($("bankChart"),rows.filter(x=>!x.validationExcluded).map(x=>x.bank),"--accent")}
 function exportSimulationCsv(){exportCsv("period_simulation.csv",["date","type","place","race","ticket","candidate_count","purchase_count","candidate_hit","purchase_hit","bet","pay","profit","roi"],state.simResult.map(x=>[x.race.date,x.race.type,x.race.placeName,x.race.raceNo,TICKET_LABELS[x.ticketType],x.candidateTickets.length,x.purchaseTickets.length,x.candidateHit?1:0,x.purchaseHit?1:0,x.invest,x.pay,x.profit,x.roi.toFixed(1)]))}
 function drawLineChart(canvas,values,colorVar="--accent"){if(!canvas)return;const rect=canvas.getBoundingClientRect(),dpr=Math.max(1,window.devicePixelRatio||1),w=Math.max(300,Math.round(rect.width||canvas.clientWidth||Number(canvas.getAttribute("width"))||1200)),h=Math.max(160,Math.round(rect.height||canvas.clientHeight||Number(canvas.getAttribute("height"))||250)),pw=Math.round(w*dpr),ph=Math.round(h*dpr);if(canvas.width!==pw||canvas.height!==ph){canvas.width=pw;canvas.height=ph}const g=canvas.getContext("2d");g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,canvas.width,canvas.height);g.setTransform(dpr,0,0,dpr,0,0);g.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--line").trim();g.lineWidth=1;for(let i=1;i<5;i++){g.beginPath();g.moveTo(0,h*i/5);g.lineTo(w,h*i/5);g.stroke()}if(!values.length)return;const min=Math.min(0,...values),max=Math.max(0,...values),range=Math.max(1,max-min);g.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue(colorVar).trim();g.lineWidth=3;g.lineJoin="round";g.lineCap="round";g.beginPath();values.forEach((v,i)=>{const x=values.length===1?w/2:i*w/(values.length-1),y=h-15-(v-min)/range*(h-30);i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()}
 // race_id を date+場+回+日+R から12桁に再構築（回・日が欠ければ空文字＝部分照合に委ねる）
@@ -4194,12 +4194,12 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
     if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);
     const rows=[];let bank=0;
     for(const item of items){
-      const {race,result,entries,candidateTickets,purchaseTickets}=item;
+      const {race,result,entries,candidateTickets,purchaseTickets,evEvidence,validationExcluded}=item;
       const candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;
       let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);
       const profit=pay-invest;bank+=profit;
       const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));
-      rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,remaining:item.remaining,rankScore:item.rankScore,liveConfirmed:true});
+      rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,remaining:item.remaining,rankScore:item.rankScore,evEvidence,validationExcluded,liveConfirmed:true});
     }
     const totalBet=rows.reduce((s,x)=>s+x.invest,0),totalPay=rows.reduce((s,x)=>s+x.pay,0),
           marketReadyCount=rows.filter(row=>hasBacktestEvMarketCoverage(row.entries)).length,
@@ -4208,9 +4208,12 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
           candidateReadyCount=rows.filter(row=>row.candidateTickets.length>0).length,
           positiveEvReadyCount=rows.filter(row=>row.entries.some(entry=>n(entry.ev)>=n(c.minEv))).length,
           repairedProbabilityCount=rows.filter(row=>row.entries.some(entry=>entry.probabilityRepairReason==="circular-market-odds")).length,
+          authenticEvCount=rows.filter(row=>row.evEvidence?.kind==="authentic").length,
+          fallbackEvCount=rows.filter(row=>row.evEvidence?.kind==="fallback").length,
+          validationExcludedCount=rows.filter(row=>row.validationExcluded).length,
           maxEv=rows.reduce((maximum,row)=>Math.max(maximum,...row.entries.map(entry=>n(entry.ev))),0),
           missingEvInputCount=Math.max(0,confirmed.length-marketReadyCount);
-    return{c,targetCount:target.length,confirmedCount:confirmed.length,marketReadyCount,probabilityReadyCount,historicalPriorCount,candidateReadyCount,positiveEvReadyCount,repairedProbabilityCount,maxEv,missingEvInputCount,rows,summary:{raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0}};
+    return{c,targetCount:target.length,confirmedCount:confirmed.length,marketReadyCount,probabilityReadyCount,historicalPriorCount,candidateReadyCount,positiveEvReadyCount,repairedProbabilityCount,authenticEvCount,fallbackEvCount,validationExcludedCount,maxEv,missingEvInputCount,rows,summary:{raceCount:rows.length-validationExcludedCount,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>!x.validationExcluded&&x.candidateHit).length,purchaseHits:rows.filter(x=>!x.validationExcluded&&x.purchaseHit).length,missHits:rows.filter(x=>!x.validationExcluded&&x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0}};
   }
   async function refreshLiveGraph(reason="確定結果更新",force=false){
     if(!LIVE.enabled)return false;
@@ -4226,6 +4229,9 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
         data.candidateReadyCount,
         data.positiveEvReadyCount,
         data.repairedProbabilityCount,
+        data.authenticEvCount,
+        data.fallbackEvCount,
+        data.validationExcludedCount,
         data.maxEv.toFixed(4),
         data.summary.boughtCount,
         data.summary.totalBet,
@@ -4236,7 +4242,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
       state.simResult=data.rows;
       renderSimulation(data.summary);
       const countLabel=byId("simRaceCount")?.previousElementSibling;if(countLabel)countLabel.textContent="確定集計R";
-      const foot=byId("simLiveGraphFoot");if(foot)foot.textContent=`${reason}　対象 ${data.targetCount}R / 確定 ${data.confirmedCount}R / 市場単勝 ${data.marketReadyCount}R / EV確率 ${data.probabilityReadyCount}R（過去用 ${data.historicalPriorCount}R・循環修復 ${data.repairedProbabilityCount}R） / EV条件通過 ${data.positiveEvReadyCount}R / 最大EV ${data.maxEv.toFixed(3)} / 候補 ${data.candidateReadyCount}R / 購入 ${data.summary.boughtCount}R / 投資 ${yen(data.summary.totalBet)} / 払戻 ${yen(data.summary.totalPay)} / 収支 ${yen(data.summary.profit)} / ROI ${pct(data.summary.roi)}${data.missingEvInputCount?`　※EV材料不足 ${data.missingEvInputCount}Rは同じ期間の再同期で自動修復`:"　※暫定表示"}`;
+      const foot=byId("simLiveGraphFoot");if(foot)foot.textContent=`${reason}　対象 ${data.targetCount}R / 確定 ${data.confirmedCount}R / 正規EV ${data.authenticEvCount}R / 過去用代替 ${data.fallbackEvCount}R / 検証対象外 ${data.validationExcludedCount}R / 市場単勝 ${data.marketReadyCount}R / EV条件通過 ${data.positiveEvReadyCount}R / 最大EV ${data.maxEv.toFixed(3)} / 候補 ${data.candidateReadyCount}R / 購入 ${data.summary.boughtCount}R / 投資 ${yen(data.summary.totalBet)} / 払戻 ${yen(data.summary.totalPay)} / 収支 ${yen(data.summary.profit)} / ROI ${pct(data.summary.roi)}${data.missingEvInputCount?`　※EV材料不足 ${data.missingEvInputCount}Rは同じ期間の再同期で自動修復`:"　※正規EVのみ集計"}`;
       setStatus(data.missingEvInputCount?`EV材料再取得待ち ${data.missingEvInputCount}R`:`確定 ${data.confirmedCount}R・${pct(data.summary.roi)}`,data.missingEvInputCount?"busy":"ok");
       try{await syncSimulationToAnalysis({reason:"確定結果ライブ"})}catch(_){ }
       return true;
@@ -4276,7 +4282,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
   function wire(){
     updateToggle();
     byId("simLiveGraphBtn")?.addEventListener("click",async()=>{LIVE.enabled=!LIVE.enabled;try{localStorage.setItem(KEY,LIVE.enabled?"1":"0")}catch(_){}updateToggle();if(LIVE.enabled)await refreshLiveGraph("手動ライブ開始",true)});
-    for(const id of ["simStart","simEnd","simType","simDataMode","simStrategy","simTicket","simDailyBudget","simUnit","simTopN","simMaxTickets","simMaxRace","simMinEv","simMinAi","simMinOdds","simMaxOdds","simPriority","simAgreement","simBudgetMode","simDailyRankBasis"]){byId(id)?.addEventListener("change",()=>{if(LIVE.enabled&&!BACKTEST_SYNC.running)scheduleLiveGraph("SIM条件変更",true)})}
+    for(const id of ["simStart","simEnd","simType","simDataMode","simEvEvidence","simStrategy","simTicket","simDailyBudget","simUnit","simTopN","simMaxTickets","simMaxRace","simMinEv","simMinAi","simMinOdds","simMaxOdds","simPriority","simAgreement","simBudgetMode","simDailyRankBasis"]){byId(id)?.addEventListener("change",()=>{if(LIVE.enabled&&!BACKTEST_SYNC.running)scheduleLiveGraph("SIM条件変更",true)})}
     if(LIVE.enabled)setTimeout(()=>refreshLiveGraph("保存済み確定結果",true),1100);
   }
   window.__THEKEIBA_LIVE_SIM__={
@@ -5339,6 +5345,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 })();
 </script>
 
+<!-- v1.3.11: JRA・NAR全開催場で正規EV・過去用代替・検証対象外を分離 -->
 <!-- v1.3.10: 実単勝を予想オッズにも使う循環EVを検出し、過去用人気順位勝率へ自動修復 -->
 <!-- v1.3.9: EV再計算の保存完了後にSIMライブ集計を強制更新 -->
 <!-- v1.3.8: netkeiba DB結果表の見出し列から単勝・人気を復元 -->
@@ -5364,10 +5371,10 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 
 
 <script id="netkeibaEvCore">
-// v1.3.10 netkeiba予想オッズ優先。過去レースの市場オッズ循環確率を検出して修復する。
+// v1.3.11 JRA・NAR全開催場共通で正規netkeiba予想と過去用代替を分離する。
 (function(){
   "use strict";
-  const VERSION="1.3.10";
+  const VERSION="1.3.11";
   const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
   const stamp=()=>new Date().toISOString();
   const typeCodes={win:"1",place:"2",bracketQuinella:"3",quinella:"4",wide:"5",exacta:"6",trio:"7",trifecta:"8"};
@@ -5558,6 +5565,25 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
     const date=compactDate(race?.date||""),today=compactDate(isoToday());
     return Boolean(date&&date<today||/(?:確定|結果)/.test(String(race?.status||"")))
   }
+  function evEvidenceForEntries(entries,race={}){
+    const rows=Array.isArray(entries)?entries:[],marketRows=rows.filter(entry=>n(entry.marketWinOdds)||(entry.oddsStatus==="yoso"?0:n(entry.odds)));
+    const authenticRows=marketRows.filter(entry=>
+      n(entry.netkeibaWinProb)>0&&
+      entry.historicalProbabilityFallback!==true&&
+      /netkeiba:.*yoso/i.test(String(entry.probabilitySource||""))
+    );
+    const fallbackRows=marketRows.filter(entry=>entry.historicalProbabilityFallback===true&&n(entry.netkeibaWinProb)>0);
+    const required=Math.max(2,Math.ceil(marketRows.length*.6));
+    const kind=authenticRows.length>=required?"authentic":fallbackRows.length>=Math.max(2,Math.ceil(marketRows.length*.6))?"fallback":"missing";
+    return{
+      kind,
+      label:kind==="authentic"?"正規netkeiba予想":kind==="fallback"?"過去用代替":"予想値なし",
+      authenticCount:authenticRows.length,
+      fallbackCount:fallbackRows.length,
+      marketCount:marketRows.length,
+      historical:historicalRace(race)
+    }
+  }
   function hasCircularMarketProbability(entries){
     const rows=(Array.isArray(entries)?entries:[]).map(entry=>({
       entry,
@@ -5726,13 +5752,15 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
   simulationDailyRankScore=function(entries,basis){if(!entries.length)return-1;return Math.max(...entries.map(e=>basis==="adjusted"?n(e.ev)*Math.max(.2,n(e.ai)/100):basis==="expected"?n(e.ev)-1:n(e.ev)))};
   buildSimulationCandidate=async function(race,result,c){
     let entries=await getByIndex("entries","race_id",race.race_id);recalcEntryScores(entries,race);
+    const evEvidence=evEvidenceForEntries(entries,race),
+          validationExcluded=c.evEvidenceMode!=="includeFallback"&&evEvidence.kind!=="authentic";
     const type=String(c.ticketType||"win"),singleWin=type==="win",minAi=n(c.minAi),minEv=n(c.minEv),minOdds=n(c.minOdds),maxOdds=n(c.maxOdds,999);
-    let candidateEntries=entries.filter(e=>n(e.netkeibaWinProb)>0&&n(e.ai)>=minAi&&(!singleWin||(n(e.marketWinOdds)>0&&n(e.ev)>=minEv&&n(e.marketWinOdds)>=minOdds&&n(e.marketWinOdds)<=maxOdds)));
+    let candidateEntries=validationExcluded?[]:entries.filter(e=>n(e.netkeibaWinProb)>0&&n(e.ai)>=minAi&&(!singleWin||(n(e.marketWinOdds)>0&&n(e.ev)>=minEv&&n(e.marketWinOdds)>=minOdds&&n(e.marketWinOdds)<=maxOdds)));
     const sorters=simulationEntrySorters();candidateEntries.sort(sorters[c.priority]||sorters.ev);candidateEntries=candidateEntries.slice(0,Math.max(1,n(c.topN,3)));
     let candidateTickets=generateTickets(type,candidateEntries,Number.MAX_SAFE_INTEGER).filter(t=>n(t.ev)>=minEv&&n(t.marketOdds)>=minOdds&&n(t.marketOdds)<=maxOdds);
     candidateTickets=candidateTickets.slice(0,Math.max(0,n(c.maxTickets,6)));
     const rankScore=candidateTickets.length?Math.max(...candidateTickets.map(t=>n(t.ev))):-1;
-    return{race,result,entries,candidateEntries,candidateTickets,purchaseTickets:[],rankScore}
+    return{race,result,entries,candidateEntries,candidateTickets,purchaseTickets:[],rankScore,evEvidence,validationExcluded}
   };
   allocateSequentialCandidates=function(items,c){
     const days=new Map();
@@ -5815,6 +5843,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
       recalcEntryScores(loaded,updatedRace);
       updatedRace.probabilitySource=loaded.find(entry=>n(entry.netkeibaWinProb)>0)?.probabilitySource||"";
       updatedRace.historicalProbabilityFallback=loaded.some(entry=>entry.historicalProbabilityFallback===true);
+      updatedRace.evEvidence=evEvidenceForEntries(loaded,updatedRace).kind;
       await Promise.all([putMany("entries",loaded),putOne("races",updatedRace)]);
       const refreshLive=window.__THEKEIBA_REFRESH_LIVE_SIM__;
       if(typeof refreshLive==="function"){
@@ -5862,10 +5891,11 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
       {race_id:"circular",horseNo:3,popularity:3,marketWinOdds:8,odds:8,netkeibaExpectedOdds:8,netkeibaWinProb:1/7,ai:60}
     ],circularDetected=hasCircularMarketProbability(circular);
     recalcEntryScores(circular,{race_id:"circular",type:"JRA",date:"20250101",status:"確定"});
-    const checks={probabilitySum:Math.abs(sum-1)<1e-9,evFormula:Math.abs(entries[0].ev-1.2)<1e-9,orderedTop2Sum:Math.abs(exacta-1)<1e-9,unorderedTop2Sum:Math.abs(quinella-1)<1e-9,orderedTop3Sum:Math.abs(trifecta-1)<1e-9,unorderedTop3Sum:Math.abs(trio-1)<1e-9,placeProbabilityTotal:Math.abs(placeTotal-2)<1e-9,apiYosoStatus:api.isYoso,apiWinOdds:api.markets.win["1"]===2,apiQuinellaOdds:api.markets.quinella["1-2"]===5.5,apiTrifectaOdds:api.markets.trifecta["1>2>3"]===21,missingMarketIsZero:(()=>{const copy={...entries[0],marketWinOdds:0,odds:0};recalcEntryScores([copy]);return copy.ev===0})(),historicalProbabilitySum:Math.abs(historicalSum-1)<1e-9,historicalEvAvailable:historical.some(entry=>entry.evAvailable&&entry.ev>0),historicalSource:historical.every(entry=>entry.probabilitySource==="netkeiba:historical-rank-prior"),circularDetected,circularRepaired:circular.every(entry=>entry.probabilitySource==="netkeiba:historical-rank-prior")&&circular.some(entry=>entry.ev>=1)};
+    const authenticEvidence=evEvidenceForEntries(entries.map(entry=>({...entry,probabilitySource:"netkeiba:jra-yoso-api",historicalProbabilityFallback:false})),{type:"JRA"});
+    const checks={probabilitySum:Math.abs(sum-1)<1e-9,evFormula:Math.abs(entries[0].ev-1.2)<1e-9,orderedTop2Sum:Math.abs(exacta-1)<1e-9,unorderedTop2Sum:Math.abs(quinella-1)<1e-9,orderedTop3Sum:Math.abs(trifecta-1)<1e-9,unorderedTop3Sum:Math.abs(trio-1)<1e-9,placeProbabilityTotal:Math.abs(placeTotal-2)<1e-9,apiYosoStatus:api.isYoso,apiWinOdds:api.markets.win["1"]===2,apiQuinellaOdds:api.markets.quinella["1-2"]===5.5,apiTrifectaOdds:api.markets.trifecta["1>2>3"]===21,missingMarketIsZero:(()=>{const copy={...entries[0],marketWinOdds:0,odds:0};recalcEntryScores([copy]);return copy.ev===0})(),historicalProbabilitySum:Math.abs(historicalSum-1)<1e-9,historicalEvAvailable:historical.some(entry=>entry.evAvailable&&entry.ev>0),historicalSource:historical.every(entry=>entry.probabilitySource==="netkeiba:historical-rank-prior"),circularDetected,circularRepaired:circular.every(entry=>entry.probabilitySource==="netkeiba:historical-rank-prior")&&circular.some(entry=>entry.ev>=1),authenticEvidence:authenticEvidence.kind==="authentic",fallbackEvidence:evEvidenceForEntries(circular,{type:"JRA"}).kind==="fallback"};
     return{ok:Object.values(checks).every(Boolean),checks}
   }
-  window.__THEKEIBA_NETKEIBA_EV__={version:VERSION,parseOddsPayload:parseNetkeibaOddsPayload,normalizeMarketMap,ticketProbability,recalculate:recalcEntryScores,historicalPrior:captureHistoricalNetkeibaPrior,hasCircularMarketProbability,repairCircularHistoricalProbability,selfTest};
+  window.__THEKEIBA_NETKEIBA_EV__={version:VERSION,parseOddsPayload:parseNetkeibaOddsPayload,normalizeMarketMap,ticketProbability,recalculate:recalcEntryScores,historicalPrior:captureHistoricalNetkeibaPrior,hasCircularMarketProbability,repairCircularHistoricalProbability,evEvidenceForEntries,selfTest};
 })();
 </script>
 
@@ -6060,8 +6090,8 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 })();
 </script>
 
-<script id="selectedVenueScheduleAndRaceNameGuardV1310">
-/* v1.3.10 回帰テスト・診断用の公開API */
+<script id="selectedVenueScheduleAndRaceNameGuardV1311">
+/* v1.3.11 回帰テスト・診断用の公開API */
 window.__THEKEIBA_V135__={
   isRaceNameActionLabel,
   sanitizeRaceName,
@@ -6094,6 +6124,10 @@ window.__THEKEIBA_V1310__={
   ...window.__THEKEIBA_V139__,
   hasCircularMarketProbability:window.__THEKEIBA_NETKEIBA_EV__?.hasCircularMarketProbability,
   repairCircularHistoricalProbability:window.__THEKEIBA_NETKEIBA_EV__?.repairCircularHistoricalProbability
+};
+window.__THEKEIBA_V1311__={
+  ...window.__THEKEIBA_V1310__,
+  evEvidenceForEntries:window.__THEKEIBA_NETKEIBA_EV__?.evEvidenceForEntries
 };
 </script>
 
