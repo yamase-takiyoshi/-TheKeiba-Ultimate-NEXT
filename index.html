@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional Thinking Engine v1.4.2</title>
+<title>The競馬 Ultimate NEXT Professional Thinking Engine v1.4.3</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Thinking Engine v1.4.2</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Thinking Engine v1.4.3</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -352,7 +352,7 @@ input,select,textarea{font-size:16px}
       <div class="card">
         <div class="notice sim-authority-card" id="simAuthorityCard"><div class="sim-authority-copy"><strong id="simAuthorityTitle">設定モード完全権限</strong><div id="simAuthoritySummary" class="sim-authority-summary">設定を読み込んでいます。</div><small id="simAuthorityHelp">SIM画面では期間と開催場だけを指定します。券種・予算・点数・EV・AI・オッズ・優先順位・同意・予算配分は「設定」の保存値を直接読み、画面値はアルゴリズムに使用しません。</small></div><button type="button" class="btn good" id="simAuthorityToggleBtn">🔓 SIM設定を解除</button><button type="button" class="btn warn" id="simAuthoritySettingsBtn">⚙ 設定を開く</button></div>
         <div class="form-grid">
-          <div class="field"><label>戦略</label><select id="simStrategy"></select></div><div class="field"><label>設定モード</label><select id="simPredictionMode"><option value="custom">戦略・個別設定</option><option value="ai">AI重視</option><option value="ev" selected>EV重視</option><option value="expected">期待利益重視</option><option value="balanced">総合バランス</option><option value="agreement">全て同意</option></select></div><div class="field"><label>開始日</label><input id="simStart" type="date"></div><div class="field"><label>終了日</label><input id="simEnd" type="date"></div><div class="field"><label>区分</label><select id="simType"><option value="">JRA・NAR</option><option>JRA</option><option>NAR</option></select></div><div class="field"><label>データ準備</label><select id="simDataMode"><option value="sync">実データ同期</option><option value="stored">同期なし・保存済みのみ</option></select></div><div class="field"><label>EV検証区分</label><select id="simEvEvidence"><option value="authentic" selected>正規netkeiba予想のみ（推奨）</option><option value="legacyTop3">代替順位・的中率検証（投資なし）</option><option value="includeFallback">正規優先＋代替もEV条件必須</option></select></div>
+          <div class="field"><label>戦略</label><select id="simStrategy"></select></div><div class="field"><label>設定モード</label><select id="simPredictionMode"><option value="custom">戦略・個別設定</option><option value="ai">AI重視</option><option value="ev" selected>EV重視</option><option value="expected">期待利益重視</option><option value="balanced">総合バランス</option><option value="agreement">全て同意</option></select></div><div class="field"><label>開始日</label><input id="simStart" type="date"></div><div class="field"><label>終了日</label><input id="simEnd" type="date"></div><div class="field"><label>区分</label><select id="simType"><option value="">JRA・NAR</option><option>JRA</option><option>NAR</option></select></div><div class="field"><label>データ準備</label><select id="simDataMode"><option value="sync">実データ同期</option><option value="stored">同期なし・保存済みのみ</option></select></div><div class="field"><label>検証方式</label><select id="simEvEvidence"><option value="authentic">正規netkeiba予想スナップショット（フォワード用）</option><option value="walkForward" selected>時系列ウォークフォワードEV（過去検証・推奨）</option><option value="legacyTop3">代替順位・的中率検証（投資なし）</option><option value="includeFallback">正規優先＋代替EV条件必須（互換）</option></select></div>
           <div class="field full"><label>開催場（単数・複数選択）</label><div class="sim-place-picker"><div class="sim-place-actions"><label class="sim-place-option all"><input type="checkbox" id="simPlaceAll" checked>全開催場</label><button class="btn small" type="button" id="simPlaceSelectAllBtn">全場選択</button><button class="btn small" type="button" id="simPlaceClearBtn">選択解除</button><span class="sim-place-summary" id="simPlaceSummary">全開催場</span></div><div class="sim-place-options" id="simPlaceOptions"><span class="muted">登録開催場を読込中です</span></div></div></div>
           <div class="field"><label>券種</label><select id="simTicket"><option value="win">単勝</option><option value="place">複勝</option><option value="bracketQuinella">枠連</option><option value="quinella">馬連</option><option value="wide">ワイド</option><option value="exacta">馬単</option><option value="trio">3連複</option><option value="trifecta">3連単</option><option value="all">全券種</option></select></div><div class="field"><label>1日予算</label><input id="simDailyBudget" type="number" value="2000"></div><div class="field"><label>1点金額</label><input id="simUnit" type="number" value="100"></div><div class="field"><label>候補上位頭数</label><input id="simTopN" type="number" value="3"></div>
           <div class="field"><label>1R最大点数</label><input id="simMaxTickets" type="number" value="6"></div><div class="field"><label>1日最大購入R</label><input id="simMaxRace" type="number" value="6"></div><div class="field"><label>最低EV</label><input id="simMinEv" type="number" step="0.01" value="1.00"></div><div class="field"><label>最低AI（補助条件）</label><input id="simMinAi" type="number" value="0"></div>
@@ -6732,8 +6732,8 @@ window.__THEKEIBA_V1311__={
   renderSimulation=function(summary=null){
     previousRender(summary);
     try{
-      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.2';
-      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.2';
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.3';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.3';
       const title=document.querySelector('.thinking-engine-title');if(title)title.textContent='🧠 思考エンジン v1.4.2';
       const sub=document.querySelector('.thinking-engine-sub');if(sub)sub.textContent='正規EVだけを投資判断に使用します。過去用代替順位は候補的中率の検証専用で、資金・ROIには入りません。的中は着順、払戻は正規化した払戻表で別々に照合します。';
       const t=summary?.thinking||{},status=document.getElementById('teStatus');
@@ -6759,8 +6759,8 @@ window.__THEKEIBA_V1311__={
 
   function boot(){
     try{
-      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.2';
-      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.2';
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.3';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.3';
       const ev=document.getElementById('simEvEvidence');
       if(ev){
         const labels={authentic:'正規netkeiba予想のみ（推奨）',legacyTop3:'代替順位・的中率検証（投資なし）',includeFallback:'正規優先＋代替もEV条件必須'};
@@ -6776,5 +6776,252 @@ window.__THEKEIBA_V1311__={
   window.__THEKEIBA_SETTLEMENT_FIX__={version:VERSION,lookupPayout,hitByFinish,normCombo,effectiveBudget};
 })();
 </script>
+
+<script id="thinkingEngineWalkForwardV143">
+/* ============================================================
+   v1.4.3 Chronological Walk-Forward EV / Display Integrity
+   - 過去レースは「当該レースより前」の確定結果だけで市場確率を較正
+   - 市場単勝オッズ→正規化基礎確率→過去の市場歪み補正→EV
+   - 各レースの結果は、そのレースの予測後にのみ学習へ追加
+   - 正規予想フォワード／時系列ウォークフォワード／代替順位検証を分離
+   - 同期中は判定保留、同期完了後だけ最終購入・ROIを表示
+   - 投資0円日のROIは「—」、有効予算0円の誤表示を補正
+   ============================================================ */
+(function(){
+  'use strict';
+  const VERSION='1.4.3-walk-forward';
+  const MODE='walkForward';
+  const MIGRATION_KEY='TheKeibaThinkingEngineV143Migration';
+  const SETTINGS_KEY='TheKeibaThinkingEngineV140';
+  const num=(v,d=0)=>{const x=Number(v);return Number.isFinite(x)?x:d};
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const date8=v=>String(v||'').replace(/\D/g,'').slice(0,8);
+  const rid=x=>String(x?.race_id||x?.raceId||x?.rid||'').replace(/\D/g,'');
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const wf={stats:new Map(),priorRaces:0,periodRaces:0,samples:0,priorSamples:0,start:'',builtAt:'',lastRace:''};
+
+  function resetState(start=''){
+    wf.stats=new Map();wf.priorRaces=0;wf.periodRaces=0;wf.samples=0;wf.priorSamples=0;wf.start=date8(start);wf.builtAt=new Date().toISOString();wf.lastRace='';
+  }
+  function marketOdds(e){return num(e?.marketWinOdds||e?.oddsWin||e?.odds)}
+  function popBand(v){const p=num(v,99);return p<=1?'1':p<=3?'2-3':p<=6?'4-6':p<=9?'7-9':'10+'}
+  function oddsBand(v){const o=num(v);return o<3?'1-2.9':o<6?'3-5.9':o<10?'6-9.9':o<20?'10-19.9':o<50?'20-49.9':'50+'}
+  function distBand(v){const d=num(v);return d<1400?'短':d<1800?'マイル':d<2200?'中':d<2800?'中長':'長'}
+  function coarseClass(race={}){
+    const s=String(race.className||race.class||race.grade||race.name||race.raceName||'').replace(/\s+/g,'');
+    const patterns=[
+      [/(?:G1|GI|Jpn1|JpnI|ＳⅠ|SⅠ)/i,'G1'],[/(?:G2|GII|Jpn2|JpnII|ＳⅡ|SⅡ)/i,'G2'],[/(?:G3|GIII|Jpn3|JpnIII|ＳⅢ|SⅢ)/i,'G3'],
+      [/(?:オープン|OP|L|リステッド)/i,'OP'],[/(?:3勝|1600万)/,'3勝'],[/(?:2勝|1000万)/,'2勝'],[/(?:1勝|500万)/,'1勝'],
+      [/(?:未勝利)/,'未勝利'],[/(?:新馬|メイクデビュー|デビュー)/,'新馬'],[/\bA[1-4]?\b/i,'NAR-A'],[/\bB[1-4]?\b/i,'NAR-B'],[/\bC[1-4]?\b/i,'NAR-C']
+    ];
+    for(const [re,label] of patterns)if(re.test(s))return label;
+    return 'その他';
+  }
+  function context(race,e){
+    return{
+      kind:String(race?.type||race?.provider||'不明').toUpperCase(),venue:String(race?.placeName||race?.venueName||race?.place||'不明'),
+      cls:coarseClass(race),surface:String(race?.surface||'不明'),distance:distBand(race?.distance),band:oddsBand(marketOdds(e)),pop:popBand(e?.popularity)
+    };
+  }
+  function keys(ctx){
+    return[
+      {k:`F|${ctx.kind}|${ctx.venue}|${ctx.cls}|${ctx.surface}|${ctx.distance}|${ctx.band}|${ctx.pop}`,scope:'場×クラス×馬場×距離×オッズ×人気',min:24},
+      {k:`V|${ctx.kind}|${ctx.venue}|${ctx.band}|${ctx.pop}`,scope:'場×オッズ×人気',min:36},
+      {k:`C|${ctx.kind}|${ctx.cls}|${ctx.band}|${ctx.pop}`,scope:'クラス×オッズ×人気',min:48},
+      {k:`K|${ctx.kind}|${ctx.band}|${ctx.pop}`,scope:'区分×オッズ×人気',min:72},
+      {k:`B|${ctx.kind}|${ctx.band}`,scope:'区分×オッズ帯',min:100},
+      {k:`A|${ctx.kind}`,scope:'開催区分全体',min:180}
+    ];
+  }
+  function baseProbabilities(entries){
+    const valid=(entries||[]).filter(e=>num(e?.horseNo)>0&&marketOdds(e)>0),sum=valid.reduce((s,e)=>s+1/marketOdds(e),0);
+    if(valid.length<2||!(sum>0))return new Map();
+    return new Map(valid.map(e=>[num(e.horseNo),(1/marketOdds(e))/sum]));
+  }
+  function addSample(race,e,p,actual,prior=false){
+    if(!(p>0))return;
+    for(const level of keys(context(race,e))){
+      const s=wf.stats.get(level.k)||{n:0,pred:0,wins:0,scope:level.scope};
+      s.n++;s.pred+=p;s.wins+=actual?1:0;wf.stats.set(level.k,s);
+    }
+    wf.samples++;if(prior)wf.priorSamples++;
+  }
+  function lookup(race,e){
+    for(const level of keys(context(race,e))){
+      const s=wf.stats.get(level.k);if(!s||s.n<level.min)continue;
+      const prior=8,raw=(s.wins+prior)/(s.pred+prior),mult=clamp(raw,.60,1.70);
+      return{multiplier:mult,n:s.n,scope:s.scope,wins:s.wins,pred:s.pred};
+    }
+    return{multiplier:1,n:0,scope:'時系列サンプル不足・市場基準',wins:0,pred:0};
+  }
+  function applyProbabilities(entries,race){
+    const base=baseProbabilities(entries);if(base.size<2)return{ready:false,reason:'市場単勝オッズ不足',fieldSize:base.size};
+    const rows=[];let adjustedSum=0;
+    for(const e of entries||[]){
+      const no=num(e?.horseNo),p=base.get(no);if(!(p>0))continue;
+      const info=lookup(race,e),raw=p*info.multiplier;adjustedSum+=raw;rows.push({e,no,base:p,raw,info});
+    }
+    if(!(adjustedSum>0))return{ready:false,reason:'確率較正失敗',fieldSize:rows.length};
+    const probabilities={},frames={};let usedN=0,minMult=Infinity,maxMult=0;
+    for(const row of rows){
+      const p=row.raw/adjustedSum,o=marketOdds(row.e),ev=p*o;
+      row.e.netkeibaWinProb=p;row.e.probWin=p;row.e.rawEv=ev;row.e.adjustedEv=ev;row.e.ev=Number(ev.toFixed(4));
+      row.e.netkeibaExpectedOdds=p>0?1/p:0;row.e.historicalProbabilityFallback=false;
+      // 既存EVエンジンとの互換のため yoso 系ソース名を使うが、画面では必ずウォークフォワードと明示する。
+      row.e.probabilitySource='netkeiba:yoso-walk-forward-market-calibrated';row.e.probabilityModelVersion='walk-forward-market-v1';
+      row.e.walkForwardBaseProbability=row.base;row.e.walkForwardMultiplier=row.info.multiplier;row.e.walkForwardScope=row.info.scope;row.e.walkForwardN=row.info.n;
+      probabilities[String(row.no)]=p;frames[String(row.no)]=num(row.e.frameNo||row.e.frame);usedN=Math.max(usedN,row.info.n);minMult=Math.min(minMult,row.info.multiplier);maxMult=Math.max(maxMult,row.info.multiplier);
+    }
+    const book={probabilities,frames,fieldSize:Object.keys(probabilities).length,race_id:String(race?.race_id||entries?.[0]?.race_id||'')};
+    for(const e of entries||[]){e.netkeibaProbabilityBook=book;if(!e.ticketOddsBook)e.ticketOddsBook={}}
+    return{ready:true,fieldSize:rows.length,modelSamples:wf.samples,usedN,minMultiplier:Number.isFinite(minMult)?minMult:1,maxMultiplier:maxMult||1};
+  }
+  function updateFromResult(race,entries,result,prior=false){
+    const order=(Array.isArray(result?.finishOrder)?result.finishOrder:[]).map(Number).filter(x=>x>0),winner=order[0];if(!winner)return false;
+    const base=baseProbabilities(entries);if(base.size<2)return false;
+    for(const e of entries||[]){const no=num(e?.horseNo),p=base.get(no);if(p>0)addSample(race,e,p,no===winner,prior)}
+    if(prior)wf.priorRaces++;else wf.periodRaces++;wf.lastRace=rid(race);return true;
+  }
+  async function buildPrior(c){
+    resetState(c?.start);
+    try{
+      const [races,results,entries]=await Promise.all([getAll('races'),getAll('results'),getAll('entries')]);
+      const resultMap=new Map((results||[]).filter(r=>Array.isArray(r?.finishOrder)&&r.finishOrder.length>=1).map(r=>[String(r.race_id||''),r]));
+      const byRace=new Map();for(const e of entries||[]){const id=String(e?.race_id||'');if(!id)continue;const list=byRace.get(id)||[];list.push(e);byRace.set(id,list)}
+      const cutoff=date8(c?.start),ordered=(races||[]).filter(r=>{const d=date8(r?.date),id=String(r?.race_id||'');return id&&d&&(!cutoff||d<cutoff)&&resultMap.has(id)}).sort((a,b)=>date8(a.date).localeCompare(date8(b.date))||num(a.raceNo)-num(b.raceNo));
+      for(const race of ordered){const list=byRace.get(String(race.race_id||''))||[];if(updateFromResult(race,list,resultMap.get(String(race.race_id||'')),true)&&wf.samples>=100000)break}
+    }catch(error){console.warn('[v1.4.3] prior build failed',error)}
+    wf.builtAt=new Date().toISOString();return wf;
+  }
+
+  const previousBuildCandidate=buildSimulationCandidate;
+  buildSimulationCandidate=async function(race,result,c){
+    if(String(c?.evEvidenceMode||'')!==MODE)return previousBuildCandidate(race,result,c);
+    const originalRecalc=recalcEntryScores;let predictedEntries=null,meta=null,item=null;
+    recalcEntryScores=function(entries,rr){
+      try{originalRecalc(entries,rr)}catch(error){console.warn('[v1.4.3] base recalc',error)}
+      meta=applyProbabilities(entries,rr||race);predictedEntries=entries;return entries;
+    };
+    try{
+      // validationExcluded を避け、既存の思考・3点・資金ガードをそのまま通す。
+      item=await previousBuildCandidate(race,result,{...c,evEvidenceMode:'includeFallback'});
+      item.validationExcluded=false;item.validationOnly=false;item.legacyTop3=false;
+      item.evEvidence={kind:'walkForward',label:'時系列ウォークフォワードEV',marketCount:meta?.fieldSize||0,modelSamples:wf.samples,priorRaces:wf.priorRaces,periodRaces:wf.periodRaces};
+      item.walkForwardMeta={...(meta||{}),priorRaces:wf.priorRaces,periodRaces:wf.periodRaces,samples:wf.samples};
+      for(const t of item.candidateTickets||[]){t.probabilitySource='walk-forward-market-calibrated';t.walkForwardSamples=wf.samples;t.walkForwardPriorRaces=wf.priorRaces}
+      if(!meta?.ready){item.candidateTickets=[];item.rankScore=-1;item.thinkingDecision='見送り';item.thinkingSkipReason=`ウォークフォワード材料不足：${meta?.reason||'市場オッズ不足'}`}
+      return item;
+    }finally{
+      recalcEntryScores=originalRecalc;
+      // 予測を作り終えた後でのみ当該レース結果を学習へ追加する。未来情報の先読みを防止。
+      if(predictedEntries&&result)updateFromResult(race,predictedEntries,result,false);
+    }
+  };
+
+  const previousCompute=computeSimulationRows;
+  computeSimulationRows=async function(c){
+    const mode=String(c?.evEvidenceMode||'authentic');
+    if(mode===MODE)await buildPrior(c);else resetState(c?.start);
+    const result=await previousCompute(c);
+    result.summary=result.summary||{};result.summary.thinking={...(result.summary.thinking||{}),evidenceMode:mode,
+      walkForward:{enabled:mode===MODE,priorRaces:wf.priorRaces,periodRaces:wf.periodRaces,samples:wf.samples,priorSamples:wf.priorSamples,builtAt:wf.builtAt,lastRace:wf.lastRace}};
+    return result;
+  };
+
+  function uiBudget(config={},opening=0){
+    const daily=num(config.dailyBudget,document.getElementById('simDailyBudget')?.value||0),unit=Math.max(100,num(config.unit,document.getElementById('simUnit')?.value||100));
+    const reserve=Math.max(0,num(config.reserveCapital,document.getElementById('simReserveCapital')?.value||0));
+    const risk=clamp(num(config.riskPercent,document.getElementById('simRiskPercent')?.value||2),.1,100),available=Math.max(0,opening-reserve);
+    const fixed=Math.min(available,daily),percent=Math.min(available,opening*risk/100),policy=String(config.capitalPolicy||document.getElementById('simCapitalPolicy')?.value||'hybrid');
+    const raw=policy==='fixed'?fixed:policy==='percent'?percent:Math.min(fixed,percent);return Math.floor(Math.max(0,raw)/unit)*unit;
+  }
+  if(typeof computeCapitalReport==='function'){
+    const previousCapitalReport=computeCapitalReport;
+    computeCapitalReport=function(rows,config){
+      const report=previousCapitalReport(rows,config),c=report?.config||config||{};
+      for(const day of report.days||[])if(!(num(day.budget)>0))day.budget=uiBudget(c,num(day.opening,report.initial));
+      report.totalBudget=(report.days||[]).reduce((s,d)=>s+num(d.budget),0);report.budgetUsage=report.totalBudget?num(report.totalBet)/report.totalBudget*100:0;return report;
+    };
+  }
+  if(typeof renderCapitalAnalysis==='function'){
+    const previousCapitalRender=renderCapitalAnalysis;
+    renderCapitalAnalysis=function(){const out=previousCapitalRender.apply(this,arguments);try{document.querySelectorAll('#capitalDailyRows tr').forEach(tr=>{const td=tr.children;if(td.length>=10&&/^0円$/.test(td[3].textContent.trim()))td[7].textContent='—'})}catch(_){}return out};
+  }
+
+  function ensureModeOption(){
+    const select=document.getElementById('simEvEvidence');if(!select)return;
+    const labels={authentic:'正規netkeiba予想スナップショット（フォワード用）',walkForward:'時系列ウォークフォワードEV（過去検証・推奨）',legacyTop3:'代替順位・的中率検証（投資なし）',includeFallback:'正規優先＋代替EV条件必須（互換）'};
+    if(![...select.options].some(o=>o.value===MODE)){const o=document.createElement('option');o.value=MODE;o.textContent=labels[MODE];select.insertBefore(o,select.options[1]||null)}
+    [...select.options].forEach(o=>{if(labels[o.value])o.textContent=labels[o.value]});
+  }
+  function modeHelp(){
+    const mode=document.getElementById('simEvEvidence')?.value||'authentic',notice=document.getElementById('simModeNotice');if(!notice)return;
+    if(mode===MODE)notice.textContent='時系列ウォークフォワードEV：各レースより前の確定結果だけで、開催場・クラス・距離・人気帯・オッズ帯ごとの市場の過大／過小評価を較正します。当該レース結果は予測後にだけ学習へ追加し、未来情報を使いません。補正EV・必須3点・日内相対旨み・元金／予算／DDを通過した場合だけ購入します。';
+    else if(mode==='authentic')notice.textContent='正規netkeiba予想スナップショット専用です。レース前に保存された予想勝率がない過去レースは「予想履歴なし」となり、投資しません。フォワードテスト向けです。';
+    else if(mode==='legacyTop3')notice.textContent='過去用代替順位の的中率検証専用です。EVではないため投資・収支・ROIへ計上しません。';
+    else notice.textContent='互換検証モードです。代替確率でも通常のEV下限を必須とし、条件未達なら見送ります。';
+  }
+  function patchRows(provisional,mode){
+    const rows=Array.isArray(state?.simResult)?state.simResult:[],trs=[...document.querySelectorAll('#simRows tr')];
+    trs.forEach((tr,i)=>{const row=rows[i],td=tr.children;if(!row||td.length<13)return;
+      if(provisional){td[5].innerHTML='<span class="badge warn">判定保留</span>';for(const k of [6,7,8,12])td[k].textContent='—';return}
+      if(row.validationExcluded){const label=mode==='authentic'?'予想履歴なし':(row.evEvidence?.label||'対象外');td[5].innerHTML=`<span class="badge warn" title="${esc(label)}">${esc(label)}</span>`}
+    });
+  }
+  function ensureWfKpi(){
+    let k=document.getElementById('teWalkForwardRaces');if(k)return k;
+    const grid=document.querySelector('.thinking-engine-kpis');if(!grid)return null;const box=document.createElement('div');box.className='thinking-engine-kpi';box.innerHTML='<small>WF学習レース</small><strong id="teWalkForwardRaces">0R</strong>';grid.appendChild(box);return box.querySelector('strong');
+  }
+
+  const previousRender=renderSimulation;
+  renderSimulation=function(summary=null){
+    const out=previousRender(summary);
+    try{
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.3';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.3';
+      const title=document.querySelector('.thinking-engine-title');if(title)title.textContent='🧠 思考エンジン v1.4.3';
+      const sub=document.querySelector('.thinking-engine-sub');if(sub)sub.textContent='正規予想フォワード、時系列ウォークフォワードEV、代替順位検証を完全分離しました。過去検証は各レース以前の結果だけで市場確率を較正し、未来情報を使いません。';
+      ensureModeOption();modeHelp();
+      const mode=summary?.thinking?.evidenceMode||document.getElementById('simEvEvidence')?.value||'authentic';
+      const provisional=Boolean(summary?.liveProvisional||(typeof BACKTEST_SYNC!=='undefined'&&BACKTEST_SYNC.running));
+      const countLabel=document.getElementById('simRaceCount')?.previousElementSibling;if(countLabel)countLabel.textContent=provisional?'取得済み確定R':'EV検証可能R';
+      patchRows(provisional,mode);
+      const status=document.getElementById('teStatus'),w=summary?.thinking?.walkForward||{};
+      const k=ensureWfKpi();if(k)k.textContent=`${num(w.priorRaces,wf.priorRaces)+num(w.periodRaces,wf.periodRaces)}R`;
+      if(provisional){
+        for(const id of ['simBoughtCount','simCandidateHits','simPurchaseHits','simMissHits','simRoi']){const el=document.getElementById(id);if(el){el.textContent='—';el.className='stat-value muted'}}
+        if(status){status.textContent='同期中・判定保留です。取得済み結果は表示しますが、候補・購入・資金・ROIは確定しません。同期完了後に全期間を先頭から時系列再計算します。';status.className='notice thinking-engine-status'}
+      }else if(mode===MODE&&status){
+        status.textContent=`時系列ウォークフォワード判定完了。事前学習 ${num(w.priorRaces,wf.priorRaces)}R、期間内更新 ${num(w.periodRaces,wf.periodRaces)}R、学習 ${num(w.samples,wf.samples).toLocaleString()}頭分。各レース結果は予測後にのみ学習へ追加しました。購入 ${num(summary?.boughtCount)}R、投資 ${num(summary?.totalBet).toLocaleString()}円。`;
+        status.className='notice thinking-engine-status good';
+      }else if(mode==='authentic'&&num(summary?.raceCount)===0&&status){
+        status.textContent='正規予想スナップショットが保存されていないため、EV検証可能Rは0です。過去レースの検証には「時系列ウォークフォワードEV」を選択してください。';status.className='notice thinking-engine-status'}
+      if(!provisional&&num(summary?.totalBet)===0){const roi=document.getElementById('simRoi');if(roi){roi.textContent='—';roi.className='stat-value muted'}}
+      try{renderCapitalAnalysis(state.simResult,readSimConfig())}catch(_){}
+    }catch(error){console.error('[v1.4.3 render]',error)}
+    return out;
+  };
+
+  function migrate(){
+    ensureModeOption();const select=document.getElementById('simEvEvidence');
+    if(!localStorage.getItem(MIGRATION_KEY)){
+      if(select&&(select.value==='authentic'||!select.value))select.value=MODE;
+      try{const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')||{};s.enabled=true;localStorage.setItem(SETTINGS_KEY,JSON.stringify(s))}catch(_){}
+      const chk=document.getElementById('teEnabled');if(chk)chk.checked=true;
+      localStorage.setItem(MIGRATION_KEY,'1');
+    }
+    if(select&&!select.dataset.v143){select.dataset.v143='1';select.addEventListener('change',()=>{modeHelp();try{updateModeUi()}catch(_){}})}
+    modeHelp();try{updateModeUi()}catch(_){}
+  }
+  function boot(){
+    document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.3';const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.3';
+    migrate();[300,1200,3000].forEach(ms=>setTimeout(migrate,ms));
+    if(window.__THEKEIBA_THINKING_ENGINE__)window.__THEKEIBA_THINKING_ENGINE__.version=VERSION;
+    window.__THEKEIBA_WALK_FORWARD__={version:VERSION,getState:()=>({...wf,stats:wf.stats.size}),rebuild:buildPrior,lookup};
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
+
 </body>
 </html>
