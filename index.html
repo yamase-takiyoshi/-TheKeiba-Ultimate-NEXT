@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.4</title>
+<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.5</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.4</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.5</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -360,19 +360,21 @@ input,select,textarea{font-size:16px}
           <div class="field"><label>予算の使い方</label><select id="simBudgetMode"><option value="sequential">レース順に購入</option><option value="dailyRank">全日ランキング</option></select></div><div class="field"><label>全日ランキング基準</label><select id="simDailyRankBasis"><option value="ev">EVの高い順</option><option value="adjusted">AI補正EVの高い順</option><option value="expected">期待払戻の高い順</option><option value="learned">過去学習後の期待利益順</option></select></div>
         </div>
         <div class="toolbar" style="margin-top:13px"><button class="btn primary" id="simSyncBtn">自動分割バッチ同期</button><button class="btn warn" id="simStopSyncBtn" type="button" aria-label="同期停止" disabled>⏹ 同期停止</button><button class="btn batch-view-toggle" id="simBatchToggleBtn" type="button" aria-controls="simSyncLiveCard" aria-expanded="true">📊 バッチグラフを隠す</button><button class="btn live-result-btn active" id="simLiveGraphBtn" type="button" aria-pressed="true">📈 結果ライブ ON</button><button class="btn good" id="simRunBtn">バックテスト開始</button><button class="btn" id="simCsvBtn">明細CSV</button><button class="btn danger" id="simDataResetBtn" type="button">🧹 SIMデータリセット</button><button class="btn" id="simSaveStrategyBtn">設定を戦略保存</button></div>
-        <div class="notice" id="simModeNotice">「実データ同期」は最大92日単位へ自動分割し、過去レースの確定結果まで検証します。結果なしは成功扱いせず再試行します。バッチグラフはこの操作部の直下へ表示します。「同期なし・保存済みのみ」は通信しません。</div>
+        <div class="notice" id="simModeNotice">「実データ同期」は個別開催場の開催日を先に確認し、非開催日を飛ばしてから最大92日単位へ自動分割します。過去レースの確定結果まで検証し、結果なしは成功扱いせず再試行します。「同期なし・保存済みのみ」は通信しません。</div>
         <div class="code-box" id="simDataResetStatus" style="margin-top:8px">SIMデータリセットは、SIM実行履歴・現在の集計・右側グラフ連動データだけを消去します。レース・馬柱・オッズ・確定結果・設定・戦略・予想履歴・フォワードテスト・バックアップは残ります。</div>
         <div class="code-box" id="simSyncStatus" style="margin-top:12px">未同期。現在の登録結果件数を確認中です。</div>
       </div>
 
       <div class="card sync-live-card" id="simSyncLiveCard">
         <div class="sync-live-head">
-          <div><div class="sync-live-title">📊 リアルタイム・バッチグラフ</div><div class="sync-live-sub">全期間の進捗に加え、一覧検出・条件除外・HTTP再試行・取得失敗を区別してリアルタイム更新します。</div></div>
+          <div><div class="sync-live-title">📊 リアルタイム・バッチグラフ</div><div class="sync-live-sub">選択開催場の日程先読み、全期間の進捗、一覧検出・条件除外・HTTP再試行・取得失敗を区別してリアルタイム更新します。</div></div>
           <span class="badge sync-live-status" id="simSyncLiveStatus"><span class="status-dot"></span>待機中</span>
         </div>
         <div class="sync-live-progress-row"><div class="progress sync-live-progress"><span id="simSyncProgressBar"></span></div><div class="sync-live-percent" id="simSyncProgressPercent">0.0%</div></div>
         <div class="sync-live-current" id="simSyncCurrentTask">同期開始待ち</div>
         <div class="sync-live-kpis">
+          <div class="sync-live-kpi"><small>日程先読み</small><strong id="simSyncSchedule">0 / 0</strong></div>
+          <div class="sync-live-kpi"><small>事前スキップ</small><strong id="simSyncCalendarSkipped">0日</strong></div>
           <div class="sync-live-kpi"><small>全体日程</small><strong id="simSyncDays">0 / 0</strong></div>
           <div class="sync-live-kpi"><small>当日レース</small><strong id="simSyncRace">0 / 0</strong></div>
           <div class="sync-live-kpi"><small>一覧検出</small><strong id="simSyncDetected">0R</strong></div>
@@ -1053,7 +1055,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.3.4-netkeiba-ev-selection-telemetry-guard";
+const APP_VERSION="1.3.5-netkeiba-selected-venue-schedule-racename-guard";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待利益重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -1085,9 +1087,14 @@ function decodeHtmlText(value){
   if(!s)return"";
   try{return new DOMParser().parseFromString(s,"text/html").body?.textContent||s}catch{return s}
 }
+const RACE_NAME_ACTION_LABEL_RE=/^(?:持ちタイム|タイム指数|調教(?:タイム|評価)?|厩舎コメント|対戦表|血統(?:情報)?|馬柱(?:\(\d+走\))?|掲示板|メモ|パドック|コース分析|勝ち馬サーチ|レース攻略|ウマい馬券|競馬専門紙|専門紙|AI予想|予想印|レース映像|映像|動画|オッズ|出馬表|結果|払戻|レース情報|データ分析|お気に入り)(?:を見る|へ)?$/i;
+function isRaceNameActionLabel(value){
+  const s=decodeHtmlText(value).normalize("NFKC").replace(/[\s　]+/g,"").trim();
+  return RACE_NAME_ACTION_LABEL_RE.test(s)
+}
 function isMalformedRaceName(value){
   const s=String(value||"").normalize("NFKC").replace(/\s+/g," ").trim();
-  return !s||/Icon_Sprite|RaceInfo_New|(?:^|\s)s\s*=\s*["']|class\s*=|src\s*=|<[^>]+>|ウマい馬券|(?:^|\s)競馬専門紙(?:\s|$)/.test(s);
+  return !s||isRaceNameActionLabel(s)||/Icon_Sprite|RaceInfo_New|(?:^|\s)s\s*=\s*["']|class\s*=|src\s*=|<[^>]+>|ウマい馬券|(?:^|\s)競馬専門紙(?:\s|$)/.test(s);
 }
 function sanitizeRaceName(value,raceNo=0){
   let s=decodeHtmlText(value)
@@ -1096,7 +1103,7 @@ function sanitizeRaceName(value,raceNo=0){
     .replace(/Icon_Sprite[^\s>]*/gi," ")
     .replace(/RaceInfo_New_?\d*/gi," ")
     .replace(/[<>"']/g," ")
-    .replace(/(?:ウマい馬券|競馬専門紙|AI予想|予想印|レース映像|映像|動画|オッズ|出馬表|結果|払戻|レース情報|データ分析|お気に入り)/g," ")
+    .replace(/(?:持ちタイム|タイム指数|調教タイム|調教評価|厩舎コメント|対戦表|血統情報|馬柱(?:\s*\(\d+走\))?|掲示板|パドック|コース分析|勝ち馬サーチ|レース攻略|ウマい馬券|競馬専門紙|AI予想|予想印|レース映像|映像|動画|オッズ|出馬表|結果|払戻|レース情報|データ分析|お気に入り)/g," ")
     .replace(/\b(?:[1-9]|1[0-2])R\b/gi," ")
     .replace(/\b(?:[01]?\d|2[0-3]):[0-5]\d\b/g," ")
     .replace(/(?:芝|ダート|ダ|障害)\s*\d{3,4}m?.*$/," ")
@@ -1426,6 +1433,21 @@ function simConfigRaceMatches(c,race){
 function simSelectionLabel(c){
   return c?.allPlaces?"全開催場":Array.isArray(c?.places)&&c.places.length?c.places.join("・"):"開催場未選択"
 }
+function simPlaceType(place){
+  const name=String(place||"").trim();
+  if(Object.values(BRIDGE_JRA_PLACES).includes(name))return"JRA";
+  if(Object.values(BRIDGE_NAR_PLACES).includes(name))return"NAR";
+  return""
+}
+function simRequestedTypesForConfig(c){
+  const explicit=String(c?.type||"").toUpperCase();
+  if(explicit==="JRA"||explicit==="NAR")return[explicit];
+  if(c?.allPlaces!==true&&Array.isArray(c?.places)&&c.places.length){
+    const inferred=[...new Set(c.places.map(simPlaceType).filter(Boolean))];
+    if(inferred.length)return inferred
+  }
+  return["JRA","NAR"]
+}
 function hasUsableConfirmedResult(result){
   if(!result||typeof result!=="object")return false;
   if(Array.isArray(result.finishOrder)&&result.finishOrder.some(Number))return true;
@@ -1492,7 +1514,7 @@ async function withIndexedDbRecovery(task,label="",maxAttempts=3){
 function updateBacktestSyncMetrics(patch={}){
   const metrics=window.__THEKEIBA_SYNC_METRICS__||{
     active:false,detected:0,filtered:0,httpFailures:0,bridgeFailureStart:Number(BRIDGE_DIAG.failureCount||0),
-    zeroTargetDays:0,selectionLabel:"-"
+    zeroTargetDays:0,selectionLabel:"-",scheduleScanned:0,scheduleTotal:0,scheduleMatched:0,calendarSkipped:0,nextScheduleDate:""
   };
   Object.assign(metrics,patch);
   if(metrics.active)metrics.httpFailures=Math.max(0,Number(BRIDGE_DIAG.failureCount||0)-Number(metrics.bridgeFailureStart||0));
@@ -1503,7 +1525,7 @@ function setSimSyncStatus(message){
   let text=String(message??""),metrics=window.__THEKEIBA_SYNC_METRICS__;
   if(metrics?.active){
     metrics=updateBacktestSyncMetrics();
-    if(!/\n同期監視　/.test(text))text+=`\n同期監視　対象 ${metrics.selectionLabel||"-"}　一覧検出 ${Number(metrics.detected||0)}R　条件除外 ${Number(metrics.filtered||0)}R　HTTP再試行 ${Number(metrics.httpFailures||0)}件`;
+    if(!/\n同期監視　/.test(text))text+=`\n同期監視　対象 ${metrics.selectionLabel||"-"}　日程先読み ${Number(metrics.scheduleScanned||0)}/${Number(metrics.scheduleTotal||0)}日　事前スキップ ${Number(metrics.calendarSkipped||0)}日　一覧検出 ${Number(metrics.detected||0)}R　条件除外 ${Number(metrics.filtered||0)}R　HTTP再試行 ${Number(metrics.httpFailures||0)}件`;
   }
   if($("simSyncStatus"))$("simSyncStatus").textContent=text
 }
@@ -1514,7 +1536,9 @@ function splitBacktestBatches(dates,size=BACKTEST_BATCH_DAYS){
   return out;
 }
 function simBatchCountForConfig(c=readSimConfig()){
-  const today=compactDate(isoToday()),dates=dateRangeInclusive(c.start,c.end).filter(d=>d<=today);
+  const today=compactDate(isoToday()),types=simRequestedTypesForConfig(c);
+  let dates=dateRangeInclusive(c.start,c.end).filter(d=>d<=today);
+  if(c?.allPlaces!==true&&types.length===1&&types[0]==="JRA")dates=dates.filter(isJraScheduleProbeDate);
   return dates.length?Math.ceil(dates.length/BACKTEST_BATCH_DAYS):0;
 }
 async function updateSimDataModeUi({refreshStatus=true}={}){
@@ -1524,7 +1548,7 @@ async function updateSimDataModeUi({refreshStatus=true}={}){
   if(stopBtn){stopBtn.disabled=stored||!BACKTEST_SYNC.running;stopBtn.hidden=stored}
   if(notice)notice.textContent=stored
     ?"同期なしモード：通信を行わず、DB・履歴・スナップショット復元済みの保存データだけでバックテストします。期間制限はありません。未取得・未確定レースは自動的に除外し、レース・馬柱・結果・設定・スナップショットは上書きしません。"
-    :"実データ同期モード：指定期間を最大92日単位のバッチへ自動分割し、全バッチを順番に同期します。過去レースは馬柱・オッズだけでなく確定結果まで確認し、結果なしを成功扱いしません。DB接続がiPad側で一時終了しても、同じ日・レースから自動再試行します。バッチグラフはこの操作部の直下に表示します。";
+    :"実データ同期モード：個別開催場ではnetkeibaの開催一覧を先読みし、非開催日を飛ばしてから最大92日単位のバッチへ分割します。過去レースは馬柱・オッズだけでなく確定結果まで確認し、結果なしを成功扱いしません。DB接続がiPad側で一時終了しても、同じ日・レースから自動再試行します。";
   if(liveHelp)liveHelp.textContent=stored?"保存済みの確定結果だけを再集計します。ネット通信は行いません。":"自動分割バッチ同期中、確定結果が増えるたびに暫定集計します。";
   if(liveFoot&&stored)liveFoot.textContent="同期なしモードです。保存済みの確定結果のみを使用し、未確定レースはグラフに含みません。";
   if(refreshStatus&&state.db){
@@ -1540,13 +1564,59 @@ function dateRangeInclusive(start,end){
   for(let d=new Date(a);d<=b;d.setDate(d.getDate()+1))out.push(compactDate(d.toISOString().slice(0,10)));
   return out;
 }
+function isJraScheduleProbeDate(date){
+  date=compactDate(date);if(!/^\d{8}$/.test(date))return false;
+  const day=new Date(`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}T12:00:00`).getDay();
+  // 通常の土日、祝日・代替開催の月曜、順延に備えた火曜だけを日程候補として先読みする。
+  return day===0||day===1||day===2||day===6
+}
+function shouldPreflightSelectedVenueSchedule(c,requestedTypes=simRequestedTypesForConfig(c)){
+  return c?.allPlaces!==true&&Array.isArray(c?.places)&&c.places.length>0&&requestedTypes.length===1&&requestedTypes[0]==="JRA"
+}
+async function preflightSelectedVenueSchedule(c,allDates,requestedTypes,guard,{loadDay=loadBacktestDayRaceList,onProgress=null}={}){
+  const dates=[...new Set((allDates||[]).map(compactDate).filter(date=>/^\d{8}$/.test(date)))].sort();
+  if(!shouldPreflightSelectedVenueSchedule(c,requestedTypes)){
+    return{enabled:false,dates,cache:new Map(),candidateDates:dates,scanned:0,matched:dates.length,skipped:0,errors:[]}
+  }
+  let knownDates=new Set();
+  try{
+    const stored=await getRacesInRange(c.start,c.end);
+    knownDates=new Set((stored||[]).filter(r=>simConfigRaceMatches(c,r)).map(r=>compactDate(r.date)).filter(Boolean))
+  }catch(error){console.warn("選択開催場の既存日程確認を省略しました",error)}
+  const candidateDates=dates.filter(date=>isJraScheduleProbeDate(date)||knownDates.has(date)),cache=new Map(),selectedDates=[],errors=[];
+  for(let index=0;index<candidateDates.length;index++){
+    if(BACKTEST_SYNC.stop)throw new Error("同期停止");
+    const date=candidateDates[index];
+    if($("bridgeDate"))$("bridgeDate").value=`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}`;
+    try{
+      const listed=await loadDay(date,requestedTypes,guard,{maxAttempts:2,places:c.places,scheduleProbe:true});
+      const matched=(listed||[]).filter(r=>simConfigRaceMatches(c,r));
+      if(matched.length){selectedDates.push(date);cache.set(date,matched)}
+      if(onProgress)await onProgress({index:index+1,total:candidateDates.length,date,matched:matched.length,error:null})
+    }catch(error){
+      if(BACKTEST_SYNC.stop||String(error?.message||error)==="同期停止")throw error;
+      // 日程先読みだけの失敗で対象日を捨てず、本処理側へ残して通常の再試行を行う。
+      selectedDates.push(date);errors.push({date,message:indexedDbErrorText(error)});
+      if(onProgress)await onProgress({index:index+1,total:candidateDates.length,date,matched:0,error})
+    }
+  }
+  const resolvedDates=[...new Set(selectedDates)].sort();
+  return{
+    enabled:true,dates:resolvedDates,cache,candidateDates,scanned:candidateDates.length,matched:resolvedDates.length,
+    skipped:Math.max(0,dates.length-resolvedDates.length),errors
+  }
+}
 function backtestListHasParseSignal(diagnostics={},requestedTypes=[]){
   const types=new Set((requestedTypes||[]).map(type=>String(type||"").toUpperCase()));
-  if(Number(diagnostics.wrongDateFiltered||0)>0&&Number(diagnostics.total||0)===0)return true;
+  if(Number(diagnostics.wrongDateFiltered||0)>0&&Number(diagnostics.rawTotal??diagnostics.total??0)===0)return true;
   return(diagnostics.pages||[]).some(page=>{
     const type=String(page?.type||"").toUpperCase();
     if(type&&!types.has(type))return false;
-    const parsedCount=type==="JRA"?Number(diagnostics.jra||0):type==="NAR"?Number(diagnostics.nar||0):Number(diagnostics.total||0);
+    const parsedCount=type==="JRA"
+      ?Number(diagnostics.rawJra??diagnostics.jra??0)
+      :type==="NAR"
+      ?Math.max(Number(diagnostics.rawNar??diagnostics.nar??0),Number(diagnostics.narSourceVenueCount||0))
+      :Number(diagnostics.rawTotal??diagnostics.total??0);
     return !parsedCount&&(page?.dateMatchedRaceId||page?.mixedDates)
   })
 }
@@ -1560,24 +1630,28 @@ function backtestEmptyListError(message,details={}){
 function isBacktestEmptyListError(error){
   return error?.code==="BACKTEST_EMPTY_LIST"||error?.code==="BACKTEST_ZERO_TARGET"||error?.name==="BacktestEmptyListError"
 }
-async function loadBacktestDayRaceList(date,requestedTypes,guard={narRawEmptyStreak:0,allRawEmptyStreak:0,emptyDates:[]},{maxAttempts=3}={}){
+async function loadBacktestDayRaceList(date,requestedTypes,guard={narRawEmptyStreak:0,allRawEmptyStreak:0,emptyDates:[]},{maxAttempts=3,places=null,scheduleProbe=false}={}){
   const types=[...new Set((requestedTypes||[]).map(type=>String(type||"").toUpperCase()))],attempts=Math.max(1,Number(maxAttempts)||1);
   let lastError=null;
   for(let attempt=1;attempt<=attempts;attempt++){
     if(BACKTEST_SYNC.stop)throw new Error("同期停止");
     try{
       const races=await withOperationTimeout(
-        ()=>bridgeLoadList({silent:true,deferRefresh:true,types,allowEmpty:true}),
+        ()=>bridgeLoadList({silent:true,deferRefresh:true,types,places,allowEmpty:true,scheduleProbe}),
         75000,`${displayDate(date)} 開催一覧取得`
       );
       const diagnostics=window.__LAST_LIST_DIAGNOSTICS__||{},parseSignal=backtestListHasParseSignal(diagnostics,types);
-      const narRequested=types.includes("NAR"),narCount=Number.isFinite(Number(diagnostics.nar))
+      const narRequested=types.includes("NAR"),narCount=Number.isFinite(Number(diagnostics.rawNar))
+        ?Number(diagnostics.rawNar)
+        :Number.isFinite(Number(diagnostics.nar))
         ?Number(diagnostics.nar)
         :races.filter(r=>String(r?.type||r?.provider||raceKindFromId(r?.race_id)).toUpperCase()==="NAR").length;
-      const nextNarEmpty=narRequested&&!narCount?Number(guard.narRawEmptyStreak||0)+1:0;
+      const narSourceVenueCount=Number(diagnostics.narSourceVenueCount||0),
+            nextNarEmpty=narRequested&&!narCount&&!narSourceVenueCount?Number(guard.narRawEmptyStreak||0)+1:0;
       const jraOnlyWeekday=types.length===1&&types[0]==="JRA"&&!likelyJraRaceDay(date);
-      const nextAllEmpty=!races.length&&!jraOnlyWeekday?Number(guard.allRawEmptyStreak||0)+1:0;
-      const suspicious=parseSignal||(narRequested&&nextNarEmpty>=3)||nextAllEmpty>=3;
+      const rawTotal=Number.isFinite(Number(diagnostics.rawTotal))?Number(diagnostics.rawTotal):races.length;
+      const nextAllEmpty=!rawTotal&&!narSourceVenueCount&&!jraOnlyWeekday?Number(guard.allRawEmptyStreak||0)+1:0;
+      const suspicious=parseSignal||(!scheduleProbe&&((narRequested&&nextNarEmpty>=3)||nextAllEmpty>=3));
       if(suspicious){
         const reason=parseSignal
           ?"取得HTMLにレース情報があるのに解析結果が0Rです"
@@ -1588,9 +1662,11 @@ async function loadBacktestDayRaceList(date,requestedTypes,guard={narRawEmptyStr
           {date,types,attempt,diagnostics,consecutiveNarEmpty:nextNarEmpty,consecutiveAllEmpty:nextAllEmpty}
         )
       }
-      guard.narRawEmptyStreak=nextNarEmpty;
-      guard.allRawEmptyStreak=nextAllEmpty;
-      guard.emptyDates=nextNarEmpty||nextAllEmpty?[...(guard.emptyDates||[]),date].slice(-3):[];
+      if(!scheduleProbe){
+        guard.narRawEmptyStreak=nextNarEmpty;
+        guard.allRawEmptyStreak=nextAllEmpty;
+        guard.emptyDates=nextNarEmpty||nextAllEmpty?[...(guard.emptyDates||[]),date].slice(-3):[]
+      }
       return races
     }catch(error){
       lastError=error;
@@ -1629,27 +1705,68 @@ async function syncBacktestPeriod(){
   state.simAllPlaces=!!c.allPlaces;
   state.simSelectedPlaces=c.allPlaces?[]:[...c.places];
   updateSimPlaceSummary();
-  const selectedVenueLabel=simSelectionLabel(c),today=compactDate(isoToday()),allDates=dateRangeInclusive(c.start,c.end),dates=allDates.filter(date=>date<=today);
+  const selectedVenueLabel=simSelectionLabel(c),today=compactDate(isoToday()),allDates=dateRangeInclusive(c.start,c.end),allPastDates=allDates.filter(date=>date<=today);
   if(!allDates.length)return alert("開始日と終了日を正しく指定してください");
-  if(!dates.length)return alert("同期できる過去日がありません");
-  const batches=splitBacktestBatches(dates),rangeLabel=`${displayDate(dates[0])}～${displayDate(dates.at(-1))}`,requestedTypes=c.type?[c.type]:["JRA","NAR"];
-  if(!confirm(`${rangeLabel} の ${dates.length}日分を、最大${BACKTEST_BATCH_DAYS}日単位の ${batches.length}バッチへ自動分割して同期します。
+  if(!allPastDates.length)return alert("同期できる過去日がありません");
+  const requestedTypes=simRequestedTypesForConfig(c),scheduleFirst=shouldPreflightSelectedVenueSchedule(c,requestedTypes);
+  let dates=[...allPastDates],batches=splitBacktestBatches(dates);
+  const rangeLabel=`${displayDate(dates[0])}～${displayDate(dates.at(-1))}`;
+  if(!confirm(`${rangeLabel} の ${dates.length}日分を同期します。
 対象開催場: ${selectedVenueLabel}
+取得区分: ${requestedTypes.join("・")}
+${scheduleFirst?"最初に選択開催場の開催日をnetkeiba一覧で先読みし、非開催日を飛ばしてからバッチを確定します。":`最大${BACKTEST_BATCH_DAYS}日単位の ${batches.length}バッチへ自動分割します。`}
 開催一覧・出馬表・最終オッズ・結果・払戻を順番に取得します。
 過去レースは確定結果まで検証し、結果未取得は最大3回再試行してエラー詳細へ残します。
 通信が止まった場合は自動タイムアウトして次の日・次レースへ進みます。開始しますか？`))return;
   BACKTEST_SYNC.running=true;BACKTEST_SYNC.stop=false;BACKTEST_SYNC.batch=0;BACKTEST_SYNC.totalBatches=batches.length;
   updateBacktestSyncMetrics({
     active:true,detected:0,filtered:0,httpFailures:0,bridgeFailureStart:Number(BRIDGE_DIAG.failureCount||0),
-    zeroTargetDays:0,selectionLabel:selectedVenueLabel
+    zeroTargetDays:0,selectionLabel:selectedVenueLabel,scheduleScanned:0,scheduleTotal:0,scheduleMatched:0,
+    calendarSkipped:0,nextScheduleDate:""
   });
   const simRunButton=$("simRunBtn"),simRunButtonText=simRunButton?.textContent||"バックテスト開始";
   $("simSyncBtn").disabled=true;$("simStopSyncBtn").disabled=false;$("simStopSyncBtn").textContent="⏹ 同期停止";
   if(simRunButton){simRunButton.disabled=true;simRunButton.textContent="同期完了待ち";}
   const oldDate=$("bridgeDate").value,startedAt=Date.now(),emptyListGuard={narRawEmptyStreak:0,allRawEmptyStreak:0,emptyDates:[]};
-  let listDays=0,noRaceDays=0,processedDays=0,totalRaces=0,detectedRaces=0,filteredOutRaces=0,loaded=0,confirmed=0,resultMissing=0,failed=0,skipped=0,retried=0,lastError="",consecutiveFailures=0,selectedZeroStreak=0;
+  let listDays=0,noRaceDays=0,processedDays=0,totalRaces=0,detectedRaces=0,filteredOutRaces=0,loaded=0,confirmed=0,resultMissing=0,failed=0,skipped=0,retried=0,lastError="",consecutiveFailures=0,selectedZeroStreak=0,
+      scheduleInfo={enabled:false,dates:[...dates],cache:new Map(),candidateDates:[...dates],scanned:0,matched:dates.length,skipped:0,errors:[]},scheduleCache=new Map();
   try{
     await withOperationTimeout(()=>detectBridgeMode(),32000,"Bridge経路検出");
+    if(scheduleFirst){
+      let matchedSoFar=0;
+      setSimSyncStatus(`選択開催場の日程先読みを開始　対象 ${selectedVenueLabel}
+期間 ${rangeLabel}　JRA通常・祝日・順延候補から開催日だけを抽出します。
+この段階では馬柱・オッズ・結果を取得しません。`);
+      scheduleInfo=await preflightSelectedVenueSchedule(c,allPastDates,requestedTypes,emptyListGuard,{
+        onProgress:({index,total,date,matched,error})=>{
+          if(matched)matchedSoFar++;
+          const preSkipped=Math.max(0,allPastDates.length-total)+Math.max(0,index-matchedSoFar);
+          updateBacktestSyncMetrics({
+            scheduleScanned:index,scheduleTotal:total,scheduleMatched:matchedSoFar,calendarSkipped:preSkipped,
+            nextScheduleDate:matched?date:(window.__THEKEIBA_SYNC_METRICS__?.nextScheduleDate||"")
+          });
+          setSimSyncStatus(`日程先読み ${index}/${total}日　対象 ${selectedVenueLabel}
+確認中 ${displayDate(date)}　開催検出 ${matchedSoFar}日　暫定スキップ ${preSkipped}日${error?`
+先読み失敗のため本処理で再確認: ${indexedDbErrorText(error)}`:""}`)
+        }
+      });
+      dates=[...scheduleInfo.dates];scheduleCache=scheduleInfo.cache;batches=splitBacktestBatches(dates);
+      BACKTEST_SYNC.totalBatches=batches.length;
+      updateBacktestSyncMetrics({
+        scheduleScanned:scheduleInfo.scanned,scheduleTotal:scheduleInfo.candidateDates.length,
+        scheduleMatched:dates.length,calendarSkipped:scheduleInfo.skipped,nextScheduleDate:dates[0]||""
+      });
+      if(!dates.length){
+        await renderSimPlaceOptions(c.places);
+        setSimSyncStatus(`日程先読み完了　対象 ${selectedVenueLabel}
+指定期間 ${rangeLabel} に選択開催場のJRA開催日はありません。
+候補 ${scheduleInfo.scanned}日を確認し、全${allPastDates.length}日を事前スキップしました。`);
+        return{races:0,results:0,dates:0,batches:0,processedDays:0,noRaceDays:0,calendarSkipped:scheduleInfo.skipped,scheduleScanned:scheduleInfo.scanned,noScheduledDates:true,stopped:false}
+      }
+      setSimSyncStatus(`日程先読み完了　対象 ${selectedVenueLabel}
+暦 ${allPastDates.length}日 → 開催候補 ${dates.length}日　事前スキップ ${scheduleInfo.skipped}日　次回 ${displayDate(dates[0])}
+${batches.length}バッチで馬柱・オッズ・結果取得へ進みます${scheduleInfo.errors.length?`　先読み再確認 ${scheduleInfo.errors.length}日`:""}。`)
+    }
     for(let batchIndex=0;batchIndex<batches.length;batchIndex++){
       if(BACKTEST_SYNC.stop)break;
       const batch=batches[batchIndex],batchNo=batchIndex+1,batchStart=batch[0],batchEnd=batch.at(-1);
@@ -1665,10 +1782,14 @@ async function syncBacktestPeriod(){
 完全取得 ${loaded}R　既存完全 ${skipped}R　確定結果 ${confirmed}R　結果待ち・未取得 ${resultMissing}R　失敗 ${failed}件`);
         let races=[];
         try{
-          races=await withIndexedDbRecovery(
-            ()=>loadBacktestDayRaceList(date,requestedTypes,emptyListGuard),
-            `${displayDate(date)} 開催一覧の保存`,3
-          );
+          races=scheduleCache.has(date)
+            ?scheduleCache.get(date)
+            :await withIndexedDbRecovery(
+              ()=>loadBacktestDayRaceList(date,requestedTypes,emptyListGuard,{
+                places:c.allPlaces?null:c.places,scheduleProbe:false
+              }),
+              `${displayDate(date)} 開催一覧の保存`,3
+            );
           listDays++;consecutiveFailures=0
         }catch(e){
           if(BACKTEST_SYNC.stop||String(e.message)==="同期停止")break;
@@ -1783,12 +1904,17 @@ ${bundleError}
     }
     await withIndexedDbRecovery(()=>refreshAll(),"同期完了後の画面更新",3);await renderSimPlaceOptions(c.places);
     const cov=await withIndexedDbRecovery(()=>backtestCoverage(c),"同期完了後の集計",3),elapsedSec=Math.max(1,Math.round((Date.now()-startedAt)/1000)),elapsedLabel=elapsedSec>=60?`${Math.floor(elapsedSec/60)}分${elapsedSec%60}秒`:`${elapsedSec}秒`,httpFailures=updateBacktestSyncMetrics({detected:detectedRaces,filtered:filteredOutRaces}).httpFailures;
-    setSimSyncStatus(`${BACKTEST_SYNC.stop?"バッチ同期停止":"全バッチ同期完了"}　${BACKTEST_SYNC.batch}/${batches.length}バッチ　完了日 ${processedDays}/${dates.length}日　開催なし ${noRaceDays}日
+    setSimSyncStatus(`${BACKTEST_SYNC.stop?"バッチ同期停止":"全バッチ同期完了"}　${BACKTEST_SYNC.batch}/${batches.length}バッチ　完了日 ${processedDays}/${dates.length}日　開催なし ${noRaceDays}日　事前スキップ ${scheduleInfo.skipped}日
 一覧検出 ${detectedRaces}R　選択除外 ${filteredOutRaces}R　登録対象 ${cov.races}R　確定結果 ${cov.results}R　完全取得 ${loaded}R　既存完全 ${skipped}R　結果待ち・未取得 ${resultMissing}R　再試行 ${retried}回　失敗 ${failed}件
 HTTP再試行 ${httpFailures}件　所要時間 ${elapsedLabel}${lastError?`
 最後の失敗 ${lastError}`:""}`);
-    return{...cov,batches:batches.length,processedDays,noRaceDays,detectedRaces,filteredOutRaces,httpFailures,loaded,skipped,confirmed,resultMissing,failed,retried,stopped:BACKTEST_SYNC.stop}
+    return{...cov,batches:batches.length,processedDays,noRaceDays,calendarSkipped:scheduleInfo.skipped,scheduleScanned:scheduleInfo.scanned,detectedRaces,filteredOutRaces,httpFailures,loaded,skipped,confirmed,resultMissing,failed,retried,stopped:BACKTEST_SYNC.stop}
   }catch(e){
+    if(BACKTEST_SYNC.stop||String(e?.message||e)==="同期停止"){
+      setSimSyncStatus(`バッチ同期停止　日程先読み ${scheduleInfo.scanned||0}日　完了日 ${processedDays}/${dates.length}日
+事前スキップ ${scheduleInfo.skipped||0}日　完全取得 ${loaded}R　既存完全 ${skipped}R　失敗 ${failed}件`);
+      return{batches:batches.length,processedDays,noRaceDays,calendarSkipped:scheduleInfo.skipped||0,scheduleScanned:scheduleInfo.scanned||0,detectedRaces,filteredOutRaces,loaded,skipped,confirmed,resultMissing,failed,retried,stopped:true}
+    }
     setSimSyncStatus(`バッチ同期エラー　バッチ ${BACKTEST_SYNC.batch}/${batches.length}
 ${e.message}`);throw e
   }finally{
@@ -2266,14 +2392,17 @@ function parseRaceListHtml(raw,kind,date){
     const source=`${href} ${dataId}`.replace(/&amp;/gi,"&");
     const m=source.match(/race[_-]?id(?:=|%3D|\\u003[dD]|["'\s:]+)((?:19|20)\d{10,12})/i)||source.match(/((?:19|20)\d{10})/);
     if(!m)continue;
-    const row=node.closest("li,tr,article,section,[class*='RaceList'],[class*='RaceItem'],div")||node.parentElement||node;
+    const row=node.closest("li,tr,article,section,[class*='RaceList'],[class*='RaceItem'],[class*='RaceCard'],[class*='Race_Card']")||node.parentElement||node;
     const nameNode=row.querySelector?.(".RaceName,.Race_Name,[class*='RaceName'],[class*='Race_Name'],[class*='RaceTitle'],[class*='Race_Title'],.race_name,.raceName");
+    const actionHref=/(?:holding[_-]?time|time[_-]?index|training|comment|match|blood|newspaper|column|odds|result|movie|video|memo|paddock)/i.test(href);
     const raceNo=Number(normalizeAnalyticsRaceIdValue(m[1]).slice(-2)),candidates=[
       nameNode?.textContent,
       node.getAttribute("data-race-name"),
-      node.getAttribute("aria-label"),
-      node.getAttribute("title"),
-      node.textContent,
+      ...(actionHref?[]:[
+        node.getAttribute("aria-label"),
+        node.getAttribute("title"),
+        node.textContent
+      ]),
       row.textContent
     ].map(value=>String(value||"").replace(/\s+/g," ").trim()).filter(Boolean);
     const context=candidates.find(value=>raceNameQuality(value,raceNo)>0)||candidates.at(-1)||"";
@@ -2487,15 +2616,16 @@ async function detectBridgeMode(){
   updateBridgeDiagnostics?.("接続経路なし","bad");throw new Error(`取得経路なし Userscript:${probe.error||"未検出"} REST:${statuses.rest} Worker:${statuses.legacy}`)
 }
 async function bridgePing(){try{bridgeLog("接続テスト中…");updateBridgeDiagnostics("再検出中");const d=await detectBridgeMode();bridgeLog(`接続成功：${d.mode==="browser"?"Userscript住宅IP":d.mode==="legacy"?"既存Worker互換":"REST"}モード`,d);updateBridgeDiagnostics("接続済み","ok")}catch(e){bridgeLog("接続失敗: "+e.message);updateBridgeDiagnostics("接続失敗","bad")}}
-async function bridgeLoadList({silent=false,deferRefresh=false,types=null,allowEmpty=false}={}){
+async function bridgeLoadList({silent=false,deferRefresh=false,types=null,places=null,allowEmpty=false,scheduleProbe=false}={}){
   try{
     const date=compactDate($("bridgeDate").value);if(!date)throw new Error("日付未指定");
     const wanted=new Set((Array.isArray(types)?types:types?[types]:["JRA","NAR"]).map(x=>String(x||"").toUpperCase()).filter(x=>x==="JRA"||x==="NAR"));
+    const wantedPlaces=new Set((Array.isArray(places)?places:places?[places]:[]).map(x=>String(x||"").trim()).filter(Boolean));
     if(!wanted.size){wanted.add("JRA");wanted.add("NAR")}
     const storedMode=state.settings.bridgeMode&&state.settings.bridgeMode!=="auto"?state.settings.bridgeMode:"auto",
           mode=storedMode==="browser"&&!hasResidentialBridge()?(await withOperationTimeout(()=>detectBridgeMode(),30000,"Bridge経路検出")).mode:storedMode!=="auto"?storedMode:(await withOperationTimeout(()=>detectBridgeMode(),30000,"Bridge経路検出")).mode;
     let races=[],logs=[],successfulPages=0,jraCount=0,narCount=0,jraParseSignal=false;
-    const diagnostics={date,mode,wanted:[...wanted],pages:[]};
+    const diagnostics={date,mode,wanted:[...wanted],wantedPlaces:[...wantedPlaces],scheduleProbe:!!scheduleProbe,pages:[]};
     if(mode==="rest"){
       const d=await bridgeFetch(`/race/list?date=${encodeURIComponent(date)}`,{timeout:30000});
       races=Array.isArray(d)?d:(d?.races||d?.data?.races||d?.items||[]);successfulPages++;
@@ -2538,8 +2668,13 @@ async function bridgeLoadList({silent=false,deferRefresh=false,types=null,allowE
           if(BACKTEST_SYNC?.stop)throw new Error("同期停止");
           const initial=await bridgeLegacyUrl(narBase,{timeout:22000}),initialHtml=unwrapBridgeHtml(initial),initialSig=raceListHtmlSignals(initialHtml);successfulPages++;
           diagnostics.pages.push({type:"NAR",url:narBase.replace(/^https?:\/\//,""),chars:initialSig.chars,hasRaceId:initialSig.hasRaceId,hasRaceRows:initialSig.hasRaceRows,dateMatchedRaceId:raceListHasDateMatchedRaceId(initialHtml,"NAR",date),ended:initialSig.ended,blocked:initialSig.blocked});
-          const ids=extractNarKaisaiIds(initialHtml,date),nar=[];
-          if(ids.length){
+          const sourceIds=extractNarKaisaiIds(initialHtml,date),ids=wantedPlaces.size
+            ?sourceIds.filter(kid=>wantedPlaces.has(BRIDGE_NAR_PLACES[kid.slice(4,6)]||""))
+            :sourceIds,nar=[];
+          diagnostics.narSourceVenueCount=sourceIds.length;
+          diagnostics.narSourceVenues=sourceIds.map(kid=>BRIDGE_NAR_PLACES[kid.slice(4,6)]||kid);
+          diagnostics.narRequestedVenueCount=ids.length;
+          if(sourceIds.length){
             for(const kid of ids){
               if(BACKTEST_SYNC?.stop)throw new Error("同期停止");
               try{const html=await bridgeLegacyUrl(`${narBase}&kaisai_id=${kid}`,{timeout:22000}),sig=raceListHtmlSignals(html),part=parseRaceListHtml(html,"NAR",date);successfulPages++;nar.push(...part);diagnostics.pages.push({type:"NAR",kaisaiId:kid,chars:sig.chars,hasRaceId:sig.hasRaceId,hasRaceRows:sig.hasRaceRows,dateMatchedRaceId:raceListHasDateMatchedRaceId(html,"NAR",date),ended:sig.ended,blocked:sig.blocked,count:part.length});logs.push(`${BRIDGE_NAR_PLACES[kid.slice(4,6)]||kid}:${part.length}R`)}
@@ -2552,13 +2687,22 @@ async function bridgeLoadList({silent=false,deferRefresh=false,types=null,allowE
     }
     const uniq=new Map(races.filter(r=>r?.race_id).map(r=>[normalizeAnalyticsRaceIdValue(r.race_id||r.raceId),{...r,race_id:normalizeAnalyticsRaceIdValue(r.race_id||r.raceId)}]));
     const uniqueRaces=[...uniq.values()],wrongDateRaces=uniqueRaces.filter(r=>{const d=compactDate(r.date||r.raceDate||r.race_date||"");return d&&d!==date});
-    races=uniqueRaces.filter(r=>{const d=compactDate(r.date||r.raceDate||r.race_date||"");return(!d||d===date)&&r.race_id&&wanted.has(String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase())});
+    const rawRaces=uniqueRaces.filter(r=>{const d=compactDate(r.date||r.raceDate||r.race_date||"");return(!d||d===date)&&r.race_id&&wanted.has(String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase())});
+    const rawJraCount=rawRaces.filter(r=>String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase()==="JRA").length,
+          rawNarCount=rawRaces.filter(r=>String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase()==="NAR").length;
+    races=rawRaces.filter(r=>{
+      if(!wantedPlaces.size)return true;
+      const kind=String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase(),
+            place=String(r.placeName||r.venueName||r.place||bridgePlaceName(r.race_id,kind,""));
+      return wantedPlaces.has(place)
+    });
     jraCount=races.filter(r=>String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase()==="JRA").length;
     narCount=races.filter(r=>String(r.type||r.provider||raceKindFromId(r.race_id)).toUpperCase()==="NAR").length;
-    diagnostics.total=races.length;diagnostics.jra=jraCount;diagnostics.nar=narCount;diagnostics.wrongDateFiltered=wrongDateRaces.length;diagnostics.logs=logs.slice(-12);window.__LAST_LIST_DIAGNOSTICS__=diagnostics;
-    if(jraCount>36)throw new Error(`JRA一覧の日付混在を検出しました: ${displayDate(date)} に ${jraCount}R（1日上限36R超）。別日race_idは登録せず再試行します`);
+    diagnostics.rawTotal=rawRaces.length;diagnostics.rawJra=rawJraCount;diagnostics.rawNar=rawNarCount;
+    diagnostics.total=races.length;diagnostics.jra=jraCount;diagnostics.nar=narCount;diagnostics.placeFiltered=Math.max(0,rawRaces.length-races.length);diagnostics.wrongDateFiltered=wrongDateRaces.length;diagnostics.logs=logs.slice(-12);window.__LAST_LIST_DIAGNOSTICS__=diagnostics;
+    if(rawJraCount>36)throw new Error(`JRA一覧の日付混在を検出しました: ${displayDate(date)} に ${rawJraCount}R（1日上限36R超）。別日race_idは登録せず再試行します`);
     if(!races.length&&!successfulPages)throw new Error(`開催一覧の通信に失敗しました${logs.length?` (${logs.slice(-6).join(" / ")})`:""}`);
-    if(wanted.has("JRA")&&likelyJraRaceDay(date)&&jraCount===0){
+    if(wanted.has("JRA")&&likelyJraRaceDay(date)&&rawJraCount===0&&!scheduleProbe){
       const recent=logs.slice(-8),all400=recent.length&&recent.every(x=>/JRA失敗:Userscript HTTP 400/.test(x));
       const reason=all400
         ?"JRA側が旧BridgeヘッダーをHTTP 400で拒否しました。TampermonkeyをBridge v1.6.4へ更新してください"
@@ -3988,14 +4132,14 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 (function(){
   "use strict";
   const byId=id=>document.getElementById(id);
-  const MON={running:false,startedAt:0,lastAt:0,progress:0,dayNow:0,daysDone:0,daysTotal:0,raceNow:0,raceTotal:0,detected:0,filtered:0,httpFailures:0,loaded:0,skipped:0,confirmed:0,resultMissing:0,failed:0,batchNow:0,batchTotal:0,history:[],raf:0,timer:0,lastMessage:""};
+  const MON={running:false,startedAt:0,lastAt:0,progress:0,dayNow:0,daysDone:0,daysTotal:0,raceNow:0,raceTotal:0,scheduleScanned:0,scheduleTotal:0,calendarSkipped:0,detected:0,filtered:0,httpFailures:0,loaded:0,skipped:0,confirmed:0,resultMissing:0,failed:0,batchNow:0,batchTotal:0,history:[],raf:0,timer:0,lastMessage:""};
   const num=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function css(name,fallback){const v=getComputedStyle(document.documentElement).getPropertyValue(name).trim();return v||fallback}
   function formatTime(sec){sec=Math.max(0,Math.round(num(sec)));if(sec<60)return `${sec}秒`;if(sec<3600)return `${Math.floor(sec/60)}分${sec%60}秒`;return `${Math.floor(sec/3600)}時間${Math.floor(sec%3600/60)}分`}
   function readMatch(text,re){const m=String(text||"").match(re);return m?m.slice(1).map(Number):null}
   function setBadge(label,kind=""){const el=byId("simSyncLiveStatus");if(!el)return;el.classList.remove("running","done","stopped","error");if(kind)el.classList.add(kind);const on=kind==="running"||kind==="done";el.innerHTML=`<span class="status-dot${on?" on":""}"></span>${label}`}
-  function reset(){MON.startedAt=Date.now();MON.lastAt=MON.startedAt;MON.progress=0;MON.dayNow=0;MON.daysDone=0;MON.daysTotal=0;MON.raceNow=0;MON.raceTotal=0;MON.detected=0;MON.filtered=0;MON.httpFailures=0;MON.loaded=0;MON.skipped=0;MON.confirmed=0;MON.resultMissing=0;MON.failed=0;MON.batchNow=0;MON.batchTotal=0;MON.history=[];MON.lastMessage="同期を開始しています…";sample(true);render()}
+  function reset(){MON.startedAt=Date.now();MON.lastAt=MON.startedAt;MON.progress=0;MON.dayNow=0;MON.daysDone=0;MON.daysTotal=0;MON.raceNow=0;MON.raceTotal=0;MON.scheduleScanned=0;MON.scheduleTotal=0;MON.calendarSkipped=0;MON.detected=0;MON.filtered=0;MON.httpFailures=0;MON.loaded=0;MON.skipped=0;MON.confirmed=0;MON.resultMissing=0;MON.failed=0;MON.batchNow=0;MON.batchTotal=0;MON.history=[];MON.lastMessage="同期を開始しています…";sample(true);render()}
   function begin(){MON.running=true;reset();setBadge("同期中","running");startClock()}
   function finish(kind="done"){MON.running=false;if(kind==="done"&&MON.daysTotal){MON.progress=100;MON.dayNow=MON.daysTotal;MON.daysDone=MON.daysTotal;}sample(true);render();setBadge(kind==="stopped"?"停止":"完了",kind);stopClock()}
   function startClock(){stopClock();MON.timer=setInterval(()=>renderTime(),1000)}
@@ -4049,8 +4193,8 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
   function progressText(value){value=clamp(num(value),0,100);return`${value>0&&value<1?value.toFixed(2):value.toFixed(1)}%`}
   function render(){
     const bar=byId("simSyncProgressBar"),pctEl=byId("simSyncProgressPercent");if(bar){bar.style.width=`${MON.progress.toFixed(3)}%`;bar.style.minWidth=MON.progress>0?"2px":"0"}if(pctEl)pctEl.textContent=progressText(MON.progress);
-    const metrics=window.__THEKEIBA_SYNC_METRICS__;if(metrics?.active){MON.detected=num(metrics.detected,MON.detected);MON.filtered=num(metrics.filtered,MON.filtered);MON.httpFailures=num(metrics.httpFailures,MON.httpFailures)}
-    const shownDay=MON.daysTotal?(MON.running?Math.max(1,MON.dayNow||MON.daysDone+1):Math.min(MON.daysTotal,MON.dayNow||MON.daysDone)):0;const vals={simSyncDays:`${shownDay} / ${MON.daysTotal}`,simSyncRace:`${MON.raceNow} / ${MON.raceTotal}`,simSyncDetected:`${MON.detected}R`,simSyncFiltered:`${MON.filtered}R`,simSyncLoaded:`${MON.loaded}R`,simSyncSkipped:`${MON.skipped}R`,simSyncConfirmed:`${MON.confirmed}R`,simSyncResultMissing:`${MON.resultMissing}R`,simSyncHttpFailures:`${MON.httpFailures}件`,simSyncFailed:`${MON.failed}件`};for(const [id,v] of Object.entries(vals)){const el=byId(id);if(el)el.textContent=v}
+    const metrics=window.__THEKEIBA_SYNC_METRICS__;if(metrics?.active){MON.scheduleScanned=num(metrics.scheduleScanned,MON.scheduleScanned);MON.scheduleTotal=num(metrics.scheduleTotal,MON.scheduleTotal);MON.calendarSkipped=num(metrics.calendarSkipped,MON.calendarSkipped);MON.detected=num(metrics.detected,MON.detected);MON.filtered=num(metrics.filtered,MON.filtered);MON.httpFailures=num(metrics.httpFailures,MON.httpFailures)}
+    const shownDay=MON.daysTotal?(MON.running?Math.max(1,MON.dayNow||MON.daysDone+1):Math.min(MON.daysTotal,MON.dayNow||MON.daysDone)):0;const vals={simSyncSchedule:`${MON.scheduleScanned} / ${MON.scheduleTotal}`,simSyncCalendarSkipped:`${MON.calendarSkipped}日`,simSyncDays:`${shownDay} / ${MON.daysTotal}`,simSyncRace:`${MON.raceNow} / ${MON.raceTotal}`,simSyncDetected:`${MON.detected}R`,simSyncFiltered:`${MON.filtered}R`,simSyncLoaded:`${MON.loaded}R`,simSyncSkipped:`${MON.skipped}R`,simSyncConfirmed:`${MON.confirmed}R`,simSyncResultMissing:`${MON.resultMissing}R`,simSyncHttpFailures:`${MON.httpFailures}件`,simSyncFailed:`${MON.failed}件`};for(const [id,v] of Object.entries(vals)){const el=byId(id);if(el)el.textContent=v}
     const task=byId("simSyncCurrentTask");if(task)task.textContent=compactTask();const legend=byId("simSyncGraphLegend"),dayP=MON.raceTotal?MON.raceNow/MON.raceTotal*100:0;if(legend)legend.textContent=`青 全期間 ${progressText(MON.progress)}　緑 当日 ${progressText(dayP)}`;renderTime();scheduleDraw();
   }
   function scheduleDraw(){if(MON.raf)return;MON.raf=requestAnimationFrame(()=>{MON.raf=0;draw()})}
@@ -5014,6 +5158,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 })();
 </script>
 
+<!-- v1.3.5: 選択開催場のnetkeiba日程先読み、他場通信スキップ、持ちタイム等のレース名混入防止 -->
 <!-- v1.3.4: 全開催場/未選択を分離、一覧検出・条件除外・HTTP再試行KPI、0R空回り安全停止 -->
 <!-- v1.3.0: netkeiba予想オッズの固定確率と市場実オッズを分離したEV中枢 -->
 <!-- v1.2.34: 馬場状態・馬齢・馬場・クラス・馬体重のHTML取得強化、旧JRAクラス変換、既存DB一括修復 -->
@@ -5648,6 +5793,19 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 
   if(document.readyState==="loading")window.addEventListener("DOMContentLoaded",wire,{once:true});else wire()
 })();
+</script>
+
+<script id="selectedVenueScheduleAndRaceNameGuardV135">
+/* v1.3.5 回帰テスト・診断用の公開API */
+window.__THEKEIBA_V135__={
+  isRaceNameActionLabel,
+  sanitizeRaceName,
+  simPlaceType,
+  simRequestedTypesForConfig,
+  isJraScheduleProbeDate,
+  shouldPreflightSelectedVenueSchedule,
+  preflightSelectedVenueSchedule
+};
 </script>
 
 </body>
