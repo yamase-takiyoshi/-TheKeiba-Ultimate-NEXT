@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.3</title>
+<title>The競馬 Ultimate NEXT Professional netkeiba EV Edition v1.3.4</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -258,7 +258,7 @@ input,select,textarea{font-size:16px}
 .sync-live-status{white-space:nowrap}.sync-live-status.running{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}.sync-live-status.done{color:var(--good);border-color:color-mix(in srgb,var(--good) 45%,var(--line))}.sync-live-status.stopped,.sync-live-status.error{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
 .sync-live-progress-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;margin-bottom:10px}.sync-live-progress{height:15px}.sync-live-progress>span{width:0;transition:width .22s ease;background:linear-gradient(90deg,var(--accent),var(--good))}.sync-live-percent{font-size:24px;font-weight:950;font-variant-numeric:tabular-nums;min-width:76px;text-align:right}
 .sync-live-current{padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--bg);font-size:13px;font-weight:850;line-height:1.55;min-height:44px;margin-bottom:11px;white-space:pre-wrap}
-.sync-live-kpis{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:11px}.sync-live-kpi{padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0}.sync-live-kpi small{display:block;color:var(--muted);font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sync-live-kpi strong{display:block;margin-top:4px;font-size:17px;font-weight:950;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sync-live-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:11px}.sync-live-kpi{padding:9px 10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0}.sync-live-kpi small{display:block;color:var(--muted);font-size:10px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sync-live-kpi strong{display:block;margin-top:4px;font-size:17px;font-weight:950;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sync-live-chart{height:210px}.sync-live-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:11px;line-height:1.5}
 .sync-error-panel{margin:11px 0;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden}.sync-error-panel.has-error{border-color:color-mix(in srgb,var(--bad) 60%,var(--line));box-shadow:inset 3px 0 0 var(--bad)}.sync-error-panel summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;cursor:pointer;font-weight:900;list-style:none}.sync-error-panel summary::-webkit-details-marker{display:none}.sync-error-panel summary::before{content:"▶";font-size:10px;color:var(--muted);transition:transform .16s ease}.sync-error-panel[open] summary::before{transform:rotate(90deg)}.sync-error-summary-title{margin-right:auto}.sync-error-body{border-top:1px solid var(--line);padding:11px 13px}.sync-error-latest{white-space:pre-wrap;overflow-wrap:anywhere;padding:10px 11px;border-radius:9px;background:color-mix(in srgb,var(--bad) 9%,var(--panel2));font-size:12px;line-height:1.55}.sync-error-actions{display:flex;gap:8px;flex-wrap:wrap;margin:9px 0}.sync-error-list{display:grid;gap:7px;max-height:260px;overflow:auto}.sync-error-item{padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);font-size:11px;line-height:1.55;overflow-wrap:anywhere}.sync-error-item-head{display:flex;justify-content:space-between;gap:8px;color:var(--muted);margin-bottom:3px}.sync-error-item strong{color:var(--bad)}.sync-error-advice{color:var(--muted);margin-top:3px}
 @media(max-width:900px){.sync-live-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.3</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>netkeiba EV Edition v1.3.4</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -367,7 +367,7 @@ input,select,textarea{font-size:16px}
 
       <div class="card sync-live-card" id="simSyncLiveCard">
         <div class="sync-live-head">
-          <div><div class="sync-live-title">📊 リアルタイム・バッチグラフ</div><div class="sync-live-sub">操作部の直下で、全期間の進捗、現在の日付・レース、完全取得、結果未取得、失敗件数をリアルタイム更新します。</div></div>
+          <div><div class="sync-live-title">📊 リアルタイム・バッチグラフ</div><div class="sync-live-sub">全期間の進捗に加え、一覧検出・条件除外・HTTP再試行・取得失敗を区別してリアルタイム更新します。</div></div>
           <span class="badge sync-live-status" id="simSyncLiveStatus"><span class="status-dot"></span>待機中</span>
         </div>
         <div class="sync-live-progress-row"><div class="progress sync-live-progress"><span id="simSyncProgressBar"></span></div><div class="sync-live-percent" id="simSyncProgressPercent">0.0%</div></div>
@@ -375,10 +375,13 @@ input,select,textarea{font-size:16px}
         <div class="sync-live-kpis">
           <div class="sync-live-kpi"><small>全体日程</small><strong id="simSyncDays">0 / 0</strong></div>
           <div class="sync-live-kpi"><small>当日レース</small><strong id="simSyncRace">0 / 0</strong></div>
+          <div class="sync-live-kpi"><small>一覧検出</small><strong id="simSyncDetected">0R</strong></div>
+          <div class="sync-live-kpi"><small>条件除外</small><strong id="simSyncFiltered">0R</strong></div>
           <div class="sync-live-kpi"><small>完全取得</small><strong id="simSyncLoaded">0R</strong></div>
           <div class="sync-live-kpi"><small>既存完全</small><strong id="simSyncSkipped">0R</strong></div>
           <div class="sync-live-kpi"><small>確定結果</small><strong id="simSyncConfirmed">0R</strong></div>
           <div class="sync-live-kpi"><small>結果待ち・未取得</small><strong id="simSyncResultMissing">0R</strong></div>
+          <div class="sync-live-kpi"><small>HTTP再試行</small><strong id="simSyncHttpFailures">0件</strong></div>
           <div class="sync-live-kpi"><small>失敗</small><strong id="simSyncFailed">0件</strong></div>
         </div>
         <details class="sync-error-panel" id="simSyncErrorPanel"><summary><span class="sync-error-summary-title">⚠ 同期エラー詳細</span><span class="badge" id="simSyncErrorCount">0件</span></summary><div class="sync-error-body"><div class="sync-error-latest" id="simSyncErrorLatest">エラーは記録されていません。</div><div class="sync-error-actions"><button class="btn small" type="button" id="simSyncErrorCopyBtn">エラーをコピー</button><button class="btn small" type="button" id="simSyncErrorClearBtn">履歴を消去</button></div><div class="sync-error-list" id="simSyncErrorList"><div class="muted">同期エラーが発生すると、日付・対象・原因・対処候補をここへ残します。</div></div></div></details>
@@ -1050,7 +1053,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.3.3-netkeiba-ev-empty-list-guard";
+const APP_VERSION="1.3.4-netkeiba-ev-selection-telemetry-guard";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待利益重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -1070,7 +1073,7 @@ const DB_STORES={
   bets:{keyPath:"id",indexes:[["race_id","race_id"],["date","date"],["ticketType","ticketType"],["strategyId","strategyId"],["updatedAt","updatedAt"]]},
   strategies:{keyPath:"id"},simulations:{keyPath:"id",autoIncrement:true},snapshots:{keyPath:"id",autoIncrement:true,indexes:[["race_id","race_id"]]},favorites:{keyPath:"id"},settings:{keyPath:"key"},researchViews:{keyPath:"id",indexes:[["name","name"],["table","table"],["updatedAt","updatedAt"]]},researchNotes:{keyPath:"id",indexes:[["table","table"],["updatedAt","updatedAt"]]},backups:{keyPath:"id",indexes:[["name","name"],["scope","scope"],["createdAt","createdAt"],["updatedAt","updatedAt"]]}
 };
-const state={db:null,currentRaceId:"",searchResult:[],simResult:[],analyticsRows:[],currentAnalyticsDimension:"day",currentStrategyId:"default-win",calendarMonth:new Date(new Date().getFullYear(),new Date().getMonth(),1),calendarSelected:"",settings:{theme:"dark",defaultPredictionMode:"ev",defaultBudgetMode:"sequential",defaultDailyRankBasis:"ev",defaultMinEv:1,defaultMinAi:0,defaultBudget:2000,defaultUnit:100,aiStrength:1,settingProfiles:[],activeSettingProfileId:"",bridgeUrl:"",bridgeMode:"auto",dbmsMode:"auto",d1ApiUrl:"https://keiba-rdb-api.nitta-katsuhiko.workers.dev",d1ApiToken:"",d1AutoSync:true,d1BatchSize:250,d1TimeoutSec:20,rdbConsoleUrl:"https://takuya-20f.pages.dev/",liveCount:2,livePanels:[]},learningRecommendation:null,simSelectedPlaces:[]};
+const state={db:null,currentRaceId:"",searchResult:[],simResult:[],analyticsRows:[],currentAnalyticsDimension:"day",currentStrategyId:"default-win",calendarMonth:new Date(new Date().getFullYear(),new Date().getMonth(),1),calendarSelected:"",settings:{theme:"dark",defaultPredictionMode:"ev",defaultBudgetMode:"sequential",defaultDailyRankBasis:"ev",defaultMinEv:1,defaultMinAi:0,defaultBudget:2000,defaultUnit:100,aiStrength:1,settingProfiles:[],activeSettingProfileId:"",bridgeUrl:"",bridgeMode:"auto",dbmsMode:"auto",d1ApiUrl:"https://keiba-rdb-api.nitta-katsuhiko.workers.dev",d1ApiToken:"",d1AutoSync:true,d1BatchSize:250,d1TimeoutSec:20,rdbConsoleUrl:"https://takuya-20f.pages.dev/",liveCount:2,livePanels:[]},learningRecommendation:null,simSelectedPlaces:[],simAllPlaces:true};
 const $=id=>document.getElementById(id);const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const yen=v=>Math.round(Number(v||0)).toLocaleString("ja-JP")+"円";const pct=v=>Number(v||0).toFixed(1)+"%";const compactDate=v=>String(v||"").replaceAll("-","");const displayDate=v=>{const s=String(v||"");return s.length===8?`${s.slice(0,4)}-${s.slice(4,6)}-${s.slice(6,8)}`:s};const isoToday=()=>new Date().toISOString().slice(0,10);const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 function requestPromise(req){return new Promise((ok,ng)=>{req.onsuccess=()=>ok(req.result);req.onerror=()=>ng(req.error)})}function txDone(tx){return new Promise((ok,ng)=>{tx.oncomplete=ok;tx.onerror=()=>ng(tx.error);tx.onabort=()=>ng(tx.error||new Error("Transaction aborted"))})}
 async function openDB(){return new Promise((ok,ng)=>{const req=indexedDB.open("TheKeibaUltimateNEXTComplete");req.onupgradeneeded=e=>{const db=e.target.result;for(const [name,cfg] of Object.entries(DB_STORES)){let store;if(!db.objectStoreNames.contains(name))store=db.createObjectStore(name,{keyPath:cfg.keyPath,autoIncrement:cfg.autoIncrement||false});else store=e.target.transaction.objectStore(name);for(const idx of cfg.indexes||[])if(!store.indexNames.contains(idx[0]))store.createIndex(idx[0],idx[1],{unique:false})}};req.onsuccess=()=>{state.db=req.result;state.db.onversionchange=()=>{state.db.close();console.warn("DB version changed. Reload this page.")};ok(state.db)};req.onblocked=()=>console.warn("IndexedDB upgrade blocked. Close older app tabs and reload.");req.onerror=()=>ng(req.error)})}
@@ -1214,7 +1217,7 @@ function normalizeResult(r){
   const id=String(r?.race_id||r?.raceId||r?.id||"").trim();if(!id)throw new Error("結果race_idがありません");
   return{race_id:String(id).replace(/\D/g,"").slice(0,12),finishOrder:normalizeFinishOrder(r?.finishOrder??r?.finish_order??r?.order??r?.ranking??[]),payouts:normalizePayouts(r?.payouts||r?.payments||r?.refunds||{}),confirmedAt:String(r?.confirmedAt||r?.confirmed_at||new Date().toISOString()),updatedAt:String(r?.updatedAt||r?.updated_at||r?.confirmedAt||r?.confirmed_at||new Date().toISOString())}
 }
-function normalizeStrategy(s){return{id:String(s.id||`strategy-${Date.now()}`),name:String(s.name||"無題戦略"),ticketType:String(s.ticketType||"win"),predictionMode:String(s.predictionMode||"custom"),priority:String(s.priority||"ai"),topN:Number(s.topN||3),maxTickets:Number(s.maxTickets||6),minEv:Number(s.minEv??1),minAi:Number(s.minAi??80),minOdds:Number(s.minOdds??1),maxOdds:Number(s.maxOdds??999),unit:Number(s.unit||100),dailyBudget:Number(s.dailyBudget||2000),maxRaces:Number(s.maxRaces||6),agreementMode:String(s.agreementMode||"on"),budgetMode:String(s.budgetMode||"sequential"),dailyRankBasis:String(s.dailyRankBasis||"ev"),places:Array.isArray(s.places)?s.places.map(String):[],enabled:s.enabled!==false}}
+function normalizeStrategy(s){const places=Array.isArray(s.places)?s.places.map(String):[];return{id:String(s.id||`strategy-${Date.now()}`),name:String(s.name||"無題戦略"),ticketType:String(s.ticketType||"win"),predictionMode:String(s.predictionMode||"custom"),priority:String(s.priority||"ai"),topN:Number(s.topN||3),maxTickets:Number(s.maxTickets||6),minEv:Number(s.minEv??1),minAi:Number(s.minAi??80),minOdds:Number(s.minOdds??1),maxOdds:Number(s.maxOdds??999),unit:Number(s.unit||100),dailyBudget:Number(s.dailyBudget||2000),maxRaces:Number(s.maxRaces||6),agreementMode:String(s.agreementMode||"on"),budgetMode:String(s.budgetMode||"sequential"),dailyRankBasis:String(s.dailyRankBasis||"ev"),allPlaces:typeof s.allPlaces==="boolean"?s.allPlaces:!places.length,places,enabled:s.enabled!==false}}
 function parsePayload(p){
   const races=[],entries=[],results=[],strategies=[];
   for(const r of Array.isArray(p?.races)?p.races:[]){try{races.push(normalizeRace(r))}catch(e){console.warn("race skip",e,r)}}
@@ -1394,7 +1397,35 @@ async function renderSimPlaceOptions(preferred=state.simSelectedPlaces){
   });
   updateSimPlaceSummary()
 }
-function readSimConfig(){const predictionMode=$("simPredictionMode").value||"ev",preset=PREDICTION_MODE_PRESETS[predictionMode]||{};return{strategyId:$("simStrategy").value,predictionMode,start:compactDate($("simStart").value),end:compactDate($("simEnd").value),type:$("simType").value,dataMode:$("simDataMode")?.value||"sync",places:getSelectedSimPlaces(),ticketType:$("simTicket").value,dailyBudget:Number($("simDailyBudget").value||0),unit:Number($("simUnit").value||100),topN:Number($("simTopN").value||3),maxTickets:Number($("simMaxTickets").value||6),maxRaces:Number($("simMaxRace").value||6),minEv:Number($("simMinEv").value||0),minAi:Number($("simMinAi").value||0),minOdds:Number($("simMinOdds").value||0),maxOdds:Number($("simMaxOdds").value||999),priority:preset.priority||$("simPriority").value,agreementMode:preset.agreementMode||$("simAgreement").value,budgetMode:$("simBudgetMode").value||"sequential",dailyRankBasis:$("simDailyRankBasis").value||"ev"}}
+function readSimConfig(){
+  const predictionMode=$("simPredictionMode").value||"ev",preset=PREDICTION_MODE_PRESETS[predictionMode]||{};
+  const allPlaces=!!$("simPlaceAll")?.checked,places=allPlaces?[]:getSelectedSimPlaces();
+  return{
+    strategyId:$("simStrategy").value,predictionMode,start:compactDate($("simStart").value),end:compactDate($("simEnd").value),
+    type:$("simType").value,dataMode:$("simDataMode")?.value||"sync",allPlaces,places,placeSelectionValid:allPlaces||places.length>0,
+    ticketType:$("simTicket").value,dailyBudget:Number($("simDailyBudget").value||0),unit:Number($("simUnit").value||100),
+    topN:Number($("simTopN").value||3),maxTickets:Number($("simMaxTickets").value||6),maxRaces:Number($("simMaxRace").value||6),
+    minEv:Number($("simMinEv").value||0),minAi:Number($("simMinAi").value||0),minOdds:Number($("simMinOdds").value||0),
+    maxOdds:Number($("simMaxOdds").value||999),priority:preset.priority||$("simPriority").value,
+    agreementMode:preset.agreementMode||$("simAgreement").value,budgetMode:$("simBudgetMode").value||"sequential",
+    dailyRankBasis:$("simDailyRankBasis").value||"ev"
+  }
+}
+function simRaceType(race){
+  return String(race?.type||race?.provider||(race?.race_id?raceKindFromId(race.race_id):"")).toUpperCase()
+}
+function simConfigPlaceMatches(c,race){
+  if(c?.allPlaces===true)return true;
+  if(Array.isArray(c?.places)&&c.places.length)return c.places.includes(race?.placeName);
+  // allPlacesを持たない旧保存設定の空配列は、従来どおり全開催場として扱う。
+  return c?.allPlaces===undefined&&c?.placeSelectionValid!==false
+}
+function simConfigRaceMatches(c,race){
+  return(!c?.type||simRaceType(race)===String(c.type).toUpperCase())&&simConfigPlaceMatches(c,race)
+}
+function simSelectionLabel(c){
+  return c?.allPlaces?"全開催場":Array.isArray(c?.places)&&c.places.length?c.places.join("・"):"開催場未選択"
+}
 function hasUsableConfirmedResult(result){
   if(!result||typeof result!=="object")return false;
   if(Array.isArray(result.finishOrder)&&result.finishOrder.some(Number))return true;
@@ -1406,10 +1437,11 @@ function simulationDailyRankScore(entries,basis){if(!entries.length)return-1;con
 async function buildSimulationCandidate(race,result,c){let entries=await getByIndex("entries","race_id",race.race_id);recalcEntryScores(entries);const qualifies=e=>e.ev>=c.minEv&&e.ai>=c.minAi&&e.odds>=c.minOdds&&e.odds<=c.maxOdds;let candidateEntries=entries.filter(qualifies);const sorters=simulationEntrySorters();candidateEntries.sort(sorters[c.priority]||sorters.ai);candidateEntries=candidateEntries.slice(0,c.topN);const candidateTickets=generateTickets(c.ticketType,candidateEntries,c.maxTickets);return{race,result,entries,candidateEntries,candidateTickets,purchaseTickets:[],rankScore:simulationDailyRankScore(candidateEntries,c.dailyRankBasis)}}
 function allocateSequentialCandidates(items,c){const days=new Map();for(const item of items){const day=days.get(item.race.date)||{remaining:c.dailyBudget,boughtRaces:0};if(day.boughtRaces<c.maxRaces&&item.candidateTickets.length){const affordable=Math.floor(day.remaining/c.unit);item.purchaseTickets=item.candidateTickets.slice(0,affordable)}const invest=item.purchaseTickets.length*c.unit;if(invest>0){day.remaining-=invest;day.boughtRaces++}item.remaining=day.remaining;days.set(item.race.date,day)}}
 function allocateDailyRankCandidates(items,c){const groups=new Map();for(const item of items){const list=groups.get(item.race.date)||[];list.push(item);groups.set(item.race.date,list)}for(const list of groups.values()){let remaining=c.dailyBudget,boughtRaces=0;const ranked=[...list].sort((a,b)=>b.rankScore-a.rankScore||a.race.placeName.localeCompare(b.race.placeName)||a.race.raceNo-b.race.raceNo);for(const item of ranked){if(boughtRaces>=c.maxRaces||!item.candidateTickets.length){item.remaining=remaining;continue}const affordable=Math.floor(remaining/c.unit);item.purchaseTickets=item.candidateTickets.slice(0,affordable);const invest=item.purchaseTickets.length*c.unit;if(invest>0){remaining-=invest;boughtRaces++}item.remaining=remaining}for(const item of list)if(item.remaining===undefined)item.remaining=remaining}}
-async function computeSimulationRows(c){const [races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),resMap=new Map(results.filter(hasUsableConfirmedResult).map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places.length||c.places.includes(r.placeName))&&(!c.skipDebutRaces||!/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(b.placeName)||a.raceNo-b.raceNo),items=[];for(const race of filtered){const result=resMap.get(race.race_id);if(result)items.push(await buildSimulationCandidate(race,result,c))}if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);const rows=[];let bank=0;for(const item of items){const{race,result,entries,candidateTickets,purchaseTickets}=item,candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,capitalBefore:Number(item.capitalBefore??c.initialCapital??0),capitalAfter:Number(item.capitalAfter??((c.initialCapital||0)+bank)),effectiveDailyBudget:Number(item.effectiveDailyBudget??c.dailyBudget??0),capitalDrawdown:Number(item.capitalDrawdown||0),capitalDrawdownPercent:Number(item.capitalDrawdownPercent||0),budgetBlocked:String(item.budgetBlocked||""),remaining:item.remaining,rankScore:item.rankScore})}const totalBet=rows.reduce((sum,x)=>sum+x.invest,0),totalPay=rows.reduce((sum,x)=>sum+x.pay,0),summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0,initialCapital:Number(c.initialCapital||0),finalCapital:Number(rows.at(-1)?.capitalAfter??c.initialCapital??0),capitalReturn:Number(c.initialCapital?((rows.at(-1)?.capitalAfter??c.initialCapital)-c.initialCapital)/c.initialCapital*100:0),maxDrawdown:Math.max(0,...rows.map(x=>Number(x.capitalDrawdown||0))),maxDrawdownPercent:Math.max(0,...rows.map(x=>Number(x.capitalDrawdownPercent||0)))};return{rows,summary}}
+async function computeSimulationRows(c){const [races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),resMap=new Map(results.filter(hasUsableConfirmedResult).map(r=>[r.race_id,r])),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&simConfigRaceMatches(c,r)&&(!c.skipDebutRaces||!/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||a.placeName.localeCompare(String(b.placeName||""))||a.raceNo-b.raceNo),items=[];for(const race of filtered){const result=resMap.get(race.race_id);if(result)items.push(await buildSimulationCandidate(race,result,c))}if(c.budgetMode==="dailyRank")allocateDailyRankCandidates(items,c);else allocateSequentialCandidates(items,c);const rows=[];let bank=0;for(const item of items){const{race,result,entries,candidateTickets,purchaseTickets}=item,candidateHit=candidateTickets.some(t=>ticketPayout(result,t)>0),purchaseHit=purchaseTickets.some(t=>ticketPayout(result,t)>0),invest=purchaseTickets.length*c.unit;let pay=0;for(const t of purchaseTickets)pay+=ticketPayout(result,t)*(c.unit/100);const profit=pay-invest;bank+=profit;const ticketBreakdown=Object.fromEntries(SIM_TICKET_TYPES.map(type=>[type,{candidate:candidateTickets.filter(t=>t.ticketType===type).length,purchase:purchaseTickets.filter(t=>t.ticketType===type).length,pay:purchaseTickets.filter(t=>t.ticketType===type).reduce((sum,t)=>sum+ticketPayout(result,t)*(c.unit/100),0)}]));rows.push({race,result,entries,ticketType:c.ticketType,candidateTickets,purchaseTickets,ticketBreakdown,candidateHit,purchaseHit,miss:candidateHit&&!purchaseHit,invest,pay,profit,roi:invest?pay/invest*100:0,bank,capitalBefore:Number(item.capitalBefore??c.initialCapital??0),capitalAfter:Number(item.capitalAfter??((c.initialCapital||0)+bank)),effectiveDailyBudget:Number(item.effectiveDailyBudget??c.dailyBudget??0),capitalDrawdown:Number(item.capitalDrawdown||0),capitalDrawdownPercent:Number(item.capitalDrawdownPercent||0),budgetBlocked:String(item.budgetBlocked||""),remaining:item.remaining,rankScore:item.rankScore})}const totalBet=rows.reduce((sum,x)=>sum+x.invest,0),totalPay=rows.reduce((sum,x)=>sum+x.pay,0),summary={raceCount:rows.length,boughtCount:rows.filter(x=>x.invest>0).length,candidateHits:rows.filter(x=>x.candidateHit).length,purchaseHits:rows.filter(x=>x.purchaseHit).length,missHits:rows.filter(x=>x.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0,initialCapital:Number(c.initialCapital||0),finalCapital:Number(rows.at(-1)?.capitalAfter??c.initialCapital??0),capitalReturn:Number(c.initialCapital?((rows.at(-1)?.capitalAfter??c.initialCapital)-c.initialCapital)/c.initialCapital*100:0),maxDrawdown:Math.max(0,...rows.map(x=>Number(x.capitalDrawdown||0))),maxDrawdownPercent:Math.max(0,...rows.map(x=>Number(x.capitalDrawdownPercent||0)))};return{rows,summary}}
 async function runSimulationCore(){const c=readSimConfig();const {rows,summary}=await computeSimulationRows(c);state.simResult=rows;const id=await addOne("simulations",{createdAt:new Date().toISOString(),config:c,summary,rows:rows.map(x=>({...x,race:x.race,result:undefined}))});renderSimulation(summary);await renderDashboard();await syncSimulationToAnalysis({force:true,reason:"バックテスト完了"});return id}
 
 const BACKTEST_BATCH_DAYS=92;
+const BACKTEST_SELECTED_ZERO_LIMIT=14;
 const BACKTEST_SYNC={running:false,stop:false,batch:0,totalBatches:0};
 let INDEXED_DB_RECOVERY_PROMISE=null;
 function indexedDbErrorText(error){
@@ -1457,7 +1489,24 @@ async function withIndexedDbRecovery(task,label="",maxAttempts=3){
   }
   throw lastError;
 }
-function setSimSyncStatus(message){if($("simSyncStatus"))$("simSyncStatus").textContent=message}
+function updateBacktestSyncMetrics(patch={}){
+  const metrics=window.__THEKEIBA_SYNC_METRICS__||{
+    active:false,detected:0,filtered:0,httpFailures:0,bridgeFailureStart:Number(BRIDGE_DIAG.failureCount||0),
+    zeroTargetDays:0,selectionLabel:"-"
+  };
+  Object.assign(metrics,patch);
+  if(metrics.active)metrics.httpFailures=Math.max(0,Number(BRIDGE_DIAG.failureCount||0)-Number(metrics.bridgeFailureStart||0));
+  window.__THEKEIBA_SYNC_METRICS__=metrics;
+  return metrics
+}
+function setSimSyncStatus(message){
+  let text=String(message??""),metrics=window.__THEKEIBA_SYNC_METRICS__;
+  if(metrics?.active){
+    metrics=updateBacktestSyncMetrics();
+    if(!/\n同期監視　/.test(text))text+=`\n同期監視　対象 ${metrics.selectionLabel||"-"}　一覧検出 ${Number(metrics.detected||0)}R　条件除外 ${Number(metrics.filtered||0)}R　HTTP再試行 ${Number(metrics.httpFailures||0)}件`;
+  }
+  if($("simSyncStatus"))$("simSyncStatus").textContent=text
+}
 function isSimStoredMode(){return ($("simDataMode")?.value||"sync")==="stored"}
 function splitBacktestBatches(dates,size=BACKTEST_BATCH_DAYS){
   const out=[];
@@ -1509,9 +1558,9 @@ function backtestEmptyListError(message,details={}){
   return error
 }
 function isBacktestEmptyListError(error){
-  return error?.code==="BACKTEST_EMPTY_LIST"||error?.name==="BacktestEmptyListError"
+  return error?.code==="BACKTEST_EMPTY_LIST"||error?.code==="BACKTEST_ZERO_TARGET"||error?.name==="BacktestEmptyListError"
 }
-async function loadBacktestDayRaceList(date,requestedTypes,guard={narRawEmptyStreak:0,emptyDates:[]},{maxAttempts=3}={}){
+async function loadBacktestDayRaceList(date,requestedTypes,guard={narRawEmptyStreak:0,allRawEmptyStreak:0,emptyDates:[]},{maxAttempts=3}={}){
   const types=[...new Set((requestedTypes||[]).map(type=>String(type||"").toUpperCase()))],attempts=Math.max(1,Number(maxAttempts)||1);
   let lastError=null;
   for(let attempt=1;attempt<=attempts;attempt++){
@@ -1526,18 +1575,22 @@ async function loadBacktestDayRaceList(date,requestedTypes,guard={narRawEmptyStr
         ?Number(diagnostics.nar)
         :races.filter(r=>String(r?.type||r?.provider||raceKindFromId(r?.race_id)).toUpperCase()==="NAR").length;
       const nextNarEmpty=narRequested&&!narCount?Number(guard.narRawEmptyStreak||0)+1:0;
-      const suspicious=parseSignal||(narRequested&&nextNarEmpty>=3);
+      const jraOnlyWeekday=types.length===1&&types[0]==="JRA"&&!likelyJraRaceDay(date);
+      const nextAllEmpty=!races.length&&!jraOnlyWeekday?Number(guard.allRawEmptyStreak||0)+1:0;
+      const suspicious=parseSignal||(narRequested&&nextNarEmpty>=3)||nextAllEmpty>=3;
       if(suspicious){
         const reason=parseSignal
           ?"取得HTMLにレース情報があるのに解析結果が0Rです"
+          :nextAllEmpty>=3?`開催一覧全体が${nextAllEmpty}日連続で0Rです`
           :`NAR開催一覧が${nextNarEmpty}日連続で0Rです`;
         throw backtestEmptyListError(
           `${displayDate(date)} ${reason}。空の開催日として進めず、安全停止します。Bridge再検出後に同じ期間を再同期してください。`,
-          {date,types,attempt,diagnostics,consecutiveNarEmpty:nextNarEmpty}
+          {date,types,attempt,diagnostics,consecutiveNarEmpty:nextNarEmpty,consecutiveAllEmpty:nextAllEmpty}
         )
       }
       guard.narRawEmptyStreak=nextNarEmpty;
-      guard.emptyDates=nextNarEmpty?[...(guard.emptyDates||[]),date].slice(-3):[];
+      guard.allRawEmptyStreak=nextAllEmpty;
+      guard.emptyDates=nextNarEmpty||nextAllEmpty?[...(guard.emptyDates||[]),date].slice(-3):[];
       return races
     }catch(error){
       lastError=error;
@@ -1558,7 +1611,7 @@ ${indexedDbErrorText(error)}
   throw lastError||new Error(`${displayDate(date)} 開催一覧を取得できません`)
 }
 async function backtestCoverage(c=readSimConfig()){
-  const [races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places?.length||c.places.includes(r.placeName))),ids=new Set(filtered.map(r=>r.race_id)),confirmed=results.filter(r=>ids.has(r.race_id)&&hasUsableConfirmedResult(r));
+  const [races,results]=await Promise.all([getRacesInRange(c.start,c.end),getAll("results")]),filtered=races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&simConfigRaceMatches(c,r)),ids=new Set(filtered.map(r=>r.race_id)),confirmed=results.filter(r=>ids.has(r.race_id)&&hasUsableConfirmedResult(r));
   return{races:filtered.length,results:confirmed.length,dates:new Set(filtered.map(r=>r.date)).size};
 }
 async function syncBacktestPeriod(){
@@ -1567,20 +1620,34 @@ async function syncBacktestPeriod(){
     return{busy:true};
   }
   if(isSimStoredMode()){setSimSyncStatus("同期なしモードです。通信せず保存済みデータだけを使用します。実データを取得する場合は「データ準備」を実データ同期へ切り替えてください。");return}
-  const c=readSimConfig(),today=compactDate(isoToday()),allDates=dateRangeInclusive(c.start,c.end),dates=allDates.filter(date=>date<=today);
+  const c=readSimConfig();
+  if(!c.placeSelectionValid){
+    setSimSyncStatus("開催場が未選択です。「全開催場」または1場以上の個別ボタンを選んでから同期してください。");
+    alert("開催場が未選択です。「全開催場」または1場以上を選択してください。");
+    return
+  }
+  state.simAllPlaces=!!c.allPlaces;
+  state.simSelectedPlaces=c.allPlaces?[]:[...c.places];
+  updateSimPlaceSummary();
+  const selectedVenueLabel=simSelectionLabel(c),today=compactDate(isoToday()),allDates=dateRangeInclusive(c.start,c.end),dates=allDates.filter(date=>date<=today);
   if(!allDates.length)return alert("開始日と終了日を正しく指定してください");
   if(!dates.length)return alert("同期できる過去日がありません");
   const batches=splitBacktestBatches(dates),rangeLabel=`${displayDate(dates[0])}～${displayDate(dates.at(-1))}`,requestedTypes=c.type?[c.type]:["JRA","NAR"];
   if(!confirm(`${rangeLabel} の ${dates.length}日分を、最大${BACKTEST_BATCH_DAYS}日単位の ${batches.length}バッチへ自動分割して同期します。
+対象開催場: ${selectedVenueLabel}
 開催一覧・出馬表・最終オッズ・結果・払戻を順番に取得します。
 過去レースは確定結果まで検証し、結果未取得は最大3回再試行してエラー詳細へ残します。
 通信が止まった場合は自動タイムアウトして次の日・次レースへ進みます。開始しますか？`))return;
   BACKTEST_SYNC.running=true;BACKTEST_SYNC.stop=false;BACKTEST_SYNC.batch=0;BACKTEST_SYNC.totalBatches=batches.length;
+  updateBacktestSyncMetrics({
+    active:true,detected:0,filtered:0,httpFailures:0,bridgeFailureStart:Number(BRIDGE_DIAG.failureCount||0),
+    zeroTargetDays:0,selectionLabel:selectedVenueLabel
+  });
   const simRunButton=$("simRunBtn"),simRunButtonText=simRunButton?.textContent||"バックテスト開始";
   $("simSyncBtn").disabled=true;$("simStopSyncBtn").disabled=false;$("simStopSyncBtn").textContent="⏹ 同期停止";
   if(simRunButton){simRunButton.disabled=true;simRunButton.textContent="同期完了待ち";}
-  const oldDate=$("bridgeDate").value,startedAt=Date.now(),emptyListGuard={narRawEmptyStreak:0,emptyDates:[]};
-  let listDays=0,noRaceDays=0,processedDays=0,totalRaces=0,detectedRaces=0,filteredOutRaces=0,loaded=0,confirmed=0,resultMissing=0,failed=0,skipped=0,retried=0,lastError="",consecutiveFailures=0;
+  const oldDate=$("bridgeDate").value,startedAt=Date.now(),emptyListGuard={narRawEmptyStreak:0,allRawEmptyStreak:0,emptyDates:[]};
+  let listDays=0,noRaceDays=0,processedDays=0,totalRaces=0,detectedRaces=0,filteredOutRaces=0,loaded=0,confirmed=0,resultMissing=0,failed=0,skipped=0,retried=0,lastError="",consecutiveFailures=0,selectedZeroStreak=0;
   try{
     await withOperationTimeout(()=>detectBridgeMode(),32000,"Bridge経路検出");
     for(let batchIndex=0;batchIndex<batches.length;batchIndex++){
@@ -1623,9 +1690,29 @@ ${lastError}
         }
         const rawRaceCount=races.length;
         detectedRaces+=rawRaceCount;
-        races=races.filter(r=>(!c.type||String(r.type||r.provider||"").toUpperCase()===c.type)&&(!c.places?.length||c.places.includes(r.placeName)));
+        races=races.filter(r=>simConfigRaceMatches(c,r));
         filteredOutRaces+=Math.max(0,rawRaceCount-races.length);
+        selectedZeroStreak=rawRaceCount&&!races.length?selectedZeroStreak+1:races.length?0:0;
+        updateBacktestSyncMetrics({
+          detected:detectedRaces,filtered:filteredOutRaces,zeroTargetDays:selectedZeroStreak
+        });
         if(!races.length){
+          if(rawRaceCount&&(c.allPlaces||selectedZeroStreak>=BACKTEST_SELECTED_ZERO_LIMIT)){
+            failed++;
+            const reason=c.allPlaces
+              ?`「全開催場」なのに一覧 ${rawRaceCount}R が全件除外されました`
+              :`選択開催場「${selectedVenueLabel}」が、一覧取得済みの日で${selectedZeroStreak}日連続0Rです`;
+            lastError=`${displayDate(date)} ${reason}`;
+            setSimSyncStatus(`対象レース0Rの継続を検出して安全停止
+${lastError}
+開催場の選択状態または対象期間を確認し、同じ期間を再同期してください。
+完了済み ${processedDays}/${dates.length}日　一覧検出 ${detectedRaces}R　条件除外 ${filteredOutRaces}R　完全取得 ${loaded}R　失敗 ${failed}件`);
+            const error=backtestEmptyListError(`${lastError}。空回りを防ぐため同期を安全停止しました。`,{
+              date,rawRaceCount,selectedZeroStreak,allPlaces:c.allPlaces,places:[...c.places]
+            });
+            error.code="BACKTEST_ZERO_TARGET";
+            throw error
+          }
           noRaceDays++;processedDays++;
           const emptyLabel=rawRaceCount?"選択開催場の該当なし":"開催なし";
           setSimSyncStatus(`バッチ ${batchNo}/${batches.length}　${displayDate(date)} ${emptyLabel}
@@ -1695,12 +1782,12 @@ ${bundleError}
       }
     }
     await withIndexedDbRecovery(()=>refreshAll(),"同期完了後の画面更新",3);await renderSimPlaceOptions(c.places);
-    const cov=await withIndexedDbRecovery(()=>backtestCoverage(c),"同期完了後の集計",3),elapsedSec=Math.max(1,Math.round((Date.now()-startedAt)/1000)),elapsedLabel=elapsedSec>=60?`${Math.floor(elapsedSec/60)}分${elapsedSec%60}秒`:`${elapsedSec}秒`;
+    const cov=await withIndexedDbRecovery(()=>backtestCoverage(c),"同期完了後の集計",3),elapsedSec=Math.max(1,Math.round((Date.now()-startedAt)/1000)),elapsedLabel=elapsedSec>=60?`${Math.floor(elapsedSec/60)}分${elapsedSec%60}秒`:`${elapsedSec}秒`,httpFailures=updateBacktestSyncMetrics({detected:detectedRaces,filtered:filteredOutRaces}).httpFailures;
     setSimSyncStatus(`${BACKTEST_SYNC.stop?"バッチ同期停止":"全バッチ同期完了"}　${BACKTEST_SYNC.batch}/${batches.length}バッチ　完了日 ${processedDays}/${dates.length}日　開催なし ${noRaceDays}日
 一覧検出 ${detectedRaces}R　選択除外 ${filteredOutRaces}R　登録対象 ${cov.races}R　確定結果 ${cov.results}R　完全取得 ${loaded}R　既存完全 ${skipped}R　結果待ち・未取得 ${resultMissing}R　再試行 ${retried}回　失敗 ${failed}件
-所要時間 ${elapsedLabel}${lastError?`
+HTTP再試行 ${httpFailures}件　所要時間 ${elapsedLabel}${lastError?`
 最後の失敗 ${lastError}`:""}`);
-    return{...cov,batches:batches.length,processedDays,noRaceDays,detectedRaces,filteredOutRaces,loaded,skipped,confirmed,resultMissing,failed,retried,stopped:BACKTEST_SYNC.stop}
+    return{...cov,batches:batches.length,processedDays,noRaceDays,detectedRaces,filteredOutRaces,httpFailures,loaded,skipped,confirmed,resultMissing,failed,retried,stopped:BACKTEST_SYNC.stop}
   }catch(e){
     setSimSyncStatus(`バッチ同期エラー　バッチ ${BACKTEST_SYNC.batch}/${batches.length}
 ${e.message}`);throw e
@@ -1708,6 +1795,7 @@ ${e.message}`);throw e
     $("bridgeDate").value=oldDate;BACKTEST_SYNC.running=false;BACKTEST_SYNC.batch=0;BACKTEST_SYNC.totalBatches=0;
     $("simStopSyncBtn").disabled=true;$("simStopSyncBtn").textContent="⏹ 同期停止";
     if(simRunButton){simRunButton.disabled=false;simRunButton.textContent=simRunButtonText;}
+    updateBacktestSyncMetrics({active:false});
     await updateSimDataModeUi({refreshStatus:false})
   }
 }
@@ -1717,7 +1805,13 @@ async function runSimulation(){
     setSimSyncStatus("実データ同期中です。同期完了後に「バックテスト開始」を押してください。同期中の確定結果と進捗はライブグラフへ反映します。");
     return{busy:true};
   }
-  const c=readSimConfig(),cov=await backtestCoverage(c),storedOnly=c.dataMode==="stored";
+  const c=readSimConfig();
+  if(!c.placeSelectionValid){
+    setSimSyncStatus("開催場が未選択です。「全開催場」または1場以上の個別ボタンを選んでからバックテストを開始してください。");
+    alert("開催場が未選択です。「全開催場」または1場以上を選択してください。");
+    return
+  }
+  const cov=await backtestCoverage(c),storedOnly=c.dataMode==="stored";
   const missing=Math.max(0,cov.races-cov.results);
   setSimSyncStatus(`${storedOnly?"同期なし":"実データ同期"}　登録対象 ${cov.races}R　確定結果 ${cov.results}R　登録開催日 ${cov.dates}日${missing?`　未取得・未確定 ${missing}R`:""}`);
   if(!cov.results){
@@ -1888,8 +1982,8 @@ async function newStrategy(){state.currentStrategyId=`strategy-${Date.now()}`;co
 async function duplicateStrategy(){const s=await getOne("strategies",state.currentStrategyId);if(!s)return;const n={...s,id:`strategy-${Date.now()}`,name:s.name+" コピー"};await putOne("strategies",n);state.currentStrategyId=n.id;await renderStrategies();await loadStrategyEditor(n.id)}
 async function deleteStrategy(){if(state.currentStrategyId==="default-win")return alert("既定戦略は削除できません");if(!confirm("戦略を削除しますか？"))return;await deleteOne("strategies",state.currentStrategyId);state.currentStrategyId="default-win";await renderStrategies();await loadStrategyEditor(state.currentStrategyId)}
 async function refreshStrategySelect(){const list=await getAll("strategies");$("simStrategy").innerHTML=list.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join("");if(list.some(s=>s.id===state.currentStrategyId))$("simStrategy").value=state.currentStrategyId}
-async function applyStrategyToSim(id=state.currentStrategyId){const s=await getOne("strategies",id);if(!s)return;$("simStrategy").value=s.id;$("simTicket").value=s.ticketType;$("simPriority").value=s.priority;$("simTopN").value=s.topN;$("simMaxTickets").value=s.maxTickets;$("simMinEv").value=s.minEv;$("simMinAi").value=s.minAi;$("simMinOdds").value=s.minOdds;$("simMaxOdds").value=s.maxOdds;$("simUnit").value=s.unit;$("simDailyBudget").value=s.dailyBudget;$("simMaxRace").value=s.maxRaces;$("simAgreement").value=s.agreementMode;$("simBudgetMode").value=s.budgetMode||"sequential";$("simDailyRankBasis").value=s.dailyRankBasis||"ev";applyPredictionModeToSim(s.predictionMode||"custom");state.simSelectedPlaces=Array.isArray(s.places)?[...s.places]:[];await showView("simulation");await renderSimPlaceOptions(state.simSelectedPlaces);updateModeUi()}
-async function saveSimAsStrategy(){const c=readSimConfig(),name=prompt("戦略名","SIM戦略");if(!name)return;const s=normalizeStrategy({id:`strategy-${Date.now()}`,name,ticketType:c.ticketType,predictionMode:c.predictionMode,priority:c.priority,topN:c.topN,maxTickets:c.maxTickets,minEv:c.minEv,minAi:c.minAi,minOdds:c.minOdds,maxOdds:c.maxOdds,unit:c.unit,dailyBudget:c.dailyBudget,maxRaces:c.maxRaces,agreementMode:c.agreementMode,budgetMode:c.budgetMode,dailyRankBasis:c.dailyRankBasis,places:c.places});await putOne("strategies",s);state.currentStrategyId=s.id;await refreshStrategySelect();alert("保存しました")}
+async function applyStrategyToSim(id=state.currentStrategyId){const s=await getOne("strategies",id);if(!s)return;$("simStrategy").value=s.id;$("simTicket").value=s.ticketType;$("simPriority").value=s.priority;$("simTopN").value=s.topN;$("simMaxTickets").value=s.maxTickets;$("simMinEv").value=s.minEv;$("simMinAi").value=s.minAi;$("simMinOdds").value=s.minOdds;$("simMaxOdds").value=s.maxOdds;$("simUnit").value=s.unit;$("simDailyBudget").value=s.dailyBudget;$("simMaxRace").value=s.maxRaces;$("simAgreement").value=s.agreementMode;$("simBudgetMode").value=s.budgetMode||"sequential";$("simDailyRankBasis").value=s.dailyRankBasis||"ev";applyPredictionModeToSim(s.predictionMode||"custom");state.simSelectedPlaces=Array.isArray(s.places)?[...s.places]:[];state.simAllPlaces=typeof s.allPlaces==="boolean"?s.allPlaces:!state.simSelectedPlaces.length;await showView("simulation");await renderSimPlaceOptions(state.simSelectedPlaces);updateModeUi()}
+async function saveSimAsStrategy(){const c=readSimConfig();if(!c.placeSelectionValid)return alert("開催場が未選択です。「全開催場」または1場以上を選択してください。");const name=prompt("戦略名","SIM戦略");if(!name)return;const s=normalizeStrategy({id:`strategy-${Date.now()}`,name,ticketType:c.ticketType,predictionMode:c.predictionMode,priority:c.priority,topN:c.topN,maxTickets:c.maxTickets,minEv:c.minEv,minAi:c.minAi,minOdds:c.minOdds,maxOdds:c.maxOdds,unit:c.unit,dailyBudget:c.dailyBudget,maxRaces:c.maxRaces,agreementMode:c.agreementMode,budgetMode:c.budgetMode,dailyRankBasis:c.dailyRankBasis,allPlaces:c.allPlaces,places:c.places});await putOne("strategies",s);state.currentStrategyId=s.id;await refreshStrategySelect();alert("保存しました")}
 async function runLearning(){const sims=await getAll("simulations");if(!sims.length){$("learningReport").innerHTML=`<div class="empty">実績なし</div>`;return}const groups=new Map();for(const sim of sims){const c=sim.config||{},key=`${c.ticketType||"win"}|${c.priority||"ai"}`,d=groups.get(key)||{n:0,roi:0,profit:0,config:c};d.n++;d.roi+=sim.summary?.roi||0;d.profit+=sim.summary?.profit||0;groups.set(key,d)}const list=[...groups.entries()].map(([key,d])=>({key,...d,avgRoi:d.roi/d.n})).sort((a,b)=>b.avgRoi-a.avgRoi),best=list[0];state.learningRecommendation=best?normalizeStrategy({id:`recommended-${Date.now()}`,name:`推奨 ${TICKET_LABELS[best.config.ticketType]||"単勝"}`,ticketType:best.config.ticketType||"win",priority:best.config.priority||"ai",topN:best.config.topN||3,maxTickets:best.config.maxTickets||6,minEv:Math.max(.8,(best.config.minEv||1)-.02),minAi:Math.max(40,(best.config.minAi||80)-2),minOdds:best.config.minOdds||1,maxOdds:best.config.maxOdds||999,unit:best.config.unit||100,dailyBudget:best.config.dailyBudget||2000,maxRaces:best.config.maxRaces||6,agreementMode:"on"}):null;$("learningReport").innerHTML=`<div class="table-wrap"><table><thead><tr><th>券種×優先</th><th>試行</th><th>平均ROI</th><th>累計収支</th></tr></thead><tbody>${list.map(x=>`<tr><td>${esc(x.key)}</td><td>${x.n}</td><td class="${x.avgRoi>=100?"good":"bad"}">${pct(x.avgRoi)}</td><td class="${x.profit>=0?"good":"bad"}">${yen(x.profit)}</td></tr>`).join("")}</tbody></table></div>${best?`<div class="notice" style="margin-top:12px">最良条件は ${esc(best.key)}、平均ROI ${pct(best.avgRoi)}。この結果から推奨戦略を作成できます。</div>`:""}`}
 async function createRecommendedStrategy(){if(!state.learningRecommendation)return alert("先に学習分析を実行してください");await putOne("strategies",state.learningRecommendation);state.currentStrategyId=state.learningRecommendation.id;await renderStrategies();alert("推奨戦略を作成しました")}
 function defaultLivePanels(){return[{title:"netkeiba",url:"https://www.netkeiba.com/"},{title:"地方競馬情報",url:"https://www.keiba.go.jp/"},{title:"JRA",url:"https://www.jra.go.jp/"},{title:"分析画面",url:""}]}
@@ -2718,7 +2812,7 @@ function textIoNormalizeSimRows(rows=[]){let bank=0;return(rows||[]).map((x,i)=>
     if(!race.placeCode&&(race.placeName))race.placeCode=placeCodeFromName(race.placeName);
     if(!race.type&&race.placeCode)race.type=BRIDGE_JRA_PLACES[String(race.placeCode).padStart(2,"0")]?"JRA":"NAR";const candidateCount=Number(x.candidate_count??x.candidateCount??x.candidateTickets?.length??0),purchaseCount=Number(x.purchase_count??x.purchaseCount??x.purchaseTickets?.length??0),invest=Number(x.invest??x.bet??0),pay=Number(x.pay??0),profit=Number(x.profit??pay-invest),candidateHit=x.candidateHit??textIoBool(x.candidate_hit),purchaseHit=x.purchaseHit??textIoBool(x.purchase_hit),ticketType=textIoTicketType(x.ticketType||x.ticket);bank=Number.isFinite(Number(x.bank))?Number(x.bank):(bank+profit);const _race={...race,date:compactDate(race.date||""),raceNo:Number(race.raceNo||0)};const _rid=reconstructRaceId(_race);if(_rid)_race.race_id=_rid;return{race:_race,race_id:_rid||race.race_id||"",ticketType,candidateTickets:Array.isArray(x.candidateTickets)?x.candidateTickets:Array.from({length:candidateCount},(_,j)=>({ticketType,key:`candidate-${i}-${j}`,horses:[],frames:[],score:0})),purchaseTickets:Array.isArray(x.purchaseTickets)?x.purchaseTickets:Array.from({length:purchaseCount},(_,j)=>({ticketType,key:`purchase-${i}-${j}`,horses:[],frames:[],score:0})),ticketBreakdown:x.ticketBreakdown||{},candidateHit:!!candidateHit,purchaseHit:!!purchaseHit,miss:x.miss??(!!candidateHit&&!purchaseHit),invest,pay,profit,roi:Number(x.roi??(invest?pay/invest*100:0)),bank,remaining:Number(x.remaining||0)}})}
 function textIoRowsFromDelimited(text){const grid=textIoFindTable(text);if(grid.length<2)return[];let headerIndex=grid.findIndex(r=>r.some(c=>["date","日付"].includes(String(c).trim().toLowerCase()))&&r.some(c=>["roi","収支","profit"].includes(String(c).trim().toLowerCase())));if(headerIndex<0)headerIndex=0;const headers=grid[headerIndex].map(textIoHeaderKey),idx=(...names)=>headers.findIndex(h=>names.map(textIoHeaderKey).includes(h));const get=(r,...names)=>{const i=idx(...names);return i>=0?r[i]:""};return grid.slice(headerIndex+1).filter(r=>r.some(Boolean)).map(r=>({date:get(r,"date","日付"),type:get(r,"type","区分"),place:get(r,"place","開催","開催場"),race:get(r,"race","r","レース"),ticket:get(r,"ticket","券種"),candidate_count:textIoNumber(get(r,"candidatecount","候補点")),purchase_count:textIoNumber(get(r,"purchasecount","購入点")),candidate_hit:get(r,"candidatehit","候補的中"),purchase_hit:get(r,"purchasehit","購入的中"),bet:textIoNumber(get(r,"bet","投資")),pay:textIoNumber(get(r,"pay","払戻")),profit:textIoNumber(get(r,"profit","収支")),roi:textIoNumber(get(r,"roi"))}))}
-async function textIoApplySimConfig(c={}){const map={strategyId:"simStrategy",predictionMode:"simPredictionMode",ticketType:"simTicket",dailyBudget:"simDailyBudget",unit:"simUnit",topN:"simTopN",maxTickets:"simMaxTickets",maxRaces:"simMaxRace",minEv:"simMinEv",minAi:"simMinAi",minOdds:"simMinOdds",maxOdds:"simMaxOdds",priority:"simPriority",agreementMode:"simAgreement",budgetMode:"simBudgetMode",dailyRankBasis:"simDailyRankBasis",type:"simType"};if(c.start)$("simStart").value=displayDate(c.start);if(c.end)$("simEnd").value=displayDate(c.end);for(const [key,id] of Object.entries(map))if(c[key]!==undefined&&$(id))$(id).value=c[key];state.simSelectedPlaces=Array.isArray(c.places)?c.places:[];if(c.predictionMode)applyPredictionModeToSim(c.predictionMode);updateModeUi();await renderSimPlaceOptions(state.simSelectedPlaces)}
+async function textIoApplySimConfig(c={}){const map={strategyId:"simStrategy",predictionMode:"simPredictionMode",ticketType:"simTicket",dailyBudget:"simDailyBudget",unit:"simUnit",topN:"simTopN",maxTickets:"simMaxTickets",maxRaces:"simMaxRace",minEv:"simMinEv",minAi:"simMinAi",minOdds:"simMinOdds",maxOdds:"simMaxOdds",priority:"simPriority",agreementMode:"simAgreement",budgetMode:"simBudgetMode",dailyRankBasis:"simDailyRankBasis",type:"simType"};if(c.start)$("simStart").value=displayDate(c.start);if(c.end)$("simEnd").value=displayDate(c.end);for(const [key,id] of Object.entries(map))if(c[key]!==undefined&&$(id))$(id).value=c[key];state.simSelectedPlaces=Array.isArray(c.places)?c.places:[];state.simAllPlaces=typeof c.allPlaces==="boolean"?c.allPlaces:!state.simSelectedPlaces.length;if(c.predictionMode)applyPredictionModeToSim(c.predictionMode);updateModeUi();await renderSimPlaceOptions(state.simSelectedPlaces)}
 async function textIoImportComplete(data){if(data.races||data.entries||data.results||data.strategies)await importPayload(data,{silent:true,deferRefresh:true}).catch(e=>{if(!data.simulations&&!data.settings)throw e});for(const store of ["simulations","snapshots","favorites"]){if(Array.isArray(data[store])&&data[store].length)await putMany(store,data[store])}if(Array.isArray(data.settings)&&data.settings.length)await putMany("settings",data.settings);if(data.settings&&!Array.isArray(data.settings)&&typeof data.settings==="object"){state.settings={...state.settings,...data.settings};await putOne("settings",{key:"app",value:state.settings});applySettings()}await refreshAll()}
 async function textIoApplyPortable(pkg,target){const view=pkg.view||target,data=pkg.data||pkg;if(data.forms)textIoApplyForms(data.forms);if(view==="dashboard"){if(data.races?.length)await putMany("races",data.races);if(data.lastSimulation)await putOne("simulations",data.lastSimulation);await refreshAll()}else if(view==="calendar"){if(data.races?.length)await putMany("races",data.races);state.calendarSelected=data.selectedDate||state.calendarSelected;await renderCalendar()}else if(view==="race"){await importPayload(data,{silent:true});state.currentRaceId=data.currentRaceId||data.races?.[0]?.race_id||state.currentRaceId;if(state.currentRaceId){await showView("race");await openRace(state.currentRaceId)}}else if(view==="search"){if(data.filters){const f=data.filters,ids={place:"sPlace",horse:"sHorse",jockey:"sJockey",trainer:"sTrainer",type:"sType",surface:"sSurface",className:"sClass",track:"sTrack",minDistance:"sMinDistance",maxDistance:"sMaxDistance",maxPopularity:"sMaxPopularity",minOdds:"sMinOdds",maxOdds:"sMaxOdds",minEv:"sMinEv",minAi:"sMinAi",sort:"sSort",limit:"sLimit"};for(const [k,id] of Object.entries(ids))if(f[k]!==undefined)$(id).value=f[k]}await runSearch()}else if(view==="simulation"||view==="analytics"){if(data.config)await textIoApplySimConfig(data.config);state.simResult=textIoNormalizeSimRows(data.rows||[]);renderSimulation(data.summary||textIoSimulationSummary(state.simResult));if(state.simResult.length)await addOne("simulations",{createdAt:new Date().toISOString(),config:data.config||readSimConfig(),summary:data.summary||textIoSimulationSummary(state.simResult),rows:state.simResult.map(x=>({...x,result:undefined}))});if(view==="analytics"){state.analyticsRows=state.simResult;state.currentAnalyticsDimension=data.dimension||state.currentAnalyticsDimension;await runAnalytics()}}else if(view==="strategies"){if(data.strategies?.length)await putMany("strategies",data.strategies.map(normalizeStrategy));state.currentStrategyId=data.currentStrategyId||state.currentStrategyId;state.learningRecommendation=data.learningRecommendation||null;await renderStrategies();await loadStrategyEditor(state.currentStrategyId)}else if(view==="live"){state.settings.liveCount=Number(data.liveCount||2);state.settings.livePanels=Array.isArray(data.livePanels)?data.livePanels:state.settings.livePanels;$("liveCount").value=String(state.settings.liveCount);renderLivePanels();await putOne("settings",{key:"app",value:state.settings})}else if(view==="database"){await textIoImportComplete(data)}else if(view==="bridge"){if(data.bridgeUrl!==undefined){state.settings.bridgeUrl=data.bridgeUrl;$("bridgeUrl").value=data.bridgeUrl}if(data.bridgeDate!==undefined)$("bridgeDate").value=data.bridgeDate;if(data.bridgeRaceId!==undefined)$("bridgeRaceId").value=data.bridgeRaceId;if(data.log!==undefined)$("bridgeLog").textContent=data.log;await putOne("settings",{key:"app",value:state.settings})}else if(view==="settings"){state.settings={...state.settings,...(data.settings||{})};await putOne("settings",{key:"app",value:state.settings});applySettings()}return view}
 function textIoApplyKeyValue(text){const grid=textIoFindTable(text),map={};for(const r of grid){if(r.length>=2&&r[0]!=="項目")map[String(r[0]).trim()]=r[1]}const root=$("view-"+$("textIoTarget").value);let n=0;root?.querySelectorAll("input,select,textarea").forEach(el=>{const label=textIoLabelForInput(el);if(map[label]===undefined)return;if(el.type==="checkbox")el.checked=/^(?:on|true|1|○)$/i.test(map[label]);else el.value=map[label];el.dispatchEvent(new Event("change",{bubbles:true}));n++});return n}
@@ -3806,7 +3900,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
   }
   function filteredRaces(races,c){
     const debutRe=/(?:新馬|メイクデビュー|デビュー|初出走|能検)/i;
-    return races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&(!c.type||r.type===c.type)&&(!c.places?.length||c.places.includes(r.placeName))&&(!c.skipDebutRaces||!debutRe.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.placeName||"").localeCompare(String(b.placeName||""),"ja")||n(a.raceNo)-n(b.raceNo));
+    return races.filter(r=>(!c.start||r.date>=c.start)&&(!c.end||r.date<=c.end)&&simConfigRaceMatches(c,r)&&(!c.skipDebutRaces||!debutRe.test(`${r.name||""} ${r.className||""}`))).sort((a,b)=>String(a.date).localeCompare(String(b.date))||String(a.placeName||"").localeCompare(String(b.placeName||""),"ja")||n(a.raceNo)-n(b.raceNo));
   }
   async function buildLiveRows(){
     const c=readSimConfig();
@@ -3894,14 +3988,14 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 (function(){
   "use strict";
   const byId=id=>document.getElementById(id);
-  const MON={running:false,startedAt:0,lastAt:0,progress:0,dayNow:0,daysDone:0,daysTotal:0,raceNow:0,raceTotal:0,loaded:0,skipped:0,confirmed:0,resultMissing:0,failed:0,batchNow:0,batchTotal:0,history:[],raf:0,timer:0,lastMessage:""};
+  const MON={running:false,startedAt:0,lastAt:0,progress:0,dayNow:0,daysDone:0,daysTotal:0,raceNow:0,raceTotal:0,detected:0,filtered:0,httpFailures:0,loaded:0,skipped:0,confirmed:0,resultMissing:0,failed:0,batchNow:0,batchTotal:0,history:[],raf:0,timer:0,lastMessage:""};
   const num=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   function css(name,fallback){const v=getComputedStyle(document.documentElement).getPropertyValue(name).trim();return v||fallback}
   function formatTime(sec){sec=Math.max(0,Math.round(num(sec)));if(sec<60)return `${sec}秒`;if(sec<3600)return `${Math.floor(sec/60)}分${sec%60}秒`;return `${Math.floor(sec/3600)}時間${Math.floor(sec%3600/60)}分`}
   function readMatch(text,re){const m=String(text||"").match(re);return m?m.slice(1).map(Number):null}
   function setBadge(label,kind=""){const el=byId("simSyncLiveStatus");if(!el)return;el.classList.remove("running","done","stopped","error");if(kind)el.classList.add(kind);const on=kind==="running"||kind==="done";el.innerHTML=`<span class="status-dot${on?" on":""}"></span>${label}`}
-  function reset(){MON.startedAt=Date.now();MON.lastAt=MON.startedAt;MON.progress=0;MON.dayNow=0;MON.daysDone=0;MON.daysTotal=0;MON.raceNow=0;MON.raceTotal=0;MON.loaded=0;MON.skipped=0;MON.confirmed=0;MON.resultMissing=0;MON.failed=0;MON.batchNow=0;MON.batchTotal=0;MON.history=[];MON.lastMessage="同期を開始しています…";sample(true);render()}
+  function reset(){MON.startedAt=Date.now();MON.lastAt=MON.startedAt;MON.progress=0;MON.dayNow=0;MON.daysDone=0;MON.daysTotal=0;MON.raceNow=0;MON.raceTotal=0;MON.detected=0;MON.filtered=0;MON.httpFailures=0;MON.loaded=0;MON.skipped=0;MON.confirmed=0;MON.resultMissing=0;MON.failed=0;MON.batchNow=0;MON.batchTotal=0;MON.history=[];MON.lastMessage="同期を開始しています…";sample(true);render()}
   function begin(){MON.running=true;reset();setBadge("同期中","running");startClock()}
   function finish(kind="done"){MON.running=false;if(kind==="done"&&MON.daysTotal){MON.progress=100;MON.dayNow=MON.daysTotal;MON.daysDone=MON.daysTotal;}sample(true);render();setBadge(kind==="stopped"?"停止":"完了",kind);stopClock()}
   function startClock(){stopClock();MON.timer=setInterval(()=>renderTime(),1000)}
@@ -3930,6 +4024,9 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
       else if(/開催一覧取得中|対象開催なし|一覧取得失敗|バッチ\s*\d+\/\d+\s*開始/.test(text)){MON.raceNow=0;MON.raceTotal=0}
     }
     m=readMatch(text,/(?:完全取得|取得成功)\s*(\d+)R/);if(m)MON.loaded=m[0];
+    m=readMatch(text,/(?:累計)?一覧(?:検出)?\s*(\d+)R/);if(m)MON.detected=m[0];
+    m=readMatch(text,/(?:選択除外|条件除外)\s*(\d+)R/);if(m)MON.filtered=m[0];
+    m=readMatch(text,/HTTP再試行\s*(\d+)件/);if(m)MON.httpFailures=m[0];
     m=readMatch(text,/既存(?:完全)?\s*(\d+)R/);if(m)MON.skipped=m[0];
     m=readMatch(text,/確定結果\s*(\d+)R/);if(m)MON.confirmed=m[0];
     m=readMatch(text,/結果(?:待ち・未取得|未取得|待ち)\s*(\d+)R/);if(m)MON.resultMissing=m[0];
@@ -3952,7 +4049,8 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
   function progressText(value){value=clamp(num(value),0,100);return`${value>0&&value<1?value.toFixed(2):value.toFixed(1)}%`}
   function render(){
     const bar=byId("simSyncProgressBar"),pctEl=byId("simSyncProgressPercent");if(bar){bar.style.width=`${MON.progress.toFixed(3)}%`;bar.style.minWidth=MON.progress>0?"2px":"0"}if(pctEl)pctEl.textContent=progressText(MON.progress);
-    const shownDay=MON.daysTotal?(MON.running?Math.max(1,MON.dayNow||MON.daysDone+1):Math.min(MON.daysTotal,MON.dayNow||MON.daysDone)):0;const vals={simSyncDays:`${shownDay} / ${MON.daysTotal}`,simSyncRace:`${MON.raceNow} / ${MON.raceTotal}`,simSyncLoaded:`${MON.loaded}R`,simSyncSkipped:`${MON.skipped}R`,simSyncConfirmed:`${MON.confirmed}R`,simSyncResultMissing:`${MON.resultMissing}R`,simSyncFailed:`${MON.failed}件`};for(const [id,v] of Object.entries(vals)){const el=byId(id);if(el)el.textContent=v}
+    const metrics=window.__THEKEIBA_SYNC_METRICS__;if(metrics?.active){MON.detected=num(metrics.detected,MON.detected);MON.filtered=num(metrics.filtered,MON.filtered);MON.httpFailures=num(metrics.httpFailures,MON.httpFailures)}
+    const shownDay=MON.daysTotal?(MON.running?Math.max(1,MON.dayNow||MON.daysDone+1):Math.min(MON.daysTotal,MON.dayNow||MON.daysDone)):0;const vals={simSyncDays:`${shownDay} / ${MON.daysTotal}`,simSyncRace:`${MON.raceNow} / ${MON.raceTotal}`,simSyncDetected:`${MON.detected}R`,simSyncFiltered:`${MON.filtered}R`,simSyncLoaded:`${MON.loaded}R`,simSyncSkipped:`${MON.skipped}R`,simSyncConfirmed:`${MON.confirmed}R`,simSyncResultMissing:`${MON.resultMissing}R`,simSyncHttpFailures:`${MON.httpFailures}件`,simSyncFailed:`${MON.failed}件`};for(const [id,v] of Object.entries(vals)){const el=byId(id);if(el)el.textContent=v}
     const task=byId("simSyncCurrentTask");if(task)task.textContent=compactTask();const legend=byId("simSyncGraphLegend"),dayP=MON.raceTotal?MON.raceNow/MON.raceTotal*100:0;if(legend)legend.textContent=`青 全期間 ${progressText(MON.progress)}　緑 当日 ${progressText(dayP)}`;renderTime();scheduleDraw();
   }
   function scheduleDraw(){if(MON.raf)return;MON.raf=requestAnimationFrame(()=>{MON.raf=0;draw()})}
@@ -4858,8 +4956,8 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
   let history=[],previousFailed=0,pendingRecorded=0;
   function safe(value){return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch])}
   function clean(value){return String(value??"").replace(/\r/g,"").replace(/[ \t]+/g," ").replace(/\n{3,}/g,"\n\n").replace(/(Bearer\s+)[A-Za-z0-9._~+\/-]+/gi,"$1***").replace(/([?&](?:token|api[_-]?key|key|auth|authorization)=)[^&\s]+/gi,"$1***").trim().slice(0,1200)}
-  function classify(message){const s=String(message||"");if(/IndexedDB|DB接続|database connection|InvalidStateError/i.test(s))return"端末DB";if(/HTTP\s*4\d\d|Userscript\s*HTTP\s*4\d\d/i.test(s))return"HTTP要求";if(/タイムアウト|timeout|timed out|AbortError/i.test(s))return"タイムアウト";if(/Bridge|Worker|Userscript|未接続|通信失敗|network|fetch/i.test(s))return"接続";if(/確定結果|払戻|result/i.test(s))return"結果・払戻";if(/内容不正|解析|parse|HTML/i.test(s))return"解析";if(/race[_-]?id/i.test(s))return"race_id";if(/一覧/.test(s))return"開催一覧";return"データ取得"}
-  function advice(category,message){if(category==="端末DB")return"iPadのメモリ解放後も自動再接続します。繰り返す場合は一度ページを再読込してください。";if(category==="HTTP要求")return"Bridge／Userscriptの版または送信形式を確認し、設定画面の接続テストを実行してください。";if(category==="タイムアウト")return"通信を自動再試行して次の日へ進みます。回線とBridge接続を確認してください。";if(category==="接続")return"Bridge設定と接続テスト、Userscriptの有効状態を確認してください。";if(category==="結果・払戻")return"過去レースは結果ページを最大3回再取得します。残る場合はエラー全文をコピーし、Bridge接続テスト後に同じ期間を再同期してください。";if(category==="解析")return"取得先ページの形式変更の可能性があります。エラー全文をコピーして確認してください。";if(category==="race_id")return"開催一覧の再取得後に再同期してください。";if(/開催一覧/.test(message))return"その日の開催一覧を再試行します。開催のない日は失敗ではなく『対象開催なし』になります。";return"同期は停止せず次の対象へ進みます。終了後に同じ期間を再同期できます。"}
+  function classify(message){const s=String(message||"");if(/対象レース0R|選択開催場|全開催場.*全件除外/.test(s))return"開催場選択";if(/IndexedDB|DB接続|database connection|InvalidStateError/i.test(s))return"端末DB";if(/HTTP\s*4\d\d|Userscript\s*HTTP\s*4\d\d/i.test(s))return"HTTP要求";if(/タイムアウト|timeout|timed out|AbortError/i.test(s))return"タイムアウト";if(/Bridge|Worker|Userscript|未接続|通信失敗|network|fetch/i.test(s))return"接続";if(/確定結果|払戻|result/i.test(s))return"結果・払戻";if(/内容不正|解析|parse|HTML/i.test(s))return"解析";if(/race[_-]?id/i.test(s))return"race_id";if(/一覧/.test(s))return"開催一覧";return"データ取得"}
+  function advice(category,message){if(category==="開催場選択")return"「全開催場」または対象期間に開催のある個別場を選び直し、同じ期間を再同期してください。";if(category==="端末DB")return"iPadのメモリ解放後も自動再接続します。繰り返す場合は一度ページを再読込してください。";if(category==="HTTP要求")return"Bridge／Userscriptの版または送信形式を確認し、設定画面の接続テストを実行してください。";if(category==="タイムアウト")return"通信を自動再試行して次の日へ進みます。回線とBridge接続を確認してください。";if(category==="接続")return"Bridge設定と接続テスト、Userscriptの有効状態を確認してください。";if(category==="結果・払戻")return"過去レースは結果ページを最大3回再取得します。残る場合はエラー全文をコピーし、Bridge接続テスト後に同じ期間を再同期してください。";if(category==="解析")return"取得先ページの形式変更の可能性があります。エラー全文をコピーして確認してください。";if(category==="race_id")return"開催一覧の再取得後に再同期してください。";if(/開催一覧/.test(message))return"その日の開催一覧を再試行します。開催のない日は失敗ではなく『対象開催なし』になります。";return"同期は停止せず次の対象へ進みます。終了後に同じ期間を再同期できます。"}
   function load(){try{const rows=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");if(Array.isArray(rows))history=rows.filter(x=>x&&x.message).slice(0,LIMIT)}catch(_){history=[]}}
   function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(history.slice(0,LIMIT)))}catch(_){}}
   function count(){return history.reduce((sum,item)=>sum+Math.max(1,Number(item.repeat||1)),0)}
@@ -4916,6 +5014,7 @@ const c=clone(opts.config||readConfig());s.config=clone(c);let entries=clone(raw
 })();
 </script>
 
+<!-- v1.3.4: 全開催場/未選択を分離、一覧検出・条件除外・HTTP再試行KPI、0R空回り安全停止 -->
 <!-- v1.3.0: netkeiba予想オッズの固定確率と市場実オッズを分離したEV中枢 -->
 <!-- v1.2.34: 馬場状態・馬齢・馬場・クラス・馬体重のHTML取得強化、旧JRAクラス変換、既存DB一括修復 -->
 <!-- v1.2.32: バッチグラフを操作部直下へ移動・iPad再描画・JRA別日race_id混入防止・過去結果の完全性検証・結果未取得の明示 -->
