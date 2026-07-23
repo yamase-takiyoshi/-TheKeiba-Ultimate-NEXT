@@ -8359,5 +8359,124 @@ window.__THEKEIBA_V1311__={
 })();
 </script>
 
+
+<script id="thekeiba-complete-compat-v151">
+/* The競馬 Ultimate NEXT Professional v1.5.1 COMPLETE COMPAT
+   v1.4.5 storage / DB / JSON / Bridge / SIM compatibility layer */
+(()=>{'use strict';
+ const COMPAT_VERSION='1.5.1-complete-compat';
+ const LEGACY_APP_VERSIONS=['1.4.5-thinking-engine','1.4.5','1.4.4'];
+ const LS_ALIASES={
+  TheKeibaCapitalManagementV1:['TheKeibaCapitalManagement','TheKeibaCapitalV1'],
+  TheKeibaCompleteSearches:['TheKeibaSearches','TheKeibaCompleteSearchV1'],
+  TheKeibaForwardActive:['TheKeibaForwardTestActive','TheKeibaForwardV1'],
+  TheKeibaLiveConfirmedGraphV1:['TheKeibaLiveGraphV1','TheKeibaProfitGraphLiveV1'],
+  TheKeibaSharedThemeV2:['TheKeibaSharedTheme','TheKeibaThemeV2'],
+  TheKeibaSimDataMode:['TheKeibaSimulationDataMode','TheKeibaSimMode'],
+  TheKeibaSplitAutoHideMenu:['TheKeibaAutoHideMenu'],
+  TheKeibaSplitOpen:['TheKeibaSplitViewOpen'],
+  TheKeibaTheme:['TheKeibaAppTheme'],
+  TheKeibaTicketOddsCompactR2:['TheKeibaTicketOddsCompact','TheKeibaTicketOddsR2']
+ };
+ const clone=x=>{try{return structuredClone(x)}catch(_){return JSON.parse(JSON.stringify(x))}};
+ const isObj=x=>x&&typeof x==='object'&&!Array.isArray(x);
+ const first=(o,names)=>{for(const n of names)if(o&&o[n]!==undefined)return o[n]};
+ function migrateLocalStorage(){
+  const moved=[];
+  for(const [current,aliases] of Object.entries(LS_ALIASES)){
+   if(localStorage.getItem(current)!=null)continue;
+   for(const old of aliases){const v=localStorage.getItem(old);if(v!=null){localStorage.setItem(current,v);moved.push(`${old}→${current}`);break}}
+  }
+  localStorage.setItem('TheKeibaCompatibilityV151',JSON.stringify({version:COMPAT_VERSION,migratedAt:new Date().toISOString(),moved}));
+  return moved;
+ }
+ function normalizeSettings(s){
+  s=isObj(s)?clone(s):{};
+  const aliases={
+   defaultPredictionMode:['predictionMode','mode'],defaultBudgetMode:['budgetMode'],defaultDailyRankBasis:['dailyRankBasis'],
+   simAuthorityLocked:['simSettingLocked','settingsAuthority'],bridgeUrl:['workerUrl','proxyUrl'],
+   dailyBudget:['budget','simDailyBudget'],unit:['betUnit','unitAmount'],topN:['candidateTopN'],maxTickets:['maxPoints'],
+   minEv:['evMin','minimumEv'],minAi:['aiMin','minimumAi'],minOdds:['oddsMin'],maxOdds:['oddsMax']
+  };
+  for(const [to,froms] of Object.entries(aliases))if(s[to]===undefined){const v=first(s,froms);if(v!==undefined)s[to]=v}
+  if(s.defaultPredictionMode==='EV重視')s.defaultPredictionMode='ev';
+  if(s.defaultPredictionMode==='AI重視')s.defaultPredictionMode='ai';
+  if(s.defaultBudgetMode==='全日ランキング')s.defaultBudgetMode='dailyRank';
+  return s;
+ }
+ function normalizePayload(input){
+  if(!isObj(input))return input;
+  const p=clone(input);
+  if(isObj(p.data)&&!p.races&&!p.entries&&!p.results&&p.format!=='TheKeibaTextClipboard')Object.assign(p,p.data);
+  const map={race:['races','raceData'],entry:['entries','entryData','horseColumns'],result:['results','resultData'],
+   strategy:['strategies','strategyData'],simulation:['simulations','simulationHistory'],snapshot:['snapshots'],
+   favorite:['favorites'],setting:['settings','appSettings'],bet:['bets','betHistory'],payout:['payouts']};
+  for(const [legacy,candidates] of Object.entries(map)){
+   if(p[legacy]!==undefined){const target=candidates[0];if(p[target]===undefined)p[target]=Array.isArray(p[legacy])?p[legacy]:[p[legacy]]}
+   for(const alt of candidates.slice(1))if(p[alt]!==undefined&&p[candidates[0]]===undefined)p[candidates[0]]=p[alt];
+  }
+  if(isObj(p.settings)&&!Array.isArray(p.settings))p.settings=normalizeSettings(p.settings);
+  if(Array.isArray(p.settings))p.settings=p.settings.map(x=>x&&x.key==='app'?{...x,value:normalizeSettings(x.value)}:x);
+  p.compatibility={...(isObj(p.compatibility)?p.compatibility:{}),normalizedBy:COMPAT_VERSION,normalizedAt:new Date().toISOString()};
+  return p;
+ }
+ function installImportCompatibility(){
+  if(typeof window.importPayload==='function'&&!window.importPayload.__completeCompat){
+   const original=window.importPayload;
+   const wrapped=async function(payload,...args){return original.call(this,normalizePayload(payload),...args)};
+   wrapped.__completeCompat=true;wrapped.original=original;window.importPayload=wrapped;
+  }
+  if(typeof window.textIoImportComplete==='function'&&!window.textIoImportComplete.__completeCompat){
+   const original=window.textIoImportComplete;
+   const wrapped=async function(payload,...args){return original.call(this,normalizePayload(payload),...args)};
+   wrapped.__completeCompat=true;window.textIoImportComplete=wrapped;
+  }
+ }
+ function normalizeBridgeMessage(data){
+  if(!isObj(data))return null;
+  const type=String(data.type||data.event||data.action||'');
+  const aliases={prediction:'keibaPrediction',predict:'keibaPrediction',sim:'keibaSimulation',simulation:'keibaSimulation',
+   result:'keibaResult',odds:'keibaOdds',race:'keibaRace',data:'keibaData',keibaProfitGraphLive:'keibaProfitGraphLive'};
+  const normalizedType=aliases[type]||type;
+  const payload=data.payload??data.data??data.box??data.detail??data;
+  return {...data,type:normalizedType,payload,compatVersion:COMPAT_VERSION};
+ }
+ function installBridgeCompatibility(){
+  window.addEventListener('message',ev=>{
+   const n=normalizeBridgeMessage(ev.data);if(!n||!n.type)return;
+   try{window.dispatchEvent(new CustomEvent('thekeiba:bridge',{detail:n}))}catch(_){ }
+   if(n.type!==ev.data?.type){try{window.dispatchEvent(new CustomEvent(n.type,{detail:n.payload}))}catch(_){ }}
+  },false);
+  window.TheKeibaBridgeCompat={version:COMPAT_VERSION,normalize:normalizeBridgeMessage,send(message,target='*'){
+   const n=normalizeBridgeMessage(message)||message;try{window.parent?.postMessage(n,target)}catch(_){ }try{window.opener?.postMessage(n,target)}catch(_){ }return n
+  }};
+ }
+ async function migrateIndexedSettings(){
+  try{
+   if(typeof window.getOne!=='function'||typeof window.putOne!=='function')return false;
+   const row=await window.getOne('settings','app');if(!row)return true;
+   const next=normalizeSettings(row.value);if(JSON.stringify(next)!==JSON.stringify(row.value))await window.putOne('settings',{...row,value:next,compatMigratedAt:new Date().toISOString()});
+   return true;
+  }catch(e){console.warn('[CompleteCompat] settings migration:',e);return false}
+ }
+ function exposeAliases(){
+  const aliases={runBacktest:'runSimulation',runPeriodSimulation:'runSimulation',startSimulation:'runSimulation',
+   exportCompleteDatabase:'exportDatabase',importCompleteDatabase:'importPayload',openRaceById:'openRace'};
+  for(const [alias,real] of Object.entries(aliases))if(typeof window[alias]!=='function'&&typeof window[real]==='function')window[alias]=(...a)=>window[real](...a);
+  window.__THEKEIBA_COMPLETE_COMPAT__={version:COMPAT_VERSION,legacyVersions:LEGACY_APP_VERSIONS,dbName:'TheKeibaUltimateNEXTComplete',normalizePayload,normalizeSettings,migrateLocalStorage};
+ }
+ function badge(text,kind='ok'){
+  let el=document.getElementById('completeCompatBadge');if(!el){el=document.createElement('div');el.id='completeCompatBadge';el.style.cssText='position:fixed;left:12px;bottom:12px;z-index:99999;padding:6px 10px;border-radius:999px;font:700 11px system-ui;background:#10263a;border:1px solid #2e638a;color:#dff4ff;box-shadow:0 4px 18px #0008;opacity:.92';document.body.appendChild(el)}
+  el.textContent=`🔄 完全互換 ${text}`;el.dataset.kind=kind;
+ }
+ function boot(){
+  const moved=migrateLocalStorage();installBridgeCompatibility();installImportCompatibility();exposeAliases();
+  let tries=0;const timer=setInterval(async()=>{tries++;installImportCompatibility();exposeAliases();const done=await migrateIndexedSettings();if(done||tries>40){clearInterval(timer);badge(`v${COMPAT_VERSION}${moved.length?`・移行${moved.length}件`:''}`)}},250);
+  document.documentElement.dataset.thekeibaCompat=COMPAT_VERSION;
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
+
 </body>
 </html>
