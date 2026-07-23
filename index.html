@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-title" content="The競馬 RDBMS">
 <meta name="format-detection" content="telephone=no">
 <meta name="mobile-web-app-capable" content="yes">
-<title>The競馬 Ultimate NEXT Professional Thinking Engine v1.4.1</title>
+<title>The競馬 Ultimate NEXT Professional Thinking Engine v1.4.2</title>
 <style>
 :root{
   --bg:#07111f;--bg-soft:#0a1626;--panel:#0f1d2e;--panel2:#17283d;--panel3:#20344d;
@@ -285,7 +285,7 @@ input,select,textarea{font-size:16px}
 </head>
 <body>
 <header class="app-header">
-  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Thinking Engine v1.4.1</small></div></div>
+  <div class="brand"><div class="brand-mark">🏇</div><div class="brand-copy"><h1>The競馬 Ultimate NEXT Professional</h1><small>Thinking Engine v1.4.2</small></div></div>
   <div class="header-actions"><a class="btn small" href="standard.html" title="標準版へ戻る">↩ 標準版</a><button class="btn small desktop-only" id="headerRealSyncBtn">実データ同期</button><button class="btn small" id="textIoBtn" title="現在の画面をテキストでコピー・貼り付け">📋 <span class="textio-label">テキスト</span></button><button class="btn small" id="splitToggleBtn" title="右側に多角収支分析を表示">◫ 分析画面</button><button class="btn small" id="themeBtn" title="テーマ切替">🌙</button></div>
 </header>
 <div class="app-shell">
@@ -352,7 +352,7 @@ input,select,textarea{font-size:16px}
       <div class="card">
         <div class="notice sim-authority-card" id="simAuthorityCard"><div class="sim-authority-copy"><strong id="simAuthorityTitle">設定モード完全権限</strong><div id="simAuthoritySummary" class="sim-authority-summary">設定を読み込んでいます。</div><small id="simAuthorityHelp">SIM画面では期間と開催場だけを指定します。券種・予算・点数・EV・AI・オッズ・優先順位・同意・予算配分は「設定」の保存値を直接読み、画面値はアルゴリズムに使用しません。</small></div><button type="button" class="btn good" id="simAuthorityToggleBtn">🔓 SIM設定を解除</button><button type="button" class="btn warn" id="simAuthoritySettingsBtn">⚙ 設定を開く</button></div>
         <div class="form-grid">
-          <div class="field"><label>戦略</label><select id="simStrategy"></select></div><div class="field"><label>設定モード</label><select id="simPredictionMode"><option value="custom">戦略・個別設定</option><option value="ai">AI重視</option><option value="ev" selected>EV重視</option><option value="expected">期待利益重視</option><option value="balanced">総合バランス</option><option value="agreement">全て同意</option></select></div><div class="field"><label>開始日</label><input id="simStart" type="date"></div><div class="field"><label>終了日</label><input id="simEnd" type="date"></div><div class="field"><label>区分</label><select id="simType"><option value="">JRA・NAR</option><option>JRA</option><option>NAR</option></select></div><div class="field"><label>データ準備</label><select id="simDataMode"><option value="sync">実データ同期</option><option value="stored">同期なし・保存済みのみ</option></select></div><div class="field"><label>EV検証区分</label><select id="simEvEvidence"><option value="legacyTop3" selected>旧版互換（EV上位3点）</option><option value="authentic">正規netkeiba予想のみ</option><option value="includeFallback">過去用代替も参考</option></select></div>
+          <div class="field"><label>戦略</label><select id="simStrategy"></select></div><div class="field"><label>設定モード</label><select id="simPredictionMode"><option value="custom">戦略・個別設定</option><option value="ai">AI重視</option><option value="ev" selected>EV重視</option><option value="expected">期待利益重視</option><option value="balanced">総合バランス</option><option value="agreement">全て同意</option></select></div><div class="field"><label>開始日</label><input id="simStart" type="date"></div><div class="field"><label>終了日</label><input id="simEnd" type="date"></div><div class="field"><label>区分</label><select id="simType"><option value="">JRA・NAR</option><option>JRA</option><option>NAR</option></select></div><div class="field"><label>データ準備</label><select id="simDataMode"><option value="sync">実データ同期</option><option value="stored">同期なし・保存済みのみ</option></select></div><div class="field"><label>EV検証区分</label><select id="simEvEvidence"><option value="authentic" selected>正規netkeiba予想のみ（推奨）</option><option value="legacyTop3">代替順位・的中率検証（投資なし）</option><option value="includeFallback">正規優先＋代替もEV条件必須</option></select></div>
           <div class="field full"><label>開催場（単数・複数選択）</label><div class="sim-place-picker"><div class="sim-place-actions"><label class="sim-place-option all"><input type="checkbox" id="simPlaceAll" checked>全開催場</label><button class="btn small" type="button" id="simPlaceSelectAllBtn">全場選択</button><button class="btn small" type="button" id="simPlaceClearBtn">選択解除</button><span class="sim-place-summary" id="simPlaceSummary">全開催場</span></div><div class="sim-place-options" id="simPlaceOptions"><span class="muted">登録開催場を読込中です</span></div></div></div>
           <div class="field"><label>券種</label><select id="simTicket"><option value="win">単勝</option><option value="place">複勝</option><option value="bracketQuinella">枠連</option><option value="quinella">馬連</option><option value="wide">ワイド</option><option value="exacta">馬単</option><option value="trio">3連複</option><option value="trifecta">3連単</option><option value="all">全券種</option></select></div><div class="field"><label>1日予算</label><input id="simDailyBudget" type="number" value="2000"></div><div class="field"><label>1点金額</label><input id="simUnit" type="number" value="100"></div><div class="field"><label>候補上位頭数</label><input id="simTopN" type="number" value="3"></div>
           <div class="field"><label>1R最大点数</label><input id="simMaxTickets" type="number" value="6"></div><div class="field"><label>1日最大購入R</label><input id="simMaxRace" type="number" value="6"></div><div class="field"><label>最低EV</label><input id="simMinEv" type="number" step="0.01" value="1.00"></div><div class="field"><label>最低AI（補助条件）</label><input id="simMinAi" type="number" value="0"></div>
@@ -1055,7 +1055,7 @@ async function probeResidentialBridge(date=compactDate(isoToday()),timeout=7000)
   window.addEventListener("focus",()=>setTimeout(install,100));
 })();
 
-const APP_VERSION="1.4.1-thinking-engine";
+const APP_VERSION="1.4.2-thinking-engine";
 const NAV_ITEMS=[["dashboard","🏠","ホーム"],["calendar","📅","開催"],["race","🏇","馬柱"],["search","🔍","検索"],["simulation","📊","SIM"],["analytics","📈","分析"],["strategies","🧠","戦略"],["live","📺","ライブ"],["database","🗄","DB"],["bridge","🔗","Bridge"],["forward","⏱","フォワード"],["settings","⚙","設定"]];
 const TICKET_LABELS={win:"単勝",place:"複勝",bracketQuinella:"枠連",quinella:"馬連",wide:"ワイド",exacta:"馬単",trio:"3連複",trifecta:"3連単",all:"全券種"};
 const PREDICTION_MODE_LABELS={custom:"戦略・個別設定",ai:"AI重視",ev:"EV重視",expected:"期待利益重視",balanced:"総合バランス",agreement:"全て同意"};
@@ -6514,5 +6514,267 @@ window.__THEKEIBA_V1311__={
 })();
 </script>
 
+
+
+<script id="thinkingEngineSettlementFixV142">
+/* ============================================================
+   v1.4.2 Settlement & Evidence Integrity Fix
+   - 過去用代替順位をEV投資から完全分離（候補的中率の検証専用）
+   - 正規／代替を問わず、購入時は補正EV下限を厳守
+   - 着順による的中判定と払戻キーの正規化照合を分離
+   - 精算照合不能を外れとして計上しない
+   - 元金・最低維持残高・日次有効予算を最終アロケータで強制
+   - 必須3点セットを部分購入しない
+   ============================================================ */
+(function(){
+  'use strict';
+  const VERSION='1.4.2-settlement-integrity';
+  const MIGRATION_KEY='TheKeibaThinkingEngineV142EvidenceMigration';
+  const candidateRefs=new Map();
+  const n=(v,d=0)=>{const x=Number(v);return Number.isFinite(x)?x:d};
+  const clamp2=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const rid=x=>String(x?.race_id||x?.raceId||x?.rid||'');
+  const unitOf=c=>Math.max(100,Math.floor(n(c?.unit,100)/100)*100||100);
+  const typeAliases={
+    win:'win',tansho:'win','単勝':'win',place:'place',fukusho:'place','複勝':'place',
+    bracketquinella:'bracketQuinella',wakuren:'bracketQuinella','枠連':'bracketQuinella',
+    quinella:'quinella',umaren:'quinella','馬連':'quinella',wide:'wide','ワイド':'wide',
+    exacta:'exacta',umatan:'exacta','馬単':'exacta',trio:'trio',sanrenpuku:'trio','3連複':'trio','三連複':'trio',
+    trifecta:'trifecta',sanrentan:'trifecta','3連単':'trifecta','三連単':'trifecta'
+  };
+  function normType(v){
+    const raw=String(v||'').trim();
+    return typeAliases[raw]||typeAliases[raw.toLowerCase().replace(/[\s_-]/g,'')]||raw;
+  }
+  function nums(v){return (String(v??'').match(/\d+/g)||[]).map(Number).filter(x=>x>0)}
+  function normCombo(type,value){
+    type=normType(type);const a=nums(value);
+    if(type==='win'||type==='place')return a.length?String(a[0]):'';
+    if(type==='exacta')return a.length>=2?`${a[0]}>${a[1]}`:'';
+    if(type==='trifecta')return a.length>=3?`${a[0]}>${a[1]}>${a[2]}`:'';
+    if(type==='bracketQuinella'||type==='quinella'||type==='wide')return a.length>=2?[a[0],a[1]].sort((x,y)=>x-y).join('-'):'';
+    if(type==='trio')return a.length>=3?[a[0],a[1],a[2]].sort((x,y)=>x-y).join('-'):'';
+    return String(value||'').trim();
+  }
+  function lookupPayout(result,ticket){
+    const wantedType=normType(ticket?.ticketType),wanted=normCombo(wantedType,ticket?.key||ticket?.combo||ticket?.horses||ticket?.frames||'');
+    if(!wanted||!result?.payouts)return 0;
+    for(const [rawType,map] of Object.entries(result.payouts||{})){
+      if(normType(rawType)!==wantedType||!map||typeof map!=='object')continue;
+      for(const [key,value] of Object.entries(map)){
+        if(normCombo(wantedType,key)===wanted){const pay=n(value);if(pay>0)return pay}
+      }
+    }
+    return 0;
+  }
+  function finishOrder(result){return (Array.isArray(result?.finishOrder)?result.finishOrder:[]).map(Number).filter(x=>x>0)}
+  function topFrames(order,entries,count){
+    const byNo=new Map((entries||[]).map(e=>[n(e.horseNo),n(e.frameNo||e.frame)]));
+    return order.slice(0,count).map(x=>byNo.get(x)).filter(x=>x>0)
+  }
+  function hitByFinish(result,ticket,entries){
+    const order=finishOrder(result),type=normType(ticket?.ticketType),a=nums(ticket?.key||ticket?.horses||ticket?.frames||'');
+    if(!order.length||!a.length)return false;
+    if(type==='win')return order[0]===a[0];
+    if(type==='place')return order.slice(0,3).includes(a[0]);
+    if(type==='quinella')return a.length>=2&&normCombo(type,a)===normCombo(type,order.slice(0,2));
+    if(type==='wide')return a.length>=2&&a.every(x=>order.slice(0,3).includes(x));
+    if(type==='exacta')return a.length>=2&&a[0]===order[0]&&a[1]===order[1];
+    if(type==='trio')return a.length>=3&&normCombo(type,a)===normCombo(type,order.slice(0,3));
+    if(type==='trifecta')return a.length>=3&&a[0]===order[0]&&a[1]===order[1]&&a[2]===order[2];
+    if(type==='bracketQuinella'){
+      const frames=topFrames(order,entries,2);return frames.length===2&&normCombo(type,a)===normCombo(type,frames)
+    }
+    return false;
+  }
+  // 金額照合は払戻表、的中判定は着順。役割を混ぜない。
+  ticketPayout=function(result,ticket){return lookupPayout(result,ticket)};
+
+  function evidenceMode(c){return String(c?.evEvidenceMode||'authentic')}
+  function requiredPoints(c,item){
+    if(c?.thinkingEnabled)return clamp2(Math.round(n(c.thinkingSetSize,3)),1,6);
+    if(item?.legacyTop3)return 3;
+    return Math.max(1,Math.min(Math.round(n(c?.maxTickets,6)),item?.candidateTickets?.length||1))
+  }
+  function entryProbability(e){return n(e?.netkeibaWinProb||e?.probWin||e?.probability||e?.nkWinProb)}
+  function candidateProbability(t){return n(t?.probability||t?.score)/100>0&&n(t?.probability)<=0?n(t?.score)/100:n(t?.probability||t?.score/100)}
+
+  const previousBuildCandidate=buildSimulationCandidate;
+  buildSimulationCandidate=async function(race,result,c){
+    const item=await previousBuildCandidate(race,result,c),mode=evidenceMode(c),fallback=item?.evEvidence?.kind==='fallback';
+    item.validationOnly=false;item.settlementError='';
+    if(fallback&&mode==='legacyTop3'){
+      // 過去順位モデルはEVではない。全馬から推定勝率上位を作り直し、候補的中率だけを検証する。
+      const need=requiredPoints(c,item),type=String(c.ticketType||'win');
+      let ranked=(item.entries||[]).filter(e=>entryProbability(e)>0).sort((a,b)=>entryProbability(b)-entryProbability(a)||n(a.popularity,999)-n(b.popularity,999));
+      ranked=ranked.slice(0,Math.max(need,n(c.topN,need)));
+      let tickets=generateTickets(type,ranked,Number.MAX_SAFE_INTEGER);
+      tickets.sort((a,b)=>candidateProbability(b)-candidateProbability(a)||n(b.marketOdds)-n(a.marketOdds));
+      item.candidateEntries=ranked;item.candidateTickets=tickets.slice(0,need);item.purchaseTickets=[];item.validationOnly=true;item.legacyTop3=true;
+      item.rankScore=item.candidateTickets.length?Math.max(...item.candidateTickets.map(candidateProbability)):-1;
+      item.thinkingLegacyFallback=true;item.thinkingDecision='代替順位・的中率検証（投資なし）';
+      item.thinkingSkipReason=item.candidateTickets.length<need?`代替順位候補不足：${need}点必要、候補${item.candidateTickets.length}点`:'代替順位はEVではないため投資対象外';
+    }else if(fallback){
+      // 「代替も参考」でも正規EVと同じ下限を必ず通す。悪い候補の上位を買わない。
+      const threshold=Math.max(n(c.minEv),n(c.thinkingMinAdjustedEv,1.05));
+      item.candidateTickets=(item.candidateTickets||[]).filter(t=>n(t.adjustedEv||t.ev)>=threshold);
+      const need=requiredPoints(c,item);
+      if(item.candidateTickets.length<need){item.candidateTickets=[];item.rankScore=-1;item.thinkingDecision='見送り';item.thinkingSkipReason=`代替EV条件未達：補正EV ${threshold.toFixed(2)}以上を${need}点確保できません`}
+    }
+    candidateRefs.set(rid(race),item);
+    return item;
+  };
+
+  function initialCapital(c){return Math.max(0,n(c?.initialCapital,100000))}
+  function reserveCapital(c){return Math.max(0,n(c?.reserveCapital,20000))}
+  function stopReason(ctx,c){
+    if(ctx.capital<=reserveCapital(c))return '最低維持残高に到達';
+    if(n(c.stopLossAmount)>0&&ctx.initial-ctx.capital>=n(c.stopLossAmount))return '通算損失上限に到達';
+    const dd=ctx.peak-ctx.capital,ddp=ctx.peak>0?dd/ctx.peak*100:0;
+    if(n(c.maxDrawdownPercent)>0&&ddp>=n(c.maxDrawdownPercent))return '最大ドローダウン停止率に到達';
+    return '';
+  }
+  function effectiveBudget(c,capital){
+    const unit=unitOf(c),available=Math.max(0,capital-reserveCapital(c));
+    const fixed=Math.min(available,Math.max(0,n(c.dailyBudget)));
+    const percent=Math.min(available,Math.max(0,capital)*clamp2(n(c.riskPercent,2),.1,100)/100);
+    const policy=String(c.capitalPolicy||'hybrid'),raw=policy==='fixed'?fixed:policy==='percent'?percent:Math.min(fixed,percent);
+    return Math.floor(Math.max(0,raw)/unit)*unit
+  }
+  function planTickets(item,c,available){
+    if(item.validationOnly)return{tickets:[],reason:'代替順位・的中率検証（投資なし）'};
+    if(!item.candidateTickets?.length)return{tickets:[],reason:item.thinkingSkipReason||'条件に合う候補なし'};
+    const need=requiredPoints(c,item),cost=need*unitOf(c);
+    if(item.candidateTickets.length<need)return{tickets:[],reason:`必須${need}点に不足`};
+    if(available<cost)return{tickets:[],reason:`有効予算不足（必要${cost.toLocaleString()}円／残り${Math.max(0,available).toLocaleString()}円）`};
+    return{tickets:item.candidateTickets.slice(0,need),reason:''}
+  }
+  function settle(item,tickets,c,ctx,dayBudget,reason=''){
+    const unit=unitOf(c);item.capitalBefore=ctx.capital;item.effectiveDailyBudget=dayBudget;item.purchaseTickets=[...(tickets||[])];
+    let knownPay=0,missing=[];
+    for(const t of item.purchaseTickets){const p=lookupPayout(item.result,t);knownPay+=p*(unit/100);if(hitByFinish(item.result,t,item.entries)&&!(p>0))missing.push(`${TICKET_LABELS?.[normType(t.ticketType)]||t.ticketType} ${t.key}`)}
+    const invest=item.purchaseTickets.length*unit;
+    if(missing.length){
+      item.settlementError=`的中着順を確認しましたが払戻照合不能：${missing.join('、')}`;
+      item.plannedInvest=invest;item.purchaseTickets=[];item.budgetBlocked=item.settlementError;item.capitalAfter=ctx.capital;item.capitalDrawdown=Math.max(0,ctx.peak-ctx.capital);item.capitalDrawdownPercent=ctx.peak?item.capitalDrawdown/ctx.peak*100:0;
+      return{invest:0,pay:0,reason:item.budgetBlocked}
+    }
+    ctx.capital=Math.max(0,ctx.capital-invest+knownPay);ctx.peak=Math.max(ctx.peak,ctx.capital);
+    item.capitalAfter=ctx.capital;item.capitalDrawdown=Math.max(0,ctx.peak-ctx.capital);item.capitalDrawdownPercent=ctx.peak?item.capitalDrawdown/ctx.peak*100:0;item.budgetBlocked=reason||'';
+    const after=stopReason(ctx,c);if(after)item.stopTriggered=after;
+    return{invest,pay:knownPay,reason:item.budgetBlocked}
+  }
+  function context(c){const initial=initialCapital(c);return{initial,capital:initial,peak:initial}}
+
+  // 末尾で再定義し、途中の旧版互換アロケータによる元金ガード上書きを無効化する。
+  allocateSequentialCandidates=function(items,c){
+    const ctx=context(c),days=new Map();
+    for(const item of items){
+      const date=String(item.race?.date||'');let day=days.get(date);
+      if(!day){const budget=effectiveBudget(c,ctx.capital);day={budget,remaining:budget,bought:0};days.set(date,day)}
+      let reason=stopReason(ctx,c),tickets=[];
+      if(!reason&&day.bought>=n(c.maxRaces,6))reason='1日最大購入Rに到達';
+      if(!reason){const plan=planTickets(item,c,day.remaining);tickets=plan.tickets;reason=plan.reason}
+      const settled=settle(item,tickets,c,ctx,day.budget,reason);day.remaining=Math.max(0,day.remaining-settled.invest);if(settled.invest>0)day.bought++;item.remaining=day.remaining
+    }
+  };
+  allocateDailyRankCandidates=function(items,c){
+    const ctx=context(c),groups=new Map();for(const item of items){const date=String(item.race?.date||''),list=groups.get(date)||[];list.push(item);groups.set(date,list)}
+    for(const date of [...groups.keys()].sort()){
+      const list=groups.get(date),budget=effectiveBudget(c,ctx.capital);let remaining=budget,bought=0;
+      const ranked=[...list].sort((a,b)=>n(b.rankScore)-n(a.rankScore)||n(a.race?.raceNo)-n(b.race?.raceNo));
+      for(const item of ranked){
+        item.__v142Plan=[];item.__v142Reason=stopReason(ctx,c);
+        if(!item.__v142Reason&&bought>=n(c.maxRaces,6))item.__v142Reason='1日最大購入Rに到達';
+        if(!item.__v142Reason){const plan=planTickets(item,c,remaining);item.__v142Plan=plan.tickets;item.__v142Reason=plan.reason}
+        const cost=item.__v142Plan.length*unitOf(c);if(cost>0){remaining-=cost;bought++}
+      }
+      let actualRemaining=budget;
+      for(const item of list){const settled=settle(item,item.__v142Plan,c,ctx,budget,item.__v142Reason||'日次ランキング対象外');actualRemaining=Math.max(0,actualRemaining-settled.invest);item.remaining=actualRemaining;delete item.__v142Plan;delete item.__v142Reason}
+    }
+  };
+
+  const previousCompute=computeSimulationRows;
+  computeSimulationRows=async function(c){
+    candidateRefs.clear();const result=await previousCompute(c),rows=result?.rows||[];
+    let bank=0,settlementErrors=0,validationOnlyRaces=0;
+    for(const row of rows){
+      const item=candidateRefs.get(rid(row.race));if(item)Object.assign(row,{
+        thinkingDecision:item.thinkingDecision||'',thinkingSkipReason:item.thinkingSkipReason||'',thinkingLegacyFallback:!!item.thinkingLegacyFallback,
+        thinkingMinEv:item.thinkingMinEv,thinkingAvgEv:item.thinkingAvgEv,thinkingRaceScore:item.thinkingRaceScore,validationOnly:!!item.validationOnly,
+        settlementError:item.settlementError||'',plannedInvest:n(item.plannedInvest),budgetBlocked:String(item.budgetBlocked||row.budgetBlocked||''),
+        capitalBefore:n(item.capitalBefore,row.capitalBefore),capitalAfter:n(item.capitalAfter,row.capitalAfter),effectiveDailyBudget:n(item.effectiveDailyBudget,row.effectiveDailyBudget),
+        capitalDrawdown:n(item.capitalDrawdown,row.capitalDrawdown),capitalDrawdownPercent:n(item.capitalDrawdownPercent,row.capitalDrawdownPercent),stopTriggered:String(item.stopTriggered||'')
+      });
+      row.candidateHit=(row.candidateTickets||[]).some(t=>hitByFinish(row.result,t,row.entries));
+      row.purchaseHit=(row.purchaseTickets||[]).some(t=>hitByFinish(row.result,t,row.entries));
+      row.miss=row.candidateHit&&!row.purchaseHit&&n(row.invest)>0;
+      if(row.validationOnly)validationOnlyRaces++;
+      if(row.settlementError){settlementErrors++;row.validationExcluded=true;row.invest=0;row.pay=0;row.profit=0;row.roi=0}
+      else{
+        row.pay=(row.purchaseTickets||[]).reduce((sum,t)=>sum+lookupPayout(row.result,t)*(unitOf(c)/100),0);
+        row.invest=(row.purchaseTickets||[]).length*unitOf(c);row.profit=row.pay-row.invest;row.roi=row.invest?row.pay/row.invest*100:0
+      }
+      bank+=row.profit;row.bank=bank
+    }
+    const valid=rows.filter(r=>!r.validationExcluded),totalBet=valid.reduce((s,r)=>s+n(r.invest),0),totalPay=valid.reduce((s,r)=>s+n(r.pay),0);
+    const previousThinking=result.summary?.thinking||{};
+    result.summary={...result.summary,
+      raceCount:valid.length,boughtCount:valid.filter(r=>n(r.invest)>0).length,candidateHits:valid.filter(r=>r.candidateHit).length,
+      purchaseHits:valid.filter(r=>r.purchaseHit).length,missHits:valid.filter(r=>r.miss).length,totalBet,totalPay,profit:totalPay-totalBet,roi:totalBet?totalPay/totalBet*100:0,
+      settlementErrors,validationOnlyRaces,
+      thinking:{...previousThinking,settlementErrors,validationOnlyRaces,evidenceMode:evidenceMode(c)}
+    };
+    return result
+  };
+
+  const previousRender=renderSimulation;
+  renderSimulation=function(summary=null){
+    previousRender(summary);
+    try{
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.2';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.2';
+      const title=document.querySelector('.thinking-engine-title');if(title)title.textContent='🧠 思考エンジン v1.4.2';
+      const sub=document.querySelector('.thinking-engine-sub');if(sub)sub.textContent='正規EVだけを投資判断に使用します。過去用代替順位は候補的中率の検証専用で、資金・ROIには入りません。的中は着順、払戻は正規化した払戻表で別々に照合します。';
+      const t=summary?.thinking||{},status=document.getElementById('teStatus');
+      if(status&&!summary?.liveProvisional){
+        if(t.evidenceMode==='legacyTop3')status.textContent=`代替順位・的中率検証が完了しました。${n(t.validationOnlyRaces)}Rを検証対象としましたが、代替順位はEVではないため投資0円です。候補的中だけを確認してください。`;
+        else if(n(t.settlementErrors)>0){status.textContent=`最終判定完了。ただし精算照合不能が${n(t.settlementErrors)}Rあります。外れにはせず、投資・ROIから除外しました。判断ログを確認してください。`;status.className='notice thinking-engine-status bad'}
+        else if(n(summary?.totalBet)===0)status.textContent='最終判定完了。正規EV条件を満たす買い目がないため投資0円です。悪い候補の上位を強制購入していません。';
+      }
+      const evSel=document.getElementById('simEvEvidence');if(evSel){
+        const labels={authentic:'正規netkeiba予想のみ（推奨）',legacyTop3:'代替順位・的中率検証（投資なし）',includeFallback:'正規優先＋代替もEV条件必須'};
+        [...evSel.options].forEach(o=>{if(labels[o.value])o.textContent=labels[o.value]})
+      }
+      let k=document.getElementById('teSettlementErrors');
+      if(!k){const grid=document.querySelector('.thinking-engine-kpis');if(grid){const box=document.createElement('div');box.className='thinking-engine-kpi';box.innerHTML='<small>精算照合エラー</small><strong id="teSettlementErrors">0R</strong>';grid.appendChild(box);k=box.querySelector('strong')}}
+      if(k)k.textContent=`${n(t.settlementErrors)}R`;
+      const log=document.getElementById('teLog'),rows=Array.isArray(state?.simResult)?state.simResult:[];
+      if(log){
+        const errors=rows.filter(r=>r.settlementError);for(const r of errors){const div=document.createElement('div');div.className='thinking-engine-log-row bad';div.innerHTML=`<b>${String(r.race?.date||'')} ${String(r.race?.placeName||'')} ${n(r.race?.raceNo)}R</b>　${String(r.settlementError||'')}（収支から除外）`;log.prepend(div)}
+        const validations=rows.filter(r=>r.validationOnly).slice(-30).reverse();for(const r of validations){const div=document.createElement('div');div.className='thinking-engine-log-row '+(r.candidateHit?'buy':'skip');div.innerHTML=`<b>${String(r.race?.date||'')} ${String(r.race?.placeName||'')} ${n(r.race?.raceNo)}R</b>　［代替順位検証・投資なし］候補${r.candidateTickets?.length||0}点／候補的中 ${r.candidateHit?'○':'×'}`;log.prepend(div)}
+      }
+    }catch(e){console.error('[v1.4.2 render]',e)}
+  };
+
+  function boot(){
+    try{
+      document.title='The競馬 Ultimate NEXT Professional Thinking Engine v1.4.2';
+      const brand=document.querySelector('.brand-copy small');if(brand)brand.textContent='Thinking Engine v1.4.2';
+      const ev=document.getElementById('simEvEvidence');
+      if(ev){
+        const labels={authentic:'正規netkeiba予想のみ（推奨）',legacyTop3:'代替順位・的中率検証（投資なし）',includeFallback:'正規優先＋代替もEV条件必須'};
+        [...ev.options].forEach(o=>{if(labels[o.value])o.textContent=labels[o.value]});
+        // v1.4.1の危険な既定値から一度だけ安全側へ移行。ユーザーは後から検証モードを選べる。
+        if(!localStorage.getItem(MIGRATION_KEY)&&ev.value==='legacyTop3'){ev.value='authentic';localStorage.setItem(MIGRATION_KEY,'1')}
+      }
+      const notice=document.getElementById('simModeNotice');if(notice)notice.textContent='正規netkeiba予想確率×市場オッズのEVだけを資金投入に使用します。過去用代替順位は的中率検証専用で投資しません。必須3点に不足、補正EV未達、有効予算不足、精算照合不能はすべて見送ります。';
+      if(window.__THEKEIBA_THINKING_ENGINE__)window.__THEKEIBA_THINKING_ENGINE__.version=VERSION;
+    }catch(e){console.error('[v1.4.2 boot]',e)}
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+  window.__THEKEIBA_SETTLEMENT_FIX__={version:VERSION,lookupPayout,hitByFinish,normCombo,effectiveBudget};
+})();
+</script>
 </body>
 </html>
