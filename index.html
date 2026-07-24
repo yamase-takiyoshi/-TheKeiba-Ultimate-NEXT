@@ -8478,5 +8478,102 @@ window.__THEKEIBA_V1311__={
 })();
 </script>
 
+
+<script id="simRebuildAfterSyncFixV152">
+/* v1.5.2: 実データ同期完了とSIM再計算完了を分離。
+   既存完全のみでも、保存済み確定結果から必ずSIMを再構築する。 */
+(function(){
+  "use strict";
+  const VERSION="1.5.2 SIM Rebuild Fix";
+  const byId=id=>document.getElementById(id);
+  const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+  let rebuilding=false;
+
+  function setVersion(){
+    try{
+      document.title=`The競馬 Ultimate NEXT Professional ${VERSION}`;
+      const small=document.querySelector('.brand-copy small');
+      if(small)small.textContent=`Thinking Engine v${VERSION}`;
+    }catch(_){ }
+  }
+  function status(message,kind=""){
+    try{
+      if(typeof setSimSyncStatus==="function")setSimSyncStatus(message);
+      const box=byId("simDataResetStatus");
+      if(box){box.textContent=message;box.classList.remove("good","bad","warn");if(kind)box.classList.add(kind)}
+    }catch(_){ }
+  }
+  async function selectedConfirmedCount(){
+    try{
+      const c=typeof readSimConfig==="function"?readSimConfig():{};
+      const [races,results]=await Promise.all([getAll("races"),getAll("results")]);
+      const resultIds=new Set((results||[]).filter(r=>typeof hasUsableConfirmedResult!=="function"||hasUsableConfirmedResult(r)).map(r=>String(r.race_id||"")));
+      return (races||[]).filter(r=>(!c.start||String(r.date||"")>=c.start)&&(!c.end||String(r.date||"")<=c.end)&&(typeof simConfigRaceMatches!=="function"||simConfigRaceMatches(c,r))&&resultIds.has(String(r.race_id||""))).length;
+    }catch(_){return 0}
+  }
+  async function rebuildFromStored(reason="保存済みデータ"){
+    if(rebuilding)return{busy:true};
+    rebuilding=true;
+    const btn=byId("simRebuildStoredBtn"),old=btn?.textContent;
+    if(btn){btn.disabled=true;btn.textContent="再構築中…"}
+    try{
+      const count=await selectedConfirmedCount();
+      if(!count){status("SIM再構築対象の確定結果がありません。期間・開催場・区分を確認してください。","warn");return{results:0}}
+      status(`${reason}を使用してSIMを再計算中…\n確定結果 ${count}R → EV計算 → 買い目生成 → 資金曲線更新`);
+      if(typeof runSimulationCore!=="function")throw new Error("SIM再計算エンジンを利用できません");
+      const id=await runSimulationCore();
+      const rows=Array.isArray(window.state?.simResult)?window.state.simResult:[];
+      const bought=rows.filter(r=>n(r.invest)>0).length;
+      const candidates=rows.reduce((s,r)=>s+n(r.candidateTickets?.length),0);
+      status(`SIM再構築が完了しました。\n対象 ${rows.length}R／候補 ${candidates}点／購入 ${bought}R\n既存完全のレースも保存済みデータから再判定しました。`,"good");
+      return{id,results:rows.length,bought,candidates};
+    }catch(error){
+      console.error("[SIM Rebuild Fix]",error);
+      status(`SIM再構築に失敗しました：${error?.message||error}`,"bad");
+      throw error;
+    }finally{
+      rebuilding=false;
+      if(btn){btn.disabled=false;btn.textContent=old||"♻ 保存済みからSIM再構築"}
+    }
+  }
+  function installButton(){
+    if(byId("simRebuildStoredBtn"))return;
+    const run=byId("simRunBtn");if(!run?.parentNode)return;
+    const b=document.createElement("button");
+    b.className="btn primary";b.id="simRebuildStoredBtn";b.type="button";b.textContent="♻ 保存済みからSIM再構築";
+    b.title="レース・馬柱・オッズ・確定結果を再取得せず、EV・買い目・集計・資金曲線だけを再計算します";
+    b.onclick=()=>rebuildFromStored("保存済みのレース・馬柱・オッズ・確定結果");
+    run.insertAdjacentElement("afterend",b);
+  }
+  function installSyncWrapper(){
+    if(typeof syncBacktestPeriod!=="function"||syncBacktestPeriod.__simRebuildFixV152)return;
+    const base=syncBacktestPeriod;
+    const wrapped=async function(){
+      const result=await base.apply(this,arguments);
+      if(result?.busy||result?.stopped)return result;
+      const confirmed=await selectedConfirmedCount();
+      if(confirmed>0){
+        status(`実データ同期が完了しました。\n確定結果 ${confirmed}R（新規取得・既存完全を含む）からSIMを自動再構築します。`);
+        const rebuilt=await rebuildFromStored("同期済み実データ");
+        return{...(result||{}),simRebuilt:true,simRows:rebuilt?.results||0};
+      }
+      return result;
+    };
+    wrapped.__simRebuildFixV152=true;
+    try{syncBacktestPeriod=wrapped;window.syncBacktestPeriod=wrapped}catch(_){window.syncBacktestPeriod=wrapped}
+  }
+  function wire(){
+    setVersion();installButton();installSyncWrapper();
+    const sync=byId("simSyncBtn");if(sync)sync.onclick=()=>window.syncBacktestPeriod();
+  }
+  function boot(){
+    wire();[300,1200,2800,5200,9000].forEach(ms=>setTimeout(wire,ms));
+    window.addEventListener("pageshow",()=>setTimeout(wire,250));
+    window.__THEKEIBA_SIM_REBUILD_FIX__={version:VERSION,rebuild:rebuildFromStored,confirmedCount:selectedConfirmedCount};
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+})();
+</script>
+
 </body>
 </html>
