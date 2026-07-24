@@ -359,7 +359,7 @@ input,select,textarea{font-size:16px}
           <div class="field"><label>最低オッズ</label><input id="simMinOdds" type="number" step="0.1" value="1"></div><div class="field"><label>最高オッズ</label><input id="simMaxOdds" type="number" step="0.1" value="999"></div><div class="field"><label>優先順位</label><select id="simPriority"><option value="ai">AI</option><option value="ev" selected>EV</option><option value="expected">期待利益</option><option value="balanced">総合</option></select></div><div class="field"><label>同意モード</label><select id="simAgreement"><option value="on">ON</option><option value="off" selected>OFF</option></select></div>
           <div class="field"><label>予算の使い方</label><select id="simBudgetMode"><option value="sequential">レース順に購入</option><option value="dailyRank">全日ランキング</option></select></div><div class="field"><label>全日ランキング基準</label><select id="simDailyRankBasis"><option value="ev">EVの高い順</option><option value="adjusted">AI補正EVの高い順</option><option value="expected">期待払戻の高い順</option><option value="learned">過去学習後の期待利益順</option></select></div>
         </div>
-        <div class="toolbar" style="margin-top:13px"><button class="btn primary" id="simSyncBtn">自動分割バッチ同期</button><button class="btn warn" id="simStopSyncBtn" type="button" aria-label="同期停止" disabled>⏹ 同期停止</button><button class="btn batch-view-toggle" id="simBatchToggleBtn" type="button" aria-controls="simSyncLiveCard" aria-expanded="true">📊 バッチグラフを隠す</button><button class="btn live-result-btn active" id="simLiveGraphBtn" type="button" aria-pressed="true">📈 結果ライブ ON</button><button class="btn good" id="simRunBtn">バックテスト開始</button><button class="btn" id="simCsvBtn">明細CSV</button><button class="btn danger" id="simDataResetBtn" type="button">🧹 SIMデータリセット</button><button class="btn" id="simSaveStrategyBtn">設定を戦略保存</button></div>
+        <div class="toolbar" style="margin-top:13px"><button class="btn primary" id="simSyncBtn">自動分割バッチ同期</button><button class="btn warn" id="simStopSyncBtn" type="button" aria-label="同期停止" disabled>⏹ 同期停止</button><button class="btn batch-view-toggle" id="simBatchToggleBtn" type="button" aria-controls="simSyncLiveCard" aria-expanded="true">📊 バッチグラフを隠す</button><button class="btn live-result-btn active" id="simLiveGraphBtn" type="button" aria-pressed="true">📈 結果ライブ ON</button><button class="btn" id="simLiveMemoryBtn" type="button" aria-pressed="true" title="同期中の重い資金曲線再計算を停止してメモリ使用量を抑えます">🧠 ライブ省メモリ ON</button><button class="btn good" id="simRunBtn">バックテスト開始</button><button class="btn" id="simCsvBtn">明細CSV</button><button class="btn danger" id="simDataResetBtn" type="button">🧹 SIMデータリセット</button><button class="btn" id="simSaveStrategyBtn">設定を戦略保存</button></div>
         <div class="notice" id="simModeNotice">旧版互換は予測条件を通った買い目をEV順に並べ、上位3点を一組として購入し、3点そろわないレースだけ見送ります。正規netkeiba予想だけを検証する場合はEV検証区分を切り替えてください。</div>
         <div class="code-box" id="simDataResetStatus" style="margin-top:8px">SIMデータリセットは、SIM実行履歴・現在の集計・右側グラフ連動データだけを消去します。レース・馬柱・オッズ・確定結果・設定・戦略・予想履歴・フォワードテスト・バックアップは残ります。</div>
         <div class="code-box" id="simSyncStatus" style="margin-top:12px">未同期。現在の登録結果件数を確認中です。</div>
@@ -7049,9 +7049,10 @@ window.__THEKEIBA_V1311__={
 <script id="syncResilienceV144Patch">
 (function(){
   "use strict";
-  const VERSION="1.4.5",CHECKPOINT_KEY="TheKeibaSyncCheckpointV144",LOG_KEY="TheKeibaSyncFreezeLogV144";
+  const VERSION="1.5.3",CHECKPOINT_KEY="TheKeibaSyncCheckpointV144",LOG_KEY="TheKeibaSyncFreezeLogV144",LIVE_MEMORY_KEY="TheKeibaLiveMemorySaverV1";
   const WARN_MS=105000,AUTO_STOP_MS=180000,MAX_AUTO_RECOVERY=2;
-  const RT={lastActivity:Date.now(),lastStatus:"",stage:"待機",current:"—",checkpointAt:0,watchdogTimer:0,autoRecoveryRequested:false,autoRecoveryCount:0,wrapperBusy:false,liveDesired:true,manualRecovery:false,lastCheckpoint:null};
+  const RT={lastActivity:Date.now(),lastStatus:"",stage:"待機",current:"—",checkpointAt:0,watchdogTimer:0,autoRecoveryRequested:false,autoRecoveryCount:0,wrapperBusy:false,liveDesired:true,memorySaver:true,manualRecovery:false,lastCheckpoint:null};
+  try{RT.memorySaver=localStorage.getItem(LIVE_MEMORY_KEY)!=="0"}catch(_){RT.memorySaver=true}
   const byId=id=>document.getElementById(id);
   const safeJsonParse=value=>{try{return JSON.parse(value)}catch(_){return null}};
   const timeLabel=value=>{const d=new Date(value||Date.now());return Number.isFinite(d.getTime())?d.toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit",second:"2-digit"}):"—"};
@@ -7140,7 +7141,21 @@ window.__THEKEIBA_V1311__={
   function setLiveUi(active,suspended=false){
     const btn=byId("simLiveGraphBtn");if(!btn)return;
     btn.disabled=suspended;btn.classList.toggle("active",active&&!suspended);btn.textContent=suspended?"📉 結果ライブ 省メモリ中":active?"📈 結果ライブ ON":"📉 結果ライブ OFF";
-    btn.title=suspended?"長時間同期中は全件再計算を停止し、同期完了後に一度だけ更新します。":"確定結果の資金曲線表示";
+    btn.title=suspended?"ライブ省メモリがONのため、同期中の全件再計算を停止しています。":"確定結果の資金曲線表示";
+  }
+  function setMemoryUi(){
+    const btn=byId("simLiveMemoryBtn");if(!btn)return;
+    btn.classList.toggle("active",RT.memorySaver);btn.setAttribute("aria-pressed",RT.memorySaver?"true":"false");
+    btn.textContent=RT.memorySaver?"🧠 ライブ省メモリ ON":"🧠 ライブ省メモリ OFF";
+    btn.title=RT.memorySaver?"同期中は結果ライブの全件再計算を停止し、完了後に1回だけ更新します。":"同期中も結果ライブを更新します。長期間ではメモリとCPUの使用量が増えます。";
+  }
+  async function toggleMemorySaver(){
+    RT.memorySaver=!RT.memorySaver;try{localStorage.setItem(LIVE_MEMORY_KEY,RT.memorySaver?"1":"0")}catch(_){}
+    setMemoryUi();const live=window.__THEKEIBA_LIVE_SIM__,liveState=live?.state;
+    if(BACKTEST_SYNC?.running&&liveState){
+      if(RT.memorySaver){RT.liveDesired=liveState.enabled!==false;liveState.enabled=false;setLiveUi(RT.liveDesired,true);setMessage("ライブ省メモリをONにしました。同期中の資金曲線再計算を停止します。","good")}
+      else{liveState.enabled=RT.liveDesired;setLiveUi(RT.liveDesired,false);setMessage("ライブ省メモリをOFFにしました。同期中も結果ライブを更新します。","warn");if(RT.liveDesired)try{await live?.refresh?.("省メモリOFF",true)}catch(_){}}
+    }
   }
   async function restoreCheckpointConfig(cp){
     if(!cp)return;
@@ -7199,7 +7214,7 @@ window.__THEKEIBA_V1311__={
     RT.wrapperBusy=true;RT.manualRecovery=false;RT.autoRecoveryCount=0;RT.autoRecoveryRequested=false;RT.lastActivity=Date.now();RT.stage="同期開始";RT.current="—";
     const args=arguments,live=window.__THEKEIBA_LIVE_SIM__,liveState=live?.state;
     if(liveState)RT.liveDesired=liveState.enabled!==false;else{try{RT.liveDesired=localStorage.getItem("TheKeibaLiveConfirmedGraphV1")!=="0"}catch(_){RT.liveDesired=true}}
-    if(liveState)liveState.enabled=false;setLiveUi(RT.liveDesired,true);saveCheckpoint("同期開始",true);setMessage("省メモリ同期を開始します。同期中は重い資金曲線の全件再計算を止め、進捗グラフだけを更新します。","good");
+    if(RT.memorySaver&&liveState)liveState.enabled=false;setLiveUi(RT.liveDesired,RT.memorySaver);setMemoryUi();saveCheckpoint("同期開始",true);setMessage(RT.memorySaver?"ライブ省メモリONで同期を開始します。同期中は重い資金曲線の全件再計算を止め、進捗グラフだけを更新します。":"ライブ省メモリOFFで同期を開始します。同期中も結果ライブを更新します。長期間ではメモリ使用量が増える場合があります。",RT.memorySaver?"good":"warn");
     let result=null;
     try{
       for(;;){
@@ -7216,18 +7231,18 @@ window.__THEKEIBA_V1311__={
       return result
     }catch(error){RT.stage="同期エラー";addFreezeLog(error.message);saveCheckpoint(error.message,true);setMessage(`同期エラー: ${error.message}\n取得済みデータは保持されています。「続きから再開」で未取得分から再試行できます。`,"bad");throw error}
     finally{
-      RT.wrapperBusy=false;if(liveState)liveState.enabled=RT.liveDesired;setLiveUi(RT.liveDesired,false);renderPanel();
-      if(RT.liveDesired&&!BACKTEST_SYNC?.running&&!result?.busy){
+      RT.wrapperBusy=false;if(liveState)liveState.enabled=RT.liveDesired;setLiveUi(RT.liveDesired,false);setMemoryUi();renderPanel();
+      if(RT.memorySaver&&RT.liveDesired&&!BACKTEST_SYNC?.running&&!result?.busy){
         setTimeout(async()=>{if(BACKTEST_SYNC?.running)return;setMessage("同期済みデータから資金曲線を1回だけ再計算しています。","good");try{await live?.refresh?.(result?.stopped?"安全停止時点":"同期完了",true);setMessage(result?.stopped?"安全停止しました。続きから再開できます。":"同期と資金曲線の更新が完了しました。","good")}catch(error){setMessage(`資金曲線の更新だけ失敗しました: ${error.message}\n同期済みデータは保存されています。`,"warn")}},700)
       }
     }
   };
 
   function boot(){
-    setVersion();ensurePanel();RT.lastCheckpoint=loadCheckpoint();RT.lastActivity=Date.now();renderPanel();
+    setVersion();ensurePanel();RT.lastCheckpoint=loadCheckpoint();RT.lastActivity=Date.now();setMemoryUi();const memoryBtn=byId("simLiveMemoryBtn");if(memoryBtn)memoryBtn.onclick=()=>toggleMemorySaver();renderPanel();
     clearInterval(RT.watchdogTimer);RT.watchdogTimer=setInterval(watchdog,5000);
     const syncBtn=byId("simSyncBtn");if(syncBtn)syncBtn.onclick=()=>syncBacktestPeriod();
-    setTimeout(()=>{setVersion();ensurePanel();const btn=byId("simSyncBtn");if(btn)btn.onclick=()=>syncBacktestPeriod();renderPanel()},2500);
+    setTimeout(()=>{setVersion();ensurePanel();const btn=byId("simSyncBtn");if(btn)btn.onclick=()=>syncBacktestPeriod();const memoryBtn=byId("simLiveMemoryBtn");if(memoryBtn)memoryBtn.onclick=()=>toggleMemorySaver();setMemoryUi();renderPanel()},2500);
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
   window.__THEKEIBA_SYNC_RESILIENCE__={version:VERSION,state:RT,saveCheckpoint,loadCheckpoint,resume:resumeFromCheckpoint,recover:requestSafeRecovery,copyDiagnostics};
